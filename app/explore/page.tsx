@@ -148,7 +148,6 @@ export default function ExplorePage() {
       {/* TODO: Add search bar for filtering by title/creator */}
       {/* TODO: Connect to Supabase real-time subscriptions */}
       {/* TODO: Add skeleton loaders for loading states */}
-      {/* TODO: Add success toast notification */}
     </div>
   );
 }

@@ -5,20 +5,30 @@ import { Button } from '@/components/ui/button'
 import PredictionWidgetDemo from '@/components/widgets/PredictionWidgetDemo'
 import SocialWidgetDemo from '@/components/widgets/SocialWidgetDemo'
 import AdsWidgetDemo from '@/components/widgets/AdsWidgetDemo'
-import { Sparkles, TrendingUp, Users, Zap } from 'lucide-react'
+import { AnimatedBackground } from '@/components/AnimatedBackground'
+import { TrendingCarousel } from '@/components/TrendingCarousel'
+import { UserJourneyCards } from '@/components/UserJourneyCards'
+import { Sparkles, TrendingUp, Users, Zap, Rocket, ArrowRight } from 'lucide-react'
+import { useCountUp } from '@/hooks/useCountUp'
+import { sampleProjects } from '@/lib/sampleData'
 
 export default function HomePage() {
+  const dailyUsers = useCountUp({ end: 1284, duration: 2000 })
+  const totalPayouts = useCountUp({ end: 12430, duration: 2500, prefix: '$', decimals: 0 })
+  const liveProjects = useCountUp({ end: 42, duration: 1500 })
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen relative">
+      <AnimatedBackground />
+
       {/* Hero Section */}
       <section className="container mx-auto px-4 py-20">
         <div className="text-center max-w-4xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-full mb-6">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-full mb-6 backdrop-blur-sm">
             <Sparkles className="w-4 h-4 text-purple-400" />
             <span className="text-sm text-white/70">Interactive OBS Overlays</span>
           </div>
 
-          <h1 className="text-6xl font-bold mb-6 gradient-text">
+          <h1 className="text-6xl md:text-7xl font-bold mb-6 gradient-text-shimmer">
             From Twitch to Rich
           </h1>
 
@@ -33,13 +43,21 @@ export default function HomePage() {
 
           <div className="flex items-center justify-center gap-4 mb-16 flex-wrap">
             <Link href="/explore">
-              <Button size="lg" className="gap-2">
-                <Sparkles className="w-4 h-4" />
+              <Button
+                size="lg"
+                className="gap-2 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 shadow-lg shadow-pink-500/25 hover:shadow-pink-500/40 transition-all duration-300 hover:scale-105"
+              >
+                <Rocket className="w-4 h-4" />
                 Explore Projects
+                <ArrowRight className="w-4 h-4" />
               </Button>
             </Link>
             <Link href="/tools">
-              <Button size="lg" variant="outline" className="gap-2">
+              <Button
+                size="lg"
+                variant="outline"
+                className="gap-2 border-white/20 hover:border-white/40 hover:bg-white/5 backdrop-blur-sm transition-all duration-300 hover:scale-105"
+              >
                 <Zap className="w-4 h-4" />
                 Creator Tools
               </Button>
@@ -84,23 +102,32 @@ export default function HomePage() {
       {/* Stats Section */}
       <section className="container mx-auto px-4 py-12 border-t border-white/10">
         <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-          <div className="glass-card p-6 text-center">
+          <div className="glass-card p-6 text-center group hover:scale-105 transition-transform duration-300">
             <div className="text-sm text-white/60 mb-2">Daily Active Users</div>
-            <div className="text-4xl font-bold gradient-text mb-1">1,284</div>
-            <div className="text-xs text-green-400">+12% from yesterday</div>
+            <div className="text-4xl font-bold gradient-text-shimmer mb-1">{dailyUsers}</div>
+            <div className="flex items-center justify-center gap-1 text-xs text-green-400">
+              <TrendingUp className="w-3 h-3" />
+              +12% from yesterday
+            </div>
           </div>
-          <div className="glass-card p-6 text-center">
+          <div className="glass-card p-6 text-center group hover:scale-105 transition-transform duration-300">
             <div className="text-sm text-white/60 mb-2">Total Payouts</div>
-            <div className="text-4xl font-bold gradient-text mb-1">$12,430</div>
-            <div className="text-xs text-green-400">+$2,340 this week</div>
+            <div className="text-4xl font-bold gradient-text-shimmer mb-1">{totalPayouts}</div>
+            <div className="flex items-center justify-center gap-1 text-xs text-green-400">
+              <TrendingUp className="w-3 h-3" />
+              +$2,340 this week
+            </div>
           </div>
-          <div className="glass-card p-6 text-center">
+          <div className="glass-card p-6 text-center group hover:scale-105 transition-transform duration-300">
             <div className="text-sm text-white/60 mb-2">Live Projects</div>
-            <div className="text-4xl font-bold gradient-text mb-1">42</div>
+            <div className="text-4xl font-bold gradient-text-shimmer mb-1">{liveProjects}</div>
             <div className="text-xs text-white/50">18 campaigns active</div>
           </div>
         </div>
       </section>
+
+      {/* Trending Carousel */}
+      <TrendingCarousel projects={sampleProjects} />
 
       {/* Features Section */}
       <section className="container mx-auto px-4 py-20">
@@ -140,6 +167,9 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* User Journey Cards */}
+      <UserJourneyCards />
     </div>
   )
 }
