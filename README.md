@@ -1,234 +1,162 @@
-# OBS Widgets - Prediction & Social Actions
+# $LAUNCH - Unified Platform MVP
 
-A Next.js application for creating interactive OBS widgets with predictions and social media engagement buttons.
+**From Twitch to Rich** - Turn entertainment into finance. Connect streamers, clippers, and agencies with a unified platform for content monetization.
 
-## Features
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Next.js](https://img.shields.io/badge/Next.js-14.2-black)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)
 
-### Prediction Widget
-- Create viewer predictions with custom options
-- Real-time voting with live tallies
-- Lock predictions to stop voting
-- Settle predictions and declare winners
-- Export winner list as CSV for manual payouts
+## 🚀 Features
 
-### Social Actions Widget
-- Configurable social media buttons (Telegram, Twitter, Discord, etc.)
-- Click tracking with anti-abuse controls
-- Progress bars with goals
-- Confetti animation on goal completion
+### 7 Card Types
+- **🚀 Launches** - Token TGEs and project launches
+- **📹 Campaigns** - Clipping and promotion campaigns
+- **⚔️ Raids** - Coordinated social media raids
+- **🎯 Predictions** - Live betting and outcomes
+- **💰 Ads** - Sponsored OBS widgets
+- **🎮 Quests** - Daily/weekly engagement tasks
+- **⭐ Spotlights** - Featured creators and content
 
-## Tech Stack
+### Pages
+- **Home** - Hero, stats, and features
+- **Discover** (`/explore`) - Browse all projects with filters
+- **Engage** (`/engage`) - StreamWars, raids, quests
+- **Tools** (`/tools`) - Widgets, campaigns, launches
+- **Community** (`/community`) - Frenwork directory
 
-- **Next.js 14** (App Router)
-- **TypeScript**
-- **Tailwind CSS**
-- **Prisma** (PostgreSQL ORM)
-- **PostgreSQL** database
+### OBS Widgets
+- Prediction Widget - Live voting
+- Social Widget - Follow goals
+- Ads Widget - Sponsored banners
 
-## Setup Instructions
+## 🛠 Tech Stack
 
-### 1. Install Dependencies
+- **Framework**: Next.js 14 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **UI Components**: ShadCN UI (Radix)
+- **Icons**: Lucide React
+- **State**: React local state (demo mode)
+
+## 📦 Installation
 
 ```bash
+# Clone the repository
+git clone https://github.com/Kermit457/-LAUNCH-unified-platform-MVP.git
+
+# Navigate to project
+cd -LAUNCH-unified-platform-MVP
+
+# Install dependencies
 npm install
-```
 
-### 2. Database Setup
-
-Create a PostgreSQL database and add the connection URL to your environment:
-
-```bash
-cp .env.example .env
-```
-
-Edit `.env`:
-```
-DATABASE_URL="postgresql://user:password@localhost:5432/obs_widgets?schema=public"
-```
-
-### 3. Initialize Database
-
-```bash
-npx prisma db push
-```
-
-### 4. Run Development Server
-
-```bash
+# Run development server
 npm run dev
 ```
 
-Visit [http://localhost:3000](http://localhost:3000)
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Usage
+## 🗂 Project Structure
 
-### Control Panel
-
-Navigate to the control panel at `/` to manage predictions and social actions.
-
-#### Create Prediction
-1. Go to `/control/predictions`
-2. Enter your streamer ID (wallet address or username)
-3. Add question and options
-4. Click "Create Prediction"
-
-#### Manage Predictions
-- **Lock**: `POST /api/predictions/:id/lock`
-- **Settle**: `POST /api/predictions/:id/settle` with `{ winningOption: "UP" }`
-- **Export Winners**: `GET /api/predictions/:id/export` (downloads CSV)
-
-#### Create Social Action
-1. Go to `/control/social`
-2. Enter streamer ID
-3. Configure action (key, label, URL, goal)
-4. Click "Create Social Action"
-
-### OBS Browser Source Setup
-
-Add a Browser Source in OBS with the following URLs:
-
-**Prediction Widget:**
 ```
-http://localhost:3000/widget?mode=prediction&streamer=YOUR_WALLET
-```
-
-**Social Widget:**
-```
-http://localhost:3000/widget?mode=social&streamer=YOUR_WALLET
+WIDGETS FOR LAUNCH/
+├── app/
+│   ├── page.tsx                 # Homepage
+│   ├── explore/page.tsx         # Main feed with filters
+│   ├── engage/page.tsx          # StreamWars, raids, quests
+│   ├── tools/page.tsx           # Creator tools
+│   ├── community/page.tsx       # Frenwork directory
+│   ├── predictions/page.tsx     # Prediction widget config
+│   ├── social/page.tsx          # Social widget config
+│   ├── ads/page.tsx             # Ads widget config
+│   ├── marketplace/page.tsx     # Project marketplace
+│   ├── earnings/page.tsx        # Revenue dashboard
+│   └── widget/page.tsx          # Widget viewer
+│
+├── components/
+│   ├── NavBar.tsx               # Main navigation
+│   ├── ProjectCard.tsx          # Unified card component
+│   ├── ui/                      # ShadCN components
+│   └── widgets/                 # Demo widgets
+│
+├── lib/
+│   ├── sampleData.ts            # Mock project data
+│   ├── cn.ts                    # Utility functions
+│   └── utils.ts
+│
+└── types/
+    └── index.ts                 # TypeScript types
 ```
 
-**Recommended OBS Settings:**
-- Width: 400px
-- Height: 220px
-- FPS: 30
-- ✅ Shutdown source when not visible
-- ✅ Refresh browser when scene becomes active
+## 🎨 Features Breakdown
 
-## API Endpoints
+### Explore Page
+- Filter by type (All, Launch, Campaign, Raid, etc.)
+- Responsive 1-3 column grid
+- Type-specific gradient colors
+- Progress bars for campaigns
+- Status badges (live/upcoming/ended)
 
-### Predictions
+### ProjectCard Component
+- Unified design for all 7 types
+- Shows: title, subtitle, pill, progress, stats, platforms
+- Type-specific gradients
+- Responsive hover effects
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/api/predictions` | Create new prediction |
-| `GET` | `/api/predictions/active?streamer=<id>` | Get active prediction |
-| `POST` | `/api/predictions/:id/lock` | Lock prediction (stop voting) |
-| `POST` | `/api/predictions/:id/settle` | Settle and declare winner |
-| `POST` | `/api/predictions/:id/vote` | Submit a vote |
-| `GET` | `/api/predictions/:id/results` | Get results with winners |
-| `GET` | `/api/predictions/:id/export` | Export winners CSV |
+### Dark Theme
+- Background: #0a0a0a → #1a1a1a gradient
+- Glassmorphism cards with backdrop blur
+- Pink → Purple accent gradient
+- White text with opacity variations
 
-### Social Actions
+## 🔮 Future Enhancements
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/api/social` | Create social action |
-| `GET` | `/api/social?streamer=<id>` | List active social actions |
-| `POST` | `/api/social/:id/toggle` | Toggle active state |
-| `POST` | `/api/social/:id/click` | Record a click |
+### Backend Integration
+- [ ] Supabase real-time database
+- [ ] User authentication
+- [ ] Wallet connection (Phantom/MetaMask)
+- [ ] $LAUNCH token integration
 
-## Anti-Abuse Features
+### Features
+- [ ] Real-time updates via WebSockets
+- [ ] Search and advanced filters
+- [ ] User profiles
+- [ ] Analytics dashboard
+- [ ] Mobile app
 
-- **IP Hashing**: User IPs are hashed with daily salt for privacy
-- **Vote Deduplication**: One vote per user per prediction
-- **Click Throttling**: 30-second cooldown per IP per action
-- **Anonymous Users**: Automatic generation of anonymous user IDs based on IP+UA hash
+### Monetization
+- [ ] Campaign creation wizard
+- [ ] Token launch wizard
+- [ ] Automated payouts
+- [ ] Points redemption system
 
-## Manual Reward Flow
+## 📝 TODOs
 
-1. Create and run prediction
-2. Lock when voting should close
-3. Settle with winning option
-4. Export winners: `GET /api/predictions/:id/export`
-5. Pay rewards manually (USDC, points, etc.)
+See inline comments marked with `// TODO:` throughout the codebase for specific integration points:
+- Supabase queries
+- Wallet connect logic
+- Real-time subscriptions
+- Analytics tracking
 
-## Database Schema
+## 🤝 Contributing
 
-```prisma
-model Streamer {
-  id            String
-  displayName   String?
-  predictions   Prediction[]
-  socialActions SocialAction[]
-}
+This is a demo MVP. For production use:
+1. Replace mock data with Supabase/API calls
+2. Add authentication
+3. Implement wallet integration
+4. Add proper error handling
+5. Write tests
 
-model Prediction {
-  id             String
-  streamerId     String
-  question       String
-  options        Json        // ["UP","DOWN"]
-  state          String      // "OPEN" | "LOCKED" | "SETTLED"
-  winningOption  String?
-  votes          PredictionVote[]
-}
-
-model PredictionVote {
-  id           String
-  predictionId String
-  userId       String
-  option       String
-  weight       Float
-}
-
-model SocialAction {
-  id         String
-  streamerId String
-  actionKey  String
-  label      String
-  targetUrl  String
-  counter    Int
-  goal       Int
-  active     Boolean
-  clicks     SocialClick[]
-}
-
-model SocialClick {
-  id        String
-  actionId  String
-  userId    String?
-  ipHash    String
-}
-```
-
-## Widget Customization
-
-Widgets use Tailwind CSS and can be customized in:
-- `components/PredictionWidget.tsx`
-- `components/SocialWidget.tsx`
-
-Widget dimensions: **400×220px** (optimized for stream overlays)
-
-## Deployment
-
-### Vercel (Recommended)
-
-1. Push code to GitHub
-2. Import to Vercel
-3. Add `DATABASE_URL` environment variable
-4. Deploy
-
-### Docker
-
-```dockerfile
-FROM node:18-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-RUN npx prisma generate
-RUN npm run build
-CMD ["npm", "start"]
-```
-
-## Future Enhancements
-
-- [ ] WebSocket/SSE for real-time updates (replace polling)
-- [ ] On-chain escrow integration
-- [ ] Advanced analytics dashboard
-- [ ] Multi-language support
-- [ ] QR code generation for social actions
-- [ ] Streamer authentication
-
-## License
+## 📄 License
 
 MIT
+
+## 🙏 Credits
+
+Built with [Claude Code](https://claude.com/claude-code)
+
+---
+
+**Status**: Demo MVP (Front-end only)
+**Mock Data**: 18 projects across 7 card types
+**Ready For**: Backend integration, wallet connect, token launch
