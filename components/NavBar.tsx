@@ -1,13 +1,14 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/cn'
-import { LayoutGrid, Swords, Wrench, Users, WalletMinimal } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { LayoutGrid, Swords, Wrench, Users, Wallet, Menu, X } from 'lucide-react'
 
 export default function NavBar() {
   const pathname = usePathname()
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const links = [
     { href: '/', label: 'Home', icon: null },
@@ -17,17 +18,21 @@ export default function NavBar() {
     { href: '/community', label: 'Community', icon: Users },
   ]
 
+  const closeMobileMenu = () => setMobileMenuOpen(false)
+
   return (
     <nav className="border-b border-white/10 bg-black/50 backdrop-blur-lg sticky top-0 z-50">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          <Link href="/" className="flex items-center gap-2">
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-2" onClick={closeMobileMenu}>
             <div className="w-8 h-8 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg flex items-center justify-center font-bold text-white text-sm">
               $L
             </div>
             <span className="font-bold text-xl gradient-text">$LAUNCH</span>
           </Link>
 
+          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-1">
             {links.map((link) => {
               const Icon = link.icon
@@ -49,11 +54,50 @@ export default function NavBar() {
             })}
           </div>
 
-          <Button className="gap-2">
-            <WalletMinimal size={16} />
+          {/* Desktop Connect Button */}
+          <button className="hidden md:inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-lg text-sm font-medium hover:from-pink-600 hover:to-purple-700 transition-all">
+            <Wallet size={16} />
             Connect
-          </Button>
+          </button>
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden p-2 text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-all"
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t border-white/10 py-4 space-y-2">
+            {links.map((link) => {
+              const Icon = link.icon
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={closeMobileMenu}
+                  className={cn(
+                    'flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium transition-all',
+                    pathname === link.href
+                      ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white'
+                      : 'text-white/70 hover:text-white hover:bg-white/10'
+                  )}
+                >
+                  {Icon && <Icon size={16} />}
+                  {link.label}
+                </Link>
+              )
+            })}
+            <button className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-lg text-sm font-medium hover:from-pink-600 hover:to-purple-700 transition-all mt-2">
+              <Wallet size={16} />
+              Connect Wallet
+            </button>
+          </div>
+        )}
       </div>
     </nav>
   )

@@ -4,6 +4,15 @@ export type ProjectType = 'launch' | 'campaign' | 'raid' | 'prediction' | 'ad' |
 export type Status = 'live' | 'upcoming' | 'ended';
 export type PillKind = 'rate' | 'bounty' | 'pool' | 'mcap' | 'reward';
 
+export interface Comment {
+  id: string;
+  author: string;
+  avatar?: string;
+  text: string;
+  timestamp: Date;
+  upvotes?: number;
+}
+
 export interface Project {
   id: string;
   type: ProjectType;
@@ -18,6 +27,13 @@ export interface Project {
   cta?: { label: string; href?: string };
   endTime?: string; // For countdowns
   creator?: string;
+
+  // Engagement fields
+  upvotes?: number;
+  comments?: Comment[];
+  boosted?: boolean;
+  boostCount?: number;
+  createdAt?: Date;
 }
 
 // TODO: Add Supabase real-time types when integrating
