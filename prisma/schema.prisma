@@ -1,0 +1,79 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Streamer {
+  id            String          @id
+  displayName   String?         @map("display_name")
+  predictions   Prediction[]
+  socialActions SocialAction[]
+
+  @@map("streamers")
+}
+
+model Prediction {
+  id             String            @id
+  streamerId     String            @map("streamer_id")
+  question       String
+  options        Json              // ["UP","DOWN"] or ["YES","NO",...]
+  state          String            // "OPEN" | "LOCKED" | "SETTLED"
+  createdAt      DateTime          @default(now()) @map("created_at")
+  lockedAt       DateTime?         @map("locked_at")
+  settledAt      DateTime?         @map("settled_at")
+  winningOption  String?           @map("winning_option")
+
+  streamer       Streamer          @relation(fields: [streamerId], references: [id])
+  votes          PredictionVote[]
+
+  @@map("predictions")
+}
+
+model PredictionVote {
+  id           String     @id
+  predictionId String     @map("prediction_id")
+  userId       String     @map("user_id")
+  option       String
+  weight       Float      @default(1)
+  createdAt    DateTime   @default(now()) @map("created_at")
+
+  prediction   Prediction @relation(fields: [predictionId], references: [id])
+
+  @@unique([predictionId, userId])
+  @@map("prediction_votes")
+}
+
+model SocialAction {
+  id         String        @id
+  streamerId String        @map("streamer_id")
+  actionKey  String        @map("action_key")
+  label      String
+  targetUrl  String        @map("target_url")
+  counter    Int           @default(0)
+  goal       Int           @default(0)
+  active     Boolean       @default(true)
+
+  streamer   Streamer      @relation(fields: [streamerId], references: [id])
+  clicks     SocialClick[]
+
+  @@map("social_actions")
+}
+
+model SocialClick {
+  id        String       @id
+  actionId  String       @map("action_id")
+  userId    String?      @map("user_id")
+  ipHash    String       @map("ip_hash")
+  createdAt DateTime     @default(now()) @map("created_at")
+
+  action    SocialAction @relation(fields: [actionId], references: [id])
+
+  @@map("social_clicks")
+}
