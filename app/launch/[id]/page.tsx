@@ -1,11 +1,15 @@
 "use client"
 
 import { useParams, useRouter } from 'next/navigation'
-import { ArrowLeft, Rocket, Twitter, ExternalLink, Share2, Bookmark, Zap, TrendingUp, MessageCircle, Radio, Users } from 'lucide-react'
+import { ArrowLeft, Rocket, Twitter, ExternalLink, Share2, Bookmark, Zap, TrendingUp, MessageCircle, Radio, Users, Copy, Check, BarChart3, DollarSign, Droplet, ShoppingCart } from 'lucide-react'
 import { HealthChart } from '@/components/launch/HealthChart'
 import { LaunchTimeseriesPoint } from '@/types/launch'
 import { convictionSeries } from '@/utils/health'
 import { useState } from 'react'
+import { useTokenData } from '@/lib/tokenData'
+import { fmtUsd, fmtPct, fmtNum, isNewToken } from '@/lib/format'
+import { cn } from '@/lib/cn'
+import { PriceSpark } from '@/components/launch/cards/PriceSpark'
 
 // Simple icon components for platforms
 const DiscordIcon = ({ className }: { className?: string }) => (
@@ -119,6 +123,7 @@ export default function LaunchDetailPage() {
   const router = useRouter()
   const [isBookmarked, setIsBookmarked] = useState(false)
   const [isBoosted, setIsBoosted] = useState(false)
+  const [copied, setCopied] = useState(false)
 
   // Compute conviction from health data
   const convictionValues = convictionSeries(mockLaunchData)
@@ -133,6 +138,7 @@ export default function LaunchDetailPage() {
     tokenLogo: 'https://api.dicebear.com/7.x/shapes/svg?seed=STREAM&backgroundColor=8b5cf6,a855f7,06b6d4',
     marketType: 'icm' as const,
     status: 'live' as const,
+    mint: 'So11111111111111111111111111111111111111112', // SOL mint for demo
     beliefScore: Math.round(currentConviction),
     description: 'StreamWars is building the future of decentralized streaming with on-chain rewards, creator tools, and community governance. Join the revolution.',
     creator: '@streamwars_dev',
@@ -165,6 +171,22 @@ export default function LaunchDetailPage() {
   }
 
   const isCCM = launch.marketType === 'ccm'
+
+  // Fetch token data if ICM with mint
+  const { data: tokenData, loading: tokenLoading, error: tokenError } = useTokenData(
+    launch.marketType === 'icm' ? launch.mint : undefined,
+    15000
+  )
+
+  const handleCopyMint = async () => {
+    if (!launch.mint) return
+    await navigator.clipboard.writeText(launch.mint)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
+  const showNewBadge = isNewToken(tokenData.createdAt)
+  const hasTokenData = tokenData.priceUsd !== undefined
 
   return (
     <div className="min-h-screen pb-24">
@@ -357,6 +379,210 @@ export default function LaunchDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Token Metrics Section - ICM Only */}
+      {!isCCM && launch.mint && (
+        <div className="rounded-2xl bg-white/5 border border-white/10 p-6 mb-6">
+          <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+            <BarChart3 className="w-5 h-5 text-green-400" />
+            Token Metrics
+          </h2>
+
+          {/* Token Address Row */}
+          <div className="mb-4 pb-4 border-b border-white/10">
+            <div className="flex flex-col gap-3">
+              {/* Token Address */}
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-white/50 flex-shrink-0">Token Address:</span>
+                <code className="text-xs text-white/80 font-mono flex-1 min-w-0 truncate select-all bg-white/5 px-3 py-1.5 rounded-lg">
+                  {launch.mint}
+                </code>
+              </div>
+
+              {/* Quick Action Buttons */}
+              <div className="flex items-center gap-2 flex-wrap">
+                {/* Copy */}
+                <button
+                  onClick={handleCopyMint}
+                  className="h-8 px-3 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-white/70 hover:text-white text-sm transition-all flex items-center gap-2"
+                >
+                  {copied ? (
+                    <Check className="w-4 h-4 text-green-400" />
+                  ) : (
+                    <Copy className="w-4 h-4" />
+                  )}
+                  <span>{copied ? 'Copied!' : 'Copy Address'}</span>
+                </button>
+
+                {/* Solscan */}
+                {tokenData.solscanUrl && (
+                  <a
+                    href={tokenData.solscanUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="h-8 px-3 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-white/70 hover:text-white text-sm transition-all flex items-center gap-2"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    <span>View on Solscan</span>
+                  </a>
+                )}
+
+                {/* Chart */}
+                {tokenData.dexUrl && (
+                  <a
+                    href={tokenData.dexUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="h-8 px-3 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-white/70 hover:text-white text-sm transition-all flex items-center gap-2"
+                  >
+                    <BarChart3 className="w-4 h-4" />
+                    <span>View Chart</span>
+                  </a>
+                )}
+
+                {/* New Badge */}
+                {showNewBadge && (
+                  <span className="ml-auto px-3 py-1 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-300 text-sm font-bold flex items-center gap-1.5">
+                    🆕 New Token
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Token KPIs - 3x2 Grid */}
+          {hasTokenData && !tokenLoading && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-4">
+              {/* Price */}
+              {tokenData.priceUsd !== undefined && (
+                <div className="bg-white/[0.02] rounded-xl p-4 border border-white/5">
+                  <div className="flex items-center gap-2 mb-2">
+                    <DollarSign className="w-4 h-4 text-green-400" />
+                    <span className="text-xs text-white/50 uppercase font-semibold">Price</span>
+                  </div>
+                  <div className="text-2xl font-bold text-white mb-1">{fmtUsd(tokenData.priceUsd)}</div>
+                  {tokenData.change24h !== undefined && (
+                    <div
+                      className={cn(
+                        'text-sm font-bold inline-flex items-center gap-1 px-2 py-1 rounded',
+                        tokenData.change24h >= 0
+                          ? 'bg-green-500/10 text-green-400'
+                          : 'bg-red-500/10 text-red-400'
+                      )}
+                    >
+                      {tokenData.change24h >= 0 ? '↗' : '↘'}
+                      {fmtPct(tokenData.change24h)}
+                    </div>
+                  )}
+                  {tokenData.spark && <PriceSpark data={tokenData.spark} className="mt-2" />}
+                </div>
+              )}
+
+              {/* Liquidity */}
+              {tokenData.liqUsd !== undefined && (
+                <div className="bg-white/[0.02] rounded-xl p-4 border border-white/5">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Droplet className="w-4 h-4 text-blue-400" />
+                    <span className="text-xs text-white/50 uppercase font-semibold">Liquidity</span>
+                  </div>
+                  <div className="text-2xl font-bold text-white">{fmtUsd(tokenData.liqUsd)}</div>
+                  <p className="text-xs text-white/40 mt-1">Depth & stability</p>
+                </div>
+              )}
+
+              {/* 24h Volume */}
+              {tokenData.vol24hUsd !== undefined && (
+                <div className="bg-white/[0.02] rounded-xl p-4 border border-white/5">
+                  <div className="flex items-center gap-2 mb-2">
+                    <TrendingUp className="w-4 h-4 text-purple-400" />
+                    <span className="text-xs text-white/50 uppercase font-semibold">24h Volume</span>
+                  </div>
+                  <div className="text-2xl font-bold text-white">{fmtUsd(tokenData.vol24hUsd)}</div>
+                  <p className="text-xs text-white/40 mt-1">Trading activity</p>
+                </div>
+              )}
+
+              {/* Market Cap */}
+              {tokenData.mcapUsd !== undefined && (
+                <div className="bg-white/[0.02] rounded-xl p-4 border border-white/5">
+                  <div className="flex items-center gap-2 mb-2">
+                    <DollarSign className="w-4 h-4 text-yellow-400" />
+                    <span className="text-xs text-white/50 uppercase font-semibold">Market Cap</span>
+                  </div>
+                  <div className="text-2xl font-bold text-white">{fmtUsd(tokenData.mcapUsd)}</div>
+                  <p className="text-xs text-white/40 mt-1">Fully diluted value</p>
+                </div>
+              )}
+
+              {/* Holders */}
+              {tokenData.holders !== undefined && (
+                <div className="bg-white/[0.02] rounded-xl p-4 border border-white/5">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Users className="w-4 h-4 text-cyan-400" />
+                    <span className="text-xs text-white/50 uppercase font-semibold">Holders</span>
+                  </div>
+                  <div className="text-2xl font-bold text-white">{fmtNum(tokenData.holders)}</div>
+                  <p className="text-xs text-white/40 mt-1">Token distribution</p>
+                </div>
+              )}
+
+              {/* Buy/Sell Pressure */}
+              {tokenData.txns24h && (
+                <div className="bg-white/[0.02] rounded-xl p-4 border border-white/5">
+                  <div className="flex items-center gap-2 mb-2">
+                    <ShoppingCart className="w-4 h-4 text-white/60" />
+                    <span className="text-xs text-white/50 uppercase font-semibold">24h Transactions</span>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div>
+                      <div className="text-sm text-white/50 mb-0.5">Buys</div>
+                      <div className="text-xl font-bold text-green-400">{fmtNum(tokenData.txns24h.buys)}</div>
+                    </div>
+                    <div>
+                      <div className="text-sm text-white/50 mb-0.5">Sells</div>
+                      <div className="text-xl font-bold text-red-400">{fmtNum(tokenData.txns24h.sells)}</div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Loading State */}
+          {tokenLoading && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-4">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <div key={i} className="bg-white/[0.02] rounded-xl p-4 border border-white/5">
+                  <div className="h-4 w-20 bg-white/10 rounded animate-pulse mb-3" />
+                  <div className="h-8 w-24 bg-white/10 rounded animate-pulse" />
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Error State */}
+          {tokenError && !tokenLoading && (
+            <div className="text-center py-6 text-white/40 italic text-sm">
+              Unable to load token data. Please try again later.
+            </div>
+          )}
+
+          {/* Quick Buy CTA */}
+          {tokenData.dexUrl && (
+            <div className="pt-4 border-t border-white/10">
+              <a
+                href={tokenData.dexUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full h-12 px-6 rounded-xl bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-600 hover:via-emerald-600 hover:to-teal-600 text-white text-base font-bold transition-all focus:outline-none focus:ring-2 focus:ring-green-400/50 flex items-center justify-center gap-2 shadow-lg shadow-green-500/20"
+              >
+                <Zap className="w-5 h-5" fill="currentColor" />
+                Quick Buy on DEX
+              </a>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Launch Health Chart */}
       <div className="mb-6">

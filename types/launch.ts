@@ -1,3 +1,20 @@
+export type LaunchStatus = "LIVE" | "UPCOMING"
+export type Scope = "ICM" | "CCM"
+
+export type LaunchCardData = {
+  id: string
+  title: string
+  subtitle?: string
+  logoUrl?: string
+  scope: Scope
+  status: LaunchStatus
+  convictionPct: number
+  commentsCount: number
+  upvotes: number
+  tgeAt?: number // for UPCOMING (epoch ms)
+  mint?: string // base58 (LIVE + ICM)
+}
+
 export type LaunchTimeseriesPoint = {
   ts: number                    // epoch ms
   fees_usd: number              // daily fees

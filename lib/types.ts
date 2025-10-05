@@ -1,5 +1,10 @@
 export type Role = "viewer" | "contributor" | "reviewer" | "admin"
 
+export type Money = {
+  mint: "USDC" | "SOL"
+  amount: number
+}
+
 export type Connection = {
   userId: string
   handle: string

@@ -1,239 +1,252 @@
 "use client"
 
 import { useState } from 'react'
-import { Network as NetworkIcon } from 'lucide-react'
-import { cn } from '@/lib/cn'
-import { NetworkCard, type NetworkCardProps } from '@/components/NetworkCard'
-
-type UserRole = "Streamer" | "Degen" | "Trader" | "Clipper" | "Editor" | "Agency" | "Manager" | "Project" | "Entertainer" | "Alpha"
-type ConnectionState = "none" | "pending" | "connected" | "blocked"
-
-interface NetworkUser {
-  id: string
-  name: string
-  handle: string
-  avatar: string
-  roles: UserRole[]
-  verified: boolean
-  mutuals?: number
-  isSelf?: boolean
-  socials: {
-    twitter?: boolean
-    youtube?: boolean
-    twitch?: boolean
-    website?: boolean
-  }
-}
-
-const SAMPLE_USERS: NetworkUser[] = [
-  {
-    id: "1",
-    name: "CryptoKing",
-    handle: "@cryptoking",
-    avatar: "CR",
-    roles: ["Streamer", "Degen", "Trader"],
-    verified: true,
-    mutuals: 15,
-    socials: { twitter: true, youtube: true, twitch: true }
-  },
-  {
-    id: "2",
-    name: "ClipMaster",
-    handle: "@clipmaster",
-    avatar: "CL",
-    roles: ["Clipper", "Editor"],
-    verified: true,
-    mutuals: 7,
-    socials: { twitter: true, website: true }
-  },
-  {
-    id: "3",
-    name: "TokenQueen",
-    handle: "@tokenqueen",
-    avatar: "TQ",
-    roles: ["Streamer", "Project"],
-    verified: false,
-    mutuals: 3,
-    socials: { twitter: true, youtube: true }
-  },
-  {
-    id: "4",
-    name: "AgencyPro",
-    handle: "@agencypro",
-    avatar: "AP",
-    roles: ["Agency", "Manager"],
-    verified: true,
-    mutuals: 12,
-    socials: { twitter: true, youtube: true, website: true }
-  },
-  {
-    id: "5",
-    name: "DegenTrader",
-    handle: "@degentrader",
-    avatar: "DT",
-    roles: ["Degen", "Trader", "Alpha"],
-    verified: false,
-    socials: { twitter: true }
-  },
-  {
-    id: "6",
-    name: "StreamLord",
-    handle: "@streamlord",
-    avatar: "SL",
-    roles: ["Streamer", "Entertainer"],
-    verified: true,
-    mutuals: 3,
-    socials: { twitter: true, youtube: true, twitch: true }
-  },
-]
-
-const ROLE_COLORS: Record<UserRole, string> = {
-  Streamer: "bg-purple-500/20 text-purple-300 border-purple-500/40",
-  Degen: "bg-orange-500/20 text-orange-300 border-orange-500/40",
-  Trader: "bg-green-500/20 text-green-300 border-green-500/40",
-  Clipper: "bg-pink-500/20 text-pink-300 border-pink-500/40",
-  Editor: "bg-blue-500/20 text-blue-300 border-blue-500/40",
-  Agency: "bg-cyan-500/20 text-cyan-300 border-cyan-500/40",
-  Manager: "bg-purple-500/20 text-purple-300 border-purple-500/40",
-  Project: "bg-yellow-500/20 text-yellow-300 border-yellow-500/40",
-  Entertainer: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40",
-  Alpha: "bg-red-500/20 text-red-300 border-red-500/40",
-}
-
-const ALL_ROLES: UserRole[] = ["Streamer", "Degen", "Trader", "Clipper", "Editor", "Agency", "Manager", "Project", "Entertainer", "Alpha"]
+import { Users } from 'lucide-react'
+import { ProfileCard } from '@/components/network/ProfileCard'
+import { ConnState } from '@/types/network'
 
 export default function NetworkPage() {
-  const [selectedRole, setSelectedRole] = useState<UserRole | 'All'>('All')
-  const [connectionStates, setConnectionStates] = useState<Record<string, ConnectionState>>({
-    "1": "none",
-    "2": "none",
-    "3": "pending",
-    "4": "connected",
-    "5": "none",
-    "6": "none",
-  })
-
-  const filteredUsers = selectedRole === 'All'
-    ? SAMPLE_USERS
-    : SAMPLE_USERS.filter(user => user.roles.includes(selectedRole))
+  const [invitedUsers, setInvitedUsers] = useState<Set<string>>(new Set())
 
   const handleInvite = (id: string) => {
-    setConnectionStates(prev => ({ ...prev, [id]: "pending" }))
-    console.log("Invite sent to:", id)
+    setInvitedUsers(prev => {
+      const next = new Set(prev)
+      next.add(id)
+      return next
+    })
+    console.log('Invited:', id)
   }
 
   const handleCancelInvite = (id: string) => {
-    setConnectionStates(prev => ({ ...prev, [id]: "none" }))
-    console.log("Invite cancelled for:", id)
+    setInvitedUsers(prev => {
+      const next = new Set(prev)
+      next.delete(id)
+      return next
+    })
+    console.log('Cancelled invite:', id)
   }
 
-  const handleChat = (id: string) => {
-    console.log("Opening chat with:", id)
-    // TODO: Navigate to chat or open drawer
+  const getState = (id: string, isConnected?: boolean, isSelf?: boolean): ConnState => {
+    if (isSelf) return 'self'
+    if (isConnected) return 'connected'
+    if (invitedUsers.has(id)) return 'pending'
+    return 'none'
   }
 
-  const handleFollow = (id: string) => {
-    console.log("Following:", id)
-    // TODO: Follow logic
-  }
-
-  const handleShare = (id: string) => {
-    console.log("Sharing profile:", id)
-    // TODO: Share profile
-  }
-
-  const handleInviteToCampaign = (id: string) => {
-    console.log("Inviting to campaign:", id)
-    // TODO: Open campaign assignment drawer
-  }
-
-  const handleEditProfile = () => {
-    console.log("Opening profile editor")
-    // TODO: Navigate to profile settings
-  }
+  const mockProfiles = [
+    {
+      id: 'u1',
+      name: 'CryptoKing',
+      handle: '@cryptoking',
+      avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=CryptoKing&backgroundColor=8b5cf6,a855f7',
+      verified: true,
+      roles: ['Streamer', 'Degen', 'Trader'],
+      mutuals: 15,
+      bio: 'Markets, memes, and mid-caps.',
+      x: {
+        followers: 3500,
+        following: 1300,
+        posts: 10200,
+        verified: true,
+      },
+      links: {
+        x: 'https://x.com/cryptoking',
+        youtube: 'https://youtube.com/@cryptoking',
+        twitch: 'https://twitch.tv/cryptoking',
+        discord: 'https://discord.gg/cryptoking',
+        web: 'https://cryptoking.io',
+      },
+      state: getState('u1'),
+    },
+    {
+      id: 'u2',
+      name: 'StreamLord',
+      handle: '@streamlord',
+      avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=StreamLord&backgroundColor=ec4899,8b5cf6',
+      verified: false,
+      roles: ['Streamer', 'Creator'],
+      mutuals: 8,
+      bio: 'Live every day. Building in public.',
+      x: {
+        followers: 12500,
+        following: 890,
+        posts: 5600,
+        verified: false,
+      },
+      links: {
+        x: 'https://x.com/streamlord',
+        twitch: 'https://twitch.tv/streamlord',
+        youtube: 'https://youtube.com/@streamlord',
+      },
+      state: getState('u2', true),
+    },
+    {
+      id: 'u3',
+      name: 'DegenTrader',
+      handle: '@degentrader',
+      avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=DegenTrader&backgroundColor=a855f7,06b6d4',
+      verified: true,
+      roles: ['Trader', 'Degen'],
+      mutuals: 23,
+      bio: '100x or bust. NFA.',
+      x: {
+        followers: 8900,
+        following: 450,
+        posts: 15300,
+        verified: true,
+      },
+      links: {
+        x: 'https://x.com/degentrader',
+        web: 'https://degentrader.com',
+      },
+      state: getState('u3'),
+    },
+    {
+      id: 'u4',
+      name: 'You',
+      handle: '@yourhandle',
+      avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=You&backgroundColor=ec4899,f97316',
+      verified: true,
+      roles: ['Creator', 'Developer'],
+      bio: 'Building the future of Web3.',
+      x: {
+        followers: 1200,
+        following: 340,
+        posts: 2100,
+        verified: false,
+      },
+      links: {
+        x: 'https://x.com/yourhandle',
+        web: 'https://yoursite.com',
+      },
+      state: getState('u4', false, true),
+    },
+    {
+      id: 'u5',
+      name: 'MoonWhale',
+      handle: '@moonwhale',
+      avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=MoonWhale&backgroundColor=06b6d4,8b5cf6',
+      verified: false,
+      roles: ['Investor', 'Degen'],
+      mutuals: 42,
+      bio: 'Early investor. Portfolio builder.',
+      x: {
+        followers: 25600,
+        following: 125,
+        posts: 890,
+        verified: true,
+      },
+      links: {
+        x: 'https://x.com/moonwhale',
+        discord: 'https://discord.gg/moonwhale',
+      },
+      state: getState('u5'),
+    },
+    {
+      id: 'u6',
+      name: 'PixelGuru',
+      handle: '@pixelguru',
+      avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=PixelGuru&backgroundColor=f97316,ec4899',
+      verified: true,
+      roles: ['Creator', 'Developer'],
+      mutuals: 6,
+      bio: 'NFT artist & smart contract dev.',
+      x: {
+        followers: 6700,
+        following: 890,
+        posts: 3400,
+        verified: false,
+      },
+      links: {
+        x: 'https://x.com/pixelguru',
+        youtube: 'https://youtube.com/@pixelguru',
+        web: 'https://pixelguru.art',
+      },
+      state: getState('u6'),
+    },
+  ]
 
   return (
     <div className="min-h-screen pb-24">
       {/* Header */}
       <div className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="p-2 bg-gradient-to-br from-cyan-500 to-teal-600 rounded-xl">
-            <NetworkIcon className="w-6 h-6 text-white" />
-          </div>
-          <h1 className="text-4xl font-bold gradient-text">FRENWORK</h1>
+        <div className="flex items-center gap-4 mb-4">
+          <Users className="w-8 h-8 text-fuchsia-400" />
+          <h1 className="text-4xl font-bold gradient-text-launchos">
+            Network
+          </h1>
         </div>
         <p className="text-white/60 text-lg">
-          Top creators in our network - ranked by performance
+          Connect with creators, streamers, and traders in the LaunchOS ecosystem
         </p>
       </div>
 
-      {/* Role Filter */}
-      <div className="mb-8">
-        <div className="flex flex-wrap gap-2">
-          <button
-            onClick={() => setSelectedRole('All')}
-            className={cn(
-              "px-4 py-2 rounded-lg text-sm font-medium transition-all border",
-              selectedRole === 'All'
-                ? "bg-cyan-500/30 text-cyan-200 border-cyan-400/60"
-                : "bg-white/5 text-white/70 border-white/10 hover:bg-white/10 hover:text-white"
-            )}
-          >
-            All ({SAMPLE_USERS.length})
-          </button>
-          {ALL_ROLES.map(role => {
-            const count = SAMPLE_USERS.filter(u => u.roles.includes(role)).length
-            return (
-              <button
-                key={role}
-                onClick={() => setSelectedRole(role)}
-                className={cn(
-                  "px-4 py-2 rounded-lg text-sm font-medium transition-all border",
-                  selectedRole === role
-                    ? ROLE_COLORS[role]
-                    : "bg-white/5 text-white/70 border-white/10 hover:bg-white/10 hover:text-white"
-                )}
-              >
-                {role} ({count})
-              </button>
-            )
-          })}
+      {/* Stats Bar */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <div className="glass-launchos p-4 rounded-xl">
+          <div className="text-white/60 text-sm mb-1">Total Network</div>
+          <div className="text-2xl font-bold gradient-text-launchos">247</div>
+        </div>
+        <div className="glass-launchos p-4 rounded-xl">
+          <div className="text-white/60 text-sm mb-1">Connected</div>
+          <div className="text-2xl font-bold text-green-400">42</div>
+        </div>
+        <div className="glass-launchos p-4 rounded-xl">
+          <div className="text-white/60 text-sm mb-1">Pending</div>
+          <div className="text-2xl font-bold text-amber-400">{invitedUsers.size}</div>
+        </div>
+        <div className="glass-launchos p-4 rounded-xl">
+          <div className="text-white/60 text-sm mb-1">Suggestions</div>
+          <div className="text-2xl font-bold text-cyan-400">18</div>
         </div>
       </div>
 
-      {/* User Grid */}
+      {/* Profile Cards Grid - Default Variant */}
+      <h2 className="text-2xl font-bold text-white mb-6">Suggested Connections</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-        {filteredUsers.map(user => (
-          <NetworkCard
-            key={user.id}
-            id={user.id}
-            name={user.name}
-            handle={user.handle}
-            roles={user.roles}
-            verified={user.verified}
-            avatarUrl={user.avatar}
-            mutuals={user.mutuals}
-            connection={connectionStates[user.id] || "none"}
-            isSelf={user.isSelf}
-            socials={user.socials}
+        {mockProfiles.map((profile) => (
+          <ProfileCard
+            key={profile.id}
+            {...profile}
+            state={profile.state as ConnState}
             onInvite={handleInvite}
             onCancelInvite={handleCancelInvite}
-            onChat={handleChat}
-            onFollow={handleFollow}
-            onShare={handleShare}
-            onInviteToCampaign={handleInviteToCampaign}
-            onEditProfile={handleEditProfile}
+            onChat={(id) => console.log('Chat with:', id)}
+            onFollow={(id) => console.log('Follow:', id)}
+            onShare={(id) => console.log('Share:', id)}
+            onInviteToCampaign={(id) => console.log('Invite to campaign:', id)}
+            onEditProfile={() => console.log('Edit profile')}
+          />
+        ))}
+      </div>
+
+      {/* Compact Variant Example */}
+      <h2 className="text-2xl font-bold text-white mb-6">Quick View (Compact)</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+        {mockProfiles.slice(0, 4).map((profile) => (
+          <ProfileCard
+            key={`compact-${profile.id}`}
+            {...profile}
+            state={profile.state as ConnState}
+            variant="compact"
+            onInvite={handleInvite}
+            onCancelInvite={handleCancelInvite}
+            onChat={(id) => console.log('Chat with:', id)}
+            onFollow={(id) => console.log('Follow:', id)}
+            onShare={(id) => console.log('Share:', id)}
+            onInviteToCampaign={(id) => console.log('Invite to campaign:', id)}
+            onEditProfile={() => console.log('Edit profile')}
           />
         ))}
       </div>
 
       {/* CTA Section */}
-      <div className="mt-16 rounded-2xl bg-gradient-to-br from-cyan-950/40 to-teal-950/40 border border-cyan-500/20 p-12 text-center">
-        <h2 className="text-3xl font-bold text-white mb-4">Want to be featured?</h2>
+      <div className="mt-16 rounded-2xl bg-gradient-to-br from-fuchsia-950/40 to-purple-950/40 border border-fuchsia-500/20 p-12 text-center">
+        <h2 className="text-3xl font-bold text-white mb-4">Want to grow your network?</h2>
         <p className="text-white/70 text-lg mb-8">
-          Complete your profile and start creating content to get listed in FRENWORK
+          Connect with top creators and unlock collaboration opportunities
         </p>
-        <button className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-teal-600 hover:from-cyan-600 hover:to-teal-700 text-white rounded-xl font-bold text-lg transition-all shadow-lg shadow-cyan-500/30 hover:shadow-cyan-500/50 hover:scale-105">
+        <button className="px-8 py-4 bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 hover:from-fuchsia-600 hover:via-purple-600 hover:to-cyan-600 text-white rounded-xl font-bold text-lg transition-all shadow-lg shadow-fuchsia-500/30 hover:shadow-fuchsia-500/50 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/50">
           Complete Your Profile
         </button>
       </div>
