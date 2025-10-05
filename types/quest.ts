@@ -5,6 +5,7 @@ export type Evidence = "link" | "video" | "screenshot"
 export type MissionType = "mission" | "takeover" | "support"
 
 export interface CreateQuestInput {
+  id?: string // Generated via crypto.randomUUID() on submit - unique per quest, never reused across types
   type: CampaignType
   targetUrl: string
   mission?: MissionType // raid only

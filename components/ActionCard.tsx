@@ -71,7 +71,11 @@ export function ActionCard({
     if (onView) {
       onView()
     } else if (id) {
-      const route = kind === 'campaign' ? `/campaign/${id}` : `/quest/${id}`
+      const route = kind === 'campaign'
+        ? `/campaign/${id}`
+        : kind === 'raid'
+          ? `/raids/${id}`
+          : `/bounties/${id}`
       router.push(route)
     }
   }
@@ -80,7 +84,11 @@ export function ActionCard({
     if (onJoin) {
       onJoin()
     } else if (id) {
-      const route = kind === 'campaign' ? `/campaign/${id}` : `/quest/${id}`
+      const route = kind === 'campaign'
+        ? `/campaign/${id}`
+        : kind === 'raid'
+          ? `/raids/${id}`
+          : `/bounties/${id}`
       router.push(route)
     }
   }

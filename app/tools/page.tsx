@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Wrench, Gift } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -11,6 +12,7 @@ import { CreateCampaignModal } from '@/components/campaigns/CreateCampaignModal'
 import { CampaignType } from '@/types/quest'
 
 export default function ToolsPage() {
+  const router = useRouter()
   const [isCreateQuestOpen, setIsCreateQuestOpen] = useState(false)
   const [initialQuestType, setInitialQuestType] = useState<CampaignType>('raid')
   const [isCreateCampaignOpen, setIsCreateCampaignOpen] = useState(false)
@@ -72,7 +74,14 @@ export default function ToolsPage() {
         initialType={initialQuestType}
         onClose={() => setIsCreateQuestOpen(false)}
         onSubmit={(data) => {
-          console.log('Quest created:', data)
+          // Store quest with key: `${data.type}:${data.id}` to prevent collisions
+          // TODO: Replace with Supabase insert
+          console.log(`${data.type}:${data.id}`, 'Quest created:', data)
+
+          // Navigate to correct route based on type
+          const route = data.type === 'raid' ? `/raids/${data.id}` : `/bounties/${data.id}`
+          router.push(route)
+
           setIsCreateQuestOpen(false)
         }}
       />

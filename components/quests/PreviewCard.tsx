@@ -51,8 +51,12 @@ export function PreviewCard({ formData }: PreviewCardProps) {
     rateLabel = 'Free'
   }
 
-  // Type label: mission type for raids, "Bounty" for bounties
-  const typeLabel = type === 'raid' && mission ? missionLabels[mission] : 'Bounty'
+  // Type label: mission type for raids, "Raid"/"Bounty" for basic display
+  const typeLabel = type === 'raid' && mission
+    ? missionLabels[mission]
+    : type === 'raid'
+      ? 'Raid'
+      : 'Bounty'
 
   // Map platforms
   const mappedPlatforms: ActionPlatform[] = (rules?.platforms || []).map(p => platformMap[p])

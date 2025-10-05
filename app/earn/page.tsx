@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useMemo } from 'react'
+import { useRouter } from 'next/navigation'
 import { EarnCard as EarnCardComponent, type EarnType } from '@/components/EarnCard'
 import { earnCards, filterEarnCards } from '@/lib/sampleData'
 import { Trophy, Filter, TrendingUp, Video, Swords, DollarSign } from 'lucide-react'
@@ -13,6 +14,7 @@ const TABS = ['All', 'Campaign', 'Raid', 'Bounty'] as const
 type Tab = typeof TABS[number]
 
 export default function EarnPage() {
+  const router = useRouter()
   const [activeTab, setActiveTab] = useState<Tab>('All')
   const [sortBy, setSortBy] = useState<'trending' | 'payout' | 'closing'>('trending')
   const [isCreateQuestOpen, setIsCreateQuestOpen] = useState(false)
@@ -173,7 +175,14 @@ export default function EarnPage() {
         initialType={initialQuestType}
         onClose={() => setIsCreateQuestOpen(false)}
         onSubmit={(data) => {
-          console.log('Quest created:', data)
+          // Store quest with key: `${data.type}:${data.id}` to prevent collisions
+          // TODO: Replace with Supabase insert
+          console.log(`${data.type}:${data.id}`, 'Quest created:', data)
+
+          // Navigate to correct route based on type
+          const route = data.type === 'raid' ? `/raids/${data.id}` : `/bounties/${data.id}`
+          router.push(route)
+
           setIsCreateQuestOpen(false)
         }}
       />

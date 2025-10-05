@@ -123,7 +123,11 @@ export function CreateQuestDrawer({ isOpen, onClose, onSubmit, initialType = 'ra
   const handleSubmit = () => {
     if (!isFormValid) return
 
+    // Generate unique ID for this quest
+    const id = crypto.randomUUID()
+
     const output: CreateQuestInput = {
+      id, // Unique ID for this raid or bounty
       type,
       targetUrl,
       mission: type === 'raid' ? mission : undefined,
@@ -175,7 +179,9 @@ export function CreateQuestDrawer({ isOpen, onClose, onSubmit, initialType = 'ra
       <div className="w-full max-w-[95vw] lg:max-w-6xl max-h-[90vh] bg-[#0D1220] rounded-2xl border border-white/10 shadow-2xl flex flex-col my-4">
         {/* Header */}
         <div className="flex-shrink-0 px-6 py-3 border-b border-white/10 flex items-center justify-between">
-          <h2 className="text-lg font-bold text-white">Create Quest</h2>
+          <h2 className="text-lg font-bold text-white">
+            {type === 'raid' ? 'Create Raid' : 'Create Bounty'}
+          </h2>
           <button
             onClick={onClose}
             className="p-2 rounded-lg hover:bg-white/5 transition-colors text-white/70 hover:text-white"
@@ -481,7 +487,7 @@ export function CreateQuestDrawer({ isOpen, onClose, onSubmit, initialType = 'ra
               disabled={!isFormValid}
               className="w-full h-12 rounded-xl bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 text-white font-bold disabled:opacity-50 disabled:cursor-not-allowed hover:from-fuchsia-600 hover:via-purple-600 hover:to-cyan-600 transition-all focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
             >
-              Create Quest
+              {type === 'raid' ? 'Create Raid' : 'Create Bounty'}
             </button>
           </div>
 

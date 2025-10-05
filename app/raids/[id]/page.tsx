@@ -1,53 +1,18 @@
 "use client"
 
-import { useParams, useRouter, useSearchParams } from 'next/navigation'
-import { useEffect } from 'react'
+import { useParams, useRouter } from 'next/navigation'
+import { ArrowLeft, Share2, Eye, TrendingUp, Clock, Users, Target, Coins, Upload } from 'lucide-react'
+import { useState } from 'react'
 
-/**
- * DEPRECATED: This page is kept for backward compatibility only.
- * New routes:
- * - /raids/[id] for raids
- * - /bounties/[id] for bounties
- *
- * This page redirects old /quest/[id]?type=X URLs to the new routes.
- */
-export default function QuestDetailPage() {
+export default function RaidDetailPage() {
   const params = useParams()
-  const searchParams = useSearchParams()
   const router = useRouter()
+  const [hasJoined, setHasJoined] = useState(false)
 
-  useEffect(() => {
-    const type = searchParams.get('type')
-    const id = params.id
-
-    if (type === 'raid') {
-      // 301 redirect to new raid route
-      router.replace(`/raids/${id}`)
-    } else if (type === 'bounty') {
-      // 301 redirect to new bounty route
-      router.replace(`/bounties/${id}`)
-    } else {
-      // No type specified - show error
-      console.error('Legacy quest URL missing type parameter')
-    }
-  }, [params.id, searchParams, router])
-
-  // Show loading state while redirecting
-  return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-fuchsia-500 mx-auto mb-4"></div>
-        <p className="text-white/70">Redirecting...</p>
-      </div>
-    </div>
-  )
-}
-
-/* REMOVED OLD IMPLEMENTATION - kept for reference only
-
-  const quest = {
+  // TODO: Fetch real raid data by params.id
+  const raid = {
     id: params.id,
-    type: 'raid' as 'raid' | 'bounty',
+    type: 'raid' as const,
     title: 'Raid X Thread for $MEME',
     description: 'Help spread the word about $MEME token by engaging with our X thread. Like, retweet, and comment to earn rewards!',
     targetUrl: 'https://x.com/meme_coin/status/123456789',
@@ -73,8 +38,7 @@ export default function QuestDetailPage() {
     }
   }
 
-  const progressPct = Math.round((quest.paid / quest.pool) * 100)
-  const isRaid = quest.type === 'raid'
+  const progressPct = Math.round((raid.paid / raid.pool) * 100)
 
   return (
     <div className="min-h-screen pb-24">
@@ -88,27 +52,19 @@ export default function QuestDetailPage() {
       </button>
 
       {/* Hero Section */}
-      <div className={`rounded-2xl border p-6 mb-6 ${
-        isRaid
-          ? 'bg-gradient-to-br from-red-950/40 to-neutral-900/70 border-red-500/30'
-          : 'bg-gradient-to-br from-emerald-950/40 to-neutral-900/70 border-emerald-500/30'
-      }`}>
+      <div className="rounded-2xl border p-6 mb-6 bg-gradient-to-br from-red-950/40 to-neutral-900/70 border-red-500/30">
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-2">
-              <div className={`px-3 py-1 rounded-lg border font-bold text-sm ${
-                isRaid
-                  ? 'bg-red-500/30 border-red-400/60 text-red-200'
-                  : 'bg-emerald-500/30 border-emerald-400/60 text-emerald-200'
-              }`}>
-                {isRaid ? '⚔️ Raid' : '💰 Bounty'}
+              <div className="px-3 py-1 rounded-lg border font-bold text-sm bg-red-500/30 border-red-400/60 text-red-200">
+                ⚔️ Raid
               </div>
               <span className="px-3 py-1 bg-green-500/20 border border-green-500/40 rounded-lg text-sm font-bold text-green-400 uppercase">
                 Live
               </span>
             </div>
-            <h1 className="text-3xl font-bold text-white mb-2">{quest.title}</h1>
-            <p className="text-white/70">{quest.description}</p>
+            <h1 className="text-3xl font-bold text-white mb-2">{raid.title}</h1>
+            <p className="text-white/70">{raid.description}</p>
           </div>
 
           {/* Actions */}
@@ -122,36 +78,32 @@ export default function QuestDetailPage() {
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
           <div className="rounded-xl bg-white/5 border border-white/10 p-3">
-            <div className="text-xs text-white/60 mb-1">{isRaid ? 'Pool' : 'Budget'}</div>
-            <div className="text-xl font-bold text-emerald-400">${quest.pool.toLocaleString()} USDC</div>
+            <div className="text-xs text-white/60 mb-1">Pool</div>
+            <div className="text-xl font-bold text-emerald-400">${raid.pool.toLocaleString()} USDC</div>
           </div>
           <div className="rounded-xl bg-white/5 border border-white/10 p-3">
             <div className="text-xs text-white/60 mb-1">Paid Out</div>
-            <div className="text-xl font-bold text-white">${quest.paid.toLocaleString()}</div>
+            <div className="text-xl font-bold text-white">${raid.paid.toLocaleString()}</div>
           </div>
           <div className="rounded-xl bg-white/5 border border-white/10 p-3">
             <div className="text-xs text-white/60 mb-1">Participants</div>
-            <div className="text-xl font-bold text-cyan-400">{quest.participants}/{quest.maxParticipants || '∞'}</div>
+            <div className="text-xl font-bold text-cyan-400">{raid.participants}/{raid.maxParticipants || '∞'}</div>
           </div>
           <div className="rounded-xl bg-white/5 border border-white/10 p-3">
             <div className="text-xs text-white/60 mb-1">Views</div>
-            <div className="text-xl font-bold text-white">{quest.views}</div>
+            <div className="text-xl font-bold text-white">{raid.views}</div>
           </div>
         </div>
 
         {/* Progress Bar */}
         <div className="mb-4">
           <div className="flex items-center justify-between text-sm text-white/60 mb-2">
-            <span>${quest.paid} of ${quest.pool} paid out</span>
+            <span>${raid.paid} of ${raid.pool} paid out</span>
             <span className="font-semibold text-white">{progressPct}%</span>
           </div>
           <div className="h-2 rounded-full bg-white/10 overflow-hidden">
             <div
-              className={`h-full ${
-                isRaid
-                  ? 'bg-gradient-to-r from-red-400 via-orange-400 to-amber-400'
-                  : 'bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400'
-              }`}
+              className="h-full bg-gradient-to-r from-red-400 via-orange-400 to-amber-400"
               style={{ width: `${progressPct}%` }}
             />
           </div>
@@ -161,18 +113,14 @@ export default function QuestDetailPage() {
         {!hasJoined ? (
           <button
             onClick={() => setHasJoined(true)}
-            className={`w-full h-12 rounded-xl font-bold inline-flex items-center justify-center gap-2 transition-all ${
-              isRaid
-                ? 'bg-gradient-to-r from-red-500 via-orange-500 to-amber-500 hover:from-red-600 hover:via-orange-600 hover:to-amber-600'
-                : 'bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-600 hover:via-teal-600 hover:to-cyan-600'
-            } text-white`}
+            className="w-full h-12 rounded-xl font-bold inline-flex items-center justify-center gap-2 transition-all bg-gradient-to-r from-red-500 via-orange-500 to-amber-500 hover:from-red-600 hover:via-orange-600 hover:to-amber-600 text-white"
           >
             <TrendingUp className="w-5 h-5" />
-            Join {isRaid ? 'Raid' : 'Bounty'}
+            Join Raid
           </button>
         ) : (
           <div className="p-4 rounded-xl bg-green-500/20 border border-green-500/40 text-center">
-            <p className="text-green-300 font-semibold">✓ You've joined this quest!</p>
+            <p className="text-green-300 font-semibold">✓ You've joined this raid!</p>
             <p className="text-sm text-green-400/80 mt-1">Complete the tasks below to earn rewards</p>
           </div>
         )}
@@ -191,12 +139,12 @@ export default function QuestDetailPage() {
               <div>
                 <div className="text-sm text-white/60 mb-1">URL</div>
                 <a
-                  href={quest.targetUrl}
+                  href={raid.targetUrl}
                   target="_blank"
                   rel="noreferrer"
                   className="text-cyan-400 hover:text-cyan-300 transition-colors break-all"
                 >
-                  {quest.targetUrl}
+                  {raid.targetUrl}
                 </a>
               </div>
             </div>
@@ -209,7 +157,7 @@ export default function QuestDetailPage() {
               <div>
                 <div className="text-sm text-white/60 mb-2">Required Tags</div>
                 <div className="flex flex-wrap gap-2">
-                  {quest.rules.requiredTags?.map((tag, i) => (
+                  {raid.rules.requiredTags?.map((tag, i) => (
                     <span key={i} className="px-3 py-1 rounded-lg bg-fuchsia-500/20 border border-fuchsia-500/40 text-fuchsia-300 text-sm font-medium">
                       {tag}
                     </span>
@@ -219,19 +167,19 @@ export default function QuestDetailPage() {
               <div>
                 <div className="text-sm text-white/60 mb-2">Evidence Required</div>
                 <span className="px-3 py-1 rounded-lg bg-white/10 border border-white/20 text-white text-sm">
-                  {quest.rules.evidence === 'link' ? '🔗 Link' : quest.rules.evidence === 'video' ? '📹 Video' : '📸 Screenshot'}
+                  {raid.rules.evidence === 'link' ? '🔗 Link' : raid.rules.evidence === 'video' ? '📹 Video' : '📸 Screenshot'}
                 </span>
               </div>
-              {quest.rules.perUserLimit && (
+              {raid.rules.perUserLimit && (
                 <div>
                   <div className="text-sm text-white/60 mb-2">Per-User Limit</div>
-                  <span className="text-white">{quest.rules.perUserLimit} submissions</span>
+                  <span className="text-white">{raid.rules.perUserLimit} submissions</span>
                 </div>
               )}
-              {quest.rules.reviewerSlaHrs && (
+              {raid.rules.reviewerSlaHrs && (
                 <div>
                   <div className="text-sm text-white/60 mb-2">Review SLA</div>
-                  <span className="text-white">{quest.rules.reviewerSlaHrs} hours</span>
+                  <span className="text-white">{raid.rules.reviewerSlaHrs} hours</span>
                 </div>
               )}
             </div>
@@ -276,16 +224,16 @@ export default function QuestDetailPage() {
               <div>
                 <div className="text-sm text-white/60 mb-1">Token</div>
                 <div className="px-3 py-1 rounded-lg bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-sm font-semibold inline-block">
-                  {quest.funding.mint}
+                  {raid.funding.mint}
                 </div>
               </div>
               <div>
                 <div className="text-sm text-white/60 mb-1">Model</div>
-                <div className="text-white capitalize">{quest.funding.model}</div>
+                <div className="text-white capitalize">{raid.funding.model}</div>
               </div>
               <div>
                 <div className="text-sm text-white/60 mb-1">Amount</div>
-                <div className="text-white font-bold">${quest.funding.amount.toLocaleString()}</div>
+                <div className="text-white font-bold">${raid.funding.amount.toLocaleString()}</div>
               </div>
             </div>
           </div>
@@ -298,7 +246,7 @@ export default function QuestDetailPage() {
             </h2>
             <div className="flex items-center gap-2 text-orange-300">
               <Clock className="w-4 h-4" />
-              <span className="font-semibold">{quest.duration}</span>
+              <span className="font-semibold">{raid.duration}</span>
             </div>
           </div>
 
