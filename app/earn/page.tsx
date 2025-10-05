@@ -5,6 +5,9 @@ import { EarnCard as EarnCardComponent, type EarnType } from '@/components/EarnC
 import { earnCards, filterEarnCards } from '@/lib/sampleData'
 import { Trophy, Filter, TrendingUp, Video, Swords, DollarSign } from 'lucide-react'
 import { cn } from '@/lib/cn'
+import { CreateQuestDrawer } from '@/components/quests/CreateQuestDrawer'
+import { CreateCampaignModal } from '@/components/campaigns/CreateCampaignModal'
+import { CampaignType } from '@/types/quest'
 
 const TABS = ['All', 'Campaign', 'Raid', 'Bounty'] as const
 type Tab = typeof TABS[number]
@@ -12,6 +15,9 @@ type Tab = typeof TABS[number]
 export default function EarnPage() {
   const [activeTab, setActiveTab] = useState<Tab>('All')
   const [sortBy, setSortBy] = useState<'trending' | 'payout' | 'closing'>('trending')
+  const [isCreateQuestOpen, setIsCreateQuestOpen] = useState(false)
+  const [initialQuestType, setInitialQuestType] = useState<CampaignType>('raid')
+  const [isCreateCampaignOpen, setIsCreateCampaignOpen] = useState(false)
 
   const filteredCards = useMemo(() => {
     const filterType = activeTab.toLowerCase() as EarnType | 'all'
@@ -92,15 +98,30 @@ export default function EarnPage() {
 
       {/* Create Buttons */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <button className="px-6 py-3 rounded-xl bg-gradient-to-r from-fuchsia-500 via-pink-500 to-purple-600 hover:from-fuchsia-600 hover:via-pink-600 hover:to-purple-700 text-white font-bold text-sm transition-all shadow-lg hover:shadow-fuchsia-500/50 flex items-center justify-center gap-2">
+        <button
+          onClick={() => setIsCreateCampaignOpen(true)}
+          className="px-6 py-3 rounded-xl bg-gradient-to-r from-fuchsia-500 via-pink-500 to-purple-600 hover:from-fuchsia-600 hover:via-pink-600 hover:to-purple-700 text-white font-bold text-sm transition-all shadow-lg hover:shadow-fuchsia-500/50 flex items-center justify-center gap-2"
+        >
           <Video className="w-5 h-5" />
           Create Clipping Campaign
         </button>
-        <button className="px-6 py-3 rounded-xl bg-gradient-to-r from-red-500 via-orange-500 to-amber-500 hover:from-red-600 hover:via-orange-600 hover:to-amber-600 text-white font-bold text-sm transition-all shadow-lg hover:shadow-red-500/50 flex items-center justify-center gap-2">
+        <button
+          onClick={() => {
+            setInitialQuestType('raid')
+            setIsCreateQuestOpen(true)
+          }}
+          className="px-6 py-3 rounded-xl bg-gradient-to-r from-red-500 via-orange-500 to-amber-500 hover:from-red-600 hover:via-orange-600 hover:to-amber-600 text-white font-bold text-sm transition-all shadow-lg hover:shadow-red-500/50 flex items-center justify-center gap-2"
+        >
           <Swords className="w-5 h-5" />
           Create Raid
         </button>
-        <button className="px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-600 hover:via-teal-600 hover:to-cyan-600 text-white font-bold text-sm transition-all shadow-lg hover:shadow-emerald-500/50 flex items-center justify-center gap-2">
+        <button
+          onClick={() => {
+            setInitialQuestType('bounty')
+            setIsCreateQuestOpen(true)
+          }}
+          className="px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-600 hover:via-teal-600 hover:to-cyan-600 text-white font-bold text-sm transition-all shadow-lg hover:shadow-emerald-500/50 flex items-center justify-center gap-2"
+        >
           <DollarSign className="w-5 h-5" />
           Create Bounty
         </button>
@@ -145,6 +166,27 @@ export default function EarnPage() {
           <p>No earning opportunities found for this filter</p>
         </div>
       )}
+
+      {/* Create Quest Drawer */}
+      <CreateQuestDrawer
+        isOpen={isCreateQuestOpen}
+        initialType={initialQuestType}
+        onClose={() => setIsCreateQuestOpen(false)}
+        onSubmit={(data) => {
+          console.log('Quest created:', data)
+          setIsCreateQuestOpen(false)
+        }}
+      />
+
+      {/* Create Campaign Modal */}
+      <CreateCampaignModal
+        isOpen={isCreateCampaignOpen}
+        onClose={() => setIsCreateCampaignOpen(false)}
+        onSubmit={(data) => {
+          console.log('Campaign created:', data)
+          setIsCreateCampaignOpen(false)
+        }}
+      />
     </div>
   )
 }

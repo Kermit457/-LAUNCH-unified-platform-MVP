@@ -1,15 +1,19 @@
 import { create } from 'zustand'
-import type { Invite, Connection, Thread } from '@/lib/types'
-import { mockInvites, mockConnections, mockThreads } from '@/lib/mockNetworkData'
+import type { Invite, Connection, Thread, Message } from '@/lib/types'
+import { mockInvites, mockConnections, mockThreads, mockMessages } from '@/lib/mockNetworkData'
 
 interface NetworkStore {
   invites: Invite[]
   connections: Connection[]
   threads: Thread[]
+  messages: Message[]
+  activeThreadId: string | null
 
   // Computed counts
   getPendingInvitesCount: () => number
   getUnreadDMsCount: () => number
+  getThreadMessages: (threadId: string) => Message[]
+  getThreadById: (threadId: string) => Thread | undefined
 
   // Invites actions
   setInvites: (invites: Invite[]) => void
@@ -25,12 +29,19 @@ interface NetworkStore {
   // Threads actions
   setThreads: (threads: Thread[]) => void
   addThread: (thread: Thread) => void
+  setActiveThread: (threadId: string | null) => void
+
+  // Messages actions
+  addMessage: (message: Message) => void
+  markThreadAsRead: (threadId: string) => void
 }
 
 export const useNetworkStore = create<NetworkStore>((set, get) => ({
   invites: mockInvites,
   connections: mockConnections,
   threads: mockThreads,
+  messages: mockMessages,
+  activeThreadId: null,
 
   getPendingInvitesCount: () => {
     return get().invites.filter(inv => inv.status === 'pending').length
@@ -38,6 +49,14 @@ export const useNetworkStore = create<NetworkStore>((set, get) => ({
 
   getUnreadDMsCount: () => {
     return get().threads.reduce((sum, t) => sum + t.unread, 0)
+  },
+
+  getThreadMessages: (threadId: string) => {
+    return get().messages.filter(msg => msg.threadId === threadId).sort((a, b) => a.sentAt - b.sentAt)
+  },
+
+  getThreadById: (threadId: string) => {
+    return get().threads.find(t => t.id === threadId)
   },
 
   setInvites: (invites) => set({ invites }),
@@ -76,5 +95,22 @@ export const useNetworkStore = create<NetworkStore>((set, get) => ({
 
   addThread: (thread) => set((state) => ({
     threads: [thread, ...state.threads]
+  })),
+
+  setActiveThread: (threadId) => set({ activeThreadId: threadId }),
+
+  addMessage: (message) => set((state) => ({
+    messages: [...state.messages, message],
+    threads: state.threads.map(t =>
+      t.id === message.threadId
+        ? { ...t, lastMsgAt: message.sentAt }
+        : t
+    )
+  })),
+
+  markThreadAsRead: (threadId) => set((state) => ({
+    threads: state.threads.map(t =>
+      t.id === threadId ? { ...t, unread: 0 } : t
+    )
   })),
 }))

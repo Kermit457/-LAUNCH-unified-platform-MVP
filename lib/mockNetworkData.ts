@@ -1,4 +1,4 @@
-import { Invite, Connection, Thread } from './types'
+import { Invite, Connection, Thread, Message } from './types'
 
 export const mockInvites: Invite[] = [
   {
@@ -134,5 +134,67 @@ export const mockThreads: Thread[] = [
     createdAt: Date.now() - 1 * 24 * 60 * 60 * 1000,
     lastMsgAt: Date.now() - 5 * 60 * 1000,
     unread: 3
+  }
+]
+
+export const mockMessages: Message[] = [
+  // Messages for thread_1 (Solana Builders group)
+  {
+    id: 'msg_1',
+    threadId: 'thread_1',
+    fromUserId: 'user_1',
+    fromHandle: '@solana_builder',
+    content: "Hey team! Just pushed the latest updates to the DeFi protocol.",
+    sentAt: Date.now() - 2 * 60 * 60 * 1000
+  },
+  {
+    id: 'msg_2',
+    threadId: 'thread_1',
+    fromUserId: 'user_2',
+    fromHandle: '@content_creator',
+    content: "Awesome! I'll start working on the content for the launch.",
+    sentAt: Date.now() - 90 * 60 * 1000
+  },
+  {
+    id: 'msg_3',
+    threadId: 'thread_1',
+    fromUserId: 'user_3',
+    fromHandle: '@nft_artist',
+    content: "Do we need new visuals for the campaign?",
+    sentAt: Date.now() - 60 * 60 * 1000
+  },
+  {
+    id: 'msg_4',
+    threadId: 'thread_1',
+    fromUserId: 'user_1',
+    fromHandle: '@solana_builder',
+    content: "Yes, that would be great! Can you create some NFT artwork samples?",
+    sentAt: Date.now() - 30 * 60 * 1000
+  },
+
+  // Messages for thread_3 (DM with @solana_builder)
+  {
+    id: 'msg_5',
+    threadId: 'thread_3',
+    fromUserId: 'user_1',
+    fromHandle: '@solana_builder',
+    content: "Thanks for accepting my connection! Looking forward to working together.",
+    sentAt: Date.now() - 20 * 60 * 1000
+  },
+  {
+    id: 'msg_6',
+    threadId: 'thread_3',
+    fromUserId: 'user_1',
+    fromHandle: '@solana_builder',
+    content: "I saw your recent work on that Solana NFT project - really impressive stuff!",
+    sentAt: Date.now() - 15 * 60 * 1000
+  },
+  {
+    id: 'msg_7',
+    threadId: 'thread_3',
+    fromUserId: 'user_1',
+    fromHandle: '@solana_builder',
+    content: "Would you be interested in collaborating on our upcoming launch?",
+    sentAt: Date.now() - 5 * 60 * 1000
   }
 ]

@@ -6,6 +6,7 @@ import { InvitesPanel } from '@/components/network/InvitesPanel'
 import { ConnectionsPanel } from '@/components/network/ConnectionsPanel'
 import { RoomsList } from '@/components/chat/RoomsList'
 import { CreateRoomDrawer } from '@/components/chat/CreateRoomDrawer'
+import { ChatDrawer } from '@/components/chat/ChatDrawer'
 import { useNetworkStore } from '@/lib/stores/useNetworkStore'
 import type { Thread } from '@/lib/types'
 
@@ -13,6 +14,7 @@ export default function NetworkPage() {
   const searchParams = useSearchParams()
   const [selectedConnections, setSelectedConnections] = useState<string[]>([])
   const [isCreateRoomOpen, setIsCreateRoomOpen] = useState(false)
+  const [isChatOpen, setIsChatOpen] = useState(false)
   const [toast, setToast] = useState<{ message: string; show: boolean }>({ message: '', show: false })
 
   const invites = useNetworkStore(state => state.invites)
@@ -24,6 +26,7 @@ export default function NetworkPage() {
   const muteConnection = useNetworkStore(state => state.muteConnection)
   const removeConnection = useNetworkStore(state => state.removeConnection)
   const addThread = useNetworkStore(state => state.addThread)
+  const setActiveThread = useNetworkStore(state => state.setActiveThread)
 
   const showToast = (message: string) => {
     setToast({ message, show: true })
@@ -69,11 +72,13 @@ export default function NetworkPage() {
   }
 
   const handleDM = (userId: string) => {
+    let threadId: string
     const existingThread = threads.find(
       t => t.type === 'dm' && t.participantUserIds.includes(userId)
     )
+
     if (existingThread) {
-      console.log('Opening existing DM:', existingThread.id)
+      threadId = existingThread.id
     } else {
       const newThread: Thread = {
         id: `thread_${Date.now()}`,
@@ -85,9 +90,11 @@ export default function NetworkPage() {
         pinned: false,
       }
       addThread(newThread)
-      console.log('Created new DM:', newThread.id)
+      threadId = newThread.id
     }
-    showToast('DM opened')
+
+    setActiveThread(threadId)
+    setIsChatOpen(true)
   }
 
   const handleInviteToCampaign = (userId: string) => {
@@ -133,8 +140,13 @@ export default function NetworkPage() {
   }
 
   const handleSelectRoom = (roomId: string) => {
-    console.log('Opening room:', roomId)
-    showToast('Room chat opening soon')
+    setActiveThread(roomId)
+    setIsChatOpen(true)
+  }
+
+  const handleCloseChat = () => {
+    setIsChatOpen(false)
+    setActiveThread(null)
   }
 
   return (
@@ -184,6 +196,12 @@ export default function NetworkPage() {
         onClose={() => setIsCreateRoomOpen(false)}
         selectedConnections={connections.filter(c => selectedConnections.includes(c.userId))}
         onCreateRoom={handleCreateRoom}
+      />
+
+      {/* Chat Drawer */}
+      <ChatDrawer
+        isOpen={isChatOpen}
+        onClose={handleCloseChat}
       />
 
       {/* Toast Notification */}

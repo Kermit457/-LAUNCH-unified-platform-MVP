@@ -1,16 +1,43 @@
 "use client"
 
+import { useState } from 'react'
 import Link from 'next/link'
 import { Wrench, Gift } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { TOOL_CARDS, GROUPS, type ToolCard } from '@/lib/toolsConfig'
 import { cn } from '@/lib/cn'
+import { CreateQuestDrawer } from '@/components/quests/CreateQuestDrawer'
+import { CreateCampaignModal } from '@/components/campaigns/CreateCampaignModal'
+import { CampaignType } from '@/types/quest'
 
 export default function ToolsPage() {
+  const [isCreateQuestOpen, setIsCreateQuestOpen] = useState(false)
+  const [initialQuestType, setInitialQuestType] = useState<CampaignType>('raid')
+  const [isCreateCampaignOpen, setIsCreateCampaignOpen] = useState(false)
+
   const groupedCards = GROUPS.map(group => ({
     name: group,
     cards: TOOL_CARDS.filter(card => card.group === group)
   }))
+
+  const handleToolAction = (cardId: string) => {
+    switch (cardId) {
+      case 'clipping':
+        setIsCreateCampaignOpen(true)
+        break
+      case 'raid-campaign':
+        setInitialQuestType('raid')
+        setIsCreateQuestOpen(true)
+        break
+      case 'bounty':
+        setInitialQuestType('bounty')
+        setIsCreateQuestOpen(true)
+        break
+      default:
+        // For other tools, do nothing (Link will handle navigation)
+        break
+    }
+  }
 
   return (
     <div className="min-h-screen pb-24">
@@ -32,12 +59,33 @@ export default function ToolsPage() {
             <h2 className="text-2xl font-bold text-white mb-6">{name}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {cards.map(card => (
-                <ToolCardComponent key={card.id} card={card} />
+                <ToolCardComponent key={card.id} card={card} onAction={handleToolAction} />
               ))}
             </div>
           </section>
         ))}
       </div>
+
+      {/* Create Quest Drawer */}
+      <CreateQuestDrawer
+        isOpen={isCreateQuestOpen}
+        initialType={initialQuestType}
+        onClose={() => setIsCreateQuestOpen(false)}
+        onSubmit={(data) => {
+          console.log('Quest created:', data)
+          setIsCreateQuestOpen(false)
+        }}
+      />
+
+      {/* Create Campaign Modal */}
+      <CreateCampaignModal
+        isOpen={isCreateCampaignOpen}
+        onClose={() => setIsCreateCampaignOpen(false)}
+        onSubmit={(data) => {
+          console.log('Campaign created:', data)
+          setIsCreateCampaignOpen(false)
+        }}
+      />
 
       {/* Rewards & Payouts Strip */}
       <div className="mt-16 rounded-2xl bg-neutral-900/70 border border-white/10 p-8">
@@ -79,9 +127,12 @@ export default function ToolsPage() {
   )
 }
 
-function ToolCardComponent({ card }: { card: ToolCard }) {
+function ToolCardComponent({ card, onAction }: { card: ToolCard; onAction: (cardId: string) => void }) {
   const Icon = card.icon
   const isCreateOrStart = card.actionLabel === 'Create' || card.actionLabel === 'Start'
+
+  // Cards that trigger modals instead of navigation
+  const isModalCard = ['clipping', 'raid-campaign', 'bounty'].includes(card.id)
 
   // Different color themes for each group
   const getCardTheme = () => {
@@ -134,10 +185,12 @@ function ToolCardComponent({ card }: { card: ToolCard }) {
   const theme = getCardTheme()
   const isDisabled = card.enabled === false
 
-  const CardWrapper = isDisabled ? 'div' : Link
+  // Use div wrapper for modal cards or disabled cards, Link for others
+  const CardWrapper = (isDisabled || isModalCard) ? 'div' : Link
+  const cardWrapperProps = (!isDisabled && !isModalCard) ? { href: card.href } : {}
 
   return (
-    <CardWrapper href={isDisabled ? undefined : card.href} className={isDisabled ? 'cursor-not-allowed' : ''}>
+    <CardWrapper {...cardWrapperProps as any} className={isDisabled ? 'cursor-not-allowed' : ''}>
       <div className={cn(
         "rounded-2xl border p-6 flex flex-col gap-4 transition-all group h-full min-h-[220px] relative overflow-hidden",
         theme.border,
@@ -178,6 +231,13 @@ function ToolCardComponent({ card }: { card: ToolCard }) {
         {/* Action Button */}
         <button
           disabled={isDisabled}
+          onClick={(e) => {
+            if (isModalCard && !isDisabled) {
+              e.preventDefault()
+              e.stopPropagation()
+              onAction(card.id)
+            }
+          }}
           className={cn(
             "w-full py-3 px-4 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 relative z-10",
             isCreateOrStart

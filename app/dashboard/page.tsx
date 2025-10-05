@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import { OverviewHeader } from '@/components/dashboard/OverviewHeader'
 import { KpiTile } from '@/components/dashboard/KpiTile'
@@ -8,10 +9,18 @@ import { ActivityList, Activity } from '@/components/dashboard/ActivityList'
 import { AlertCircle, TrendingUp, DollarSign, Zap, Target, Award, Users } from 'lucide-react'
 import { mockCampaigns, mockSubmissions, mockPayouts } from '@/lib/dashboardData'
 import { useNetworkStore } from '@/lib/stores/useNetworkStore'
+import { CreateQuestDrawer } from '@/components/quests/CreateQuestDrawer'
+import { CreateCampaignModal } from '@/components/campaigns/CreateCampaignModal'
+import { CampaignType } from '@/types/quest'
 
 export default function DashboardOverview() {
   const pendingInvites = useNetworkStore(state => state.getPendingInvitesCount())
   const unreadDMs = useNetworkStore(state => state.getUnreadDMsCount())
+
+  // Modal states
+  const [isCreateQuestOpen, setIsCreateQuestOpen] = useState(false)
+  const [initialQuestType, setInitialQuestType] = useState<CampaignType>('raid')
+  const [isCreateCampaignOpen, setIsCreateCampaignOpen] = useState(false)
 
   // Calculate KPIs from mock data
   const pendingReviews = mockSubmissions.filter(s => s.status === 'pending').length
@@ -132,7 +141,17 @@ export default function DashboardOverview() {
       </div>
 
       {/* Quick Actions */}
-      <QuickActions />
+      <QuickActions
+        onCreateCampaign={() => setIsCreateCampaignOpen(true)}
+        onCreateRaid={() => {
+          setInitialQuestType('raid')
+          setIsCreateQuestOpen(true)
+        }}
+        onCreateBounty={() => {
+          setInitialQuestType('bounty')
+          setIsCreateQuestOpen(true)
+        }}
+      />
 
       {/* Network Summary + Activity */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -166,6 +185,27 @@ export default function DashboardOverview() {
           <ActivityList activities={activities} />
         </div>
       </div>
+
+      {/* Create Quest Drawer */}
+      <CreateQuestDrawer
+        isOpen={isCreateQuestOpen}
+        initialType={initialQuestType}
+        onClose={() => setIsCreateQuestOpen(false)}
+        onSubmit={(data) => {
+          console.log('Quest created:', data)
+          setIsCreateQuestOpen(false)
+        }}
+      />
+
+      {/* Create Campaign Modal */}
+      <CreateCampaignModal
+        isOpen={isCreateCampaignOpen}
+        onClose={() => setIsCreateCampaignOpen(false)}
+        onSubmit={(data) => {
+          console.log('Campaign created:', data)
+          setIsCreateCampaignOpen(false)
+        }}
+      />
     </div>
   )
 }
