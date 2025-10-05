@@ -1,5 +1,6 @@
 import type { Project } from '@/types';
 import type { EarnCard } from '@/components/EarnCard';
+import { getCreatorAvatar, getProjectLogo } from './avatarUtils';
 
 // ===== MOCK DATA FOR LaunchOS PLATFORM =====
 // TODO: Replace with Supabase real-time queries
@@ -14,7 +15,7 @@ export const launchProjects: Project[] = [
     title: '$AIKIT Token TGE',
     subtitle: 'AI Tools Platform • TGE in 3h',
     description: 'Revolutionary AI-powered toolkit for crypto traders and developers',
-    avatarUrl: '/logo.svg',
+    avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=AIKit Team&backgroundColor=8b5cf6,a855f7&backgroundType=gradientLinear',
     pill: { label: 'FDV $8M', kind: 'mcap' },
     status: 'upcoming',
     stats: { views: 1247, likes: 89 },
@@ -45,6 +46,7 @@ export const launchProjects: Project[] = [
     title: '$MEME Season 2',
     subtitle: 'Community Meme Coin • Live Now',
     description: 'The ultimate community-driven meme coin with viral potential',
+    avatarUrl: getCreatorAvatar('MEME DAO', 1),
     pill: { label: 'FDV $12M', kind: 'mcap' },
     status: 'live',
     stats: { views: 3421, likes: 234 },
@@ -847,6 +849,20 @@ export function sortProjects(projects: Project[], sortBy: 'trending' | 'new' | '
       return sorted;
   }
 }
+
+// Auto-fill missing avatarUrl and tokenLogo fields (temporary placeholders until Twitter auth)
+launchProjects.forEach((p, index) => {
+  // Add creator avatar if missing
+  if (!p.avatarUrl && p.creator) {
+    p.avatarUrl = getCreatorAvatar(p.creator, index % 10)
+  }
+
+  // Add project logo if missing or empty
+  if (!p.tokenLogo || p.tokenLogo === '') {
+    const seed = p.ticker || p.title
+    p.tokenLogo = getProjectLogo(seed, index % 9)
+  }
+})
 
 // TODO: Add real-time subscription hooks
 // TODO: Implement server-side pagination

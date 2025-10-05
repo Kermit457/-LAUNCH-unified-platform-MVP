@@ -1,5 +1,6 @@
 "use client"
 
+import { useRouter } from 'next/navigation'
 import { Share2, Eye, TrendingUp, Heart, Twitter, Music2 } from 'lucide-react'
 import { cn } from '@/lib/cn'
 
@@ -20,6 +21,7 @@ export type ActionCardProps = {
   platforms?: Platform[]
   views?: number
   isFav?: boolean
+  id?: string  // Add ID for navigation
   onShare?: () => void
   onJoin?: () => void
   onView?: () => void
@@ -56,12 +58,32 @@ export function ActionCard({
   platforms = [],
   views = 0,
   isFav = false,
+  id,
   onShare,
   onJoin,
   onView,
   onToggleFav,
 }: ActionCardProps) {
+  const router = useRouter()
   const computedProgress = progressPct ?? (budgetTotal > 0 ? Math.round((budgetPaid / budgetTotal) * 100) : 0)
+
+  const handleView = () => {
+    if (onView) {
+      onView()
+    } else if (id) {
+      const route = kind === 'campaign' ? `/campaign/${id}` : `/quest/${id}`
+      router.push(route)
+    }
+  }
+
+  const handleJoin = () => {
+    if (onJoin) {
+      onJoin()
+    } else if (id) {
+      const route = kind === 'campaign' ? `/campaign/${id}` : `/quest/${id}`
+      router.push(route)
+    }
+  }
 
   // Color themes for each card type
   const colorThemes = {
@@ -191,7 +213,7 @@ export function ActionCard({
       {/* Actions row */}
       <div className="mt-auto flex items-center gap-2 pt-1">
         <button
-          onClick={onView}
+          onClick={handleView}
           className="flex-1 h-9 px-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-medium inline-flex items-center justify-center gap-1.5 transition-colors focus:outline-none focus:ring-2 focus:ring-white/20"
           aria-label="View details"
         >
@@ -199,7 +221,7 @@ export function ActionCard({
           View
         </button>
         <button
-          onClick={onJoin}
+          onClick={handleJoin}
           className={cn("flex-1 h-9 px-3 rounded-xl bg-gradient-to-r text-xs font-bold inline-flex items-center justify-center gap-1.5 transition-all focus:outline-none focus:ring-2", theme.button, theme.ring)}
           aria-label="Join"
         >

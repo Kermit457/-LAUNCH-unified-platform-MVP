@@ -1,86 +1,14 @@
 "use client"
 
-import { useState, useEffect } from 'react'
-import { Zap, TrendingUp, Users, DollarSign, ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react'
-import { cn } from '@/lib/cn'
+import { useState } from 'react'
+import { Zap, Eye } from 'lucide-react'
+import { useLive, type LiveLaunch } from '@/hooks/useLive'
+import { PaginationControls } from '@/components/PaginationControls'
 import { StreamModal } from '@/components/StreamModal'
 
-interface PumpCoin {
-  mint: string
-  name: string
-  symbol: string
-  description: string
-  image_uri: string
-  metadata_uri: string
-  twitter: string | null
-  telegram: string | null
-  bonding_curve: string
-  associated_bonding_curve: string
-  creator: string
-  created_timestamp: number
-  raydium_pool: string | null
-  complete: boolean
-  virtual_sol_reserves: number
-  virtual_token_reserves: number
-  total_supply: number
-  website: string | null
-  show_name: boolean
-  king_of_the_hill_timestamp: number | null
-  market_cap: number
-  reply_count: number
-  last_reply: number
-  nsfw: boolean
-  market_id: string | null
-  inverted: boolean | null
-  is_currently_live: boolean
-  username: string | null
-  profile_image: string | null
-  usd_market_cap: number
-}
-
-interface ApiResponse {
-  coins: PumpCoin[]
-  hasMore: boolean
-}
-
-const LIMIT = 48
-
 export default function LivePage() {
-  const [coins, setCoins] = useState<PumpCoin[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [page, setPage] = useState(1)
-  const [hasMore, setHasMore] = useState(true)
-  const [selectedCoin, setSelectedCoin] = useState<PumpCoin | null>(null)
-
-  const offset = (page - 1) * LIMIT
-
-  useEffect(() => {
-    fetchCoins()
-  }, [page])
-
-  const fetchCoins = async () => {
-    setLoading(true)
-    setError(null)
-
-    try {
-      const response = await fetch(
-        `https://frontend-api-v3.pump.fun/coins/currently-live?offset=${offset}&limit=${LIMIT}&sort=market_cap&order=ASC&includeNsfw=false`
-      )
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch coins')
-      }
-
-      const data: PumpCoin[] = await response.json()
-      setCoins(data)
-      setHasMore(data.length === LIMIT)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
-    } finally {
-      setLoading(false)
-    }
-  }
+  const { page, setPage, pagesTotal, items, totals, loading, error, useMockData } = useLive(48)
+  const [selectedCoin, setSelectedCoin] = useState<LiveLaunch | null>(null)
 
   const formatMarketCap = (marketCap: number) => {
     if (marketCap >= 1_000_000) {
@@ -105,10 +33,18 @@ export default function LivePage() {
     return 'Just now'
   }
 
+  const handlePrev = () => setPage((p) => Math.max(1, p - 1))
+  const handleNext = () => setPage((p) => Math.min(pagesTotal, p + 1))
+  const handleJumpToPage = (targetPage: number) => setPage(targetPage)
+
+  const showingStart = (page - 1) * 48 + 1
+  const showingEnd = Math.min(page * 48, totals.liveCount)
+  const showViewersKPI = totals.viewerCount > 0
+
   return (
     <div className="min-h-screen pb-24">
       {/* Header */}
-      <div className="mb-8">
+      <div className="mb-6">
         <div className="flex items-center gap-3 mb-2">
           <div className="p-2 bg-gradient-to-br from-red-500 to-orange-600 rounded-xl animate-pulse">
             <Zap className="w-6 h-6 text-white" />
@@ -120,23 +56,48 @@ export default function LivePage() {
         </p>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      {/* Top Pagination - Sticky */}
+      <div className="sticky top-0 z-10 bg-[#0D1220]/95 backdrop-blur-sm py-4 -mx-4 px-4 mb-6 border-b border-white/10">
+        <PaginationControls
+          page={page}
+          totalPages={pagesTotal}
+          onPrev={handlePrev}
+          onNext={handleNext}
+          onJumpToPage={handleJumpToPage}
+        />
+      </div>
+
+      {/* KPI Tiles */}
+      <div className={`grid ${showViewersKPI ? 'grid-cols-2 md:grid-cols-4' : 'grid-cols-3'} gap-4 mb-8`}>
+        {/* Live Now - Total across all pages */}
         <div className="glass-launchos p-4 rounded-xl">
           <div className="text-white/60 text-sm mb-1">Live Now</div>
           <div className="text-2xl font-bold text-red-400 flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-            {coins.length}
+            {totals.liveCount > 0 ? totals.liveCount.toLocaleString('en-US') : items.length}
           </div>
         </div>
-        <div className="glass-launchos p-4 rounded-xl">
-          <div className="text-white/60 text-sm mb-1">Current Page</div>
-          <div className="text-2xl font-bold gradient-text-launchos">{page}</div>
-        </div>
+
+        {/* Total Viewers - Only show if > 0 */}
+        {showViewersKPI && (
+          <div className="glass-launchos p-4 rounded-xl">
+            <div className="text-white/60 text-sm mb-1">Total Viewers</div>
+            <div className="text-2xl font-bold gradient-text-launchos flex items-center gap-2">
+              <Eye className="w-5 h-5 text-purple-400" />
+              {totals.viewerCount.toLocaleString('en-US')}
+            </div>
+          </div>
+        )}
+
+        {/* Showing - Current page range */}
         <div className="glass-launchos p-4 rounded-xl">
           <div className="text-white/60 text-sm mb-1">Showing</div>
-          <div className="text-2xl font-bold text-cyan-400">{offset + 1}-{offset + coins.length}</div>
+          <div className="text-2xl font-bold text-cyan-400">
+            {totals.liveCount > 0 ? `${showingStart}–${showingEnd}` : `${items.length}`}
+          </div>
         </div>
+
+        {/* Status */}
         <div className="glass-launchos p-4 rounded-xl">
           <div className="text-white/60 text-sm mb-1">Status</div>
           <div className="text-2xl font-bold text-green-400">
@@ -145,12 +106,21 @@ export default function LivePage() {
         </div>
       </div>
 
+      {/* Mock Data Warning */}
+      {useMockData && (
+        <div className="rounded-2xl bg-yellow-950/40 border border-yellow-500/20 p-4 text-center mb-6">
+          <p className="text-yellow-400 text-sm">
+            ⚠️ API unavailable - showing demo data
+          </p>
+        </div>
+      )}
+
       {/* Error State */}
       {error && (
         <div className="rounded-2xl bg-red-950/40 border border-red-500/20 p-6 text-center mb-8">
           <p className="text-red-400">{error}</p>
           <button
-            onClick={fetchCoins}
+            onClick={() => setPage(1)}
             className="mt-4 px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-all"
           >
             Try Again
@@ -172,11 +142,11 @@ export default function LivePage() {
       )}
 
       {/* Coins Grid */}
-      {!loading && !error && coins.length > 0 && (
+      {!loading && !error && items.length > 0 && (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 mb-8">
-          {coins.map(coin => (
+          {items.map((coin) => (
             <CoinCard
-              key={coin.mint}
+              key={coin.id}
               coin={coin}
               formatMarketCap={formatMarketCap}
               formatTime={formatTime}
@@ -198,53 +168,34 @@ export default function LivePage() {
       )}
 
       {/* Empty State */}
-      {!loading && !error && coins.length === 0 && (
+      {!loading && !error && items.length === 0 && (
         <div className="rounded-2xl bg-neutral-900/70 border border-white/10 p-12 text-center">
           <Zap className="w-16 h-16 mx-auto mb-4 text-white/20" />
           <p className="text-white/40">No live launches found</p>
         </div>
       )}
 
-      {/* Pagination */}
-      {!loading && !error && coins.length > 0 && (
-        <div className="flex items-center justify-center gap-4">
-          <button
-            onClick={() => setPage(p => Math.max(1, p - 1))}
-            disabled={page === 1}
-            className={cn(
-              "px-6 py-3 rounded-xl font-bold text-sm transition-all flex items-center gap-2",
-              page === 1
-                ? "bg-white/5 text-white/30 cursor-not-allowed"
-                : "bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white shadow-lg"
-            )}
-          >
-            <ChevronLeft className="w-4 h-4" />
-            Previous
-          </button>
-          <div className="px-6 py-3 rounded-xl bg-white/10 text-white font-bold">
-            Page {page}
-          </div>
-          <button
-            onClick={() => setPage(p => p + 1)}
-            disabled={!hasMore}
-            className={cn(
-              "px-6 py-3 rounded-xl font-bold text-sm transition-all flex items-center gap-2",
-              !hasMore
-                ? "bg-white/5 text-white/30 cursor-not-allowed"
-                : "bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white shadow-lg"
-            )}
-          >
-            Next
-            <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
+      {/* Bottom Pagination */}
+      {!loading && !error && items.length > 0 && (
+        <PaginationControls
+          page={page}
+          totalPages={pagesTotal}
+          onPrev={handlePrev}
+          onNext={handleNext}
+          onJumpToPage={handleJumpToPage}
+        />
       )}
     </div>
   )
 }
 
-function CoinCard({ coin, formatMarketCap, formatTime, onClick }: {
-  coin: PumpCoin
+function CoinCard({
+  coin,
+  formatMarketCap,
+  formatTime,
+  onClick,
+}: {
+  coin: LiveLaunch
   formatMarketCap: (mc: number) => string
   formatTime: (ts: number) => string
   onClick: () => void
@@ -262,7 +213,8 @@ function CoinCard({ coin, formatMarketCap, formatTime, onClick }: {
             alt={coin.name}
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
             onError={(e) => {
-              e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100"%3E%3Crect fill="%23333" width="100" height="100"/%3E%3C/svg%3E'
+              e.currentTarget.src =
+                'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100"%3E%3Crect fill="%23333" width="100" height="100"/%3E%3C/svg%3E'
             }}
           />
         ) : (
@@ -297,7 +249,6 @@ function CoinCard({ coin, formatMarketCap, formatTime, onClick }: {
             <div className="text-xs font-bold text-white/80">{formatTime(coin.created_timestamp)}</div>
           </div>
         </div>
-
       </div>
     </div>
   )

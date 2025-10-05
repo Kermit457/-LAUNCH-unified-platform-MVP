@@ -15,6 +15,9 @@ export function CreateCampaignModal({ isOpen, onClose, onSubmit }: CreateCampaig
   // Form state
   const [title, setTitle] = useState('')
   const [image, setImage] = useState<File | null>(null)
+  const [platforms, setPlatforms] = useState<("youtube" | "tiktok" | "twitch" | "x")[]>([])
+  const [videoLenMin, setVideoLenMin] = useState('')
+  const [videoLenMax, setVideoLenMax] = useState('')
   const [prizePoolUsd, setPrizePoolUsd] = useState('')
   const [payoutPerKUsd, setPayoutPerKUsd] = useState('')
   const [endDate, setEndDate] = useState('')
@@ -60,10 +63,24 @@ export function CreateCampaignModal({ isOpen, onClose, onSubmit }: CreateCampaig
 
   const isDriveLinkValid = !driveLink || /^https?:\/\/.+/.test(driveLink)
   const isMinViewsValid = !minViewsRequired || (!isNaN(Number(minViewsRequired)) && Number(minViewsRequired) >= 0)
+  const arePlatformsValid = platforms.length >= 1
+  const isVideoLenValid = (() => {
+    if (!videoLenMin && !videoLenMax) return true
+    const min = Number(videoLenMin)
+    const max = Number(videoLenMax)
+    if (videoLenMin && videoLenMax) {
+      return !isNaN(min) && !isNaN(max) && min > 0 && max > 0 && min < max
+    }
+    if (videoLenMin) return !isNaN(min) && min > 0
+    if (videoLenMax) return !isNaN(max) && max > 0
+    return true
+  })()
 
   const isFormValid =
     isTitleValid &&
     isImageValid &&
+    arePlatformsValid &&
+    isVideoLenValid &&
     isPrizePoolValid &&
     isPayoutValid &&
     isEndDateValid &&
@@ -85,14 +102,29 @@ export function CreateCampaignModal({ isOpen, onClose, onSubmit }: CreateCampaig
     setSocialLinks(newLinks)
   }
 
+  const togglePlatform = (platform: "youtube" | "tiktok" | "twitch" | "x") => {
+    setPlatforms(prev =>
+      prev.includes(platform)
+        ? prev.filter(p => p !== platform)
+        : [...prev, platform]
+    )
+  }
+
   const handleSubmit = () => {
     if (!isFormValid) return
 
     const validSocialLinks = socialLinks.filter(link => link.trim().length > 0)
 
+    const videoLen = (videoLenMin || videoLenMax) ? {
+      minSec: videoLenMin ? Number(videoLenMin) : undefined,
+      maxSec: videoLenMax ? Number(videoLenMax) : undefined,
+    } : undefined
+
     const output: CreateClipCampaignInput = {
       title: title.trim(),
       image: image || undefined,
+      platforms,
+      videoLen,
       prizePoolUsd: Number(prizePoolUsd),
       payoutPerKUsd: Number(payoutPerKUsd),
       endAt: new Date(`${endDate}T${endTime}`).getTime(),
@@ -175,6 +207,72 @@ export function CreateCampaignModal({ isOpen, onClose, onSubmit }: CreateCampaig
                   maxSize={5 * 1024 * 1024}
                   label="Upload Campaign Image"
                 />
+              </div>
+
+              {/* Platforms */}
+              <div>
+                <label className="block text-sm font-medium text-white/70 mb-2">
+                  Platforms <span className="text-red-400">*</span> <span className="text-white/50">(at least 1)</span>
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {(['youtube', 'tiktok', 'twitch', 'x'] as const).map((platform) => (
+                    <button
+                      key={platform}
+                      type="button"
+                      onClick={() => togglePlatform(platform)}
+                      className={`px-4 py-2 rounded-lg text-sm font-medium capitalize transition-all ${
+                        platforms.includes(platform)
+                          ? 'bg-fuchsia-500 text-white border border-fuchsia-400'
+                          : 'bg-white/5 text-white/70 border border-white/10 hover:bg-white/10'
+                      }`}
+                    >
+                      {platform === 'x' ? 'X' : platform}
+                    </button>
+                  ))}
+                </div>
+                {platforms.length === 0 && (
+                  <p className="mt-1 text-xs text-white/40">Select at least one platform</p>
+                )}
+              </div>
+
+              {/* Video Length */}
+              <div>
+                <label className="block text-sm font-medium text-white/70 mb-2">
+                  Video Length <span className="text-white/50">(optional)</span>
+                </label>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <input
+                      type="number"
+                      value={videoLenMin}
+                      onChange={(e) => setVideoLenMin(e.target.value)}
+                      placeholder="Min seconds"
+                      min="1"
+                      step="1"
+                      className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
+                    />
+                    <p className="mt-1 text-xs text-white/40">Minimum duration (seconds)</p>
+                  </div>
+                  <div>
+                    <input
+                      type="number"
+                      value={videoLenMax}
+                      onChange={(e) => setVideoLenMax(e.target.value)}
+                      placeholder="Max seconds"
+                      min="1"
+                      step="1"
+                      className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
+                    />
+                    <p className="mt-1 text-xs text-white/40">Maximum duration (seconds)</p>
+                  </div>
+                </div>
+                {!isVideoLenValid && (videoLenMin || videoLenMax) && (
+                  <p className="mt-1 text-xs text-red-400">
+                    {videoLenMin && videoLenMax && Number(videoLenMin) >= Number(videoLenMax)
+                      ? 'Min must be less than max'
+                      : 'Must be greater than 0'}
+                  </p>
+                )}
               </div>
 
               {/* Prize Pool & Payout per 1k Views */}

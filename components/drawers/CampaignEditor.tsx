@@ -22,6 +22,7 @@ export function CampaignEditor({ isOpen, onClose, campaign, onSave }: CampaignEd
     rateMint: campaign?.rate.mint || 'USDC' as Mint,
     budgetTotal: campaign?.budget.total.amount || 0,
     minDurationSec: campaign?.rules.minDurationSec || 0,
+    maxDurationSec: campaign?.rules.maxDurationSec || 0,
     requiredTags: campaign?.rules.requiredTags?.join(', ') || '',
     requireWatermark: campaign?.rules.requireWatermark || false,
     endsAt: campaign?.endsAt ? new Date(campaign.endsAt).toISOString().split('T')[0] : ''
@@ -46,6 +47,7 @@ export function CampaignEditor({ isOpen, onClose, campaign, onSave }: CampaignEd
       rules: {
         platforms: formData.platforms,
         minDurationSec: formData.minDurationSec || undefined,
+        maxDurationSec: formData.maxDurationSec || undefined,
         requiredTags: formData.requiredTags ? formData.requiredTags.split(',').map(t => t.trim()) : undefined,
         requireWatermark: formData.requireWatermark
       },
@@ -218,17 +220,32 @@ export function CampaignEditor({ isOpen, onClose, campaign, onSave }: CampaignEd
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-white">Rules</h3>
 
-            <div>
-              <label className="block text-sm font-medium text-white/70 mb-2">
-                Min Duration (seconds, optional)
-              </label>
-              <input
-                type="number"
-                value={formData.minDurationSec}
-                onChange={(e) => setFormData({ ...formData, minDurationSec: parseInt(e.target.value) || 0 })}
-                className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                placeholder="30"
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-white/70 mb-2">
+                  Min Duration (seconds, optional)
+                </label>
+                <input
+                  type="number"
+                  value={formData.minDurationSec}
+                  onChange={(e) => setFormData({ ...formData, minDurationSec: parseInt(e.target.value) || 0 })}
+                  className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="30"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-white/70 mb-2">
+                  Max Duration (seconds, optional)
+                </label>
+                <input
+                  type="number"
+                  value={formData.maxDurationSec}
+                  onChange={(e) => setFormData({ ...formData, maxDurationSec: parseInt(e.target.value) || 0 })}
+                  className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="180"
+                />
+              </div>
             </div>
 
             <div>

@@ -51,6 +51,7 @@ export interface Project {
 
   // Visual fields
   tokenLogo?: string;        // Token/project logo image URL
+  logoUrl?: string;          // Uploaded logo URL (from file upload)
   isLiveStreaming?: boolean; // Is this project currently live streaming?
 }
 

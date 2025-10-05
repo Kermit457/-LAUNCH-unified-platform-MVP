@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { ProjectCard } from '@/components/ProjectCard';
-import { SubmitLaunchModal } from '@/components/SubmitLaunchModal';
+import { SubmitLaunchDrawer } from '@/components/launch/SubmitLaunchDrawer';
 import { MarketSwitcher } from '@/components/MarketSwitcher';
 import { launchProjects, sortProjects } from '@/lib/sampleData';
 import type { Project, MarketType } from '@/types';
@@ -156,11 +156,15 @@ export default function ExplorePage() {
         </div>
       )}
 
-      {/* Submit Launch Modal */}
-      <SubmitLaunchModal
-        open={isSubmitModalOpen}
-        onOpenChange={setIsSubmitModalOpen}
-        onSubmit={handleSubmitProject}
+      {/* Submit Launch Drawer */}
+      <SubmitLaunchDrawer
+        isOpen={isSubmitModalOpen}
+        onClose={() => setIsSubmitModalOpen(false)}
+        onSubmit={(data) => {
+          console.log('Launch submitted:', data)
+          // TODO: Convert SubmitLaunchInput to Project and add to list
+          setIsSubmitModalOpen(false)
+        }}
       />
 
       {/* TODO: Add infinite scroll / pagination */}

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Heart, Share2, Eye, Clock, Users, MessageCircle, Zap, Bookmark, DollarSign, TrendingUp, Radio, Trophy, Target, ArrowBigUp, MessageSquare, ExternalLink, Rocket, Twitter, Coins, Video } from 'lucide-react';
 import { cn } from '@/lib/cn';
 import type { Project, Comment } from '@/types';
@@ -14,6 +15,7 @@ interface ProjectCardProps extends Project {
 }
 
 export function ProjectCard(props: ProjectCardProps) {
+  const router = useRouter();
   const { onUpdateProject, ...p } = props;
   const [project, setProject] = useState<Project>(p);
   const [isBookmarked, setIsBookmarked] = useState(false);
@@ -110,10 +112,22 @@ export function ProjectCard(props: ProjectCardProps) {
             <div className="flex-1 p-4 grid grid-cols-[64px_1fr] gap-4">
               {/* Token tile + stats */}
               <div className="flex flex-col gap-1.5">
-                <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center font-bold shadow-lg">
-                  <span className="text-white text-lg">
-                    {project.ticker ? project.ticker.slice(0, 2).replace('$', '').toUpperCase() : project.title.slice(0, 2).toUpperCase()}
-                  </span>
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center font-bold shadow-lg overflow-hidden">
+                  {project.logoUrl || project.tokenLogo ? (
+                    <img
+                      src={project.logoUrl || project.tokenLogo}
+                      alt={project.ticker || project.title}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none'
+                        e.currentTarget.parentElement!.innerHTML = `<span class="text-white text-sm">${project.ticker ? project.ticker.slice(0, 2).replace('$', '').toUpperCase() : project.title.slice(0, 2).toUpperCase()}</span>`
+                      }}
+                    />
+                  ) : (
+                    <span className="text-white text-sm">
+                      {project.ticker ? project.ticker.slice(0, 2).replace('$', '').toUpperCase() : project.title.slice(0, 2).toUpperCase()}
+                    </span>
+                  )}
                 </div>
                 {/* Stats badges */}
                 <div className="flex items-center gap-1">
@@ -220,6 +234,7 @@ export function ProjectCard(props: ProjectCardProps) {
                   </button>
 
                   <button
+                    onClick={() => router.push(`/launch/${project.id}`)}
                     className={cn(
                       "px-3 h-9 rounded-xl bg-gradient-to-r inline-flex items-center gap-1.5 text-xs font-medium transition-colors focus:outline-none focus:ring-2 whitespace-nowrap",
                       isCCM
@@ -272,11 +287,23 @@ export function ProjectCard(props: ProjectCardProps) {
               {/* Token Logo with LIVE indicator */}
               <div className="relative flex-shrink-0">
                 <div className={cn(
-                  "h-16 w-16 rounded-xl flex items-center justify-center text-xl font-bold bg-gradient-to-br border-2 border-white/10",
+                  "h-16 w-16 rounded-xl flex items-center justify-center text-xl font-bold bg-gradient-to-br border-2 border-white/10 overflow-hidden",
                   typeColors[project.type],
                   "token-logo-glow"
                 )}>
-                  {project.ticker ? project.ticker.slice(0, 3).replace('$', '') : (project.title[0] || '?').toUpperCase()}
+                  {project.tokenLogo ? (
+                    <img
+                      src={project.tokenLogo}
+                      alt={project.ticker || project.title}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none'
+                        e.currentTarget.parentElement!.innerHTML = `<span class="text-xl font-bold">${project.ticker ? project.ticker.slice(0, 3).replace('$', '') : (project.title[0] || '?').toUpperCase()}</span>`
+                      }}
+                    />
+                  ) : (
+                    <span>{project.ticker ? project.ticker.slice(0, 3).replace('$', '') : (project.title[0] || '?').toUpperCase()}</span>
+                  )}
                 </div>
                 {/* LIVE Badge for streaming projects */}
                 {project.isLiveStreaming && (

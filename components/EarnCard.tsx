@@ -35,7 +35,7 @@ interface EarnCardProps extends EarnCard {
 }
 
 export function EarnCard(props: EarnCardProps) {
-  const { type, title, platform, reward, progress, duration, participants, status, onClick } = props
+  const { id, type, title, platform, reward, progress, duration, participants, status, onClick } = props
   const [isHovered, setIsHovered] = useState(false)
   const [isFav, setIsFav] = useState(false)
 
@@ -47,6 +47,7 @@ export function EarnCard(props: EarnCardProps) {
     const platforms = platform.map(p => p.toLowerCase() as Platform)
 
     const commonProps = {
+      id,
       title,
       avatarText,
       budgetPaid: progress.paid,
