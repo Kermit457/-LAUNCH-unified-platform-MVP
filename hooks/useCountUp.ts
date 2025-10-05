@@ -19,9 +19,18 @@ export function useCountUp({
   prefix = '',
   suffix = ''
 }: UseCountUpOptions) {
-  const [count, setCount] = useState(start)
+  const [count, setCount] = useState(end)
+  const [mounted, setMounted] = useState(false)
+
+  // Prevent hydration mismatch - only run on client
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
+    if (!mounted) return
+
+    setCount(start)
     let startTime: number | null = null
     let animationFrame: number
 
@@ -50,11 +59,11 @@ export function useCountUp({
         cancelAnimationFrame(animationFrame)
       }
     }
-  }, [end, duration, start])
+  }, [end, duration, start, mounted])
 
   const formattedCount = decimals > 0
     ? count.toFixed(decimals)
-    : Math.floor(count).toLocaleString()
+    : Math.floor(count).toLocaleString('en-US')
 
   return `${prefix}${formattedCount}${suffix}`
 }

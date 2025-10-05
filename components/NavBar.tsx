@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/cn'
-import { LayoutGrid, Swords, Wrench, Users, Wallet, Menu, X } from 'lucide-react'
+import { LayoutGrid, Swords, Wrench, Users, Wallet, Menu, X, Trophy } from 'lucide-react'
 
 export default function NavBar() {
   const pathname = usePathname()
@@ -13,7 +13,7 @@ export default function NavBar() {
   const links = [
     { href: '/', label: 'Home', icon: null },
     { href: '/explore', label: 'Discover', icon: LayoutGrid },
-    { href: '/engage', label: 'Engage', icon: Swords },
+    { href: '/earn', label: 'Earn', icon: Trophy },
     { href: '/tools', label: 'Tools', icon: Wrench },
     { href: '/community', label: 'Community', icon: Users },
   ]
@@ -26,10 +26,10 @@ export default function NavBar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2" onClick={closeMobileMenu}>
-            <div className="w-8 h-8 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg flex items-center justify-center font-bold text-white text-sm">
-              $L
+            <div className="w-8 h-8 bg-gradient-to-br from-launchos-fuchsia to-launchos-violet rounded-lg flex items-center justify-center font-bold text-white text-sm">
+              LOS
             </div>
-            <span className="font-bold text-xl gradient-text">$LAUNCH</span>
+            <span className="font-bold text-xl gradient-text-launchos">LaunchOS</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -43,7 +43,7 @@ export default function NavBar() {
                   className={cn(
                     'px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2',
                     pathname === link.href
-                      ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white'
+                      ? 'bg-gradient-to-r from-launchos-fuchsia to-launchos-violet text-white shadow-neon-fuchsia'
                       : 'text-white/70 hover:text-white hover:bg-white/10'
                   )}
                 >
@@ -55,7 +55,7 @@ export default function NavBar() {
           </div>
 
           {/* Desktop Connect Button */}
-          <button className="hidden md:inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-lg text-sm font-medium hover:from-pink-600 hover:to-purple-700 transition-all">
+          <button className="hidden md:inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-launchos-fuchsia to-launchos-violet text-white rounded-lg text-sm font-medium hover:shadow-neon-fuchsia transition-all">
             <Wallet size={16} />
             Connect
           </button>
@@ -83,7 +83,7 @@ export default function NavBar() {
                   className={cn(
                     'flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium transition-all',
                     pathname === link.href
-                      ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white'
+                      ? 'bg-gradient-to-r from-launchos-fuchsia to-launchos-violet text-white'
                       : 'text-white/70 hover:text-white hover:bg-white/10'
                   )}
                 >
@@ -92,7 +92,7 @@ export default function NavBar() {
                 </Link>
               )
             })}
-            <button className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-lg text-sm font-medium hover:from-pink-600 hover:to-purple-700 transition-all mt-2">
+            <button className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-launchos-fuchsia to-launchos-violet text-white rounded-lg text-sm font-medium transition-all mt-2">
               <Wallet size={16} />
               Connect Wallet
             </button>

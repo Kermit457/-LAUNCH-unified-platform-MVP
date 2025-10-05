@@ -1,0 +1,41 @@
+/* LaunchOS Design Tokens */
+
+:root {
+  /* Brand Colors */
+  --launchos-fuchsia: #E700FF;
+  --launchos-violet: #5A00FF;
+  --launchos-cyan: #00F0FF;
+  --launchos-dark: #0a0a0a;
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, #E700FF 0%, #5A00FF 100%);
+  --gradient-accent: linear-gradient(135deg, #5A00FF 0%, #00F0FF 100%);
+  --gradient-full: linear-gradient(135deg, #E700FF 0%, #5A00FF 50%, #00F0FF 100%);
+
+  /* Neon Glows */
+  --glow-fuchsia: 0 0 20px rgba(231, 0, 255, 0.5), 0 0 40px rgba(231, 0, 255, 0.3);
+  --glow-violet: 0 0 20px rgba(90, 0, 255, 0.5), 0 0 40px rgba(90, 0, 255, 0.3);
+  --glow-cyan: 0 0 20px rgba(0, 240, 255, 0.5), 0 0 40px rgba(0, 240, 255, 0.3);
+
+  /* Shadows */
+  --shadow-card: 0 8px 32px rgba(231, 0, 255, 0.15);
+  --shadow-hover: 0 16px 48px rgba(90, 0, 255, 0.25);
+  --shadow-active: inset 0 0 20px rgba(0, 240, 255, 0.3);
+
+  /* Typography */
+  --font-display: 'Clash Display', 'Inter', -apple-system, sans-serif;
+  --font-body: 'Inter Tight', 'Inter', -apple-system, sans-serif;
+
+  /* Spacing & Sizing */
+  --radius-card: 24px;
+  --radius-button: 12px;
+  --radius-input: 8px;
+
+  /* Animation Durations */
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --duration-slow: 500ms;
+}
+
+/* Google Fonts - Clash Display Alternative: Inter with custom weights */
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap');

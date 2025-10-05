@@ -1,11 +1,12 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import '../styles/tokens.css'
 import NavBar from '@/components/NavBar'
 import { ToastProvider } from '@/components/ToastProvider'
 
 export const metadata: Metadata = {
-  title: 'StreamWidgets - Interactive OBS Overlays',
-  description: 'Live engagement widgets for predictions, social actions, and ads',
+  title: 'LaunchOS - The Engine of the Internet Capital Market',
+  description: 'Launch. Engage. Earn. The viral launchpad for builders, creators, and degens.',
 }
 
 export default function RootLayout({
