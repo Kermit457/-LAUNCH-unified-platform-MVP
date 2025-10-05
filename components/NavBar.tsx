@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/cn'
-import { LayoutGrid, Swords, Wrench, Users, Wallet, Menu, X, Trophy } from 'lucide-react'
+import { LayoutGrid, Swords, Wrench, Users, Wallet, Menu, X, Trophy, Network, Zap } from 'lucide-react'
 
 export default function NavBar() {
   const pathname = usePathname()
@@ -13,8 +13,10 @@ export default function NavBar() {
   const links = [
     { href: '/', label: 'Home', icon: null },
     { href: '/explore', label: 'Discover', icon: LayoutGrid },
+    { href: '/live', label: 'Live', icon: Zap },
     { href: '/earn', label: 'Earn', icon: Trophy },
     { href: '/tools', label: 'Tools', icon: Wrench },
+    { href: '/network', label: 'Network', icon: Network },
     { href: '/community', label: 'Community', icon: Users },
   ]
 

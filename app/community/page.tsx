@@ -1,151 +1,206 @@
-import { Users, Trophy, Star, MessageCircle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+"use client"
+
+import { DollarSign, Eye, CheckCircle, Clock, TrendingUp, Zap } from 'lucide-react'
+import { SeasonBanner } from '@/components/SeasonBanner'
+import { LeaderboardTable } from '@/components/LeaderboardTable'
+import { HallOfFame } from '@/components/HallOfFame'
+import { CURRENT_SEASON, HALL_OF_FAME } from '@/lib/leaderboardData'
+
+// Sample quest data using existing ActionCard-compatible format
+const FEATURED_QUESTS = [
+  {
+    id: '1',
+    group: 'quest' as const,
+    title: 'Stream 10 Hours',
+    subtitle: 'Go live and stream for a total of 10 hours this week',
+    image: '/quest-stream.jpg',
+    reward: { type: 'impact' as const, value: 50, label: 'Impact Score' },
+    budget: { spent: 0, total: 10 },
+    progress: { completed: 0, total: 10 },
+    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    verified: true
+  },
+  {
+    id: '2',
+    group: 'quest' as const,
+    title: 'Submit 5 Approved Clips',
+    subtitle: 'Create and get 5 clips approved across any campaigns',
+    image: '/quest-clips.jpg',
+    reward: { type: 'impact' as const, value: 30, label: 'Impact Score' },
+    budget: { spent: 0, total: 5 },
+    progress: { completed: 0, total: 5 },
+    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    verified: true
+  },
+  {
+    id: '3',
+    group: 'quest' as const,
+    title: 'Stake 1000 $LAUNCH',
+    subtitle: 'Boost your profile visibility by staking $LAUNCH tokens',
+    image: '/quest-stake.jpg',
+    reward: { type: 'impact' as const, value: 20, label: 'Impact Score' },
+    budget: { spent: 0, total: 1000 },
+    progress: { completed: 0, total: 1000 },
+    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    verified: true
+  }
+]
 
 export default function CommunityPage() {
-  const topCreators = [
-    { rank: 1, name: 'PixelPapi', clips: 2401, earnings: '$4,200', avatar: '🎬' },
-    { rank: 2, name: 'CryptoClips', clips: 1834, earnings: '$3,560', avatar: '🎥' },
-    { rank: 3, name: 'StreamMaster', clips: 1456, earnings: '$2,890', avatar: '🎮' },
-    { rank: 4, name: 'RaidKing', clips: 1203, earnings: '$2,340', avatar: '⚔️' },
-    { rank: 5, name: 'ClipQueen', clips: 987, earnings: '$1,980', avatar: '👑' },
-  ];
-
   return (
-    <div className="min-h-screen">
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-3">
-          <Users className="w-8 h-8 text-purple-400" />
-          <h1 className="text-4xl font-bold gradient-text">Community</h1>
-        </div>
-        <p className="text-white/60 text-lg">
-          Join the Frenwork. Connect with top creators, clippers, and streamers.
-        </p>
+    <div className="min-h-screen pb-24">
+      {/* Season Banner */}
+      <div className="mb-12">
+        <SeasonBanner season={CURRENT_SEASON} />
       </div>
 
-      <div className="grid gap-6">
-        {/* Community Stats */}
-        <div className="glass-card p-8">
-          <h2 className="text-2xl font-bold text-white mb-6">Community Overview</h2>
-          <div className="grid md:grid-cols-4 gap-4">
-            <div className="bg-white/5 p-4 rounded-lg text-center">
-              <div className="text-3xl mb-2">👥</div>
-              <div className="text-sm text-white/60 mb-1">Total Members</div>
-              <div className="text-2xl font-bold text-white">12,847</div>
+      {/* How to Rank Section */}
+      <div className="mb-12">
+        <div className="rounded-2xl bg-gradient-to-br from-neutral-900/70 to-neutral-800/50 border border-white/10 p-8">
+          <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+            <TrendingUp className="w-6 h-6 text-purple-400" />
+            How to Rank
+          </h2>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10">
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center flex-shrink-0">
+                <DollarSign className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <div className="font-bold text-white mb-1">Earnings (40%)</div>
+                <div className="text-sm text-white/70">Verified USD earned in 30 days</div>
+              </div>
             </div>
-            <div className="bg-white/5 p-4 rounded-lg text-center">
-              <div className="text-3xl mb-2">🎬</div>
-              <div className="text-sm text-white/60 mb-1">Clips Created</div>
-              <div className="text-2xl font-bold text-white">45,203</div>
+
+            <div className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10">
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center flex-shrink-0">
+                <Eye className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <div className="font-bold text-white mb-1">Views (20%)</div>
+                <div className="text-sm text-white/70">Verified views × average CPM</div>
+              </div>
             </div>
-            <div className="bg-white/5 p-4 rounded-lg text-center">
-              <div className="text-3xl mb-2">💰</div>
-              <div className="text-sm text-white/60 mb-1">Paid Out</div>
-              <div className="text-2xl font-bold text-green-400">$234k</div>
+
+            <div className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10">
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center flex-shrink-0">
+                <CheckCircle className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <div className="font-bold text-white mb-1">Submissions (15%)</div>
+                <div className="text-sm text-white/70">Approved clips & content</div>
+              </div>
             </div>
-            <div className="bg-white/5 p-4 rounded-lg text-center">
-              <div className="text-3xl mb-2">🔥</div>
-              <div className="text-sm text-white/60 mb-1">Active Now</div>
-              <div className="text-2xl font-bold text-orange-400">1,284</div>
+
+            <div className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10">
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-yellow-500 to-orange-600 flex items-center justify-center flex-shrink-0">
+                <Clock className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <div className="font-bold text-white mb-1">Live Hours (10%)</div>
+                <div className="text-sm text-white/70">Streaming activity</div>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10">
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center flex-shrink-0">
+                <TrendingUp className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <div className="font-bold text-white mb-1">Conviction (10%)</div>
+                <div className="text-sm text-white/70">Community belief growth</div>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10">
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center flex-shrink-0">
+                <Zap className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <div className="font-bold text-white mb-1">Boosts (5%)</div>
+                <div className="text-sm text-white/70">$LAUNCH staked for visibility</div>
+              </div>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Frenwork Directory - Top Creators */}
-        <div className="glass-card p-8">
-          <div className="flex items-start justify-between mb-6">
-            <div>
-              <h2 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
-                <Trophy className="w-6 h-6 text-yellow-400" />
-                Top Creators This Week
-              </h2>
-              <p className="text-white/60">
-                Leaderboard of highest-earning creators and clippers
-              </p>
-            </div>
+      {/* Leaderboard Embed */}
+      <div className="mb-12">
+        <h2 className="text-2xl font-bold text-white mb-6">Current Rankings</h2>
+        <LeaderboardTable />
+      </div>
+
+      {/* Featured Quests */}
+      <div className="mb-12">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-2xl font-bold text-white mb-1">Featured Quests</h2>
+            <p className="text-white/60">Complete quests to boost your Impact Score</p>
           </div>
-
-          <div className="space-y-3">
-            {topCreators.map((creator) => (
-              <div
-                key={creator.rank}
-                className="glass-card p-4 flex items-center justify-between hover:border-white/30 transition-all"
-              >
-                <div className="flex items-center gap-4">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center text-2xl ${
-                    creator.rank === 1 ? 'bg-gradient-to-br from-yellow-500 to-orange-500' :
-                    creator.rank === 2 ? 'bg-gradient-to-br from-gray-400 to-gray-500' :
-                    creator.rank === 3 ? 'bg-gradient-to-br from-amber-600 to-amber-700' :
-                    'bg-white/10'
-                  }`}>
-                    {creator.avatar}
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-white">{creator.name}</span>
-                      {creator.rank <= 3 && <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />}
-                    </div>
-                    <div className="text-sm text-white/60">
-                      {creator.clips.toLocaleString()} clips created
-                    </div>
-                  </div>
-                </div>
-
-                <div className="text-right">
-                  <div className="font-bold text-green-400">{creator.earnings}</div>
-                  <div className="text-xs text-white/50">this week</div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* TODO: Add real leaderboard data from Supabase */}
-          {/* TODO: Implement creator profiles */}
-          {/* TODO: Add filters (weekly/monthly/all-time) */}
+          <a
+            href="/earn"
+            className="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-white/70 hover:text-white text-sm font-medium transition-all"
+          >
+            View All Quests
+          </a>
         </div>
 
-        {/* Join Community */}
-        <div className="glass-card p-8 text-center">
-          <div className="max-w-2xl mx-auto">
-            <MessageCircle className="w-12 h-12 text-purple-400 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-white mb-3">Join the Frenwork</h2>
-            <p className="text-white/60 mb-6">
-              Connect with thousands of creators, share strategies, and grow together.
-              Get exclusive alpha, early access to launches, and community support.
-            </p>
+        <div className="grid md:grid-cols-3 gap-6">
+          {FEATURED_QUESTS.map(quest => (
+            <QuestCard key={quest.id} quest={quest} />
+          ))}
+        </div>
+      </div>
 
-            <div className="flex items-center justify-center gap-4 flex-wrap">
-              <Button size="lg" className="gap-2">
-                <MessageCircle size={16} />
-                Join Discord
-              </Button>
-              <Button size="lg" variant="outline" className="gap-2">
-                Follow on X
-              </Button>
-              <Button size="lg" variant="outline" className="gap-2">
-                Join Telegram
-              </Button>
-            </div>
+      {/* Hall of Fame */}
+      <HallOfFame entries={HALL_OF_FAME} />
+    </div>
+  )
+}
 
-            <div className="mt-8 grid md:grid-cols-3 gap-4 text-sm">
-              <div className="bg-white/5 p-4 rounded-lg">
-                <div className="font-bold text-white mb-1">Alpha Channels</div>
-                <div className="text-white/60">Early launch info & insider tips</div>
-              </div>
-              <div className="bg-white/5 p-4 rounded-lg">
-                <div className="font-bold text-white mb-1">Creator Support</div>
-                <div className="text-white/60">Help from experienced members</div>
-              </div>
-              <div className="bg-white/5 p-4 rounded-lg">
-                <div className="font-bold text-white mb-1">Exclusive Events</div>
-                <div className="text-white/60">AMAs, competitions, giveaways</div>
-              </div>
-            </div>
+function QuestCard({ quest }: { quest: typeof FEATURED_QUESTS[0] }) {
+  const progress = (quest.progress.completed / quest.progress.total) * 100
+
+  return (
+    <div className="rounded-2xl bg-gradient-to-br from-neutral-900/70 to-neutral-800/50 border border-white/10 hover:border-purple-500/30 transition-all overflow-hidden group">
+      {/* Image Placeholder */}
+      <div className="relative h-40 bg-gradient-to-br from-purple-600 via-pink-600 to-orange-600 flex items-center justify-center">
+        <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all" />
+        <div className="relative text-6xl">🎯</div>
+      </div>
+
+      {/* Content */}
+      <div className="p-6">
+        <h3 className="font-bold text-white text-lg mb-2">{quest.title}</h3>
+        <p className="text-sm text-white/60 mb-4">{quest.subtitle}</p>
+
+        {/* Progress */}
+        <div className="mb-4">
+          <div className="flex items-center justify-between text-xs text-white/60 mb-2">
+            <span>Progress</span>
+            <span>{quest.progress.completed} / {quest.progress.total}</span>
           </div>
+          <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-r from-purple-500 to-pink-600 rounded-full transition-all"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+        </div>
 
-          {/* TODO: Add real Discord/Telegram invite links */}
-          {/* TODO: Implement community stats tracking */}
+        {/* Reward */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Zap className="w-4 h-4 text-yellow-400" />
+            <span className="text-sm font-bold text-yellow-400">+{quest.reward.value} Impact</span>
+          </div>
+          <button className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-bold text-sm transition-all shadow-lg">
+            Start Quest
+          </button>
         </div>
       </div>
     </div>
-  );
+  )
 }

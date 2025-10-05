@@ -1,13 +1,25 @@
-import { ulid } from 'ulid'
-import { createHash } from 'crypto'
+import { clsx, type ClassValue } from 'clsx'
+import { twMerge } from 'tailwind-merge'
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
 
 export function generateId() {
-  return ulid()
+  return `id_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
 }
 
 export function hashIp(ip: string): string {
+  // Simple hash function for client-side use
   const day = new Date().toISOString().split('T')[0]
-  return createHash('sha256').update(`${ip}:${day}`).digest('hex')
+  const str = `${ip}:${day}`
+  let hash = 0
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i)
+    hash = ((hash << 5) - hash) + char
+    hash = hash & hash
+  }
+  return hash.toString(16)
 }
 
 export function getClientIp(request: Request): string {
