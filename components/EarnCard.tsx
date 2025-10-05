@@ -3,6 +3,10 @@
 import { useState } from 'react'
 import { Trophy, Target, Zap, DollarSign, Clock, Users, TrendingUp } from 'lucide-react'
 import { cn } from '@/lib/cn'
+import { CampaignCard } from './CampaignCard'
+import { RaidCard } from './RaidCard'
+import { BountyCard } from './BountyCard'
+import type { Platform } from './ActionCard'
 
 export type EarnType = 'campaign' | 'raid' | 'prediction' | 'quest' | 'bounty'
 export type Currency = 'USDC' | 'LAUNCH' | 'PTS'
@@ -33,8 +37,43 @@ interface EarnCardProps extends EarnCard {
 export function EarnCard(props: EarnCardProps) {
   const { type, title, platform, reward, progress, duration, participants, status, onClick } = props
   const [isHovered, setIsHovered] = useState(false)
+  const [isFav, setIsFav] = useState(false)
 
   const progressPercent = Math.min(100, Math.round((progress.paid / progress.pool) * 100))
+
+  // Use ActionCard for campaigns, raids, and bounties
+  if (type === 'campaign' || type === 'raid' || type === 'bounty') {
+    const avatarText = title.slice(0, 2)
+    const platforms = platform.map(p => p.toLowerCase() as Platform)
+
+    const commonProps = {
+      title,
+      avatarText,
+      budgetPaid: progress.paid,
+      budgetTotal: progress.pool,
+      progressPct: progressPercent,
+      platforms,
+      views: participants || 0,
+      isFav,
+      onShare: () => console.log('Share', title),
+      onJoin: onClick,
+      onView: onClick,
+      onToggleFav: () => setIsFav(!isFav),
+    }
+
+    if (type === 'campaign') {
+      return <CampaignCard {...commonProps} ratePerThousand={reward.value} />
+    } else if (type === 'raid') {
+      return <RaidCard {...commonProps} poolAmount={progress.pool} />
+    } else {
+      return <BountyCard {...commonProps} payPerTask={reward.value} />
+    }
+  }
+
+  // Hide predictions and quests
+  if (type === 'prediction' || type === 'quest') {
+    return null
+  }
 
   // Type-specific styling
   const typeConfig = {
@@ -84,7 +123,7 @@ export function EarnCard(props: EarnCardProps) {
 
   const formatReward = () => {
     const symbol = reward.currency === 'USDC' ? '$' : reward.currency === 'LAUNCH' ? '$LAUNCH' : ''
-    const value = reward.value.toLocaleString()
+    const value = reward.value.toLocaleString('en-US')
     const per = reward.per ? ` / ${reward.per}` : ''
     return `${symbol}${value}${per}`
   }
@@ -138,7 +177,7 @@ export function EarnCard(props: EarnCardProps) {
       {/* Progress Bar */}
       <div className="mb-3 flex-1">
         <div className="flex justify-between text-xs text-white/60 mb-1">
-          <span>${progress.paid.toLocaleString()} paid</span>
+          <span>${progress.paid.toLocaleString('en-US')} paid</span>
           <span>{progressPercent}%</span>
         </div>
         <div className="h-1.5 w-full rounded-full bg-white/10 overflow-hidden">

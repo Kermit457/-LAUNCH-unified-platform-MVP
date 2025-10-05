@@ -3,10 +3,10 @@
 import { useState, useMemo } from 'react'
 import { EarnCard as EarnCardComponent, type EarnType } from '@/components/EarnCard'
 import { earnCards, filterEarnCards } from '@/lib/sampleData'
-import { Trophy, Filter, TrendingUp } from 'lucide-react'
+import { Trophy, Filter, TrendingUp, Video, Swords, DollarSign } from 'lucide-react'
 import { cn } from '@/lib/cn'
 
-const TABS = ['All', 'Campaign', 'Raid', 'Prediction', 'Quest', 'Bounty'] as const
+const TABS = ['All', 'Campaign', 'Raid', 'Bounty'] as const
 type Tab = typeof TABS[number]
 
 export default function EarnPage() {
@@ -90,6 +90,22 @@ export default function EarnPage() {
         </div>
       </div>
 
+      {/* Create Buttons */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <button className="px-6 py-3 rounded-xl bg-gradient-to-r from-fuchsia-500 via-pink-500 to-purple-600 hover:from-fuchsia-600 hover:via-pink-600 hover:to-purple-700 text-white font-bold text-sm transition-all shadow-lg hover:shadow-fuchsia-500/50 flex items-center justify-center gap-2">
+          <Video className="w-5 h-5" />
+          Create Clipping Campaign
+        </button>
+        <button className="px-6 py-3 rounded-xl bg-gradient-to-r from-red-500 via-orange-500 to-amber-500 hover:from-red-600 hover:via-orange-600 hover:to-amber-600 text-white font-bold text-sm transition-all shadow-lg hover:shadow-red-500/50 flex items-center justify-center gap-2">
+          <Swords className="w-5 h-5" />
+          Create Raid
+        </button>
+        <button className="px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-600 hover:via-teal-600 hover:to-cyan-600 text-white font-bold text-sm transition-all shadow-lg hover:shadow-emerald-500/50 flex items-center justify-center gap-2">
+          <DollarSign className="w-5 h-5" />
+          Create Bounty
+        </button>
+      </div>
+
       {/* Stats Bar */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
         <div className="glass-launchos p-4 rounded-xl">
@@ -105,13 +121,13 @@ export default function EarnPage() {
         <div className="glass-launchos p-4 rounded-xl">
           <div className="text-white/60 text-sm mb-1">Total Rewards Pool</div>
           <div className="text-2xl font-bold text-yellow-400">
-            ${filteredCards.reduce((sum, c) => sum + c.reward.value, 0).toLocaleString()}
+            ${filteredCards.reduce((sum, c) => sum + c.reward.value, 0).toLocaleString('en-US')}
           </div>
         </div>
         <div className="glass-launchos p-4 rounded-xl">
           <div className="text-white/60 text-sm mb-1">Active Participants</div>
           <div className="text-2xl font-bold text-cyan-400">
-            {filteredCards.reduce((sum, c) => sum + (c.participants || 0), 0).toLocaleString()}
+            {filteredCards.reduce((sum, c) => sum + (c.participants || 0), 0).toLocaleString('en-US')}
           </div>
         </div>
       </div>
