@@ -1,22 +1,18 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
 import { OverviewHeader } from '@/components/dashboard/OverviewHeader'
 import { KpiTile } from '@/components/dashboard/KpiTile'
 import { QuickActions } from '@/components/dashboard/QuickActions'
 import { ActivityList, Activity } from '@/components/dashboard/ActivityList'
-import { AlertCircle, TrendingUp, DollarSign, Zap, Target, Award, Users } from 'lucide-react'
+import { AlertCircle, TrendingUp, DollarSign, Zap, Target, Award } from 'lucide-react'
 import { mockCampaigns, mockSubmissions, mockPayouts } from '@/lib/dashboardData'
-import { useNetworkStore } from '@/lib/stores/useNetworkStore'
 import { CreateQuestDrawer } from '@/components/quests/CreateQuestDrawer'
 import { CreateCampaignModal } from '@/components/campaigns/CreateCampaignModal'
 import { CampaignType } from '@/types/quest'
+import { NetworkActivityWidget } from '@/components/dashboard/NetworkActivityWidget'
 
 export default function DashboardOverview() {
-  const pendingInvites = useNetworkStore(state => state.getPendingInvitesCount())
-  const unreadDMs = useNetworkStore(state => state.getUnreadDMsCount())
-
   // Modal states
   const [isCreateQuestOpen, setIsCreateQuestOpen] = useState(false)
   const [initialQuestType, setInitialQuestType] = useState<CampaignType>('raid')
@@ -155,30 +151,8 @@ export default function DashboardOverview() {
 
       {/* Network Summary + Activity */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Network Summary Card */}
-        <Link
-          href="/dashboard/network"
-          className="rounded-2xl bg-white/5 border border-white/10 backdrop-blur p-6 hover:border-fuchsia-500/30 transition-all group"
-        >
-          <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-            <Users className="w-5 h-5 text-fuchsia-400" />
-            Network
-          </h3>
-          <div className="space-y-2 text-sm">
-            <div className="flex items-center justify-between">
-              <span className="text-white/60">Invites:</span>
-              <span className="text-white font-medium">{pendingInvites}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-white/60">Unread:</span>
-              <span className="text-white font-medium">{unreadDMs}</span>
-            </div>
-          </div>
-          <div className="mt-4 text-fuchsia-400 text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
-            View Network
-            <span>→</span>
-          </div>
-        </Link>
+        {/* Network Activity Widget */}
+        <NetworkActivityWidget />
 
         {/* Recent Activity */}
         <div className="lg:col-span-3">

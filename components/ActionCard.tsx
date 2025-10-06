@@ -127,11 +127,11 @@ export function ActionCard({
   const theme = colorThemes[kind]
 
   return (
-    <div className={cn("rounded-3xl bg-[#0D1220] border p-5 text-white min-h-[200px] flex flex-col", theme.border)}>
+    <div className={cn("rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl p-5 text-white min-h-[200px] flex flex-col hover:border-white/20 transition-all", theme.border)}>
       {/* Header row */}
       <div className="flex items-start gap-3 mb-2.5">
         {/* Avatar */}
-        <div className={cn("w-12 h-12 rounded-full bg-gradient-to-br flex items-center justify-center font-bold text-base flex-shrink-0", theme.avatar)}>
+        <div className={cn("w-12 h-12 rounded-xl bg-gradient-to-br flex items-center justify-center font-bold text-base flex-shrink-0 shadow-lg", theme.avatar)}>
           {avatarText.slice(0, 2).toUpperCase()}
         </div>
 
@@ -144,14 +144,14 @@ export function ActionCard({
         <div className="flex items-center gap-2 flex-shrink-0">
           <button
             onClick={onShare}
-            className="p-1.5 rounded-lg hover:bg-white/5 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="p-1.5 rounded-lg hover:bg-white/10 transition-colors focus:outline-none focus:ring-2 focus:ring-white/20"
             aria-label="Share"
           >
             <Share2 className="w-4 h-4 text-white/70" />
           </button>
           {rateLabel && (
             <div
-              className={cn("px-2.5 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap", theme.rate)}
+              className={cn("px-2.5 py-0.5 rounded-lg text-xs font-semibold whitespace-nowrap border", theme.rate)}
               role="status"
             >
               {rateLabel}

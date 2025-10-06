@@ -1,43 +1,82 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Users } from 'lucide-react'
 import { ProfileCard } from '@/components/profile/ProfileCard'
 import { MetricPill } from '@/components/ui/metric-pill'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { mockProfiles } from '@/lib/mockProfileData'
+import { NetworkFilters, FilterState } from '@/components/network/NetworkFilters'
+import { ProfileCardData } from '@/types/profile'
 
 export default function NetworkPage() {
-  const [invitedUsers, setInvitedUsers] = useState<Set<string>>(new Set())
+  const [filters, setFilters] = useState<FilterState>({
+    connectionStatus: 'all',
+    roles: [],
+    sortBy: 'recommended'
+  })
 
-  const handleInvite = (id: string) => {
-    setInvitedUsers(prev => {
-      const next = new Set(prev)
-      next.add(id)
-      return next
-    })
-    console.log('Invited:', id)
+  // Calculate recommendation score
+  const getRecommendationScore = (profile: ProfileCardData): number => {
+    let score = 0
+
+    // Contribution level (10 points per contribution, max 100)
+    score += Math.min(profile.contributions.length * 10, 100)
+
+    // Mutual connections (5 points each, max 50)
+    score += Math.min(profile.mutuals.length * 5, 50)
+
+    // Verified users get bonus (25 points)
+    if (profile.verified) score += 25
+
+    // Multiple roles indicate active user (10 points per role, max 30)
+    score += Math.min(profile.roles.length * 10, 30)
+
+    return score
   }
 
-  const handleCancelInvite = (id: string) => {
-    setInvitedUsers(prev => {
-      const next = new Set(prev)
-      next.delete(id)
-      return next
-    })
-    console.log('Cancelled invite:', id)
-  }
+  // Filter and sort profiles
+  const filteredAndSortedProfiles = useMemo(() => {
+    let result = [...mockProfiles]
 
-  const getState = (id: string, isConnected?: boolean, isSelf?: boolean): ConnState => {
-    if (isSelf) return 'self'
-    if (isConnected) return 'connected'
-    if (invitedUsers.has(id)) return 'pending'
-    return 'none'
-  }
+    // Filter by connection status
+    if (filters.connectionStatus === 'connected') {
+      result = result.filter(p => p.connected)
+    } else if (filters.connectionStatus === 'not_connected') {
+      result = result.filter(p => !p.connected)
+    }
 
-  // Use the new mock profiles data
-  const profiles = mockProfiles
+    // Filter by roles
+    if (filters.roles.length > 0) {
+      result = result.filter(p =>
+        p.roles.some(role => filters.roles.includes(role))
+      )
+    }
+
+    // Sort profiles
+    switch (filters.sortBy) {
+      case 'contribution':
+        result.sort((a, b) => b.contributions.length - a.contributions.length)
+        break
+      case 'mutuals':
+        result.sort((a, b) => b.mutuals.length - a.mutuals.length)
+        break
+      case 'recent':
+        // For now, shuffle randomly (in real app, would use actual activity timestamp)
+        result.sort(() => Math.random() - 0.5)
+        break
+      case 'recommended':
+      default:
+        result.sort((a, b) => getRecommendationScore(b) - getRecommendationScore(a))
+        break
+    }
+
+    return result
+  }, [filters])
+
+  const connectedCount = mockProfiles.filter(p => p.connected).length
+  const suggestionsCount = mockProfiles.filter(p => !p.connected).length
 
   return (
     <div className="min-h-screen pb-24">
@@ -54,33 +93,34 @@ export default function NetworkPage() {
         </p>
       </div>
 
-      {/* Stats Bar */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-        <MetricPill label="Total Network" value="247" />
-        <MetricPill label="Connected" value="42" variant="positive" />
-        <MetricPill label="Pending" value={invitedUsers.size} />
-        <MetricPill label="Suggestions" value="18" />
+      {/* Filters */}
+      <div className="flex items-center justify-between mb-6">
+        <div className="text-white/60 text-sm">
+          Showing {filteredAndSortedProfiles.length} of {mockProfiles.length} profiles
+        </div>
+        <NetworkFilters onFilterChange={setFilters} />
       </div>
 
-      {/* Profile Cards Grid - Default Variant */}
-      <h2 className="text-2xl font-bold text-white mb-6">Suggested Connections</h2>
+      {/* Stats Bar */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <MetricPill label="Total Network" value={mockProfiles.length.toString()} />
+        <MetricPill label="Connected" value={connectedCount.toString()} variant="positive" />
+        <MetricPill label="Not Connected" value={suggestionsCount.toString()} />
+        <MetricPill label="Filtered Results" value={filteredAndSortedProfiles.length.toString()} />
+      </div>
+
+      {/* Profile Cards Grid */}
+      <h2 className="text-2xl font-bold text-white mb-6">
+        {filters.sortBy === 'recommended' && 'Recommended for You'}
+        {filters.sortBy === 'contribution' && 'Top Contributors'}
+        {filters.sortBy === 'mutuals' && 'Most Mutual Connections'}
+        {filters.sortBy === 'recent' && 'Recent Activity'}
+      </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-        {profiles.map((profile) => (
+        {filteredAndSortedProfiles.map((profile) => (
           <ProfileCard
             key={profile.id}
             data={profile}
-          />
-        ))}
-      </div>
-
-      {/* Compact Variant Example */}
-      <h2 className="text-2xl font-bold text-white mb-6">Quick View (Compact)</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
-        {profiles.slice(0, 4).map((profile) => (
-          <ProfileCard
-            key={`compact-${profile.id}`}
-            data={profile}
-            variant="compact"
           />
         ))}
       </div>

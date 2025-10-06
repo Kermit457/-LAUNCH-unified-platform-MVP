@@ -148,45 +148,45 @@ function ToolCardComponent({ card, onAction }: { card: ToolCard; onAction: (card
     switch (card.group) {
       case 'OBS Widgets':
         return {
-          border: 'border-blue-500/20 hover:border-blue-400/50',
-          bg: 'bg-gradient-to-br from-blue-950/40 to-neutral-900/70',
-          icon: 'bg-gradient-to-br from-blue-500 to-cyan-600 shadow-blue-500/50',
-          accent: 'group-hover:text-blue-300'
+          border: 'border-white/10 hover:border-blue-400/50',
+          icon: 'bg-gradient-to-br from-blue-500 to-cyan-600',
+          accent: 'group-hover:text-blue-300',
+          shadow: 'group-hover:shadow-blue-500/20'
         }
       case 'Growth & Campaigns':
         return {
-          border: 'border-purple-500/20 hover:border-purple-400/50',
-          bg: 'bg-gradient-to-br from-purple-950/40 to-neutral-900/70',
-          icon: 'bg-gradient-to-br from-purple-500 to-pink-600 shadow-purple-500/50',
-          accent: 'group-hover:text-purple-300'
+          border: 'border-white/10 hover:border-purple-400/50',
+          icon: 'bg-gradient-to-br from-purple-500 to-pink-600',
+          accent: 'group-hover:text-purple-300',
+          shadow: 'group-hover:shadow-purple-500/20'
         }
       case 'Launch':
         return {
-          border: 'border-orange-500/20 hover:border-orange-400/50',
-          bg: 'bg-gradient-to-br from-orange-950/40 to-neutral-900/70',
-          icon: 'bg-gradient-to-br from-orange-500 to-red-600 shadow-orange-500/50',
-          accent: 'group-hover:text-orange-300'
+          border: 'border-white/10 hover:border-orange-400/50',
+          icon: 'bg-gradient-to-br from-orange-500 to-red-600',
+          accent: 'group-hover:text-orange-300',
+          shadow: 'group-hover:shadow-orange-500/20'
         }
       case 'Creator Ops':
         return {
-          border: 'border-green-500/20 hover:border-green-400/50',
-          bg: 'bg-gradient-to-br from-green-950/40 to-neutral-900/70',
-          icon: 'bg-gradient-to-br from-green-500 to-emerald-600 shadow-green-500/50',
-          accent: 'group-hover:text-green-300'
+          border: 'border-white/10 hover:border-green-400/50',
+          icon: 'bg-gradient-to-br from-green-500 to-emerald-600',
+          accent: 'group-hover:text-green-300',
+          shadow: 'group-hover:shadow-green-500/20'
         }
       case 'Integrations':
         return {
-          border: 'border-cyan-500/20 hover:border-cyan-400/50',
-          bg: 'bg-gradient-to-br from-cyan-950/40 to-neutral-900/70',
-          icon: 'bg-gradient-to-br from-cyan-500 to-teal-600 shadow-cyan-500/50',
-          accent: 'group-hover:text-cyan-300'
+          border: 'border-white/10 hover:border-cyan-400/50',
+          icon: 'bg-gradient-to-br from-cyan-500 to-teal-600',
+          accent: 'group-hover:text-cyan-300',
+          shadow: 'group-hover:shadow-cyan-500/20'
         }
       default:
         return {
           border: 'border-white/10 hover:border-white/30',
-          bg: 'bg-neutral-900/70',
-          icon: 'bg-gradient-to-br from-white/15 to-white/5 shadow-black/20',
-          accent: 'group-hover:text-white'
+          icon: 'bg-gradient-to-br from-white/15 to-white/5',
+          accent: 'group-hover:text-white',
+          shadow: 'group-hover:shadow-white/10'
         }
     }
   }
@@ -201,9 +201,9 @@ function ToolCardComponent({ card, onAction }: { card: ToolCard; onAction: (card
   return (
     <CardWrapper {...cardWrapperProps as any} className={isDisabled ? 'cursor-not-allowed' : ''}>
       <div className={cn(
-        "rounded-2xl border p-6 flex flex-col gap-4 transition-all group h-full min-h-[220px] relative overflow-hidden",
+        "rounded-2xl bg-white/5 backdrop-blur-xl border p-6 flex flex-col gap-4 transition-all group h-full min-h-[220px] relative overflow-hidden shadow-lg",
         theme.border,
-        theme.bg,
+        theme.shadow,
         isDisabled && "blur-sm opacity-60 hover:opacity-70"
       )}>
         {/* Coming Soon Badge */}
@@ -213,17 +213,11 @@ function ToolCardComponent({ card, onAction }: { card: ToolCard; onAction: (card
           </div>
         )}
 
-        {/* Gradient overlay on hover */}
-        <div className={cn(
-          "absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 transition-opacity pointer-events-none",
-          !isDisabled && "group-hover:opacity-100"
-        )} />
-
         {/* Icon Container */}
         <div className={cn(
           "w-12 h-12 rounded-xl flex items-center justify-center transition-all shadow-lg relative z-10",
           !isDisabled && "group-hover:scale-110 group-hover:rotate-3",
-          isCreateOrStart ? theme.icon : theme.icon
+          theme.icon
         )}>
           <Icon className="w-6 h-6 text-white" />
         </div>
