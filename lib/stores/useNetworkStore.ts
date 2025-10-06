@@ -8,6 +8,7 @@ interface NetworkStore {
   threads: Thread[]
   messages: Message[]
   activeThreadId: string | null
+  loading: boolean
 
   // Computed counts
   getPendingInvitesCount: () => number
@@ -15,10 +16,16 @@ interface NetworkStore {
   getThreadMessages: (threadId: string) => Message[]
   getThreadById: (threadId: string) => Thread | undefined
 
+  // Fetch actions
+  fetchInvites: (userId: string) => Promise<void>
+  fetchConnections: (userId: string) => Promise<void>
+  fetchThreads: (userId: string) => Promise<void>
+  fetchThreadMessagesFromAppwrite: (threadId: string) => Promise<void>
+
   // Invites actions
   setInvites: (invites: Invite[]) => void
-  acceptInvite: (id: string) => void
-  declineInvite: (id: string) => void
+  acceptInvite: (id: string) => Promise<void>
+  declineInvite: (id: string) => Promise<void>
 
   // Connections actions
   setConnections: (connections: Connection[]) => void
@@ -30,8 +37,11 @@ interface NetworkStore {
   setThreads: (threads: Thread[]) => void
   addThread: (thread: Thread) => void
   setActiveThread: (threadId: string | null) => void
+  createDM: (userId1: string, userId2: string) => Promise<string>
+  createGroup: (name: string, participantIds: string[], projectId?: string, campaignId?: string) => Promise<string>
 
   // Messages actions
+  sendMessageToThread: (threadId: string, senderId: string, content: string) => Promise<void>
   addMessage: (message: Message) => void
   markThreadAsRead: (threadId: string) => void
 }
@@ -42,6 +52,7 @@ export const useNetworkStore = create<NetworkStore>((set, get) => ({
   threads: mockThreads,
   messages: mockMessages,
   activeThreadId: null,
+  loading: false,
 
   getPendingInvitesCount: () => {
     return get().invites.filter(inv => inv.status === 'pending').length
@@ -61,17 +72,49 @@ export const useNetworkStore = create<NetworkStore>((set, get) => ({
 
   setInvites: (invites) => set({ invites }),
 
-  acceptInvite: (id) => set((state) => ({
-    invites: state.invites.map(inv =>
-      inv.id === id ? { ...inv, status: 'accepted' as const } : inv
-    )
-  })),
+  fetchInvites: async (userId: string) => {
+    // This will be called from the page component
+  },
 
-  declineInvite: (id) => set((state) => ({
-    invites: state.invites.map(inv =>
-      inv.id === id ? { ...inv, status: 'declined' as const } : inv
-    )
-  })),
+  fetchConnections: async (userId: string) => {
+    // This will be called from the page component
+  },
+
+  fetchThreads: async (userId: string) => {
+    // This will be called from the page component
+  },
+
+  fetchThreadMessagesFromAppwrite: async (threadId: string) => {
+    // This will be called from the page component
+  },
+
+  acceptInvite: async (id) => {
+    set((state) => ({
+      invites: state.invites.map(inv =>
+        inv.id === id ? { ...inv, status: 'accepted' as const } : inv
+      )
+    }))
+  },
+
+  declineInvite: async (id) => {
+    set((state) => ({
+      invites: state.invites.map(inv =>
+        inv.id === id ? { ...inv, status: 'declined' as const } : inv
+      )
+    }))
+  },
+
+  createDM: async (userId1: string, userId2: string) => {
+    return `thread_${Date.now()}`
+  },
+
+  createGroup: async (name: string, participantIds: string[], projectId?: string, campaignId?: string) => {
+    return `thread_${Date.now()}`
+  },
+
+  sendMessageToThread: async (threadId: string, senderId: string, content: string) => {
+    // Will be implemented with real Appwrite calls
+  },
 
   setConnections: (connections) => set({ connections }),
 
