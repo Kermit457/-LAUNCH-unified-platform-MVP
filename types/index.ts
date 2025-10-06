@@ -53,6 +53,14 @@ export interface Project {
   tokenLogo?: string;        // Token/project logo image URL
   logoUrl?: string;          // Uploaded logo URL (from file upload)
   isLiveStreaming?: boolean; // Is this project currently live streaming?
+
+  // Social links
+  socials?: {
+    twitter?: string;
+    discord?: string;
+    telegram?: string;
+    website?: string;
+  };
 }
 
 export type MarketType = 'all' | 'icm' | 'ccm';

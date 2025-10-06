@@ -246,7 +246,12 @@ export default function NetworkPage() {
         <p className="text-white/70 text-lg mb-8">
           Connect with top creators and unlock collaboration opportunities
         </p>
-        <button className="px-8 py-4 bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 hover:from-fuchsia-600 hover:via-purple-600 hover:to-cyan-600 text-white rounded-xl font-bold text-lg transition-all shadow-lg shadow-fuchsia-500/30 hover:shadow-fuchsia-500/50 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/50">
+        <button
+          className="px-8 py-4 bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 hover:from-fuchsia-600 hover:via-purple-600 hover:to-cyan-600 text-white rounded-xl font-bold text-lg transition-all shadow-lg shadow-fuchsia-500/30 hover:shadow-fuchsia-500/50 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/50"
+          data-cta="network-complete-profile"
+          disabled={true}
+          title="Feature coming soon"
+        >
           Complete Your Profile
         </button>
       </div>

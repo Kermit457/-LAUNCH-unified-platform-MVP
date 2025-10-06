@@ -80,6 +80,7 @@ export function UpcomingLaunchCard({
         <button
           onClick={() => onBoost?.(data.id)}
           className="flex-1 min-w-[100px] h-9 px-3 rounded-xl bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 hover:from-fuchsia-600 hover:via-purple-600 hover:to-cyan-600 text-white text-sm font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-fuchsia-400/50 flex items-center justify-center gap-1.5"
+          data-cta="card-boost-upcoming"
         >
           <TrendingUp className="w-4 h-4" />
           Boost
@@ -89,6 +90,7 @@ export function UpcomingLaunchCard({
         <button
           onClick={() => onFollow?.(data.id)}
           className="h-9 px-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-white/70 hover:text-white text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-white/20 flex items-center gap-1.5"
+          data-cta="card-follow-upcoming"
         >
           <Heart className="w-4 h-4" />
           <span className="hidden sm:inline">Follow</span>
@@ -98,6 +100,7 @@ export function UpcomingLaunchCard({
         <button
           onClick={() => onView?.(data.id)}
           className="h-9 px-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-white/70 hover:text-white text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-white/20 flex items-center gap-1.5"
+          data-cta="card-view-upcoming"
         >
           <Eye className="w-4 h-4" />
           <span className="hidden sm:inline">View Launch</span>
@@ -108,6 +111,7 @@ export function UpcomingLaunchCard({
           onClick={handleSetReminder}
           disabled={reminderSet}
           className="h-9 px-3 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 hover:border-amber-500/50 text-amber-300 hover:text-amber-200 text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-amber-400/50 flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+          data-cta="card-set-reminder"
         >
           <Bell className="w-4 h-4" />
           <span className="hidden sm:inline">{reminderSet ? 'Reminder Set!' : 'Set Reminder'}</span>

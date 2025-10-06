@@ -61,6 +61,7 @@ export function LiveLaunchCard({
                 onClick={handleCopy}
                 className="h-6 px-2 rounded-md bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-white/70 hover:text-white text-[10px] transition-all flex items-center gap-1"
                 aria-label="Copy mint address"
+                data-cta="card-copy-address"
               >
                 {copied ? (
                   <Check className="w-3 h-3 text-green-400" />
@@ -78,6 +79,7 @@ export function LiveLaunchCard({
                   rel="noopener noreferrer"
                   className="h-6 px-2 rounded-md bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-white/70 hover:text-white text-[10px] transition-all flex items-center gap-1"
                   aria-label="View on Solscan"
+                  data-cta="card-view-solscan"
                 >
                   <ExternalLink className="w-3 h-3" />
                   <span className="hidden sm:inline">Scan</span>
@@ -92,6 +94,7 @@ export function LiveLaunchCard({
                   rel="noopener noreferrer"
                   className="h-6 px-2 rounded-md bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-white/70 hover:text-white text-[10px] transition-all flex items-center gap-1"
                   aria-label="View Chart"
+                  data-cta="card-view-chart"
                 >
                   <BarChart3 className="w-3 h-3" />
                   <span className="hidden sm:inline">Chart</span>
@@ -188,6 +191,7 @@ export function LiveLaunchCard({
         <button
           onClick={() => onBoost?.(data.id)}
           className="flex-1 min-w-[100px] h-9 px-3 rounded-xl bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 hover:from-fuchsia-600 hover:via-purple-600 hover:to-cyan-600 text-white text-sm font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-fuchsia-400/50 flex items-center justify-center gap-1.5"
+          data-cta="card-boost-launch"
         >
           <TrendingUp className="w-4 h-4" />
           Boost
@@ -197,6 +201,7 @@ export function LiveLaunchCard({
         <button
           onClick={() => onFollow?.(data.id)}
           className="h-9 px-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-white/70 hover:text-white text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-white/20 flex items-center gap-1.5"
+          data-cta="card-follow-launch"
         >
           <Heart className="w-4 h-4" />
           <span className="hidden sm:inline">Follow</span>
@@ -206,6 +211,7 @@ export function LiveLaunchCard({
         <button
           onClick={() => onView?.(data.id)}
           className="h-9 px-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-white/70 hover:text-white text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-white/20 flex items-center gap-1.5"
+          data-cta="card-view-launch"
         >
           <Eye className="w-4 h-4" />
           <span className="hidden sm:inline">View</span>

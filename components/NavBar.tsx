@@ -57,7 +57,10 @@ export default function NavBar() {
           </div>
 
           {/* Desktop Connect Button */}
-          <button className="hidden md:inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-launchos-fuchsia to-launchos-violet text-white rounded-lg text-sm font-medium hover:shadow-neon-fuchsia transition-all">
+          <button
+            className="hidden md:inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-launchos-fuchsia to-launchos-violet text-white rounded-lg text-sm font-medium hover:shadow-neon-fuchsia transition-all"
+            data-cta="nav-connect-wallet"
+          >
             <Wallet size={16} />
             Connect
           </button>
@@ -94,7 +97,10 @@ export default function NavBar() {
                 </Link>
               )
             })}
-            <button className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-launchos-fuchsia to-launchos-violet text-white rounded-lg text-sm font-medium transition-all mt-2">
+            <button
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-launchos-fuchsia to-launchos-violet text-white rounded-lg text-sm font-medium transition-all mt-2"
+              data-cta="nav-connect-wallet-mobile"
+            >
               <Wallet size={16} />
               Connect Wallet
             </button>

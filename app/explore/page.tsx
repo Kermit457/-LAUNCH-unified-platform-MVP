@@ -65,6 +65,9 @@ export default function ExplorePage() {
               onClick={() => {/* TODO: Add launch existing token flow */}}
               variant="outline"
               className="gap-2 hover:scale-105 transition-all w-full"
+              data-cta="explore-launch-existing"
+              disabled={true}
+              title="Feature coming soon"
             >
               <Rocket size={16} />
               Launch Existing Token

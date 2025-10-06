@@ -105,6 +105,7 @@ export function CommentsModal({ open, onClose, launchId, launchTitle }: Comments
               onClick={onClose}
               className="p-2 hover:bg-white/10 rounded-lg transition-colors flex-shrink-0"
               aria-label="Close comments"
+              data-cta="modal-close-comments"
             >
               <X className="w-5 h-5 text-white/70" />
             </button>
@@ -143,6 +144,7 @@ export function CommentsModal({ open, onClose, launchId, launchTitle }: Comments
               <button
                 onClick={signIn}
                 className="w-full h-11 rounded-xl bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 hover:from-fuchsia-600 hover:via-purple-600 hover:to-cyan-600 text-white font-semibold transition-all flex items-center justify-center gap-2"
+                data-cta="modal-connect-to-comment"
               >
                 <LogIn className="w-5 h-5" />
                 Connect to comment
@@ -154,6 +156,7 @@ export function CommentsModal({ open, onClose, launchId, launchTitle }: Comments
                 <button
                   onClick={joinLaunch}
                   className="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-600 text-white font-semibold transition-colors whitespace-nowrap"
+                  data-cta="modal-join-launch"
                 >
                   Join Launch
                 </button>
@@ -177,6 +180,7 @@ export function CommentsModal({ open, onClose, launchId, launchTitle }: Comments
                     type="submit"
                     disabled={!text.trim()}
                     className="px-4 py-2 rounded-xl bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 hover:from-fuchsia-600 hover:via-purple-600 hover:to-cyan-600 text-white font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                    data-cta="modal-post-comment"
                   >
                     <Send className="w-4 h-4" />
                     Post

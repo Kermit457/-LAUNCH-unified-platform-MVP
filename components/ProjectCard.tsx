@@ -163,13 +163,14 @@ export function ProjectCard(props: ProjectCardProps) {
                     <p className="text-sm text-neutral-400">{project.subtitle || 'Token Launch'}</p>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    {project.platforms?.includes('twitter') && (
+                    {project.platforms?.includes('twitter') && project.socials?.twitter && (
                       <a
-                        href="#"
+                        href={project.socials.twitter}
                         target="_blank"
                         rel="noreferrer"
                         className={cn("p-1.5 rounded-lg bg-neutral-800 hover:bg-neutral-700 transition-colors focus:outline-none focus:ring-2", focusRing)}
                         aria-label="Twitter"
+                        data-cta="card-twitter-link"
                       >
                         <Twitter className="w-3.5 h-3.5" />
                       </a>

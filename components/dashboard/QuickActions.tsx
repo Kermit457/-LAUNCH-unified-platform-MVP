@@ -63,7 +63,12 @@ export function QuickActions({ onCreateCampaign, onCreateRaid, onCreateBounty }:
         </button>
 
         {/* Configure Widgets */}
-        <button className="p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all text-left group focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80">
+        <button
+          className="p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all text-left group focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
+          data-cta="dashboard-configure-widgets"
+          disabled={true}
+          title="Feature coming soon"
+        >
           <div className="flex items-start gap-3">
             <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-fuchsia-500/20 via-purple-500/20 to-cyan-500/20 flex items-center justify-center group-hover:scale-110 transition-transform border border-white/10 flex-shrink-0">
               <Wrench className="w-5 h-5 text-fuchsia-400" />
@@ -76,7 +81,12 @@ export function QuickActions({ onCreateCampaign, onCreateRaid, onCreateBounty }:
         </button>
 
         {/* Invite Team */}
-        <button className="p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all text-left group focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80">
+        <button
+          className="p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all text-left group focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
+          data-cta="dashboard-invite-team"
+          disabled={true}
+          title="Feature coming soon"
+        >
           <div className="flex items-start gap-3">
             <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-fuchsia-500/20 via-purple-500/20 to-cyan-500/20 flex items-center justify-center group-hover:scale-110 transition-transform border border-white/10 flex-shrink-0">
               <Users className="w-5 h-5 text-fuchsia-400" />
