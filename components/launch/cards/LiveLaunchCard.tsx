@@ -1,13 +1,11 @@
 "use client"
 
 import { useState } from 'react'
-import { Copy, ExternalLink, TrendingUp, Eye, Heart, Check, Users, DollarSign, BarChart3 } from 'lucide-react'
+import { Copy, ExternalLink, TrendingUp, Eye, Heart, Check, Users, BarChart3 } from 'lucide-react'
 import { BaseLaunchCard } from './BaseLaunchCard'
-import { PriceSpark } from './PriceSpark'
 import { LaunchCardData } from '@/types/launch'
 import { useTokenData } from '@/lib/tokenData'
 import { fmtUsd, fmtPct, fmtNum, isNewToken } from '@/lib/format'
-import { cn } from '@/lib/cn'
 
 interface LiveLaunchCardProps {
   data: LaunchCardData
@@ -46,11 +44,11 @@ export function LiveLaunchCard({
       {data.scope === 'ICM' && data.mint && (
         <div className="mb-3 pb-3 border-b border-white/10">
           <div className="flex flex-col gap-2">
-            {/* Token Address - Full Display */}
+            {/* Token Address - Truncated Display */}
             <div className="flex items-center gap-2">
               <span className="text-xs text-white/50 flex-shrink-0">Token:</span>
-              <code className="text-[10px] sm:text-xs text-white/80 font-mono flex-1 min-w-0 truncate select-all">
-                {data.mint}
+              <code className="text-[10px] sm:text-xs text-white/80 font-mono flex-1 min-w-0 select-all">
+                {data.mint.slice(0, Math.floor(data.mint.length / 2))}...
               </code>
             </div>
 
@@ -116,28 +114,16 @@ export function LiveLaunchCard({
       {data.scope === 'ICM' && data.mint && hasTokenData && !loading && (
         <div className="mb-3">
           <div className="grid grid-cols-3 gap-2">
-            {/* Price */}
-            {tokenData.priceUsd !== undefined && (
-              <div className="bg-white/[0.02] rounded-lg p-2 border border-white/5">
+            {/* 24h Change */}
+            {tokenData.change24h !== undefined && (
+              <div className="bg-emerald-500/10 rounded-lg p-2 border border-emerald-600/30">
                 <div className="flex items-center gap-1 mb-1">
-                  <DollarSign className="w-3 h-3 text-green-400" />
-                  <span className="text-[10px] text-white/50 uppercase font-semibold">Price</span>
+                  <span className="text-xs">▲</span>
+                  <span className="text-[10px] text-emerald-300 uppercase font-semibold">24H</span>
                 </div>
-                <div className="text-sm font-bold text-white mb-0.5">{fmtUsd(tokenData.priceUsd)}</div>
-                {tokenData.change24h !== undefined && (
-                  <div
-                    className={cn(
-                      'text-[10px] font-bold inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded',
-                      tokenData.change24h >= 0
-                        ? 'bg-green-500/10 text-green-400'
-                        : 'bg-red-500/10 text-red-400'
-                    )}
-                  >
-                    {tokenData.change24h >= 0 ? '↗' : '↘'}
-                    {fmtPct(tokenData.change24h)}
-                  </div>
-                )}
-                {tokenData.spark && <PriceSpark data={tokenData.spark} className="mt-1" />}
+                <div className="text-sm font-bold text-emerald-300">
+                  {fmtPct(tokenData.change24h)}
+                </div>
               </div>
             )}
 

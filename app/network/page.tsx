@@ -56,6 +56,41 @@ export default function NetworkPage() {
         discord: 'https://discord.gg/cryptoking',
         web: 'https://cryptoking.io',
       },
+      contributions: [
+        {
+          projectId: 'p1',
+          projectName: 'PumpHub',
+          role: 'creator' as const,
+          status: 'completed' as const,
+          joinedAt: '2024-01-15T10:00:00Z',
+          visibility: 'public' as const,
+          projectAvatar: 'https://api.dicebear.com/7.x/initials/svg?seed=PumpHub&backgroundColor=8b5cf6',
+          projectTwitter: 'pumphubxyz',
+          projectSlug: '/project/pumphub'
+        },
+        {
+          projectId: 'p2',
+          projectName: 'ClipFi Protocol',
+          role: 'advisor' as const,
+          status: 'accepted' as const,
+          joinedAt: '2024-02-20T14:30:00Z',
+          visibility: 'public' as const,
+          projectAvatar: 'https://api.dicebear.com/7.x/initials/svg?seed=ClipFi&backgroundColor=06b6d4',
+          projectTwitter: 'clipfiprotocol',
+          projectSlug: '/project/clipfi'
+        },
+        {
+          projectId: 'p3',
+          projectName: 'PrivateDAO',
+          role: 'supporter' as const,
+          status: 'completed' as const,
+          joinedAt: '2024-03-10T08:15:00Z',
+          visibility: 'private' as const,
+          projectAvatar: 'https://api.dicebear.com/7.x/initials/svg?seed=PrivateDAO&backgroundColor=ec4899',
+          projectTwitter: 'privatedao',
+          projectSlug: '/project/privatedao'
+        },
+      ],
       state: getState('u1'),
     },
     {
@@ -99,6 +134,30 @@ export default function NetworkPage() {
         x: 'https://x.com/degentrader',
         web: 'https://degentrader.com',
       },
+      contributions: [
+        {
+          projectId: 'p4',
+          projectName: 'MoonShot Labs',
+          role: 'clipper' as const,
+          status: 'pending' as const,
+          joinedAt: '2024-04-01T12:00:00Z',
+          visibility: 'public' as const,
+          projectAvatar: 'https://api.dicebear.com/7.x/initials/svg?seed=MoonShot&backgroundColor=fbbf24',
+          projectTwitter: 'moonshotlabs',
+          projectSlug: '/project/moonshot'
+        },
+        {
+          projectId: 'p5',
+          projectName: 'Alpha DAO',
+          role: 'supporter' as const,
+          status: 'completed' as const,
+          joinedAt: '2024-02-15T09:30:00Z',
+          visibility: 'public' as const,
+          projectAvatar: 'https://api.dicebear.com/7.x/initials/svg?seed=AlphaDAO&backgroundColor=10b981',
+          projectTwitter: 'alphadao',
+          projectSlug: '/project/alphadao'
+        },
+      ],
       state: getState('u3'),
     },
     {

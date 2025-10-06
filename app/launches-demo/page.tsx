@@ -25,6 +25,15 @@ export default function LaunchesDemoPage() {
       commentsCount: 342,
       upvotes: 1240,
       mint: 'So11111111111111111111111111111111111111112', // Real SOL mint
+      contributors: [
+        { id: 'anatoly', name: 'Anatoly Yakovenko', twitter: 'aeyakovenko', avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=AY&backgroundColor=14f195' },
+        { id: 'raj', name: 'Raj Gokal', twitter: 'rajgokal', avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=RG&backgroundColor=9945ff' },
+        { id: 'austin', name: 'Austin Federa', twitter: 'Austin_Federa', avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=AF&backgroundColor=00d4ff' },
+        { id: 'stephen', name: 'Stephen Akridge', twitter: 'stephenakridge', avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=SA&backgroundColor=dc1fff' },
+        { id: 'greg', name: 'Greg Fitzgerald', twitter: 'gregfitzgerald', avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=GF&backgroundColor=ff6b00' },
+        { id: 'eric', name: 'Eric Williams', twitter: 'ericwilliams', avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=EW&backgroundColor=10b981' },
+        { id: 'lily', name: 'Lily Liu', twitter: 'lilygliu', avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=LL&backgroundColor=8b5cf6' },
+      ],
     },
     {
       id: 'demo-usdc',
@@ -49,6 +58,11 @@ export default function LaunchesDemoPage() {
       commentsCount: 523,
       upvotes: 2103,
       mint: 'DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263', // Real BONK mint
+      contributors: [
+        { id: 'bonk1', name: 'BONK Team', twitter: 'bonk_inu', avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=BT&backgroundColor=ff6b00' },
+        { id: 'bonk2', name: 'Community Lead', twitter: 'bonkcommunity', avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=CL&backgroundColor=fbbf24' },
+        { id: 'bonk3', name: 'Marketing', twitter: 'bonkmarketing', avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=MK&backgroundColor=f97316' },
+      ],
     },
   ]
 
@@ -64,6 +78,12 @@ export default function LaunchesDemoPage() {
       convictionPct: 92,
       commentsCount: 287,
       upvotes: 1456,
+      contributors: [
+        { id: 'los1', name: 'Core Dev', twitter: 'launchos_dev', avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=CD&backgroundColor=8b5cf6' },
+        { id: 'los2', name: 'Product Lead', twitter: 'launchos_product', avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=PL&backgroundColor=a855f7' },
+        { id: 'los3', name: 'Community Manager', twitter: 'launchos_cm', avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=CM&backgroundColor=06b6d4' },
+        { id: 'los4', name: 'Designer', twitter: 'launchos_design', avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=DS&backgroundColor=ec4899' },
+      ],
     },
     {
       id: 'demo-ccm-2',

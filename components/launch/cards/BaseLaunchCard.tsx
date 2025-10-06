@@ -3,6 +3,7 @@
 import { ArrowUp, MessageSquare } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { LaunchCardData } from '@/types/launch'
+import { ContributorRow } from '@/components/ContributorRow'
 
 interface BaseLaunchCardProps {
   data: LaunchCardData
@@ -39,10 +40,10 @@ export function BaseLaunchCard({ data, children, onUpvote, onComment }: BaseLaun
             className="flex flex-col items-center gap-1 group"
             aria-label="Upvote"
           >
-            <div className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center transition-all group-hover:border-fuchsia-400/50 group-hover:bg-fuchsia-500/10">
-              <ArrowUp className="w-4 h-4 text-white/70 group-hover:text-fuchsia-400 transition-colors" />
+            <div className="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center transition-all group-hover:border-fuchsia-400/50 group-hover:bg-fuchsia-500/10">
+              <ArrowUp className="w-5 h-5 text-white/70 group-hover:text-fuchsia-400 transition-colors" />
             </div>
-            <span className="text-xs text-white/50 font-medium">{upvotes}</span>
+            <span className="text-sm text-white/50 font-medium">{upvotes}</span>
           </button>
 
           {/* Comments */}
@@ -51,10 +52,10 @@ export function BaseLaunchCard({ data, children, onUpvote, onComment }: BaseLaun
             className="flex flex-col items-center gap-1 group"
             aria-label="Comments"
           >
-            <div className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center transition-all group-hover:border-cyan-400/50 group-hover:bg-cyan-500/10">
-              <MessageSquare className="w-4 h-4 text-white/70 group-hover:text-cyan-400 transition-colors" />
+            <div className="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center transition-all group-hover:border-cyan-400/50 group-hover:bg-cyan-500/10">
+              <MessageSquare className="w-5 h-5 text-white/70 group-hover:text-cyan-400 transition-colors" />
             </div>
-            <span className="text-xs text-white/50 font-medium">{commentsCount}</span>
+            <span className="text-sm text-white/50 font-medium">{commentsCount}</span>
           </button>
         </div>
 
@@ -103,6 +104,11 @@ export function BaseLaunchCard({ data, children, onUpvote, onComment }: BaseLaun
               />
             </div>
           </div>
+
+          {/* Contributors Row */}
+          {data.contributors && data.contributors.length > 0 && (
+            <ContributorRow contributors={data.contributors} className="mb-3" />
+          )}
 
           {/* Dynamic Children Content (Token row for LIVE, TGE countdown for UPCOMING) */}
           {children}

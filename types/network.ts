@@ -2,6 +2,19 @@ export type ConnState = "none" | "pending" | "connected" | "self"
 
 export type ProfileCardVariant = "default" | "compact"
 
+export interface Contribution {
+  projectId: string
+  projectName: string
+  role: "creator" | "clipper" | "advisor" | "supporter"
+  status: "pending" | "accepted" | "completed"
+  joinedAt: string
+  visibility: "public" | "private"
+  // Optional project metadata for avatar display
+  projectAvatar?: string      // Project logo/avatar URL
+  projectTwitter?: string      // Twitter handle (e.g., "pumphubxyz")
+  projectSlug?: string         // For internal linking (e.g., "/project/pumphub")
+}
+
 export interface XSnapshot {
   followers?: number
   following?: number
@@ -30,6 +43,7 @@ export interface ProfileCardProps {
   // Twitter snapshot (mock now, real later via Auth0/X):
   x?: XSnapshot
   links?: SocialLinks
+  contributions?: Contribution[] // Project contributions
   state: ConnState
   onInvite?: (id: string) => void
   onCancelInvite?: (id: string) => void

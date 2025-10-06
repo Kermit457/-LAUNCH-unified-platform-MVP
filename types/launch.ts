@@ -1,6 +1,13 @@
 export type LaunchStatus = "LIVE" | "UPCOMING"
 export type Scope = "ICM" | "CCM"
 
+export type Contributor = {
+  id: string
+  name: string
+  twitter?: string
+  avatar: string
+}
+
 export type LaunchCardData = {
   id: string
   title: string
@@ -13,6 +20,8 @@ export type LaunchCardData = {
   upvotes: number
   tgeAt?: number // for UPCOMING (epoch ms)
   mint?: string // base58 (LIVE + ICM)
+  dexPairId?: string // Dexscreener pair ID for chart embed (e.g. "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU")
+  contributors?: Contributor[] // Optional project contributors/team
 }
 
 export type LaunchTimeseriesPoint = {
@@ -31,6 +40,50 @@ export type LaunchTimeseriesPoint = {
   campaigns: number             // active campaigns
   social_score: number          // overall social media score (0-100)
   event?: "live" | "tge" | "milestone"
+}
+
+// Candles from /api/dex/candles proxy (5m or 1m bins)
+export type Candle = {
+  t: number  // unix seconds
+  o: number  // open
+  h: number  // high
+  l: number  // low
+  c: number  // close
+}
+
+// Time-binned platform signals, same bins as candles
+export type ActivityBin = {
+  t: number
+  conviction?: number        // 0..100
+  contributions?: number     // counts
+  chats?: number
+  collabs?: number
+  dms?: number
+  network?: number
+  campaigns?: number
+  social?: number
+  // optional notable events rendered as markers
+  events?: { kind: string; text: string }[]
+}
+
+// Enhanced activity point for Insights chart
+export type ActivityPoint = {
+  t: number                  // unix seconds (same as Candle.t)
+  conviction: number         // 0-100 platform conviction score
+  activityScore: number      // sum of all platform actions
+  comments: number           // comment count
+  upvotes: number            // upvote count
+  collabs: number            // collaboration count
+  contributions: number      // contribution count
+  campaigns: number          // campaign count
+  raids: number              // raid/bounty count
+  boosts: number             // boost execution count
+  chats: number              // chat activity count
+  dms: number                // DM activity count
+  social: number             // social media interactions (network activity)
+  views: number              // view count
+  contributors?: { avatar: string; name: string }[] // contributors at this timestamp
+  notable?: { kind: string; label: string }[] // notable events for markers
 }
 
 export type SubmitLaunchInput = {

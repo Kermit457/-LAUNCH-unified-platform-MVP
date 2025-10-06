@@ -20,6 +20,7 @@ export function ProfileCard({
   bio,
   x,
   links,
+  contributions,
   state,
   onInvite,
   onCancelInvite,
@@ -33,6 +34,9 @@ export function ProfileCard({
   const [showOverflow, setShowOverflow] = useState(false)
 
   const isCompact = variant === 'compact'
+
+  // Filter to public contributions only
+  const visibleContributions = contributions?.filter(c => c.visibility === 'public') || []
 
   // Determine primary action
   const renderPrimaryAction = () => {
@@ -217,6 +221,47 @@ export function ProfileCard({
         <div className="mt-4 mb-4">
           <LinkPills links={links} />
         </div>
+
+        {/* Contributions Section - Avatar Bubbles */}
+        {visibleContributions.length > 0 && (
+          <div className="mt-3 border-t border-white/10 pt-3 mb-4">
+            <p className="text-xs uppercase text-white/50 mb-2 font-semibold tracking-wide">
+              Contributions
+            </p>
+            <div className="flex -space-x-2 overflow-hidden">
+              {visibleContributions.map((c, i) => {
+                const linkUrl = c.projectTwitter
+                  ? `https://twitter.com/${c.projectTwitter.replace('@', '')}`
+                  : c.projectSlug
+                  ? c.projectSlug
+                  : `/project/${c.projectId}`
+
+                return (
+                  <a
+                    key={i}
+                    href={linkUrl}
+                    target={c.projectTwitter ? '_blank' : undefined}
+                    rel={c.projectTwitter ? 'noopener noreferrer' : undefined}
+                    title={c.projectName}
+                    className="inline-block relative group"
+                  >
+                    {c.projectAvatar ? (
+                      <img
+                        src={c.projectAvatar}
+                        alt={c.projectName}
+                        className="h-8 w-8 rounded-full border-2 border-[#0D1220] hover:scale-110 hover:z-10 transition-transform duration-150"
+                      />
+                    ) : (
+                      <div className="h-8 w-8 rounded-full border-2 border-[#0D1220] bg-gradient-to-br from-fuchsia-500 to-cyan-500 flex items-center justify-center text-white text-xs font-bold hover:scale-110 hover:z-10 transition-transform duration-150">
+                        {c.projectName.slice(0, 2).toUpperCase()}
+                      </div>
+                    )}
+                  </a>
+                )
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Action row */}
         <div className="flex items-center gap-2">
