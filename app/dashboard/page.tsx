@@ -6,7 +6,6 @@ import { KpiTile } from '@/components/dashboard/KpiTile'
 import { QuickActions } from '@/components/dashboard/QuickActions'
 import { ActivityList, Activity } from '@/components/dashboard/ActivityList'
 import { AlertCircle, TrendingUp, DollarSign, Zap, Target, Award } from 'lucide-react'
-import { mockCampaigns, mockSubmissions, mockPayouts } from '@/lib/dashboardData'
 import { CreateQuestDrawer } from '@/components/quests/CreateQuestDrawer'
 import { CreateCampaignModal } from '@/components/campaigns/CreateCampaignModal'
 import { CampaignType } from '@/types/quest'
@@ -15,10 +14,25 @@ import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import { useUser } from '@/hooks/useUser'
 import { getUserProfile } from '@/lib/appwrite/services/users'
 import type { UserProfile } from '@/lib/appwrite/services/users'
+import { getSubmissions } from '@/lib/appwrite/services/submissions'
+import { getCampaigns } from '@/lib/appwrite/services/campaigns'
+import { getPayouts } from '@/lib/appwrite/services/payouts'
+import { getActivities } from '@/lib/appwrite/services/activities'
+import type { Activity as AppwriteActivity } from '@/lib/appwrite/services/activities'
 
 export default function DashboardOverview() {
   const { user } = useUser()
   const [profile, setProfile] = useState<UserProfile | null>(null)
+  const [kpiData, setKpiData] = useState({
+    pendingReviews: 0,
+    activeCampaigns: 0,
+    pendingAmount: 0,
+    claimableAmount: 0,
+    thirtyDayEarnings: 0
+  })
+  const [activities, setActivities] = useState<Activity[]>([])
+  const [loading, setLoading] = useState(true)
+
   // Modal states
   const [isCreateQuestOpen, setIsCreateQuestOpen] = useState(false)
   const [initialQuestType, setInitialQuestType] = useState<CampaignType>('raid')
@@ -54,21 +68,67 @@ export default function DashboardOverview() {
     fetchProfile()
   }, [user])
 
-  // Calculate KPIs from mock data
-  const pendingReviews = mockSubmissions.filter(s => s.status === 'pending').length
-  const activeCampaigns = mockCampaigns.filter(c => c.status === 'live').length
+  // Fetch dashboard data from Appwrite
+  useEffect(() => {
+    async function fetchDashboardData() {
+      if (!user) return
 
-  const pendingAmount = mockSubmissions
-    .filter(s => s.status === 'approved')
-    .reduce((sum, s) => sum + s.reward.amount, 0)
+      try {
+        setLoading(true)
 
-  const claimableAmount = mockPayouts
-    .filter(p => p.status === 'claimable')
-    .reduce((sum, p) => sum + (p.net || p.amount), 0)
+        // Fetch all data in parallel
+        const [submissions, campaigns, payouts, userActivities] = await Promise.all([
+          getSubmissions({ userId: user.$id }),
+          getCampaigns({ createdBy: user.$id }),
+          getPayouts({ userId: user.$id }),
+          getActivities(user.$id, 10)
+        ])
 
-  const thirtyDayEarnings = mockPayouts
-    .filter(p => p.status === 'paid' && Date.now() - p.createdAt < 30 * 24 * 60 * 60 * 1000)
-    .reduce((sum, p) => sum + (p.net || p.amount), 0)
+        // Calculate KPIs
+        const pendingReviews = submissions.filter(s => s.status === 'pending').length
+        const activeCampaigns = campaigns.filter(c => c.status === 'active').length
+
+        const pendingAmount = submissions
+          .filter(s => s.status === 'approved')
+          .reduce((sum, s) => sum + (s.earnings || 0), 0)
+
+        const claimableAmount = payouts
+          .filter(p => p.status === 'claimable')
+          .reduce((sum, p) => sum + (p.net || p.amount), 0)
+
+        const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000
+        const thirtyDayEarnings = payouts
+          .filter(p => p.status === 'paid' && new Date(p.$createdAt).getTime() > thirtyDaysAgo)
+          .reduce((sum, p) => sum + (p.net || p.amount), 0)
+
+        setKpiData({
+          pendingReviews,
+          activeCampaigns,
+          pendingAmount,
+          claimableAmount,
+          thirtyDayEarnings
+        })
+
+        // Convert Appwrite activities to Activity format
+        const convertedActivities: Activity[] = userActivities.map(activity => ({
+          id: activity.$id,
+          kind: activity.type as any,
+          title: activity.title,
+          source: activity.message,
+          ts: new Date(activity.$createdAt).getTime()
+        }))
+
+        setActivities(convertedActivities)
+      } catch (error) {
+        console.error('Failed to fetch dashboard data:', error)
+        // Keep default values on error
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchDashboardData()
+  }, [user])
 
   const conviction = profile?.conviction || 0
 
@@ -81,42 +141,6 @@ export default function DashboardOverview() {
       maximumFractionDigits: 2,
     }).format(amount)
   }
-
-  // Activity feed
-  const activities: Activity[] = [
-    {
-      id: '1',
-      kind: 'submission',
-      title: 'New submission from @creator_123',
-      source: 'Solana Summer Clips',
-      ts: Date.now() - 2 * 60 * 1000, // 2 min ago
-    },
-    {
-      id: '2',
-      kind: 'campaign_live',
-      title: 'Campaign "Holiday Raid" went live',
-      ts: Date.now() - 1 * 60 * 60 * 1000, // 1 hour ago
-    },
-    {
-      id: '3',
-      kind: 'payout',
-      title: 'Payment of $45.00 USDC claimed',
-      ts: Date.now() - 3 * 60 * 60 * 1000, // 3 hours ago
-    },
-    {
-      id: '4',
-      kind: 'approval',
-      title: 'Submission approved for @influencer_99',
-      source: 'NFT Launch Clips',
-      ts: Date.now() - 5 * 60 * 60 * 1000, // 5 hours ago
-    },
-    {
-      id: '5',
-      kind: 'topup',
-      title: 'Budget topped up on "Clipping Contest"',
-      ts: Date.now() - 1 * 24 * 60 * 60 * 1000, // 1 day ago
-    },
-  ]
 
   return (
     <ProtectedRoute>
@@ -135,39 +159,34 @@ export default function DashboardOverview() {
         <KpiTile
           icon={AlertCircle}
           label="Pending Reviews"
-          value={pendingReviews.toString()}
-          delta={{ value: 12, dir: 'up' }}
+          value={kpiData.pendingReviews.toString()}
           tooltip="Number of submissions awaiting review"
         />
         <KpiTile
           icon={TrendingUp}
           label="Active Campaigns"
-          value={activeCampaigns.toString()}
-          delta={{ value: 2, dir: 'up' }}
+          value={kpiData.activeCampaigns.toString()}
           tooltip="Campaigns currently live"
         />
         <KpiTile
           icon={DollarSign}
           label="Pending $"
-          value={formatUSDC(pendingAmount)}
+          value={formatUSDC(kpiData.pendingAmount)}
         />
         <KpiTile
           icon={Zap}
           label="Claimable $"
-          value={formatUSDC(claimableAmount)}
-          delta={{ value: 8, dir: 'up' }}
+          value={formatUSDC(kpiData.claimableAmount)}
         />
         <KpiTile
           icon={Target}
           label="30d Earnings"
-          value={formatUSDC(thirtyDayEarnings)}
-          delta={{ value: 15, dir: 'up' }}
+          value={formatUSDC(kpiData.thirtyDayEarnings)}
         />
         <KpiTile
           icon={Award}
           label="Conviction"
           value={`${conviction}%`}
-          delta={{ value: 3, dir: 'up' }}
           progressPct={conviction}
           tooltip="Overall platform trust score"
         />

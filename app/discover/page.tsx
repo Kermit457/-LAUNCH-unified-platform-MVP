@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { LiveLaunchCard } from '@/components/launch/cards/LiveLaunchCard'
 import { UpcomingLaunchCard } from '@/components/launch/cards/UpcomingLaunchCard'
 import { CommentsModal } from '@/components/comments/CommentsModal'
+import { SubmitLaunchDrawer } from '@/components/launch/SubmitLaunchDrawer'
 import { LaunchCardData } from '@/types/launch'
 import { TrendingUp, Rocket, Clock, LayoutGrid, Link2, MessageSquare, Flame } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -22,6 +23,7 @@ export default function DiscoverPage() {
   const [sortBy, setSortBy] = useState<SortType>('trending')
   const [launches, setLaunches] = useState<LaunchCardData[]>([])
   const [loading, setLoading] = useState(true)
+  const [isSubmitLaunchOpen, setIsSubmitLaunchOpen] = useState(false)
 
   // Fetch launches from Appwrite
   useEffect(() => {
@@ -186,21 +188,61 @@ export default function DiscoverPage() {
   ]
 
   // Callback handlers
-  const handleUpvote = (id: string) => console.log('Upvote:', id)
+  const handleUpvote = async (id: string) => {
+    try {
+      const response = await fetch(`/api/launches/${id}/upvote`, {
+        method: 'POST'
+      })
+      if (response.ok) {
+        // Optimistically update UI
+        setLaunches(prev => prev.map(l =>
+          l.id === id ? { ...l, upvotes: (l.upvotes || 0) + 1 } : l
+        ))
+      }
+    } catch (error) {
+      console.error('Failed to upvote:', error)
+    }
+  }
+
   const handleComment = (id: string) => {
-    const card = [...liveICMCards, ...liveCCMCards, ...upcomingCards].find(c => c.id === id)
+    const card = allLaunches.find(c => c.id === id)
     if (card) {
       setSelectedLaunch({ id: card.id, title: card.title })
       setCommentsOpen(true)
     }
   }
-  const handleBoost = (id: string) => console.log('Boost:', id)
-  const handleFollow = (id: string) => console.log('Follow:', id)
+
+  const handleBoost = (id: string) => {
+    // TODO: Open boost payment modal
+    alert('Boost feature coming soon! This will allow you to promote launches.')
+  }
+
+  const handleFollow = async (id: string) => {
+    try {
+      // TODO: Get user ID from auth context
+      const userId = 'current-user-id' // Replace with actual user ID
+      const response = await fetch(`/api/launches/${id}/follow`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId })
+      })
+      if (response.ok) {
+        const data = await response.json()
+        alert(data.isFollowing ? 'Following!' : 'Unfollowed')
+      }
+    } catch (error) {
+      console.error('Failed to follow:', error)
+    }
+  }
+
   const handleView = (id: string) => {
-    console.log('Navigating to:', `/launch/${id}`)
     router.push(`/launch/${id}`)
   }
-  const handleSetReminder = (id: string) => console.log('Set Reminder:', id)
+
+  const handleSetReminder = (id: string) => {
+    // TODO: Implement reminder functionality
+    alert('Reminder set! We\'ll notify you when this launch goes live.')
+  }
 
   // Combined and filtered data
   const allLaunches = useMemo(() => {
@@ -296,6 +338,7 @@ export default function DiscoverPage() {
           variant="boost"
           size="lg"
           className="gap-2"
+          onClick={() => setIsSubmitLaunchOpen(true)}
         >
           <Rocket className="w-5 h-5" />
           Create a Launch
@@ -308,6 +351,7 @@ export default function DiscoverPage() {
           variant="ghost"
           size="sm"
           className="gap-2"
+          onClick={() => setIsSubmitLaunchOpen(true)}
         >
           <Rocket className="w-4 h-4" />
           Launch Existing Token
@@ -443,6 +487,18 @@ export default function DiscoverPage() {
           launchTitle={selectedLaunch.title}
         />
       )}
+
+      {/* Submit Launch Drawer */}
+      <SubmitLaunchDrawer
+        isOpen={isSubmitLaunchOpen}
+        onClose={() => setIsSubmitLaunchOpen(false)}
+        onSubmit={(data) => {
+          console.log('Launch submitted:', data)
+          setIsSubmitLaunchOpen(false)
+          // Refresh launches
+          window.location.reload()
+        }}
+      />
     </div>
   )
 }

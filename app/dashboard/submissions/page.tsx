@@ -1,64 +1,143 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Filter } from 'lucide-react'
 import { SubmissionTable } from '@/components/dashboard/Tables'
 import { SubmissionViewer } from '@/components/drawers/SubmissionViewer'
-import { mockSubmissions } from '@/lib/dashboardData'
 import type { Submission } from '@/lib/types'
 import { cn } from '@/lib/utils'
+import { useUser } from '@/hooks/useUser'
+import {
+  getSubmissions,
+  approveSubmission,
+  rejectSubmission,
+  Submission as AppwriteSubmission
+} from '@/lib/appwrite/services/submissions'
+
+// Convert Appwrite submission to Dashboard submission
+function appwriteToDashboard(s: AppwriteSubmission): Submission {
+  return {
+    id: s.$id,
+    userId: s.userId,
+    campaignId: s.campaignId || s.questId || '',
+    campaignName: '', // Will need to fetch campaign details
+    submittedAt: new Date(s.$createdAt).getTime(),
+    status: s.status,
+    contentUrl: s.mediaUrl,
+    earnings: s.earnings,
+    feedback: s.notes
+  }
+}
 
 export default function SubmissionsPage() {
-  const [submissions, setSubmissions] = useState(mockSubmissions)
+  const { user } = useUser()
+  const [submissions, setSubmissions] = useState<Submission[]>([])
+  const [loading, setLoading] = useState(true)
   const [selectedSubmissions, setSelectedSubmissions] = useState<Set<string>>(new Set())
   const [viewingSubmission, setViewingSubmission] = useState<Submission | undefined>()
   const [statusFilter, setStatusFilter] = useState<string>('all')
 
-  const handleApprove = (id: string) => {
-    setSubmissions(submissions.map(s =>
-      s.id === id
-        ? { ...s, status: 'approved' as const, decidedAt: Date.now() }
-        : s
-    ))
-    setViewingSubmission(undefined)
+  // Fetch submissions from Appwrite
+  useEffect(() => {
+    async function fetchSubmissions() {
+      if (!user) return
+
+      try {
+        setLoading(true)
+        const data = await getSubmissions({ userId: user.$id })
+        const converted = data.map(appwriteToDashboard)
+        setSubmissions(converted)
+      } catch (error) {
+        console.error('Failed to fetch submissions:', error)
+        setSubmissions([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchSubmissions()
+  }, [user])
+
+  const handleApprove = async (id: string) => {
+    try {
+      await approveSubmission(id, 10, 'Approved') // Default earnings
+      setSubmissions(submissions.map(s =>
+        s.id === id
+          ? { ...s, status: 'approved' as const, earnings: 10 }
+          : s
+      ))
+      setViewingSubmission(undefined)
+    } catch (error) {
+      console.error('Failed to approve submission:', error)
+      alert('Failed to approve submission')
+    }
   }
 
-  const handleReject = (id: string, reason: string) => {
-    setSubmissions(submissions.map(s =>
-      s.id === id
-        ? { ...s, status: 'rejected' as const, notes: reason, decidedAt: Date.now() }
-        : s
-    ))
-    setViewingSubmission(undefined)
+  const handleReject = async (id: string, reason: string) => {
+    try {
+      await rejectSubmission(id, reason)
+      setSubmissions(submissions.map(s =>
+        s.id === id
+          ? { ...s, status: 'rejected' as const, feedback: reason }
+          : s
+      ))
+      setViewingSubmission(undefined)
+    } catch (error) {
+      console.error('Failed to reject submission:', error)
+      alert('Failed to reject submission')
+    }
   }
 
-  const handleNeedsFix = (id: string, note: string) => {
-    setSubmissions(submissions.map(s =>
-      s.id === id
-        ? { ...s, status: 'needs_fix' as const, notes: note }
-        : s
-    ))
-    setViewingSubmission(undefined)
+  const handleNeedsFix = async (id: string, note: string) => {
+    try {
+      await rejectSubmission(id, `Needs fix: ${note}`)
+      setSubmissions(submissions.map(s =>
+        s.id === id
+          ? { ...s, status: 'rejected' as const, feedback: note }
+          : s
+      ))
+      setViewingSubmission(undefined)
+    } catch (error) {
+      console.error('Failed to update submission:', error)
+      alert('Failed to update submission')
+    }
   }
 
-  const handleBulkApprove = () => {
-    setSubmissions(submissions.map(s =>
-      selectedSubmissions.has(s.id)
-        ? { ...s, status: 'approved' as const, decidedAt: Date.now() }
-        : s
-    ))
-    setSelectedSubmissions(new Set())
+  const handleBulkApprove = async () => {
+    try {
+      await Promise.all(
+        Array.from(selectedSubmissions).map(id => approveSubmission(id, 10, 'Bulk approved'))
+      )
+      setSubmissions(submissions.map(s =>
+        selectedSubmissions.has(s.id)
+          ? { ...s, status: 'approved' as const, earnings: 10 }
+          : s
+      ))
+      setSelectedSubmissions(new Set())
+    } catch (error) {
+      console.error('Failed to bulk approve:', error)
+      alert('Failed to approve submissions')
+    }
   }
 
-  const handleBulkReject = () => {
+  const handleBulkReject = async () => {
     const reason = prompt('Reason for bulk rejection:')
     if (!reason) return
-    setSubmissions(submissions.map(s =>
-      selectedSubmissions.has(s.id)
-        ? { ...s, status: 'rejected' as const, notes: reason, decidedAt: Date.now() }
-        : s
-    ))
-    setSelectedSubmissions(new Set())
+
+    try {
+      await Promise.all(
+        Array.from(selectedSubmissions).map(id => rejectSubmission(id, reason))
+      )
+      setSubmissions(submissions.map(s =>
+        selectedSubmissions.has(s.id)
+          ? { ...s, status: 'rejected' as const, feedback: reason }
+          : s
+      ))
+      setSelectedSubmissions(new Set())
+    } catch (error) {
+      console.error('Failed to bulk reject:', error)
+      alert('Failed to reject submissions')
+    }
   }
 
   const filteredSubmissions = statusFilter === 'all'
@@ -70,7 +149,15 @@ export default function SubmissionsPage() {
     pending: submissions.filter(s => s.status === 'pending').length,
     approved: submissions.filter(s => s.status === 'approved').length,
     rejected: submissions.filter(s => s.status === 'rejected').length,
-    needs_fix: submissions.filter(s => s.status === 'needs_fix').length,
+  }
+
+  if (loading) {
+    return (
+      <div className="text-center py-12">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto mb-4"></div>
+        <p className="text-white/60">Loading submissions...</p>
+      </div>
+    )
   }
 
   return (

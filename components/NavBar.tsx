@@ -8,12 +8,14 @@ import { LayoutGrid, Swords, Wrench, Users, Wallet, Menu, X, Trophy, Network, Za
 import { useNetwork } from '@/lib/contexts/NetworkContext'
 import { useNotifications } from '@/lib/contexts/NotificationContext'
 import { NotificationDropdown } from '@/components/notifications/NotificationDropdown'
+import { useWallet } from '@/contexts/WalletContext'
 
 export default function NavBar() {
   const pathname = usePathname()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [notificationDropdownOpen, setNotificationDropdownOpen] = useState(false)
   const { unreadCount } = useNotifications()
+  const { connected, address, connect, disconnect } = useWallet()
 
   const links = [
     { href: '/', label: 'Home', icon: null },
@@ -84,13 +86,25 @@ export default function NavBar() {
             </div>
 
             {/* Connect Wallet Button */}
-            <button
-              className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-launchos-fuchsia to-launchos-violet text-white rounded-lg text-sm font-medium hover:shadow-neon-fuchsia transition-all"
-              data-cta="nav-connect-wallet"
-            >
-              <Wallet size={16} />
-              Connect
-            </button>
+            {connected ? (
+              <button
+                onClick={disconnect}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 border border-white/20 text-white rounded-lg text-sm font-medium hover:bg-white/20 transition-all"
+                data-cta="nav-disconnect-wallet"
+              >
+                <Wallet size={16} />
+                {address?.slice(0, 6)}...{address?.slice(-4)}
+              </button>
+            ) : (
+              <button
+                onClick={connect}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-launchos-fuchsia to-launchos-violet text-white rounded-lg text-sm font-medium hover:shadow-neon-fuchsia transition-all"
+                data-cta="nav-connect-wallet"
+              >
+                <Wallet size={16} />
+                Connect
+              </button>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -125,13 +139,25 @@ export default function NavBar() {
                 </Link>
               )
             })}
-            <button
-              className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-launchos-fuchsia to-launchos-violet text-white rounded-lg text-sm font-medium transition-all mt-2"
-              data-cta="nav-connect-wallet-mobile"
-            >
-              <Wallet size={16} />
-              Connect Wallet
-            </button>
+            {connected ? (
+              <button
+                onClick={disconnect}
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-white/10 border border-white/20 text-white rounded-lg text-sm font-medium transition-all mt-2"
+                data-cta="nav-disconnect-wallet-mobile"
+              >
+                <Wallet size={16} />
+                {address?.slice(0, 6)}...{address?.slice(-4)}
+              </button>
+            ) : (
+              <button
+                onClick={connect}
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-launchos-fuchsia to-launchos-violet text-white rounded-lg text-sm font-medium transition-all mt-2"
+                data-cta="nav-connect-wallet-mobile"
+              >
+                <Wallet size={16} />
+                Connect Wallet
+              </button>
+            )}
           </div>
         )}
       </div>

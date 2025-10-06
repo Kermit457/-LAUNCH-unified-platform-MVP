@@ -68,12 +68,16 @@ async function setupAppwrite() {
           { key: 'username', type: 'string', size: 50, required: true },
           { key: 'displayName', type: 'string', size: 100, required: true },
           { key: 'avatar', type: 'string', size: 500, required: false },
+          { key: 'avatarUrl', type: 'string', size: 500, required: false },
+          { key: 'bannerUrl', type: 'string', size: 500, required: false },
           { key: 'bio', type: 'string', size: 500, required: false },
           { key: 'walletAddress', type: 'string', size: 100, required: false },
           { key: 'roles', type: 'string', size: 500, required: true, array: true },
           { key: 'verified', type: 'boolean', required: false, default: false },
           { key: 'conviction', type: 'integer', required: false, default: 0 },
-          { key: 'totalEarnings', type: 'double', required: false, default: 0 }
+          { key: 'totalEarnings', type: 'double', required: false, default: 0 },
+          { key: 'followedLaunches', type: 'string', size: 5000, required: false, array: true },
+          { key: 'socialLinks', type: 'string', size: 1000, required: false }
         ]
       },
       {
@@ -249,6 +253,51 @@ async function setupAppwrite() {
           { key: 'senderId', type: 'string', size: 100, required: true },
           { key: 'receiverId', type: 'string', size: 100, required: true },
           { key: 'text', type: 'string', size: 2000, required: true },
+          { key: 'read', type: 'boolean', required: false, default: false }
+        ]
+      },
+      {
+        id: 'payouts',
+        name: 'Payouts',
+        permissions: [
+          Permission.read(Role.users()),
+          Permission.create(Role.users()),
+          Permission.update(Role.users()),
+          Permission.delete(Role.users())
+        ],
+        attributes: [
+          { key: 'payoutId', type: 'string', size: 100, required: true },
+          { key: 'userId', type: 'string', size: 100, required: true },
+          { key: 'campaignId', type: 'string', size: 100, required: false },
+          { key: 'questId', type: 'string', size: 100, required: false },
+          { key: 'amount', type: 'double', required: true },
+          { key: 'currency', type: 'string', size: 20, required: true },
+          { key: 'status', type: 'string', size: 20, required: true },
+          { key: 'txHash', type: 'string', size: 200, required: false },
+          { key: 'claimedAt', type: 'datetime', required: false },
+          { key: 'paidAt', type: 'datetime', required: false },
+          { key: 'fee', type: 'double', required: false },
+          { key: 'net', type: 'double', required: false }
+        ]
+      },
+      {
+        id: 'activities',
+        name: 'Activities',
+        permissions: [
+          Permission.read(Role.users()),
+          Permission.create(Role.users()),
+          Permission.update(Role.users()),
+          Permission.delete(Role.users())
+        ],
+        attributes: [
+          { key: 'activityId', type: 'string', size: 100, required: true },
+          { key: 'userId', type: 'string', size: 100, required: true },
+          { key: 'type', type: 'string', size: 50, required: true },
+          { key: 'category', type: 'string', size: 20, required: true },
+          { key: 'title', type: 'string', size: 200, required: true },
+          { key: 'message', type: 'string', size: 500, required: false },
+          { key: 'metadata', type: 'string', size: 2000, required: false },
+          { key: 'actionUrl', type: 'string', size: 500, required: false },
           { key: 'read', type: 'boolean', required: false, default: false }
         ]
       }

@@ -26,6 +26,7 @@ export interface Campaign {
 export async function getCampaigns(options?: {
   type?: 'bounty' | 'quest' | 'airdrop'
   status?: 'active' | 'completed' | 'cancelled'
+  createdBy?: string
   limit?: number
   offset?: number
 }) {
@@ -37,6 +38,10 @@ export async function getCampaigns(options?: {
 
   if (options?.status) {
     queries.push(Query.equal('status', options.status))
+  }
+
+  if (options?.createdBy) {
+    queries.push(Query.equal('createdBy', options.createdBy))
   }
 
   if (options?.limit) {

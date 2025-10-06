@@ -10,14 +10,17 @@ import { CreateQuestDrawer } from '@/components/quests/CreateQuestDrawer'
 import { CreateCampaignModal } from '@/components/campaigns/CreateCampaignModal'
 import { CampaignType } from '@/types/quest'
 import { Button } from '@/components/ui/button'
-import { getCampaigns } from '@/lib/appwrite/services/campaigns'
+import { getCampaigns, createCampaign } from '@/lib/appwrite/services/campaigns'
+import { createQuest } from '@/lib/appwrite/services/quests'
 import type { EarnCard } from '@/components/EarnCard'
+import { useUser } from '@/hooks/useUser'
 
 const TABS = ['All', 'Campaign', 'Raid', 'Bounty'] as const
 type Tab = typeof TABS[number]
 
 export default function EarnPage() {
   const router = useRouter()
+  const { user } = useUser()
   const [activeTab, setActiveTab] = useState<Tab>('All')
   const [sortBy, setSortBy] = useState<'trending' | 'payout' | 'closing'>('trending')
   const [isCreateQuestOpen, setIsCreateQuestOpen] = useState(false)
@@ -220,16 +223,31 @@ export default function EarnPage() {
         isOpen={isCreateQuestOpen}
         initialType={initialQuestType}
         onClose={() => setIsCreateQuestOpen(false)}
-        onSubmit={(data) => {
-          // Store quest with key: `${data.type}:${data.id}` to prevent collisions
-          // TODO: Replace with Supabase insert
-          console.log(`${data.type}:${data.id}`, 'Quest created:', data)
+        onSubmit={async (data: any) => {
+          try {
+            // Create quest in Appwrite
+            const quest = await createQuest({
+              questId: data.id || `quest_${Date.now()}`,
+              type: data.type,
+              title: data.title,
+              description: (data as any).description || '',
+              createdBy: user?.$id || 'anonymous',
+              status: 'active',
+              poolAmount: (data as any).poolAmount || 0,
+              participants: 0,
+              requirements: (data as any).requirements || [],
+              platforms: (data as any).platforms || [],
+              deadline: (data as any).deadline || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+            })
 
-          // Navigate to correct route based on type
-          const route = data.type === 'raid' ? `/raids/${data.id}` : `/bounties/${data.id}`
-          router.push(route)
-
-          setIsCreateQuestOpen(false)
+            // Navigate to correct route based on type
+            const route = data.type === 'raid' ? `/raids/${quest.$id}` : `/bounties/${quest.$id}`
+            router.push(route)
+            setIsCreateQuestOpen(false)
+          } catch (error) {
+            console.error('Failed to create quest:', error)
+            alert('Failed to create quest. Please try again.')
+          }
         }}
       />
 
@@ -237,9 +255,30 @@ export default function EarnPage() {
       <CreateCampaignModal
         isOpen={isCreateCampaignOpen}
         onClose={() => setIsCreateCampaignOpen(false)}
-        onSubmit={(data) => {
-          console.log('Campaign created:', data)
-          setIsCreateCampaignOpen(false)
+        onSubmit={async (data: any) => {
+          try {
+            // Create campaign in Appwrite
+            const campaign = await createCampaign({
+              title: data.title,
+              description: data.description || '',
+              type: 'bounty',
+              creatorId: user?.$id || 'anonymous',
+              creatorName: user?.name || 'Anonymous',
+              budget: (data as any).budget || 0,
+              budgetPaid: 0,
+              participants: 0,
+              deadline: (data as any).deadline || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+              status: 'active',
+              requirements: (data as any).requirements || [],
+              tags: (data as any).tags || []
+            })
+
+            router.push(`/campaign/${campaign.$id}`)
+            setIsCreateCampaignOpen(false)
+          } catch (error) {
+            console.error('Failed to create campaign:', error)
+            alert('Failed to create campaign. Please try again.')
+          }
         }}
       />
     </div>

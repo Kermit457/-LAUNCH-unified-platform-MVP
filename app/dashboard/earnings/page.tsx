@@ -1,28 +1,86 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Wallet, Copy, Check, ExternalLink } from 'lucide-react'
-import { mockCampaigns, mockPayouts } from '@/lib/dashboardData'
 import { StatusBadge } from '@/components/dashboard/StatusBadge'
 import { CopyButton } from '@/components/common/CopyButton'
 import { cn } from '@/lib/utils'
+import { useUser } from '@/hooks/useUser'
+import { getCampaigns } from '@/lib/appwrite/services/campaigns'
+import { getPayouts, claimPayout } from '@/lib/appwrite/services/payouts'
+import type { Payout as AppwritePayout } from '@/lib/appwrite/services/payouts'
+
+type DashboardPayout = {
+  id: string
+  source: string
+  amount: number
+  mint: 'USDC' | 'SOL'
+  fee?: number
+  net?: number
+  status: string
+  createdAt: number
+  paidAt?: number
+  txHash?: string
+}
 
 export default function EarningsPage() {
+  const { user } = useUser()
   const [selectedPayouts, setSelectedPayouts] = useState<Set<string>>(new Set())
+  const [loading, setLoading] = useState(true)
+  const [campaigns, setCampaigns] = useState<any[]>([])
+  const [payouts, setPayouts] = useState<DashboardPayout[]>([])
 
   const walletAddress = 'FRENw...x7gH2'
 
+  // Fetch campaigns and payouts
+  useEffect(() => {
+    async function fetchData() {
+      if (!user) return
+
+      try {
+        setLoading(true)
+        const [campaignsData, payoutsData] = await Promise.all([
+          getCampaigns({ createdBy: user.$id }),
+          getPayouts({ userId: user.$id })
+        ])
+
+        setCampaigns(campaignsData)
+
+        // Convert Appwrite payouts to dashboard format
+        const converted: DashboardPayout[] = payoutsData.map(p => ({
+          id: p.$id,
+          source: p.campaignId || p.questId || 'campaign',
+          amount: p.amount,
+          mint: p.currency === 'SOL' ? 'SOL' : 'USDC',
+          fee: p.fee,
+          net: p.net,
+          status: p.status,
+          createdAt: new Date(p.$createdAt).getTime(),
+          paidAt: p.paidAt ? new Date(p.paidAt).getTime() : undefined,
+          txHash: p.txHash
+        }))
+        setPayouts(converted)
+      } catch (error) {
+        console.error('Failed to fetch earnings data:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchData()
+  }, [user])
+
   // Calculate escrow summary per campaign
-  const escrowSummary = mockCampaigns.map(c => ({
-    campaignName: c.name,
-    locked: c.budget.locked.amount,
-    available: c.budget.total.amount - c.budget.locked.amount - c.budget.spent.amount,
-    spent: c.budget.spent.amount,
-    mint: c.budget.total.mint
+  const escrowSummary = campaigns.map(c => ({
+    campaignName: c.title,
+    locked: 0,
+    available: (c.budget || 0) - (c.budgetPaid || 0),
+    spent: c.budgetPaid || 0,
+    mint: 'USDC' as const
   }))
 
-  const claimablePayouts = mockPayouts.filter(p => p.status === 'claimable')
-  const paidPayouts = mockPayouts.filter(p => p.status === 'paid')
+  const claimablePayouts = payouts.filter(p => p.status === 'claimable')
+  const paidPayouts = payouts.filter(p => p.status === 'claimed' || p.status === 'paid')
 
   const totalClaimable = claimablePayouts.reduce((sum, p) => sum + (p.net || p.amount), 0)
 
@@ -44,8 +102,28 @@ export default function EarningsPage() {
     }
   }
 
-  const handleClaimSelected = () => {
-    alert(`Claiming ${selectedPayouts.size} payouts (mock action)`)
+  const handleClaimSelected = async () => {
+    if (selectedPayouts.size === 0) return
+
+    try {
+      // Claim each selected payout
+      await Promise.all(
+        Array.from(selectedPayouts).map(id => claimPayout(id))
+      )
+
+      // Update local state
+      setPayouts(payouts.map(p =>
+        selectedPayouts.has(p.id) ? { ...p, status: 'claimed', paidAt: Date.now() } : p
+      ))
+
+      // Clear selection
+      setSelectedPayouts(new Set())
+
+      alert(`Successfully claimed ${selectedPayouts.size} payout(s)!`)
+    } catch (error) {
+      console.error('Failed to claim payouts:', error)
+      alert('Failed to claim payouts. Please try again.')
+    }
   }
 
   const getMintBadge = (mint: 'USDC' | 'SOL') => (
@@ -56,6 +134,15 @@ export default function EarningsPage() {
       {mint}
     </span>
   )
+
+  if (loading) {
+    return (
+      <div className="text-center py-12">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto mb-4"></div>
+        <p className="text-white/60">Loading earnings data...</p>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-8">

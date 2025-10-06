@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useMemo, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { Users } from 'lucide-react'
 import { ProfileCard } from '@/components/profile/ProfileCard'
 import { MetricPill } from '@/components/ui/metric-pill'
@@ -12,6 +13,7 @@ import { ProfileCardData } from '@/types/profile'
 import { searchUsers } from '@/lib/appwrite/services/users'
 
 export default function NetworkPage() {
+  const router = useRouter()
   const [filters, setFilters] = useState<FilterState>({
     connectionStatus: 'all',
     roles: [],
@@ -187,8 +189,7 @@ export default function NetworkPage() {
             <Button
               variant="boost"
               size="lg"
-              disabled={true}
-              title="Feature coming soon"
+              onClick={() => router.push('/profile')}
             >
               Complete Your Profile
             </Button>

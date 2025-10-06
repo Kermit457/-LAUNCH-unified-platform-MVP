@@ -1,35 +1,97 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { TrendingUp, Users, Eye, DollarSign } from 'lucide-react'
-import { mockPayouts, mockSubmissions, mockCampaigns } from '@/lib/dashboardData'
+import { useUser } from '@/hooks/useUser'
+import { getCampaigns } from '@/lib/appwrite/services/campaigns'
+import { getPayouts } from '@/lib/appwrite/services/payouts'
+import { getSubmissions } from '@/lib/appwrite/services/submissions'
 
 export default function AnalyticsPage() {
-  // Generate 30 days of earnings data
-  const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000
-  const earningsData = Array.from({ length: 30 }, (_, i) => {
-    const date = new Date(thirtyDaysAgo + i * 24 * 60 * 60 * 1000)
-    const amount = Math.random() * 50 + 10
-    return {
-      date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-      amount: parseFloat(amount.toFixed(2))
+  const { user } = useUser()
+  const [loading, setLoading] = useState(true)
+  const [earningsData, setEarningsData] = useState<Array<{ date: string; amount: number }>>([])
+  const [submissionsPerDay, setSubmissionsPerDay] = useState<Array<{ date: string; count: number }>>([])
+  const [topCampaigns, setTopCampaigns] = useState<Array<{ name: string; spent: number; revenue: number; roi: number }>>([])
+
+  useEffect(() => {
+    async function fetchAnalytics() {
+      if (!user) return
+
+      try {
+        setLoading(true)
+        const [campaigns, payouts, submissions] = await Promise.all([
+          getCampaigns({ createdBy: user.$id }),
+          getPayouts({ userId: user.$id }),
+          getSubmissions({ userId: user.$id })
+        ])
+
+        // Calculate 30-day earnings from payouts
+        const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000
+        const earningsByDay: Record<string, number> = {}
+
+        payouts.forEach(p => {
+          const paidDate = p.paidAt ? new Date(p.paidAt) : new Date(p.$createdAt)
+          if (paidDate.getTime() >= thirtyDaysAgo) {
+            const dateKey = paidDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+            earningsByDay[dateKey] = (earningsByDay[dateKey] || 0) + p.amount
+          }
+        })
+
+        const earnings = Array.from({ length: 30 }, (_, i) => {
+          const date = new Date(thirtyDaysAgo + i * 24 * 60 * 60 * 1000)
+          const dateKey = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+          return {
+            date: dateKey,
+            amount: earningsByDay[dateKey] || 0
+          }
+        })
+        setEarningsData(earnings)
+
+        // Calculate submissions per day (last 7 days)
+        const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000
+        const submissionsByDay: Record<string, number> = {}
+
+        submissions.forEach(s => {
+          const subDate = new Date(s.$createdAt)
+          if (subDate.getTime() >= sevenDaysAgo) {
+            const dateKey = subDate.toLocaleDateString('en-US', { weekday: 'short' })
+            submissionsByDay[dateKey] = (submissionsByDay[dateKey] || 0) + 1
+          }
+        })
+
+        const submissionsData = Array.from({ length: 7 }, (_, i) => {
+          const date = new Date(Date.now() - (6 - i) * 24 * 60 * 60 * 1000)
+          const dateKey = date.toLocaleDateString('en-US', { weekday: 'short' })
+          return {
+            date: dateKey,
+            count: submissionsByDay[dateKey] || 0
+          }
+        })
+        setSubmissionsPerDay(submissionsData)
+
+        // Calculate top campaigns by spending
+        const campaignsWithMetrics = campaigns.map(c => ({
+          name: c.title,
+          spent: c.budgetPaid || 0,
+          revenue: c.budgetPaid || 0,
+          roi: c.budget > 0 ? ((c.budgetPaid / c.budget) * 100) : 0
+        }))
+        setTopCampaigns(campaignsWithMetrics.sort((a, b) => b.spent - a.spent).slice(0, 5))
+      } catch (error) {
+        console.error('Failed to fetch analytics:', error)
+      } finally {
+        setLoading(false)
+      }
     }
-  })
 
-  const maxEarnings = Math.max(...earningsData.map(d => d.amount))
+    fetchAnalytics()
+  }, [user])
 
-  // Submissions per day (last 7 days)
-  const submissionsPerDay = Array.from({ length: 7 }, (_, i) => {
-    const date = new Date(Date.now() - (6 - i) * 24 * 60 * 60 * 1000)
-    const count = Math.floor(Math.random() * 15) + 3
-    return {
-      date: date.toLocaleDateString('en-US', { weekday: 'short' }),
-      count
-    }
-  })
+  const maxEarnings = Math.max(...earningsData.map(d => d.amount), 1)
+  const maxSubmissions = Math.max(...submissionsPerDay.map(d => d.count), 1)
 
-  const maxSubmissions = Math.max(...submissionsPerDay.map(d => d.count))
-
-  // Social growth metrics
+  // Social growth metrics (still mock for now)
   const socialMetrics = [
     { platform: 'X (Twitter)', followers: 12450, growth: '+8.3%', color: 'from-blue-500 to-cyan-500' },
     { platform: 'YouTube', followers: 3280, growth: '+12.1%', color: 'from-red-500 to-pink-500' },
@@ -37,17 +99,14 @@ export default function AnalyticsPage() {
     { platform: 'TikTok', followers: 8920, growth: '+15.4%', color: 'from-pink-500 to-rose-500' },
   ]
 
-  // Top campaigns by ROI
-  const topCampaigns = mockCampaigns.map(c => {
-    const revenue = Math.random() * 200 + 50
-    const roi = ((revenue - c.budget.spent.amount) / c.budget.spent.amount * 100).toFixed(1)
-    return {
-      name: c.name,
-      spent: c.budget.spent.amount,
-      revenue: parseFloat(revenue.toFixed(2)),
-      roi: parseFloat(roi)
-    }
-  }).sort((a, b) => b.roi - a.roi).slice(0, 5)
+  if (loading) {
+    return (
+      <div className="text-center py-12">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto mb-4"></div>
+        <p className="text-white/60">Loading analytics...</p>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-8">

@@ -5,6 +5,77 @@ export type Money = {
   amount: number
 }
 
+export type Campaign = {
+  id: string
+  ownerId: string
+  type: "clipping" | "raid" | "bounty"
+  name: string
+  status: "live" | "paused" | "completed"
+  rate: { kind: "cpm" | "per_task"; value: number; mint: "USDC" | "SOL" }
+  budget: {
+    total: Money
+    locked: Money
+    spent: Money
+  }
+  rules: {
+    platforms: ("x" | "youtube" | "twitch" | "tiktok")[]
+    minDurationSec?: number
+    requiredTags?: string[]
+    requireWatermark?: boolean
+  }
+  startsAt: number
+  endsAt?: number
+  isLive?: boolean
+}
+
+export type Submission = {
+  id: string
+  userId: string
+  campaignId: string
+  campaignName: string
+  submittedAt: number
+  status: "pending" | "approved" | "rejected"
+  contentUrl: string
+  metrics?: {
+    views?: number
+    likes?: number
+    shares?: number
+  }
+  earnings?: number
+  feedback?: string
+}
+
+export type Payout = {
+  id: string
+  userId: string
+  amount: number
+  currency: "USDC" | "SOL"
+  status: "pending" | "processing" | "completed" | "failed"
+  campaignId?: string
+  campaignName?: string
+  createdAt: number
+  paidAt?: number
+}
+
+export type Profile = {
+  id: string
+  handle: string
+  name: string
+  roles: string[]
+  verified?: boolean
+  wallet?: {
+    chain: string
+    address: string
+    primary: boolean
+  }
+  socials?: {
+    x?: string
+    youtube?: string
+    twitch?: string
+    tiktok?: string
+  }
+}
+
 export type Connection = {
   userId: string
   handle: string
