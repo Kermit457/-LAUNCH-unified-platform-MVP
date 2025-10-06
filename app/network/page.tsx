@@ -2,11 +2,11 @@
 
 import { useState } from 'react'
 import { Users } from 'lucide-react'
-import { ProfileCard } from '@/components/network/ProfileCard'
-import { ConnState } from '@/types/network'
+import { ProfileCard } from '@/components/profile/ProfileCard'
 import { MetricPill } from '@/components/ui/metric-pill'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
+import { mockProfiles } from '@/lib/mockProfileData'
 
 export default function NetworkPage() {
   const [invitedUsers, setInvitedUsers] = useState<Set<string>>(new Set())
@@ -36,197 +36,8 @@ export default function NetworkPage() {
     return 'none'
   }
 
-  const mockProfiles = [
-    {
-      id: 'u1',
-      name: 'CryptoKing',
-      handle: '@cryptoking',
-      avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=CryptoKing&backgroundColor=8b5cf6,a855f7',
-      verified: true,
-      roles: ['Streamer', 'Degen', 'Trader'],
-      mutuals: 15,
-      bio: 'Markets, memes, and mid-caps.',
-      x: {
-        followers: 3500,
-        following: 1300,
-        posts: 10200,
-        verified: true,
-      },
-      links: {
-        x: 'https://x.com/cryptoking',
-        youtube: 'https://youtube.com/@cryptoking',
-        twitch: 'https://twitch.tv/cryptoking',
-        discord: 'https://discord.gg/cryptoking',
-        web: 'https://cryptoking.io',
-      },
-      contributions: [
-        {
-          projectId: 'p1',
-          projectName: 'PumpHub',
-          role: 'creator' as const,
-          status: 'completed' as const,
-          joinedAt: '2024-01-15T10:00:00Z',
-          visibility: 'public' as const,
-          projectAvatar: 'https://api.dicebear.com/7.x/initials/svg?seed=PumpHub&backgroundColor=8b5cf6',
-          projectTwitter: 'pumphubxyz',
-          projectSlug: '/project/pumphub'
-        },
-        {
-          projectId: 'p2',
-          projectName: 'ClipFi Protocol',
-          role: 'advisor' as const,
-          status: 'accepted' as const,
-          joinedAt: '2024-02-20T14:30:00Z',
-          visibility: 'public' as const,
-          projectAvatar: 'https://api.dicebear.com/7.x/initials/svg?seed=ClipFi&backgroundColor=06b6d4',
-          projectTwitter: 'clipfiprotocol',
-          projectSlug: '/project/clipfi'
-        },
-        {
-          projectId: 'p3',
-          projectName: 'PrivateDAO',
-          role: 'supporter' as const,
-          status: 'completed' as const,
-          joinedAt: '2024-03-10T08:15:00Z',
-          visibility: 'private' as const,
-          projectAvatar: 'https://api.dicebear.com/7.x/initials/svg?seed=PrivateDAO&backgroundColor=ec4899',
-          projectTwitter: 'privatedao',
-          projectSlug: '/project/privatedao'
-        },
-      ],
-      state: getState('u1'),
-    },
-    {
-      id: 'u2',
-      name: 'StreamLord',
-      handle: '@streamlord',
-      avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=StreamLord&backgroundColor=ec4899,8b5cf6',
-      verified: false,
-      roles: ['Streamer', 'Creator'],
-      mutuals: 8,
-      bio: 'Live every day. Building in public.',
-      x: {
-        followers: 12500,
-        following: 890,
-        posts: 5600,
-        verified: false,
-      },
-      links: {
-        x: 'https://x.com/streamlord',
-        twitch: 'https://twitch.tv/streamlord',
-        youtube: 'https://youtube.com/@streamlord',
-      },
-      state: getState('u2', true),
-    },
-    {
-      id: 'u3',
-      name: 'DegenTrader',
-      handle: '@degentrader',
-      avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=DegenTrader&backgroundColor=a855f7,06b6d4',
-      verified: true,
-      roles: ['Trader', 'Degen'],
-      mutuals: 23,
-      bio: '100x or bust. NFA.',
-      x: {
-        followers: 8900,
-        following: 450,
-        posts: 15300,
-        verified: true,
-      },
-      links: {
-        x: 'https://x.com/degentrader',
-        web: 'https://degentrader.com',
-      },
-      contributions: [
-        {
-          projectId: 'p4',
-          projectName: 'MoonShot Labs',
-          role: 'clipper' as const,
-          status: 'pending' as const,
-          joinedAt: '2024-04-01T12:00:00Z',
-          visibility: 'public' as const,
-          projectAvatar: 'https://api.dicebear.com/7.x/initials/svg?seed=MoonShot&backgroundColor=fbbf24',
-          projectTwitter: 'moonshotlabs',
-          projectSlug: '/project/moonshot'
-        },
-        {
-          projectId: 'p5',
-          projectName: 'Alpha DAO',
-          role: 'supporter' as const,
-          status: 'completed' as const,
-          joinedAt: '2024-02-15T09:30:00Z',
-          visibility: 'public' as const,
-          projectAvatar: 'https://api.dicebear.com/7.x/initials/svg?seed=AlphaDAO&backgroundColor=10b981',
-          projectTwitter: 'alphadao',
-          projectSlug: '/project/alphadao'
-        },
-      ],
-      state: getState('u3'),
-    },
-    {
-      id: 'u4',
-      name: 'You',
-      handle: '@yourhandle',
-      avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=You&backgroundColor=ec4899,f97316',
-      verified: true,
-      roles: ['Creator', 'Developer'],
-      bio: 'Building the future of Web3.',
-      x: {
-        followers: 1200,
-        following: 340,
-        posts: 2100,
-        verified: false,
-      },
-      links: {
-        x: 'https://x.com/yourhandle',
-        web: 'https://yoursite.com',
-      },
-      state: getState('u4', false, true),
-    },
-    {
-      id: 'u5',
-      name: 'MoonWhale',
-      handle: '@moonwhale',
-      avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=MoonWhale&backgroundColor=06b6d4,8b5cf6',
-      verified: false,
-      roles: ['Investor', 'Degen'],
-      mutuals: 42,
-      bio: 'Early investor. Portfolio builder.',
-      x: {
-        followers: 25600,
-        following: 125,
-        posts: 890,
-        verified: true,
-      },
-      links: {
-        x: 'https://x.com/moonwhale',
-        discord: 'https://discord.gg/moonwhale',
-      },
-      state: getState('u5'),
-    },
-    {
-      id: 'u6',
-      name: 'PixelGuru',
-      handle: '@pixelguru',
-      avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=PixelGuru&backgroundColor=f97316,ec4899',
-      verified: true,
-      roles: ['Creator', 'Developer'],
-      mutuals: 6,
-      bio: 'NFT artist & smart contract dev.',
-      x: {
-        followers: 6700,
-        following: 890,
-        posts: 3400,
-        verified: false,
-      },
-      links: {
-        x: 'https://x.com/pixelguru',
-        youtube: 'https://youtube.com/@pixelguru',
-        web: 'https://pixelguru.art',
-      },
-      state: getState('u6'),
-    },
-  ]
+  // Use the new mock profiles data
+  const profiles = mockProfiles
 
   return (
     <div className="min-h-screen pb-24">
@@ -254,18 +65,10 @@ export default function NetworkPage() {
       {/* Profile Cards Grid - Default Variant */}
       <h2 className="text-2xl font-bold text-white mb-6">Suggested Connections</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-        {mockProfiles.map((profile) => (
+        {profiles.map((profile) => (
           <ProfileCard
             key={profile.id}
-            {...profile}
-            state={profile.state as ConnState}
-            onInvite={handleInvite}
-            onCancelInvite={handleCancelInvite}
-            onChat={(id) => console.log('Chat with:', id)}
-            onFollow={(id) => console.log('Follow:', id)}
-            onShare={(id) => console.log('Share:', id)}
-            onInviteToCampaign={(id) => console.log('Invite to campaign:', id)}
-            onEditProfile={() => console.log('Edit profile')}
+            data={profile}
           />
         ))}
       </div>
@@ -273,19 +76,11 @@ export default function NetworkPage() {
       {/* Compact Variant Example */}
       <h2 className="text-2xl font-bold text-white mb-6">Quick View (Compact)</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
-        {mockProfiles.slice(0, 4).map((profile) => (
+        {profiles.slice(0, 4).map((profile) => (
           <ProfileCard
             key={`compact-${profile.id}`}
-            {...profile}
-            state={profile.state as ConnState}
+            data={profile}
             variant="compact"
-            onInvite={handleInvite}
-            onCancelInvite={handleCancelInvite}
-            onChat={(id) => console.log('Chat with:', id)}
-            onFollow={(id) => console.log('Follow:', id)}
-            onShare={(id) => console.log('Share:', id)}
-            onInviteToCampaign={(id) => console.log('Invite to campaign:', id)}
-            onEditProfile={() => console.log('Edit profile')}
           />
         ))}
       </div>
