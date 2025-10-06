@@ -1,10 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { cn } from '@/lib/cn'
-import { LayoutGrid, Swords, Wrench, Users, Wallet, Menu, X, Trophy, Network, Zap, Bell } from 'lucide-react'
+import { LayoutGrid, Swords, Wrench, Users, Wallet, Menu, X, Trophy, Network, Zap, Bell, LogOut, User } from 'lucide-react'
 import { useNetwork } from '@/lib/contexts/NetworkContext'
 import { useNotifications } from '@/lib/contexts/NotificationContext'
 import { NotificationDropdown } from '@/components/notifications/NotificationDropdown'
@@ -12,10 +12,24 @@ import { useWallet } from '@/contexts/WalletContext'
 
 export default function NavBar() {
   const pathname = usePathname()
+  const router = useRouter()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [notificationDropdownOpen, setNotificationDropdownOpen] = useState(false)
+  const [walletDropdownOpen, setWalletDropdownOpen] = useState(false)
+  const walletDropdownRef = useRef<HTMLDivElement>(null)
   const { unreadCount } = useNotifications()
   const { connected, address, connect, disconnect } = useWallet()
+
+  // Close wallet dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (walletDropdownRef.current && !walletDropdownRef.current.contains(event.target as Node)) {
+        setWalletDropdownOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   const links = [
     { href: '/', label: 'Home', icon: null },
@@ -85,16 +99,50 @@ export default function NavBar() {
               />
             </div>
 
-            {/* Connect Wallet Button */}
+            {/* Connect Wallet Button with Dropdown */}
             {connected ? (
-              <button
-                onClick={disconnect}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 border border-white/20 text-white rounded-lg text-sm font-medium hover:bg-white/20 transition-all"
-                data-cta="nav-disconnect-wallet"
-              >
-                <Wallet size={16} />
-                {address?.slice(0, 6)}...{address?.slice(-4)}
-              </button>
+              <div className="relative" ref={walletDropdownRef}>
+                <button
+                  onMouseEnter={() => setWalletDropdownOpen(true)}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 border border-white/20 text-white rounded-lg text-sm font-medium hover:bg-white/20 transition-all"
+                  data-cta="nav-wallet"
+                >
+                  <Wallet size={16} />
+                  {address?.slice(0, 6)}...{address?.slice(-4)}
+                </button>
+
+                {/* Wallet Dropdown */}
+                {walletDropdownOpen && (
+                  <div
+                    className="absolute right-0 mt-2 w-56 rounded-xl bg-zinc-900/95 border border-white/10 shadow-xl backdrop-blur-xl z-50"
+                    onMouseLeave={() => setWalletDropdownOpen(false)}
+                  >
+                    <div className="p-2">
+                      <button
+                        onClick={() => {
+                          router.push('/dashboard')
+                          setWalletDropdownOpen(false)
+                        }}
+                        className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-white hover:bg-white/10 transition-all text-left"
+                      >
+                        <User size={18} />
+                        <span className="text-sm font-medium">Dashboard</span>
+                      </button>
+                      <div className="h-px bg-white/10 my-1" />
+                      <button
+                        onClick={() => {
+                          disconnect()
+                          setWalletDropdownOpen(false)
+                        }}
+                        className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-400 hover:bg-red-500/10 transition-all text-left"
+                      >
+                        <LogOut size={18} />
+                        <span className="text-sm font-medium">Disconnect</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             ) : (
               <button
                 onClick={connect}

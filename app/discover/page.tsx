@@ -13,6 +13,7 @@ import { cn } from '@/lib/cn'
 import { getLaunches } from '@/lib/appwrite/services/launches'
 
 type FilterType = 'ALL' | 'ICM' | 'CCM'
+type StatusFilterType = 'ALL' | 'LIVE' | 'UPCOMING'
 type SortType = 'trending' | 'newest' | 'conviction'
 
 export default function DiscoverPage() {
@@ -20,6 +21,7 @@ export default function DiscoverPage() {
   const [commentsOpen, setCommentsOpen] = useState(false)
   const [selectedLaunch, setSelectedLaunch] = useState<{ id: string; title: string } | null>(null)
   const [filter, setFilter] = useState<FilterType>('ALL')
+  const [statusFilter, setStatusFilter] = useState<StatusFilterType>('ALL')
   const [sortBy, setSortBy] = useState<SortType>('trending')
   const [launches, setLaunches] = useState<LaunchCardData[]>([])
   const [loading, setLoading] = useState(true)
@@ -35,10 +37,10 @@ export default function DiscoverPage() {
         // Convert Appwrite Launch type to LaunchCardData
         const converted: LaunchCardData[] = data.map(launch => ({
           id: launch.$id,
-          title: launch.tokenName,
-          subtitle: launch.description,
-          logoUrl: launch.tokenImage,
-          scope: launch.tags.includes('ICM') ? 'ICM' : 'CCM',
+          title: launch.tokenName || launch.title || 'Unknown',
+          subtitle: launch.description || launch.subtitle || '',
+          logoUrl: launch.tokenImage || launch.logoUrl,
+          scope: launch.scope || ((launch.tags && launch.tags.includes('ICM')) ? 'ICM' : 'CCM'),
           status: launch.status === 'live' ? 'LIVE' : launch.status === 'upcoming' ? 'UPCOMING' : 'LIVE',
           convictionPct: launch.convictionPct || 0,
           commentsCount: launch.commentsCount || 0,
@@ -256,11 +258,18 @@ export default function DiscoverPage() {
   const filteredLaunches = useMemo(() => {
     let filtered = allLaunches
 
-    // Apply filter
+    // Apply scope filter (ICM/CCM)
     if (filter === 'ICM') {
       filtered = filtered.filter(l => l.scope === 'ICM')
     } else if (filter === 'CCM') {
       filtered = filtered.filter(l => l.scope === 'CCM')
+    }
+
+    // Apply status filter (LIVE/UPCOMING)
+    if (statusFilter === 'LIVE') {
+      filtered = filtered.filter(l => l.status === 'LIVE')
+    } else if (statusFilter === 'UPCOMING') {
+      filtered = filtered.filter(l => l.status === 'UPCOMING')
     }
 
     // Apply sort
@@ -277,7 +286,7 @@ export default function DiscoverPage() {
     }
 
     return filtered
-  }, [allLaunches, filter, sortBy])
+  }, [allLaunches, filter, statusFilter, sortBy])
 
   // Calculate stats
   const stats = useMemo(() => {
@@ -305,7 +314,7 @@ export default function DiscoverPage() {
 
       {/* Filter Tabs */}
       <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <Button
             onClick={() => setFilter('ALL')}
             variant={filter === 'ALL' ? 'default' : 'secondary'}
@@ -332,6 +341,29 @@ export default function DiscoverPage() {
           >
             <MessageSquare className="w-4 h-4" />
             CCM
+          </Button>
+
+          {/* Divider */}
+          <div className="h-6 w-px bg-white/10" />
+
+          {/* Status Filters */}
+          <Button
+            onClick={() => setStatusFilter('LIVE')}
+            variant={statusFilter === 'LIVE' ? 'default' : 'secondary'}
+            size="sm"
+            className="gap-2"
+          >
+            <Flame className="w-4 h-4" />
+            LIVE
+          </Button>
+          <Button
+            onClick={() => setStatusFilter('UPCOMING')}
+            variant={statusFilter === 'UPCOMING' ? 'default' : 'secondary'}
+            size="sm"
+            className="gap-2"
+          >
+            <Clock className="w-4 h-4" />
+            UPCOMING
           </Button>
         </div>
         <Button

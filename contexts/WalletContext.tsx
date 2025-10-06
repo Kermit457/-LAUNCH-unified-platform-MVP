@@ -1,6 +1,7 @@
 "use client"
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { createContext, useContext, ReactNode } from 'react'
+import { usePrivy, useWallets } from '@privy-io/react-auth'
 
 interface WalletContextType {
   connected: boolean
@@ -12,46 +13,30 @@ interface WalletContextType {
 const WalletContext = createContext<WalletContextType | undefined>(undefined)
 
 export function WalletProvider({ children }: { children: ReactNode }) {
-  const [connected, setConnected] = useState(false)
-  const [address, setAddress] = useState<string | null>(null)
+  const { ready, authenticated, login, logout, user } = usePrivy()
+  const { wallets } = useWallets()
 
-  useEffect(() => {
-    // Check for existing wallet connection from localStorage
-    const savedAddress = localStorage.getItem('wallet_address')
-    if (savedAddress) {
-      setAddress(savedAddress)
-      setConnected(true)
-    }
-  }, [])
+  // Prioritize Solana wallet address over Ethereum
+  const solanaWallet = wallets.find(w => w.walletClientType === 'solana')
+  const address = solanaWallet?.address || wallets[0]?.address || user?.wallet?.address || null
+  const connected = ready && authenticated && !!address
 
   async function connect() {
     try {
-      // For now, simulate wallet connection
-      // In production, integrate with Privy, wallet-adapter, or similar
-      // Example: await privy.login() or await wallet.connect()
-
-      // Simulated connection
-      const mockAddress = `${Math.random().toString(36).substring(2, 15)}...${Math.random().toString(36).substring(2, 6)}`
-      setAddress(mockAddress)
-      setConnected(true)
-      localStorage.setItem('wallet_address', mockAddress)
-
-      // TODO: Replace with actual wallet integration
-      // if (window.solana) {
-      //   const response = await window.solana.connect()
-      //   setAddress(response.publicKey.toString())
-      //   setConnected(true)
-      // }
+      await login()
     } catch (error) {
       console.error('Failed to connect wallet:', error)
       throw error
     }
   }
 
-  function disconnect() {
-    setAddress(null)
-    setConnected(false)
-    localStorage.removeItem('wallet_address')
+  async function disconnect() {
+    try {
+      await logout()
+    } catch (error) {
+      console.error('Failed to disconnect wallet:', error)
+      throw error
+    }
   }
 
   return (

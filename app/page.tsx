@@ -9,23 +9,22 @@ import { MarketsSplit } from '@/components/MarketsSplit'
 import { TrendingCarousel } from '@/components/TrendingCarousel'
 import { LiveFeedGrid } from '@/components/LiveFeedGrid'
 import { StickyCTA } from '@/components/StickyCTA'
-import { getLaunches } from '@/lib/appwrite/services/launches'
-import { launchProjects } from '@/lib/sampleData'
+import { getDataLaunches } from '@/lib/data-source'
 
 export default function HomePage() {
-  const [launches, setLaunches] = useState(launchProjects)
+  const [launches, setLaunches] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function fetchLaunches() {
       try {
-        const data = await getLaunches({ limit: 12 })
+        const data = await getDataLaunches({ limit: 12 })
+        console.log('📊 Homepage fetched launches:', data)
         if (data && data.length > 0) {
-          setLaunches(data as any)
+          setLaunches(data)
         }
       } catch (error) {
         console.error('Failed to fetch launches:', error)
-        // Keep using mock data on error
       } finally {
         setLoading(false)
       }

@@ -11,6 +11,8 @@
     "seed": "tsx scripts/seed-database.ts"
   },
   "dependencies": {
+    "@privy-io/react-auth": "^1.27.0",
+    "@privy-io/wagmi-connector": "^0.0.10",
     "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-progress": "^1.0.3",
@@ -28,6 +30,8 @@
     "react-dom": "^18.3.1",
     "recharts": "^2.15.4",
     "tailwind-merge": "^2.2.0",
+    "viem": "^2.37.13",
+    "wagmi": "^1.4.13",
     "zustand": "^4.4.7"
   },
   "devDependencies": {

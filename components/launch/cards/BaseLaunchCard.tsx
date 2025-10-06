@@ -19,6 +19,7 @@ export function BaseLaunchCard({ data, children, onUpvote, onComment }: BaseLaun
     subtitle,
     logoUrl,
     scope,
+    status,
     convictionPct,
     commentsCount,
     upvotes,
@@ -27,6 +28,11 @@ export function BaseLaunchCard({ data, children, onUpvote, onComment }: BaseLaun
   const scopeColors = {
     ICM: 'bg-fuchsia-500/20 text-fuchsia-300 border-fuchsia-500/40',
     CCM: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40',
+  }
+
+  const statusColors = {
+    LIVE: 'bg-green-500/20 text-green-300 border-green-500/40',
+    UPCOMING: 'bg-amber-500/20 text-amber-300 border-amber-500/40',
   }
 
   return (
@@ -66,9 +72,9 @@ export function BaseLaunchCard({ data, children, onUpvote, onComment }: BaseLaun
             {/* Logo */}
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-fuchsia-500 to-cyan-500 flex items-center justify-center font-bold text-white text-sm flex-shrink-0 overflow-hidden">
               {logoUrl ? (
-                <img src={logoUrl} alt={title} className="w-full h-full object-cover" />
+                <img src={logoUrl} alt={title || 'Launch'} className="w-full h-full object-cover" />
               ) : (
-                title.slice(0, 2).toUpperCase()
+                (title || '??').slice(0, 2).toUpperCase()
               )}
             </div>
 
@@ -84,6 +90,16 @@ export function BaseLaunchCard({ data, children, onUpvote, onComment }: BaseLaun
                 >
                   {scope}
                 </span>
+                {status && (
+                  <span
+                    className={cn(
+                      'px-2 py-0.5 rounded text-xs font-bold border flex-shrink-0',
+                      statusColors[status as 'LIVE' | 'UPCOMING']
+                    )}
+                  >
+                    {status}
+                  </span>
+                )}
               </div>
               {subtitle && (
                 <p className="text-sm text-white/60 truncate">{subtitle}</p>

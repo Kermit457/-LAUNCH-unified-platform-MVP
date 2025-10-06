@@ -8,6 +8,7 @@ import { NotificationProvider } from '@/lib/contexts/NotificationContext'
 import { AuthProvider } from '@/contexts/AuthContext'
 import { WalletProvider } from '@/contexts/WalletContext'
 import { DevModeBanner, DevModeIndicator } from '@/components/DevModeBanner'
+import { PrivyProviderWrapper } from '@/contexts/PrivyProviderWrapper'
 
 export const metadata: Metadata = {
   title: 'LaunchOS - The Engine of the Internet Capital Market',
@@ -22,22 +23,24 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen">
-        <AuthProvider>
-          <WalletProvider>
-            <NotificationProvider>
-              <NetworkProvider>
-                <ToastProvider>
-                  <DevModeBanner />
-                  <NavBar />
-                  <main className="container mx-auto px-4 py-8">
-                    {children}
-                  </main>
-                  <DevModeIndicator />
-                </ToastProvider>
-              </NetworkProvider>
-            </NotificationProvider>
-          </WalletProvider>
-        </AuthProvider>
+        <PrivyProviderWrapper>
+          <AuthProvider>
+            <WalletProvider>
+              <NotificationProvider>
+                <NetworkProvider>
+                  <ToastProvider>
+                    <DevModeBanner />
+                    <NavBar />
+                    <main className="container mx-auto px-4 py-8">
+                      {children}
+                    </main>
+                    <DevModeIndicator />
+                  </ToastProvider>
+                </NetworkProvider>
+              </NotificationProvider>
+            </WalletProvider>
+          </AuthProvider>
+        </PrivyProviderWrapper>
       </body>
     </html>
   )

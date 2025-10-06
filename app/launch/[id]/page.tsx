@@ -35,23 +35,23 @@ export default function LaunchDetailPage() {
         // Convert Appwrite Launch to component format
         setLaunch({
           id: data.$id,
-          title: data.tokenName,
-          subtitle: data.description,
-          logoUrl: data.tokenImage,
-          scope: data.tags.includes('ICM') ? 'ICM' : 'CCM',
-          status: data.status === 'live' ? 'LIVE' : 'UPCOMING',
-          mint: data.tokenSymbol || '',
-          dexPairId: data.tokenSymbol || '',
+          title: data.tokenName || data.title || 'Unknown',
+          subtitle: data.description || data.subtitle || '',
+          logoUrl: data.tokenImage || data.logoUrl,
+          scope: data.scope || ((data.tags && data.tags.includes('ICM')) ? 'ICM' : 'CCM'),
+          status: (data.status?.toUpperCase() === 'LIVE' || data.status === 'LIVE') ? 'LIVE' : 'UPCOMING',
+          mint: data.tokenSymbol || data.mint || '',
+          dexPairId: data.launchId || data.$id,
           convictionPct: data.convictionPct || 0,
           socials: {
-            twitter: data.tags.find(t => t.startsWith('@')) || '',
+            twitter: (data.tags && data.tags.find(t => t.startsWith('@'))) || '',
             discord: '',
             telegram: '',
             website: ''
           },
           team: data.team || [],
           contributors: data.contributors || [],
-          description: data.description || 'No description available.',
+          description: data.description || data.subtitle || 'No description available.',
         })
       } catch (error) {
         console.error('Failed to fetch launch:', error)
@@ -81,11 +81,11 @@ export default function LaunchDetailPage() {
     }
   }, [params.id])
 
-  const isICM = launch.scope === 'ICM'
+  const isICM = launch?.scope === 'ICM'
 
   // Fetch token data if ICM with mint
   const { data: tokenData, loading: tokenLoading, error: tokenError } = useTokenData(
-    isICM ? launch.mint : undefined,
+    isICM ? launch?.mint : undefined,
     15000
   )
 
@@ -108,6 +108,15 @@ export default function LaunchDetailPage() {
     // }
     // fetchChartData()
   }, [])
+
+  // Show loading state while fetching
+  if (loading || !launch) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-fuchsia-500"></div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-purple-950/20 to-black pb-20 lg:pb-8">

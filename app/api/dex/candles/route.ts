@@ -9,23 +9,28 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    // TODO: Replace with actual Dexscreener candles endpoint when available
-    // const url = `https://api.dexscreener.com/v1/candles/${pairId}?interval=${interval}`
-    // const res = await fetch(url, { next: { revalidate: 15 } })
-    // const data = await res.json()
+    // Note: Dexscreener doesn't currently have a public candles API
+    // Using mock data until they add this endpoint or we switch to another provider
+
+    // TODO: Replace with actual candles from:
+    // - Birdeye API (Solana)
+    // - CoinGecko Pro API
+    // - Or cache our own candles via Appwrite Function
 
     // Mock data for now - return sample candles
-    // Format: { t: unix_seconds, o: open, h: high, l: low, c: close }
+    // Format: { t: unix_seconds, o: open, h: high, l: low, c: close, v: volume }
     const now = Math.floor(Date.now() / 1000)
     const mockCandles = Array.from({ length: 100 }, (_, i) => {
       const t = now - (100 - i) * 300 // 5 min intervals going back
       const basePrice = 0.00015 + Math.random() * 0.00005
+      const volume = 10000 + Math.random() * 50000
       return {
         t,
         o: basePrice,
         h: basePrice * (1 + Math.random() * 0.02),
         l: basePrice * (1 - Math.random() * 0.02),
         c: basePrice * (0.98 + Math.random() * 0.04),
+        v: volume
       }
     })
 
