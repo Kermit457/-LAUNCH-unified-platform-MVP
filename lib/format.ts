@@ -74,7 +74,7 @@ export function fmtNum(value?: number): string {
     return `${(value / 1e3).toFixed(2)}K`
   }
 
-  return value.toLocaleString('en-US')
+  return String(Math.round(value))
 }
 
 /**

@@ -12,7 +12,7 @@ export default function NavBar() {
 
   const links = [
     { href: '/', label: 'Home', icon: null },
-    { href: '/explore', label: 'Discover', icon: LayoutGrid },
+    { href: '/discover', label: 'Discover', icon: LayoutGrid },
     { href: '/live', label: 'Live', icon: Zap },
     { href: '/earn', label: 'Earn', icon: Trophy },
     { href: '/tools', label: 'Tools', icon: Wrench },

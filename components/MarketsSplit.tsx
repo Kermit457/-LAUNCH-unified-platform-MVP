@@ -56,7 +56,7 @@ export function MarketsSplit() {
             ))}
           </div>
 
-          <Link href="/explore?market=icm">
+          <Link href="/discover?market=icm">
             <Button
               className="w-full bg-gradient-to-r from-launchos-fuchsia to-launchos-violet text-white font-semibold py-6 rounded-xl hover:scale-105 transition-all duration-300 neon-glow-hover"
             >
@@ -92,7 +92,7 @@ export function MarketsSplit() {
             ))}
           </div>
 
-          <Link href="/explore?market=ccm">
+          <Link href="/discover?market=ccm">
             <Button
               className="w-full bg-gradient-to-r from-launchos-violet to-launchos-cyan text-white font-semibold py-6 rounded-xl hover:scale-105 transition-all duration-300 neon-glow-hover"
             >

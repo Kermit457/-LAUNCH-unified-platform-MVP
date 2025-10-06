@@ -8,42 +8,42 @@ export default function EngagePage() {
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-3">
           <Swords className="w-8 h-8 text-purple-400" />
-          <h1 className="text-4xl font-bold gradient-text">Engage</h1>
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent">Engage</h1>
         </div>
-        <p className="text-white/60 text-lg">
+        <p className="text-zinc-400 text-lg">
           StreamWars, Raid Chat, Quests, and community challenges
         </p>
       </div>
 
       <div className="grid gap-6">
         {/* StreamWars */}
-        <div className="glass-card p-8">
+        <div className="rounded-2xl bg-white/5 border border-white/10 p-8 backdrop-blur-xl">
           <div className="flex items-start justify-between mb-4">
             <div>
               <h2 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
                 <Trophy className="w-6 h-6 text-yellow-400" />
                 StreamWars
               </h2>
-              <p className="text-white/60">
+              <p className="text-zinc-400">
                 Compete in live team battles. Raid opponents, defend your territory, earn rewards.
               </p>
             </div>
-            <Link href="/explore?filter=raid">
+            <Link href="/discover?filter=raid">
               <Button>View Active Wars</Button>
             </Link>
           </div>
 
           <div className="grid md:grid-cols-3 gap-4 mt-6">
-            <div className="bg-white/5 p-4 rounded-lg">
-              <div className="text-sm text-white/60 mb-1">Active Battles</div>
+            <div className="bg-white/5 border border-white/10 p-4 rounded-lg backdrop-blur-xl">
+              <div className="text-sm text-zinc-500 mb-1 uppercase tracking-wide">Active Battles</div>
               <div className="text-2xl font-bold text-white">5</div>
             </div>
-            <div className="bg-white/5 p-4 rounded-lg">
-              <div className="text-sm text-white/60 mb-1">Total Participants</div>
+            <div className="bg-white/5 border border-white/10 p-4 rounded-lg backdrop-blur-xl">
+              <div className="text-sm text-zinc-500 mb-1 uppercase tracking-wide">Total Participants</div>
               <div className="text-2xl font-bold text-white">1,234</div>
             </div>
-            <div className="bg-white/5 p-4 rounded-lg">
-              <div className="text-sm text-white/60 mb-1">Prize Pool</div>
+            <div className="bg-white/5 border border-white/10 p-4 rounded-lg backdrop-blur-xl">
+              <div className="text-sm text-zinc-500 mb-1 uppercase tracking-wide">Prize Pool</div>
               <div className="text-2xl font-bold text-green-400">$8,500</div>
             </div>
           </div>
@@ -54,25 +54,25 @@ export default function EngagePage() {
         </div>
 
         {/* Raid Chat */}
-        <div className="glass-card p-8">
+        <div className="rounded-2xl bg-white/5 border border-white/10 p-8 backdrop-blur-xl">
           <div className="flex items-start justify-between mb-4">
             <div>
               <h2 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
                 <MessageCircle className="w-6 h-6 text-blue-400" />
                 Raid Chat
               </h2>
-              <p className="text-white/60">
+              <p className="text-zinc-400">
                 Coordinate raids, share targets, and dominate social platforms together.
               </p>
             </div>
-            <Link href="/explore?filter=raid">
-              <Button variant="outline">Join Raid</Button>
+            <Link href="/discover?filter=raid">
+              <Button variant="secondary">Join Raid</Button>
             </Link>
           </div>
 
-          <div className="bg-black/20 rounded-lg p-4 border border-white/10">
-            <p className="text-white/50 text-sm text-center py-8">
-              Raid chat interface coming soon. Join raids from the Explore page.
+          <div className="bg-white/5 rounded-lg p-4 border border-white/10 backdrop-blur-xl">
+            <p className="text-zinc-500 text-sm text-center py-8">
+              Raid chat interface coming soon. Join raids from the Discover page.
             </p>
           </div>
 
@@ -82,47 +82,47 @@ export default function EngagePage() {
         </div>
 
         {/* Active Quests */}
-        <div className="glass-card p-8">
+        <div className="rounded-2xl bg-white/5 border border-white/10 p-8 backdrop-blur-xl">
           <div className="flex items-start justify-between mb-4">
             <div>
               <h2 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
                 <Target className="w-6 h-6 text-purple-400" />
                 Active Quests
               </h2>
-              <p className="text-white/60">
+              <p className="text-zinc-400">
                 Complete daily and weekly quests to earn points and unlock rewards.
               </p>
             </div>
-            <Link href="/explore?filter=quest">
-              <Button variant="outline">View All Quests</Button>
+            <Link href="/discover?filter=quest">
+              <Button variant="secondary">View All Quests</Button>
             </Link>
           </div>
 
           <div className="grid md:grid-cols-2 gap-4">
             {/* Daily Quest */}
-            <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/30 rounded-lg p-4">
+            <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/30 rounded-lg p-4 backdrop-blur-xl">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm font-bold text-purple-300">DAILY QUEST</span>
-                <span className="text-xs text-white/60">Resets in 8h</span>
+                <span className="text-xs text-zinc-500">Resets in 8h</span>
               </div>
               <h3 className="font-bold text-white mb-1">Social Engagement</h3>
-              <p className="text-sm text-white/60 mb-3">Like + Retweet + Comment on 3 posts</p>
+              <p className="text-sm text-zinc-400 mb-3">Like + Retweet + Comment on 3 posts</p>
               <div className="flex items-center justify-between">
-                <span className="text-xs text-white/50">Progress: 1/3</span>
+                <span className="text-xs text-zinc-500">Progress: 1/3</span>
                 <span className="text-sm font-bold text-purple-400">+50 pts</span>
               </div>
             </div>
 
             {/* Weekly Quest */}
-            <div className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/30 rounded-lg p-4">
+            <div className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/30 rounded-lg p-4 backdrop-blur-xl">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm font-bold text-blue-300">WEEKLY QUEST</span>
-                <span className="text-xs text-white/60">Resets in 3d</span>
+                <span className="text-xs text-zinc-500">Resets in 3d</span>
               </div>
               <h3 className="font-bold text-white mb-1">Content Creator</h3>
-              <p className="text-sm text-white/60 mb-3">Create 5 clips with $LAUNCH widget</p>
+              <p className="text-sm text-zinc-400 mb-3">Create 5 clips with $LAUNCH widget</p>
               <div className="flex items-center justify-between">
-                <span className="text-xs text-white/50">Progress: 0/5</span>
+                <span className="text-xs text-zinc-500">Progress: 0/5</span>
                 <span className="text-sm font-bold text-blue-400">+500 pts</span>
               </div>
             </div>

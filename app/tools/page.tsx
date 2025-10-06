@@ -47,9 +47,9 @@ export default function ToolsPage() {
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-3">
           <Wrench className="w-8 h-8 text-purple-400" />
-          <h1 className="text-4xl font-bold gradient-text">Creator Tools</h1>
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent">Creator Tools</h1>
         </div>
-        <p className="text-white/60 text-lg">
+        <p className="text-zinc-400 text-lg">
           Widgets, campaigns, launches, and monetization tools for streamers & creators.
         </p>
       </div>
@@ -97,37 +97,37 @@ export default function ToolsPage() {
       />
 
       {/* Rewards & Payouts Strip */}
-      <div className="mt-16 rounded-2xl bg-neutral-900/70 border border-white/10 p-8">
+      <div className="mt-16 rounded-2xl bg-white/5 border border-white/10 p-8 backdrop-blur-xl">
         <div className="flex items-start justify-between mb-6">
           <div>
             <h2 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
               <Gift className="w-6 h-6 text-green-400" />
               Rewards & Payouts
             </h2>
-            <p className="text-white/60">
+            <p className="text-zinc-400">
               Manage your earnings, claim rewards, and track payouts.
             </p>
           </div>
           <Link href="/earnings">
-            <Button variant="outline">View Earnings</Button>
+            <Button variant="secondary">View Earnings</Button>
           </Link>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white/5 p-4 rounded-lg">
-            <div className="text-xs text-white/60 mb-1">Pending</div>
+          <div className="bg-white/5 border border-white/10 p-4 rounded-lg backdrop-blur-xl">
+            <div className="text-xs text-zinc-500 mb-1 uppercase tracking-wide">Pending</div>
             <div className="text-xl font-bold text-yellow-400">$234.50</div>
           </div>
-          <div className="bg-white/5 p-4 rounded-lg">
-            <div className="text-xs text-white/60 mb-1">Claimable</div>
+          <div className="bg-white/5 border border-white/10 p-4 rounded-lg backdrop-blur-xl">
+            <div className="text-xs text-zinc-500 mb-1 uppercase tracking-wide">Claimable</div>
             <div className="text-xl font-bold text-green-400">$567.80</div>
           </div>
-          <div className="bg-white/5 p-4 rounded-lg">
-            <div className="text-xs text-white/60 mb-1">Total Earned</div>
+          <div className="bg-white/5 border border-white/10 p-4 rounded-lg backdrop-blur-xl">
+            <div className="text-xs text-zinc-500 mb-1 uppercase tracking-wide">Total Earned</div>
             <div className="text-xl font-bold text-white">$12,430</div>
           </div>
-          <div className="bg-white/5 p-4 rounded-lg">
-            <div className="text-xs text-white/60 mb-1">Points</div>
+          <div className="bg-white/5 border border-white/10 p-4 rounded-lg backdrop-blur-xl">
+            <div className="text-xs text-zinc-500 mb-1 uppercase tracking-wide">Points</div>
             <div className="text-xl font-bold text-purple-400">1,840</div>
           </div>
         </div>
@@ -234,7 +234,7 @@ function ToolCardComponent({ card, onAction }: { card: ToolCard; onAction: (card
             "font-bold text-white text-lg leading-tight transition-colors",
             !isDisabled && theme.accent
           )}>{card.title}</h3>
-          <p className="text-sm text-white/70 leading-relaxed">{card.desc}</p>
+          <p className="text-sm text-zinc-400 leading-relaxed">{card.desc}</p>
         </div>
 
         {/* Action Button */}

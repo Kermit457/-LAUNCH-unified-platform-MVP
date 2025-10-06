@@ -10,7 +10,7 @@ export function StickyCTA() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-center gap-3 md:gap-6 flex-wrap">
             {/* Start Launch */}
-            <Link href="/explore">
+            <Link href="/discover">
               <button
                 className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-launchos-fuchsia to-launchos-violet text-white font-semibold rounded-xl hover:scale-105 transition-all duration-300 shadow-neon-fuchsia hover:shadow-neon-violet"
                 data-cta="sticky-start-launch"
@@ -21,7 +21,7 @@ export function StickyCTA() {
             </Link>
 
             {/* View Live Feed */}
-            <Link href="/explore">
+            <Link href="/discover">
               <button
                 className="flex items-center gap-2 px-6 py-3 neon-border-fuchsia bg-transparent text-white font-semibold rounded-xl hover:bg-white/5 hover:scale-105 transition-all duration-300"
                 data-cta="sticky-live-feed"

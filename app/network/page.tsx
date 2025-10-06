@@ -4,6 +4,9 @@ import { useState } from 'react'
 import { Users } from 'lucide-react'
 import { ProfileCard } from '@/components/network/ProfileCard'
 import { ConnState } from '@/types/network'
+import { MetricPill } from '@/components/ui/metric-pill'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 
 export default function NetworkPage() {
   const [invitedUsers, setInvitedUsers] = useState<Set<string>>(new Set())
@@ -231,33 +234,21 @@ export default function NetworkPage() {
       <div className="mb-8">
         <div className="flex items-center gap-4 mb-4">
           <Users className="w-8 h-8 text-fuchsia-400" />
-          <h1 className="text-4xl font-bold gradient-text-launchos">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent">
             Network
           </h1>
         </div>
-        <p className="text-white/60 text-lg">
+        <p className="text-zinc-300 text-lg">
           Connect with creators, streamers, and traders in the LaunchOS ecosystem
         </p>
       </div>
 
       {/* Stats Bar */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-        <div className="glass-launchos p-4 rounded-xl">
-          <div className="text-white/60 text-sm mb-1">Total Network</div>
-          <div className="text-2xl font-bold gradient-text-launchos">247</div>
-        </div>
-        <div className="glass-launchos p-4 rounded-xl">
-          <div className="text-white/60 text-sm mb-1">Connected</div>
-          <div className="text-2xl font-bold text-green-400">42</div>
-        </div>
-        <div className="glass-launchos p-4 rounded-xl">
-          <div className="text-white/60 text-sm mb-1">Pending</div>
-          <div className="text-2xl font-bold text-amber-400">{invitedUsers.size}</div>
-        </div>
-        <div className="glass-launchos p-4 rounded-xl">
-          <div className="text-white/60 text-sm mb-1">Suggestions</div>
-          <div className="text-2xl font-bold text-cyan-400">18</div>
-        </div>
+        <MetricPill label="Total Network" value="247" />
+        <MetricPill label="Connected" value="42" variant="positive" />
+        <MetricPill label="Pending" value={invitedUsers.size} />
+        <MetricPill label="Suggestions" value="18" />
       </div>
 
       {/* Profile Cards Grid - Default Variant */}
@@ -300,20 +291,20 @@ export default function NetworkPage() {
       </div>
 
       {/* CTA Section */}
-      <div className="mt-16 rounded-2xl bg-gradient-to-br from-fuchsia-950/40 to-purple-950/40 border border-fuchsia-500/20 p-12 text-center">
+      <Card variant="gradient" glow className="mt-16 p-12 text-center">
         <h2 className="text-3xl font-bold text-white mb-4">Want to grow your network?</h2>
-        <p className="text-white/70 text-lg mb-8">
+        <p className="text-zinc-300 text-lg mb-8">
           Connect with top creators and unlock collaboration opportunities
         </p>
-        <button
-          className="px-8 py-4 bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 hover:from-fuchsia-600 hover:via-purple-600 hover:to-cyan-600 text-white rounded-xl font-bold text-lg transition-all shadow-lg shadow-fuchsia-500/30 hover:shadow-fuchsia-500/50 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/50"
-          data-cta="network-complete-profile"
+        <Button
+          variant="boost"
+          size="lg"
           disabled={true}
           title="Feature coming soon"
         >
           Complete Your Profile
-        </button>
-      </div>
+        </Button>
+      </Card>
     </div>
   )
 }

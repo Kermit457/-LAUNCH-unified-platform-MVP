@@ -9,6 +9,7 @@ import { cn } from '@/lib/cn'
 import { CreateQuestDrawer } from '@/components/quests/CreateQuestDrawer'
 import { CreateCampaignModal } from '@/components/campaigns/CreateCampaignModal'
 import { CampaignType } from '@/types/quest'
+import { Button } from '@/components/ui/button'
 
 const TABS = ['All', 'Campaign', 'Raid', 'Bounty'] as const
 type Tab = typeof TABS[number]
@@ -46,12 +47,12 @@ export default function EarnPage() {
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-4 mb-4">
-          <Trophy className="w-8 h-8 neon-text-fuchsia" />
-          <h1 className="text-4xl font-bold gradient-text-launchos">
+          <Trophy className="w-8 h-8 text-fuchsia-400" />
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent">
             Earn & Engage
           </h1>
         </div>
-        <p className="text-white/60 text-lg">
+        <p className="text-zinc-400 text-lg">
           Participate in campaigns, raids, predictions, and quests to earn rewards
         </p>
       </div>
@@ -61,35 +62,31 @@ export default function EarnPage() {
         {/* Type Tabs */}
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-3">
-            <Filter size={16} className="text-white/60" />
-            <span className="text-sm text-white/60">Filter by type:</span>
+            <Filter size={16} className="text-zinc-500" />
+            <span className="text-sm text-zinc-500">Filter by type:</span>
           </div>
           <div className="flex flex-wrap gap-2">
             {TABS.map(tab => (
-              <button
+              <Button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={cn(
-                  "px-4 py-2 rounded-lg text-sm font-medium transition-all",
-                  activeTab === tab
-                    ? "bg-gradient-to-r from-launchos-fuchsia to-launchos-violet text-white shadow-neon-fuchsia"
-                    : "bg-white/10 text-white/70 hover:text-white hover:bg-white/15"
-                )}
+                variant={activeTab === tab ? "default" : "secondary"}
+                size="sm"
               >
                 {tab}
-              </button>
+              </Button>
             ))}
           </div>
         </div>
 
         {/* Sort Options */}
         <div className="flex items-center gap-2">
-          <TrendingUp size={16} className="text-white/60" />
-          <span className="text-sm text-white/60">Sort:</span>
+          <TrendingUp size={16} className="text-zinc-500" />
+          <span className="text-sm text-zinc-500">Sort:</span>
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as any)}
-            className="px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-sm text-white focus:outline-none focus:border-launchos-fuchsia"
+            className="px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-purple-500 backdrop-blur-xl"
           >
             <option value="trending">🔥 Trending</option>
             <option value="payout">💰 Highest Payout</option>
@@ -131,24 +128,24 @@ export default function EarnPage() {
 
       {/* Stats Bar */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-        <div className="glass-launchos p-4 rounded-xl">
-          <div className="text-white/60 text-sm mb-1">Total Opportunities</div>
-          <div className="text-2xl font-bold gradient-text-launchos">{filteredCards.length}</div>
+        <div className="bg-white/5 border border-white/10 p-4 rounded-xl backdrop-blur-xl">
+          <div className="text-zinc-500 text-sm mb-1">Total Opportunities</div>
+          <div className="text-2xl font-bold bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent">{filteredCards.length}</div>
         </div>
-        <div className="glass-launchos p-4 rounded-xl">
-          <div className="text-white/60 text-sm mb-1">Live Now</div>
+        <div className="bg-white/5 border border-white/10 p-4 rounded-xl backdrop-blur-xl">
+          <div className="text-zinc-500 text-sm mb-1">Live Now</div>
           <div className="text-2xl font-bold text-green-400">
             {filteredCards.filter(c => c.status === 'live').length}
           </div>
         </div>
-        <div className="glass-launchos p-4 rounded-xl">
-          <div className="text-white/60 text-sm mb-1">Total Rewards Pool</div>
+        <div className="bg-white/5 border border-white/10 p-4 rounded-xl backdrop-blur-xl">
+          <div className="text-zinc-500 text-sm mb-1">Total Rewards Pool</div>
           <div className="text-2xl font-bold text-yellow-400">
             ${filteredCards.reduce((sum, c) => sum + c.reward.value, 0).toLocaleString('en-US')}
           </div>
         </div>
-        <div className="glass-launchos p-4 rounded-xl">
-          <div className="text-white/60 text-sm mb-1">Active Participants</div>
+        <div className="bg-white/5 border border-white/10 p-4 rounded-xl backdrop-blur-xl">
+          <div className="text-zinc-500 text-sm mb-1">Active Participants</div>
           <div className="text-2xl font-bold text-cyan-400">
             {filteredCards.reduce((sum, c) => sum + (c.participants || 0), 0).toLocaleString('en-US')}
           </div>
@@ -163,8 +160,8 @@ export default function EarnPage() {
       </div>
 
       {filteredCards.length === 0 && (
-        <div className="text-center py-16 text-white/40">
-          <Trophy className="w-16 h-16 mx-auto mb-4 opacity-40" />
+        <div className="text-center py-16 text-zinc-500">
+          <Trophy className="w-16 h-16 mx-auto mb-4 text-zinc-700" />
           <p>No earning opportunities found for this filter</p>
         </div>
       )}

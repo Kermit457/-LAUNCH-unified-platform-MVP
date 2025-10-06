@@ -10,6 +10,8 @@ import { useState, useEffect } from 'react'
 import { useTokenData } from '@/lib/tokenData'
 import { generateMockCandles, generateMockActivity } from '@/lib/mockChartData'
 import type { Contributor, Candle, ActivityPoint } from '@/types/launch'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 
 export default function LaunchDetailPage() {
   const params = useParams()
@@ -156,35 +158,33 @@ Our platform features:
         )}
 
         {/* ABOUT SECTION - Collapsible */}
-        <div className="rounded-2xl bg-white/5 border border-white/10 p-6 mb-4">
-          <AboutCollapse content={launch.description} previewLines={3} />
-        </div>
+        <Card variant="default" hover={false} className="mb-4">
+          <div className="p-6">
+            <AboutCollapse content={launch.description} previewLines={3} />
+          </div>
+        </Card>
 
         {/* ACTIONS - Sticky on Mobile */}
         <div className="fixed lg:relative bottom-0 left-0 right-0
                         border-t lg:border-0 border-white/10
                         bg-black/95 lg:bg-transparent backdrop-blur-xl lg:backdrop-blur-none
                         p-4 lg:p-0 flex gap-2 z-50">
-          <button
+          <Button
+            variant="boost"
             onClick={() => setIsBoosted(true)}
-            className="flex-1 lg:flex-none lg:px-8 h-11 rounded-xl bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500
-                       hover:from-fuchsia-600 hover:via-purple-600 hover:to-cyan-600
-                       hover:shadow-[0_0_30px_rgba(168,85,247,0.4)]
-                       text-white font-semibold transition-all flex items-center justify-center gap-2"
+            className="flex-1 lg:flex-none lg:px-8"
           >
             <TrendingUp className="w-5 h-5" />
             Boost
-          </button>
-          <button className="h-11 px-4 lg:px-6 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10
-                             hover:border-white/20 text-white font-medium transition-all flex items-center gap-2">
+          </Button>
+          <Button variant="secondary" className="px-4 lg:px-6">
             <Heart className="w-4 h-4" />
             <span className="hidden sm:inline">Follow</span>
-          </button>
-          <button className="h-11 px-4 lg:px-6 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10
-                             hover:border-white/20 text-white font-medium transition-all flex items-center gap-2">
+          </Button>
+          <Button variant="secondary" className="px-4 lg:px-6">
             <Eye className="w-4 h-4" />
             <span className="hidden sm:inline">View</span>
-          </button>
+          </Button>
         </div>
       </div>
     </div>

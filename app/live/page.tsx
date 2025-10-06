@@ -49,9 +49,9 @@ export default function LivePage() {
           <div className="p-2 bg-gradient-to-br from-red-500 to-orange-600 rounded-xl animate-pulse">
             <Zap className="w-6 h-6 text-white" />
           </div>
-          <h1 className="text-4xl font-bold gradient-text">Live Launches</h1>
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent">Live Launches</h1>
         </div>
-        <p className="text-white/60 text-lg">
+        <p className="text-zinc-400 text-lg">
           Real-time token launches on pump.fun - sorted by market cap
         </p>
       </div>
@@ -70,8 +70,8 @@ export default function LivePage() {
       {/* KPI Tiles */}
       <div className={`grid ${showViewersKPI ? 'grid-cols-2 md:grid-cols-4' : 'grid-cols-3'} gap-4 mb-8`}>
         {/* Live Now - Total across all pages */}
-        <div className="glass-launchos p-4 rounded-xl">
-          <div className="text-white/60 text-sm mb-1">Live Now</div>
+        <div className="bg-white/5 border border-white/10 p-4 rounded-xl backdrop-blur-xl">
+          <div className="text-zinc-500 text-sm mb-1">Live Now</div>
           <div className="text-2xl font-bold text-red-400 flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
             {totals.liveCount > 0 ? totals.liveCount.toLocaleString('en-US') : items.length}
@@ -80,9 +80,9 @@ export default function LivePage() {
 
         {/* Total Viewers - Only show if > 0 */}
         {showViewersKPI && (
-          <div className="glass-launchos p-4 rounded-xl">
-            <div className="text-white/60 text-sm mb-1">Total Viewers</div>
-            <div className="text-2xl font-bold gradient-text-launchos flex items-center gap-2">
+          <div className="bg-white/5 border border-white/10 p-4 rounded-xl backdrop-blur-xl">
+            <div className="text-zinc-500 text-sm mb-1">Total Viewers</div>
+            <div className="text-2xl font-bold bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent flex items-center gap-2">
               <Eye className="w-5 h-5 text-purple-400" />
               {totals.viewerCount.toLocaleString('en-US')}
             </div>
@@ -90,16 +90,16 @@ export default function LivePage() {
         )}
 
         {/* Showing - Current page range */}
-        <div className="glass-launchos p-4 rounded-xl">
-          <div className="text-white/60 text-sm mb-1">Showing</div>
+        <div className="bg-white/5 border border-white/10 p-4 rounded-xl backdrop-blur-xl">
+          <div className="text-zinc-500 text-sm mb-1">Showing</div>
           <div className="text-2xl font-bold text-cyan-400">
             {totals.liveCount > 0 ? `${showingStart}–${showingEnd}` : `${items.length}`}
           </div>
         </div>
 
         {/* Status */}
-        <div className="glass-launchos p-4 rounded-xl">
-          <div className="text-white/60 text-sm mb-1">Status</div>
+        <div className="bg-white/5 border border-white/10 p-4 rounded-xl backdrop-blur-xl">
+          <div className="text-zinc-500 text-sm mb-1">Status</div>
           <div className="text-2xl font-bold text-green-400">
             {loading ? 'Loading...' : 'Live'}
           </div>
@@ -132,7 +132,7 @@ export default function LivePage() {
       {loading && !error && (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3">
           {Array.from({ length: 12 }).map((_, i) => (
-            <div key={i} className="rounded-xl bg-neutral-900/70 border border-white/10 p-2.5 animate-pulse">
+            <div key={i} className="rounded-xl bg-white/5 border border-white/10 p-2.5 animate-pulse backdrop-blur-xl">
               <div className="w-full aspect-square bg-white/5 rounded-lg mb-2" />
               <div className="h-3 bg-white/5 rounded mb-1.5" />
               <div className="h-2.5 bg-white/5 rounded w-2/3" />
@@ -169,9 +169,9 @@ export default function LivePage() {
 
       {/* Empty State */}
       {!loading && !error && items.length === 0 && (
-        <div className="rounded-2xl bg-neutral-900/70 border border-white/10 p-12 text-center">
-          <Zap className="w-16 h-16 mx-auto mb-4 text-white/20" />
-          <p className="text-white/40">No live launches found</p>
+        <div className="rounded-2xl bg-white/5 border border-white/10 p-12 text-center backdrop-blur-xl">
+          <Zap className="w-16 h-16 mx-auto mb-4 text-zinc-700" />
+          <p className="text-zinc-500">No live launches found</p>
         </div>
       )}
 
@@ -203,7 +203,7 @@ function CoinCard({
   return (
     <div
       onClick={onClick}
-      className="rounded-xl bg-gradient-to-br from-neutral-900/70 to-neutral-800/50 border border-white/10 p-2.5 hover:border-purple-500/30 hover:shadow-lg hover:shadow-purple-500/10 transition-all group cursor-pointer"
+      className="rounded-xl bg-white/5 border border-white/10 p-2.5 hover:border-white/20 hover:shadow-[0_0_30px_rgba(168,85,247,0.2)] transition-all duration-150 group cursor-pointer backdrop-blur-xl"
     >
       {/* Image */}
       <div className="relative w-full aspect-square rounded-lg overflow-hidden mb-2 bg-neutral-800">
@@ -232,21 +232,21 @@ function CoinCard({
       {/* Info */}
       <div className="space-y-1.5">
         <div>
-          <h3 className="font-bold text-white text-sm truncate group-hover:text-purple-300 transition-colors">
+          <h3 className="font-bold text-white text-sm truncate group-hover:bg-gradient-to-r group-hover:from-fuchsia-500 group-hover:via-purple-500 group-hover:to-cyan-500 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-150">
             {coin.name}
           </h3>
-          <p className="text-xs text-white/60 truncate">${coin.symbol}</p>
+          <p className="text-xs text-zinc-500 truncate">${coin.symbol}</p>
         </div>
 
         {/* Stats */}
         <div className="grid grid-cols-2 gap-1.5 pt-1.5 border-t border-white/10">
           <div>
-            <div className="text-[10px] text-white/40">MCap</div>
+            <div className="text-[10px] text-zinc-600 uppercase tracking-wide">MCap</div>
             <div className="text-xs font-bold text-green-400">{formatMarketCap(coin.usd_market_cap)}</div>
           </div>
           <div>
-            <div className="text-[10px] text-white/40">Age</div>
-            <div className="text-xs font-bold text-white/80">{formatTime(coin.created_timestamp)}</div>
+            <div className="text-[10px] text-zinc-600 uppercase tracking-wide">Age</div>
+            <div className="text-xs font-bold text-zinc-300">{formatTime(coin.created_timestamp)}</div>
           </div>
         </div>
       </div>

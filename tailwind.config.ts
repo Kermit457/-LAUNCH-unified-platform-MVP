@@ -11,7 +11,14 @@ const config: Config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
-        // LaunchOS Brand Colors
+        // LaunchOS Design System v2.0
+        base: {
+          black: '#0a0a0c',
+          darker: '#0f0f12',
+          dark: '#18181b',
+          card: '#1a1a1f',
+        },
+        // Legacy brand colors (keeping for compatibility)
         'launchos-fuchsia': '#E700FF',
         'launchos-violet': '#5A00FF',
         'launchos-cyan': '#00F0FF',

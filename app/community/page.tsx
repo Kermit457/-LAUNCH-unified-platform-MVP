@@ -56,70 +56,70 @@ export default function CommunityPage() {
 
       {/* How to Rank Section */}
       <div className="mb-12">
-        <div className="rounded-2xl bg-gradient-to-br from-neutral-900/70 to-neutral-800/50 border border-white/10 p-8">
-          <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+        <div className="rounded-2xl bg-white/5 border border-white/10 p-8 backdrop-blur-xl">
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent mb-6 flex items-center gap-2">
             <TrendingUp className="w-6 h-6 text-purple-400" />
             How to Rank
           </h2>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10">
+            <div className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10 backdrop-blur-xl">
               <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center flex-shrink-0">
                 <DollarSign className="w-5 h-5 text-white" />
               </div>
               <div>
                 <div className="font-bold text-white mb-1">Earnings (40%)</div>
-                <div className="text-sm text-white/70">Verified USD earned in 30 days</div>
+                <div className="text-sm text-zinc-400">Verified USD earned in 30 days</div>
               </div>
             </div>
 
-            <div className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10">
+            <div className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10 backdrop-blur-xl">
               <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center flex-shrink-0">
                 <Eye className="w-5 h-5 text-white" />
               </div>
               <div>
                 <div className="font-bold text-white mb-1">Views (20%)</div>
-                <div className="text-sm text-white/70">Verified views × average CPM</div>
+                <div className="text-sm text-zinc-400">Verified views × average CPM</div>
               </div>
             </div>
 
-            <div className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10">
+            <div className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10 backdrop-blur-xl">
               <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center flex-shrink-0">
                 <CheckCircle className="w-5 h-5 text-white" />
               </div>
               <div>
                 <div className="font-bold text-white mb-1">Submissions (15%)</div>
-                <div className="text-sm text-white/70">Approved clips & content</div>
+                <div className="text-sm text-zinc-400">Approved clips & content</div>
               </div>
             </div>
 
-            <div className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10">
+            <div className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10 backdrop-blur-xl">
               <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-yellow-500 to-orange-600 flex items-center justify-center flex-shrink-0">
                 <Clock className="w-5 h-5 text-white" />
               </div>
               <div>
                 <div className="font-bold text-white mb-1">Live Hours (10%)</div>
-                <div className="text-sm text-white/70">Streaming activity</div>
+                <div className="text-sm text-zinc-400">Streaming activity</div>
               </div>
             </div>
 
-            <div className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10">
+            <div className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10 backdrop-blur-xl">
               <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center flex-shrink-0">
                 <TrendingUp className="w-5 h-5 text-white" />
               </div>
               <div>
                 <div className="font-bold text-white mb-1">Conviction (10%)</div>
-                <div className="text-sm text-white/70">Community belief growth</div>
+                <div className="text-sm text-zinc-400">Community belief growth</div>
               </div>
             </div>
 
-            <div className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10">
+            <div className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10 backdrop-blur-xl">
               <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center flex-shrink-0">
                 <Zap className="w-5 h-5 text-white" />
               </div>
               <div>
                 <div className="font-bold text-white mb-1">Boosts (5%)</div>
-                <div className="text-sm text-white/70">$LAUNCH staked for visibility</div>
+                <div className="text-sm text-zinc-400">$LAUNCH staked for visibility</div>
               </div>
             </div>
           </div>
@@ -128,7 +128,7 @@ export default function CommunityPage() {
 
       {/* Leaderboard Embed */}
       <div className="mb-12">
-        <h2 className="text-2xl font-bold text-white mb-6">Current Rankings</h2>
+        <h2 className="text-2xl font-bold bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent mb-6">Current Rankings</h2>
         <LeaderboardTable />
       </div>
 
@@ -136,12 +136,12 @@ export default function CommunityPage() {
       <div className="mb-12">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h2 className="text-2xl font-bold text-white mb-1">Featured Quests</h2>
-            <p className="text-white/60">Complete quests to boost your Impact Score</p>
+            <h2 className="text-2xl font-bold bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent mb-1">Featured Quests</h2>
+            <p className="text-zinc-400">Complete quests to boost your Impact Score</p>
           </div>
           <a
             href="/earn"
-            className="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-white/70 hover:text-white text-sm font-medium transition-all"
+            className="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-zinc-400 hover:text-white text-sm font-medium transition-all"
           >
             View All Quests
           </a>
@@ -164,7 +164,7 @@ function QuestCard({ quest }: { quest: typeof FEATURED_QUESTS[0] }) {
   const progress = (quest.progress.completed / quest.progress.total) * 100
 
   return (
-    <div className="rounded-2xl bg-gradient-to-br from-neutral-900/70 to-neutral-800/50 border border-white/10 hover:border-purple-500/30 transition-all overflow-hidden group">
+    <div className="rounded-2xl bg-white/5 border border-white/10 hover:border-white/20 hover:shadow-[0_0_30px_rgba(168,85,247,0.2)] transition-all overflow-hidden group backdrop-blur-xl">
       {/* Image Placeholder */}
       <div className="relative h-40 bg-gradient-to-br from-purple-600 via-pink-600 to-orange-600 flex items-center justify-center">
         <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all" />
@@ -174,17 +174,17 @@ function QuestCard({ quest }: { quest: typeof FEATURED_QUESTS[0] }) {
       {/* Content */}
       <div className="p-6">
         <h3 className="font-bold text-white text-lg mb-2">{quest.title}</h3>
-        <p className="text-sm text-white/60 mb-4">{quest.subtitle}</p>
+        <p className="text-sm text-zinc-400 mb-4">{quest.subtitle}</p>
 
         {/* Progress */}
         <div className="mb-4">
-          <div className="flex items-center justify-between text-xs text-white/60 mb-2">
+          <div className="flex items-center justify-between text-xs text-zinc-500 mb-2">
             <span>Progress</span>
             <span>{quest.progress.completed} / {quest.progress.total}</span>
           </div>
           <div className="h-2 bg-white/10 rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-purple-500 to-pink-600 rounded-full transition-all"
+              className="h-full bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 rounded-full transition-all"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -196,7 +196,7 @@ function QuestCard({ quest }: { quest: typeof FEATURED_QUESTS[0] }) {
             <Zap className="w-4 h-4 text-yellow-400" />
             <span className="text-sm font-bold text-yellow-400">+{quest.reward.value} Impact</span>
           </div>
-          <button className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-bold text-sm transition-all shadow-lg">
+          <button className="px-4 py-2 rounded-lg bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 hover:shadow-[0_0_30px_rgba(168,85,247,0.4)] text-white font-bold text-sm transition-all">
             Start Quest
           </button>
         </div>

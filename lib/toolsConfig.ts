@@ -44,11 +44,11 @@ export const TOOL_CARDS: ToolCard[] = [
   { id: "raid-campaign", group: "Growth & Campaigns", title: "Raid", desc: "Organize coordinated raids and team actions.", icon: Swords, actionLabel: "Create", href: "/earn" },
   { id: "bounty", group: "Growth & Campaigns", title: "Bounty", desc: "Create task-based bounties with rewards.", icon: TrendingUp, actionLabel: "Create", href: "/earn" },
   { id: "pools", group: "Growth & Campaigns", title: "Prediction Pools", desc: "Create and settle markets for your stream.", icon: CandlestickChart, actionLabel: "Open", href: "/predictions", enabled: false },
-  { id: "boosts", group: "Growth & Campaigns", title: "Boost Manager", desc: "Stake $LAUNCH to amplify discovery.", icon: Megaphone, actionLabel: "Open", href: "/explore", enabled: false },
+  { id: "boosts", group: "Growth & Campaigns", title: "Boost Manager", desc: "Stake $LAUNCH to amplify discovery.", icon: Megaphone, actionLabel: "Open", href: "/discover", enabled: false },
 
   // Launch
-  { id: "create-launch", group: "Launch", title: "Create Launch", desc: "Token or creator route with built-in tools.", icon: Rocket, actionLabel: "Start", href: "/explore" },
-  { id: "import-token", group: "Launch", title: "Import Existing Token", desc: "Attach widgets, campaigns, and analytics.", icon: Download, actionLabel: "Open", href: "/explore" },
+  { id: "create-launch", group: "Launch", title: "Create Launch", desc: "Token or creator route with built-in tools.", icon: Rocket, actionLabel: "Start", href: "/discover" },
+  { id: "import-token", group: "Launch", title: "Import Existing Token", desc: "Attach widgets, campaigns, and analytics.", icon: Download, actionLabel: "Open", href: "/discover" },
 
   // Creator Ops
   { id: "clips", group: "Creator Ops", title: "Clip Intake & Review", desc: "Approve submissions and manage payouts.", icon: Video, actionLabel: "Open", href: "/ops/clips", enabled: false },
