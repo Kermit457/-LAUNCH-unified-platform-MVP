@@ -18,6 +18,15 @@ export interface Campaign {
   tags: string[]
   imageUrl?: string
   createdAt: string
+  ratePerThousand?: number
+  totalViews?: number
+  platforms?: string[]
+  socialLinks?: string[]
+  creatorKitUrl?: string
+  minViews?: number
+  minDuration?: number
+  maxDuration?: number
+  topSubmissions?: any[]
 }
 
 /**
@@ -74,6 +83,19 @@ export async function getCampaign(campaignId: string) {
   )
 
   return response as unknown as Campaign
+}
+
+/**
+ * Get a single campaign by ID
+ */
+export async function getCampaignById(id: string) {
+  const campaign = await databases.getDocument(
+    DB_ID,
+    COLLECTIONS.CAMPAIGNS,
+    id
+  )
+
+  return campaign as unknown as Campaign
 }
 
 /**

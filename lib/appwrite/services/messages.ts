@@ -35,7 +35,7 @@ export async function getUserThreads(userId: string) {
 
   const response = await databases.listDocuments(
     DB_ID,
-    'threads', // We'll need to add this collection
+    COLLECTIONS.THREADS,
     queries
   )
 
@@ -84,7 +84,7 @@ export async function sendMessage(data: {
   try {
     await databases.updateDocument(
       DB_ID,
-      'threads',
+      COLLECTIONS.THREADS,
       data.threadId,
       {
         lastMessageAt: new Date().toISOString()
@@ -136,7 +136,7 @@ export async function createDMThread(userId1: string, userId2: string) {
   // Check if thread already exists
   const existing = await databases.listDocuments(
     DB_ID,
-    'threads',
+    COLLECTIONS.THREADS,
     [
       Query.equal('type', 'dm'),
       Query.contains('participantIds', userId1),
@@ -151,7 +151,7 @@ export async function createDMThread(userId1: string, userId2: string) {
   // Create new thread
   const thread = await databases.createDocument(
     DB_ID,
-    'threads',
+    COLLECTIONS.THREADS,
     ID.unique(),
     {
       threadId: `thread_${Date.now()}`,
@@ -175,7 +175,7 @@ export async function createGroupThread(data: {
 }) {
   const thread = await databases.createDocument(
     DB_ID,
-    'threads',
+    COLLECTIONS.THREADS,
     ID.unique(),
     {
       threadId: `thread_${Date.now()}`,
@@ -214,5 +214,5 @@ export async function deleteThread(threadId: string) {
   )
 
   // Delete thread
-  await databases.deleteDocument(DB_ID, 'threads', threadId)
+  await databases.deleteDocument(DB_ID, COLLECTIONS.THREADS, threadId)
 }

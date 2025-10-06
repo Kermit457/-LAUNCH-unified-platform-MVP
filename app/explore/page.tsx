@@ -1,10 +1,11 @@
 "use client"
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { ProjectCard } from '@/components/ProjectCard';
 import { SubmitLaunchDrawer } from '@/components/launch/SubmitLaunchDrawer';
 import { MarketSwitcher } from '@/components/MarketSwitcher';
 import { launchProjects, sortProjects } from '@/lib/sampleData';
+import { getLaunches } from '@/lib/appwrite/services/launches';
 import type { Project, MarketType } from '@/types';
 import { LayoutGrid, Rocket, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -24,7 +25,26 @@ export default function ExplorePage() {
   const [sortBy, setSortBy] = useState<SortOption>('trending');
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
   const [projects, setProjects] = useState<Project[]>(launchProjects);
+  const [loading, setLoading] = useState(true);
   const { success } = useToast();
+
+  // Fetch launches from Appwrite
+  useEffect(() => {
+    async function fetchLaunches() {
+      try {
+        const data = await getLaunches({ limit: 100 })
+        if (data && data.length > 0) {
+          setProjects(data as any)
+        }
+      } catch (error) {
+        console.error('Failed to fetch launches:', error)
+        // Keep using mock data on error
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchLaunches()
+  }, [])
 
   const filteredAndSortedProjects = useMemo(() => {
     // Filter by market type: ALL, ICM (launches) or CCM (non-launch projects)

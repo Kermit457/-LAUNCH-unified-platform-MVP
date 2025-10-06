@@ -9,6 +9,10 @@ import { SocialLinks } from './SocialLinks'
 import { cn } from '@/lib/cn'
 import { useNetwork } from '@/lib/contexts/NetworkContext'
 import { useState } from 'react'
+import { useUser } from '@/hooks/useUser'
+import { sendNetworkInvite } from '@/lib/appwrite/services/network'
+import { createDMThread } from '@/lib/appwrite/services/messages'
+import { useRouter } from 'next/navigation'
 
 interface ProfileCardProps {
   data: ProfileCardData
@@ -40,30 +44,68 @@ export function ProfileCard({
     onMessage
   } = data
 
+  const { user } = useUser()
+  const router = useRouter()
   const { addInvite, addMessage } = useNetwork()
   const [inviteSent, setInviteSent] = useState(false)
-  const [showMessageModal, setShowMessageModal] = useState(false)
 
   const isCompact = variant === 'compact'
   const isMinimal = variant === 'minimal'
 
-  const handleInviteClick = () => {
-    if (onInvite) {
-      onInvite()
+  const handleInviteClick = async () => {
+    if (!user) {
+      alert('Please log in to send invites')
+      return
     }
-    addInvite(id, username, displayName, avatar)
-    setInviteSent(true)
-    // TODO: Add toast notification
+
+    try {
+      // Call Appwrite to send network invite
+      await sendNetworkInvite({
+        senderId: user.$id,
+        receiverId: id,
+        message: `Hi ${displayName}, let's connect!`
+      })
+
+      // Also call the optional onInvite callback
+      if (onInvite) {
+        onInvite()
+      }
+
+      // Update local state
+      addInvite(id, username, displayName, avatar)
+      setInviteSent(true)
+    } catch (error: any) {
+      console.error('Failed to send invite:', error)
+      if (error.message?.includes('already sent')) {
+        alert('You already sent an invite to this user')
+        setInviteSent(true)
+      } else {
+        alert('Failed to send invite. Please try again.')
+      }
+    }
   }
 
-  const handleMessageClick = () => {
-    if (onMessage) {
-      onMessage()
+  const handleMessageClick = async () => {
+    if (!user) {
+      alert('Please log in to send messages')
+      return
     }
-    // For now, just add a placeholder message
-    addMessage(id, username, displayName, 'New message', avatar)
-    // TODO: Open message modal/chat
-    setShowMessageModal(true)
+
+    try {
+      // Create or get existing DM thread
+      const thread = await createDMThread(user.$id, id)
+
+      // Navigate to dashboard/network with the thread open
+      router.push(`/dashboard/network?thread=${thread.$id}`)
+
+      // Also call the optional onMessage callback
+      if (onMessage) {
+        onMessage()
+      }
+    } catch (error) {
+      console.error('Failed to create message thread:', error)
+      alert('Failed to open chat. Please try again.')
+    }
   }
 
   return (

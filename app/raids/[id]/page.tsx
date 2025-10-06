@@ -2,40 +2,95 @@
 
 import { useParams, useRouter } from 'next/navigation'
 import { ArrowLeft, Share2, Eye, TrendingUp, Clock, Users, Target, Coins, Upload } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { getQuestById } from '@/lib/appwrite/services/quests'
+import { getSubmissions } from '@/lib/appwrite/services/submissions'
 
 export default function RaidDetailPage() {
   const params = useParams()
   const router = useRouter()
   const [hasJoined, setHasJoined] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [raid, setRaid] = useState<any>(null)
 
-  // TODO: Fetch real raid data by params.id
-  const raid = {
-    id: params.id,
-    type: 'raid' as const,
-    title: 'Raid X Thread for $MEME',
-    description: 'Help spread the word about $MEME token by engaging with our X thread. Like, retweet, and comment to earn rewards!',
-    targetUrl: 'https://x.com/meme_coin/status/123456789',
-    pool: 1500,
-    paid: 300,
-    participants: 45,
-    maxParticipants: 100,
-    views: 127,
-    platforms: ['twitter'],
-    duration: '2 days left',
-    rules: {
-      platforms: ['twitter'],
-      requiredTags: ['#meme', '@meme_coin'],
-      minDurationSec: 10,
-      evidence: 'link' as const,
-      perUserLimit: 3,
-      reviewerSlaHrs: 24,
-    },
-    funding: {
-      mint: 'USDC',
-      amount: 1500,
-      model: 'pool' as const,
+  // Fetch raid data from Appwrite
+  useEffect(() => {
+    async function fetchRaid() {
+      try {
+        setLoading(true)
+        const data = await getQuestById(params.id as string)
+
+        // Calculate total paid from approved submissions
+        const submissions = await getSubmissions({
+          questId: data.$id,
+          status: 'approved',
+          limit: 1000
+        })
+        const totalPaid = submissions.reduce((sum, sub) => sum + (sub.earnings || 0), 0)
+
+        // Convert Appwrite Quest to raid format
+        setRaid({
+          id: data.$id,
+          type: 'raid' as const,
+          title: data.title,
+          description: data.description,
+          targetUrl: '',
+          pool: data.poolAmount,
+          paid: totalPaid,
+          participants: data.participants,
+          maxParticipants: 100,
+          views: 0,
+          platforms: data.platforms || ['twitter'],
+          duration: new Date(data.deadline).toLocaleDateString(),
+          rules: {
+            platforms: data.platforms || ['twitter'],
+            requiredTags: [],
+            minDurationSec: 10,
+            evidence: 'link' as const,
+            perUserLimit: 3,
+            reviewerSlaHrs: 24,
+          },
+          funding: {
+            mint: 'USDC',
+            amount: data.poolAmount,
+            model: 'pool' as const,
+          }
+        })
+      } catch (error) {
+        console.error('Failed to fetch raid:', error)
+        // Fallback
+        setRaid({
+          id: params.id,
+          type: 'raid' as const,
+          title: 'Raid Not Found',
+          description: 'This raid may have been removed or does not exist',
+          targetUrl: '',
+          pool: 0,
+          paid: 0,
+          participants: 0,
+          maxParticipants: 0,
+          views: 0,
+          platforms: [],
+          duration: '',
+          rules: {},
+          funding: { mint: 'USDC', amount: 0, model: 'pool' as const }
+        })
+      } finally {
+        setLoading(false)
+      }
     }
+
+    if (params.id) {
+      fetchRaid()
+    }
+  }, [params.id])
+
+  if (loading || !raid) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
+      </div>
+    )
   }
 
   const progressPct = Math.round((raid.paid / raid.pool) * 100)

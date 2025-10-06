@@ -300,6 +300,25 @@ async function setupAppwrite() {
           { key: 'actionUrl', type: 'string', size: 500, required: false },
           { key: 'read', type: 'boolean', required: false, default: false }
         ]
+      },
+      {
+        id: 'threads',
+        name: 'Threads',
+        permissions: [
+          Permission.read(Role.users()),
+          Permission.create(Role.users()),
+          Permission.update(Role.users()),
+          Permission.delete(Role.users())
+        ],
+        attributes: [
+          { key: 'threadId', type: 'string', size: 100, required: true },
+          { key: 'type', type: 'string', size: 20, required: true }, // 'dm' or 'group'
+          { key: 'name', type: 'string', size: 200, required: false }, // Only for group threads
+          { key: 'participantIds', type: 'string', size: 5000, required: true, array: true }, // Array of user IDs
+          { key: 'lastMessageAt', type: 'string', size: 50, required: false }, // ISO timestamp
+          { key: 'projectId', type: 'string', size: 100, required: false }, // Optional link to project
+          { key: 'campaignId', type: 'string', size: 100, required: false } // Optional link to campaign
+        ]
       }
     ]
 

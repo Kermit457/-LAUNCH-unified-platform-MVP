@@ -2,41 +2,87 @@
 
 import { useParams, useRouter } from 'next/navigation'
 import { ArrowLeft, Share2, Eye, TrendingUp, Clock, Users, Target, Coins, Upload } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { getQuestById } from '@/lib/appwrite/services/quests'
 
 export default function BountyDetailPage() {
   const params = useParams()
   const router = useRouter()
   const [hasJoined, setHasJoined] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [bounty, setBounty] = useState<any>(null)
 
-  // TODO: Fetch real bounty data by params.id
-  const bounty = {
-    id: params.id,
-    type: 'bounty' as const,
-    title: 'Create Content for $TOKEN',
-    description: 'Create engaging content about $TOKEN and earn per approved submission. Video, thread, or article format accepted.',
-    targetUrl: 'https://token.project/guidelines',
-    pool: 500,
-    paid: 120,
-    participants: 12,
-    maxParticipants: undefined,
-    views: 89,
-    platforms: ['youtube', 'twitter'],
-    duration: '5 days left',
-    rules: {
-      platforms: ['youtube', 'twitter'],
-      requiredTags: ['#token', '@token_official'],
-      minDurationSec: 30,
-      evidence: 'link' as const,
-      perUserLimit: 5,
-      reviewerSlaHrs: 48,
-    },
-    funding: {
-      mint: 'USDC',
-      amount: 500,
-      model: 'per_task' as const,
-      perTaskAmount: 25,
+  // Fetch bounty data from Appwrite
+  useEffect(() => {
+    async function fetchBounty() {
+      try {
+        setLoading(true)
+        const data = await getQuestById(params.id as string)
+
+        // Convert Appwrite Quest to bounty format
+        setBounty({
+          id: data.$id,
+          type: 'bounty' as const,
+          title: data.title,
+          description: data.description,
+          targetUrl: '',
+          pool: data.poolAmount,
+          paid: 0, // TODO: Calculate from submissions
+          participants: data.participants,
+          maxParticipants: undefined,
+          views: 0,
+          platforms: data.platforms || ['twitter'],
+          duration: new Date(data.deadline).toLocaleDateString(),
+          rules: {
+            platforms: data.platforms || ['twitter'],
+            requiredTags: [],
+            minDurationSec: 30,
+            evidence: 'link' as const,
+            perUserLimit: 5,
+            reviewerSlaHrs: 48,
+          },
+          funding: {
+            mint: 'USDC',
+            amount: data.poolAmount,
+            model: 'per_task' as const,
+            perTaskAmount: 25,
+          }
+        })
+      } catch (error) {
+        console.error('Failed to fetch bounty:', error)
+        // Fallback
+        setBounty({
+          id: params.id,
+          type: 'bounty' as const,
+          title: 'Bounty Not Found',
+          description: 'This bounty may have been removed or does not exist',
+          targetUrl: '',
+          pool: 0,
+          paid: 0,
+          participants: 0,
+          maxParticipants: undefined,
+          views: 0,
+          platforms: [],
+          duration: '',
+          rules: {},
+          funding: { mint: 'USDC', amount: 0, model: 'per_task' as const, perTaskAmount: 0 }
+        })
+      } finally {
+        setLoading(false)
+      }
     }
+
+    if (params.id) {
+      fetchBounty()
+    }
+  }, [params.id])
+
+  if (loading || !bounty) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
+      </div>
+    )
   }
 
   const progressPct = Math.round((bounty.paid / bounty.pool) * 100)

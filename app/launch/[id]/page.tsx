@@ -12,56 +12,74 @@ import { generateMockCandles, generateMockActivity } from '@/lib/mockChartData'
 import type { Contributor, Candle, ActivityPoint } from '@/types/launch'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
+import { getLaunch } from '@/lib/appwrite/services/launches'
 
 export default function LaunchDetailPage() {
   const params = useParams()
   const router = useRouter()
   const [isBoosted, setIsBoosted] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [launch, setLaunch] = useState<any>(null)
   const [chartData, setChartData] = useState<{ candles: Candle[]; activity: ActivityPoint[] }>({
     candles: [],
     activity: [],
   })
 
-  // TODO: Fetch real launch data by params.id
-  const launch = {
-    id: params.id,
-    title: 'Solana',
-    subtitle: 'Fast, scalable blockchain for decentralized applications',
-    logoUrl: 'https://api.dicebear.com/7.x/identicon/svg?seed=SOL&backgroundColor=14f195',
-    scope: 'ICM' as const,
-    status: 'LIVE' as const,
-    mint: 'DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263', // BONK token
-    dexPairId: 'DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263', // Use token address directly
-    convictionPct: 94,
-    socials: {
-      twitter: '@solana',
-      discord: 'discord.gg/solana',
-      telegram: 't.me/solana',
-      website: 'solana.com'
-    },
-    team: [
-      { id: 'anatoly', name: 'Anatoly Yakovenko', twitter: 'aeyakovenko', avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=AY&backgroundColor=14f195' },
-      { id: 'raj', name: 'Raj Gokal', twitter: 'rajgokal', avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=RG&backgroundColor=9945ff' },
-      { id: 'austin', name: 'Austin Federa', twitter: 'Austin_Federa', avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=AF&backgroundColor=00d4ff' },
-    ] as Contributor[],
-    contributors: [
-      { id: 'stephen', name: 'Stephen Akridge', twitter: 'stephenakridge', avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=SA&backgroundColor=dc1fff' },
-      { id: 'greg', name: 'Greg Fitzgerald', twitter: 'gregfitzgerald', avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=GF&backgroundColor=ff6b00' },
-      { id: 'eric', name: 'Eric Williams', twitter: 'ericwilliams', avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=EW&backgroundColor=10b981' },
-      { id: 'lily', name: 'Lily Liu', twitter: 'lilygliu', avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=LL&backgroundColor=8b5cf6' },
-    ] as Contributor[],
-    description: `Solana is a high-performance blockchain supporting builders around the world creating crypto apps that scale.
+  // Fetch launch data from Appwrite
+  useEffect(() => {
+    async function fetchLaunch() {
+      try {
+        setLoading(true)
+        const data = await getLaunch(params.id as string)
 
-Solana is all about speed and scalability. It can process thousands of transactions per second with minimal fees, making it ideal for DeFi, NFTs, and Web3 applications.
+        // Convert Appwrite Launch to component format
+        setLaunch({
+          id: data.$id,
+          title: data.tokenName,
+          subtitle: data.description,
+          logoUrl: data.tokenImage,
+          scope: data.tags.includes('ICM') ? 'ICM' : 'CCM',
+          status: data.status === 'live' ? 'LIVE' : 'UPCOMING',
+          mint: data.tokenSymbol || '',
+          dexPairId: data.tokenSymbol || '',
+          convictionPct: data.convictionPct || 0,
+          socials: {
+            twitter: data.tags.find(t => t.startsWith('@')) || '',
+            discord: '',
+            telegram: '',
+            website: ''
+          },
+          team: data.team || [],
+          contributors: data.contributors || [],
+          description: data.description || 'No description available.',
+        })
+      } catch (error) {
+        console.error('Failed to fetch launch:', error)
+        // Fallback to mock data
+        setLaunch({
+          id: params.id,
+          title: 'Launch Not Found',
+          subtitle: 'This launch may have been removed or does not exist',
+          logoUrl: 'https://api.dicebear.com/7.x/identicon/svg?seed=404',
+          scope: 'ICM' as const,
+          status: 'LIVE' as const,
+          mint: '',
+          dexPairId: '',
+          convictionPct: 0,
+          socials: {},
+          team: [],
+          contributors: [],
+          description: 'Launch details could not be loaded.',
+        })
+      } finally {
+        setLoading(false)
+      }
+    }
 
-Our platform features:
-• Lightning-fast transaction speeds (65,000+ TPS)
-• Ultra-low fees (fractions of a cent)
-• Proof of History consensus mechanism
-• Growing ecosystem of 400+ projects
-• Developer-friendly tooling and SDKs
-• Vibrant community of builders and users`,
-  }
+    if (params.id) {
+      fetchLaunch()
+    }
+  }, [params.id])
 
   const isICM = launch.scope === 'ICM'
 

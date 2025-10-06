@@ -20,6 +20,8 @@ export interface Launch {
   tags: string[]
   createdAt: string
   status: 'live' | 'upcoming' | 'ended'
+  team?: Array<{ name: string; role: string; avatar?: string }>
+  contributors?: Array<{ name: string; amount: number; avatar?: string }>
 }
 
 /**
