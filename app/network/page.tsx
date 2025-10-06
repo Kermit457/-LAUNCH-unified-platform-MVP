@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { Users } from 'lucide-react'
 import { ProfileCard } from '@/components/profile/ProfileCard'
 import { MetricPill } from '@/components/ui/metric-pill'
@@ -9,6 +9,7 @@ import { Card } from '@/components/ui/card'
 import { mockProfiles } from '@/lib/mockProfileData'
 import { NetworkFilters, FilterState } from '@/components/network/NetworkFilters'
 import { ProfileCardData } from '@/types/profile'
+import { searchUsers } from '@/lib/appwrite/services/users'
 
 export default function NetworkPage() {
   const [filters, setFilters] = useState<FilterState>({
@@ -16,6 +17,46 @@ export default function NetworkPage() {
     roles: [],
     sortBy: 'recommended'
   })
+  const [profiles, setProfiles] = useState<ProfileCardData[]>([])
+  const [loading, setLoading] = useState(true)
+
+  // Fetch users from Appwrite
+  useEffect(() => {
+    async function fetchProfiles() {
+      try {
+        setLoading(true)
+        const data = await searchUsers('', 100) // Fetch all users
+
+        // Convert Appwrite UserProfile to ProfileCardData
+        const converted: ProfileCardData[] = data.map(user => ({
+          id: user.$id,
+          username: user.username,
+          displayName: user.displayName || user.username,
+          name: user.displayName || user.username,
+          handle: `@${user.username}`,
+          avatarUrl: user.avatarUrl,
+          bannerUrl: user.bannerUrl,
+          verified: user.verified,
+          roles: user.roles,
+          mutuals: [], // TODO: Calculate mutual connections
+          bio: user.bio,
+          socials: user.socialLinks || {},
+          connected: false, // TODO: Fetch connection status from invites collection
+          contributions: [], // TODO: Fetch from submissions collection
+        }))
+
+        setProfiles(converted)
+      } catch (error) {
+        console.error('Failed to fetch profiles:', error)
+        // Fall back to mock data
+        setProfiles(mockProfiles)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchProfiles()
+  }, [])
 
   // Calculate recommendation score
   const getRecommendationScore = (profile: ProfileCardData): number => {
@@ -38,7 +79,8 @@ export default function NetworkPage() {
 
   // Filter and sort profiles
   const filteredAndSortedProfiles = useMemo(() => {
-    let result = [...mockProfiles]
+    // Use real data if loaded, otherwise fall back to mock data
+    let result = profiles.length > 0 ? [...profiles] : [...mockProfiles]
 
     // Filter by connection status
     if (filters.connectionStatus === 'connected') {
@@ -73,10 +115,11 @@ export default function NetworkPage() {
     }
 
     return result
-  }, [filters])
+  }, [filters, profiles])
 
-  const connectedCount = mockProfiles.filter(p => p.connected).length
-  const suggestionsCount = mockProfiles.filter(p => !p.connected).length
+  const allProfiles = profiles.length > 0 ? profiles : mockProfiles
+  const connectedCount = allProfiles.filter(p => p.connected).length
+  const suggestionsCount = allProfiles.filter(p => !p.connected).length
 
   return (
     <div className="min-h-screen pb-24">
@@ -103,43 +146,55 @@ export default function NetworkPage() {
 
       {/* Stats Bar */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-        <MetricPill label="Total Network" value={mockProfiles.length.toString()} />
+        <MetricPill label="Total Network" value={allProfiles.length.toString()} />
         <MetricPill label="Connected" value={connectedCount.toString()} variant="positive" />
         <MetricPill label="Not Connected" value={suggestionsCount.toString()} />
         <MetricPill label="Filtered Results" value={filteredAndSortedProfiles.length.toString()} />
       </div>
 
-      {/* Profile Cards Grid */}
-      <h2 className="text-2xl font-bold text-white mb-6">
-        {filters.sortBy === 'recommended' && 'Recommended for You'}
-        {filters.sortBy === 'contribution' && 'Top Contributors'}
-        {filters.sortBy === 'mutuals' && 'Most Mutual Connections'}
-        {filters.sortBy === 'recent' && 'Recent Activity'}
-      </h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-        {filteredAndSortedProfiles.map((profile) => (
-          <ProfileCard
-            key={profile.id}
-            data={profile}
-          />
-        ))}
-      </div>
+      {/* Loading State */}
+      {loading && (
+        <div className="text-center py-16">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-fuchsia-500 mx-auto mb-4"></div>
+          <p className="text-zinc-500">Loading profiles...</p>
+        </div>
+      )}
 
-      {/* CTA Section */}
-      <Card variant="gradient" glow className="mt-16 p-12 text-center">
-        <h2 className="text-3xl font-bold text-white mb-4">Want to grow your network?</h2>
-        <p className="text-zinc-300 text-lg mb-8">
-          Connect with top creators and unlock collaboration opportunities
-        </p>
-        <Button
-          variant="boost"
-          size="lg"
-          disabled={true}
-          title="Feature coming soon"
-        >
-          Complete Your Profile
-        </Button>
-      </Card>
+      {/* Profile Cards Grid */}
+      {!loading && (
+        <>
+          <h2 className="text-2xl font-bold text-white mb-6">
+            {filters.sortBy === 'recommended' && 'Recommended for You'}
+            {filters.sortBy === 'contribution' && 'Top Contributors'}
+            {filters.sortBy === 'mutuals' && 'Most Mutual Connections'}
+            {filters.sortBy === 'recent' && 'Recent Activity'}
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            {filteredAndSortedProfiles.map((profile) => (
+              <ProfileCard
+                key={profile.id}
+                data={profile}
+              />
+            ))}
+          </div>
+
+          {/* CTA Section */}
+          <Card variant="gradient" glow className="mt-16 p-12 text-center">
+            <h2 className="text-3xl font-bold text-white mb-4">Want to grow your network?</h2>
+            <p className="text-zinc-300 text-lg mb-8">
+              Connect with top creators and unlock collaboration opportunities
+            </p>
+            <Button
+              variant="boost"
+              size="lg"
+              disabled={true}
+              title="Feature coming soon"
+            >
+              Complete Your Profile
+            </Button>
+          </Card>
+        </>
+      )}
     </div>
   )
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { OverviewHeader } from '@/components/dashboard/OverviewHeader'
 import { KpiTile } from '@/components/dashboard/KpiTile'
 import { QuickActions } from '@/components/dashboard/QuickActions'
@@ -11,12 +11,48 @@ import { CreateQuestDrawer } from '@/components/quests/CreateQuestDrawer'
 import { CreateCampaignModal } from '@/components/campaigns/CreateCampaignModal'
 import { CampaignType } from '@/types/quest'
 import { NetworkActivityWidget } from '@/components/dashboard/NetworkActivityWidget'
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
+import { useUser } from '@/hooks/useUser'
+import { getUserProfile } from '@/lib/appwrite/services/users'
+import type { UserProfile } from '@/lib/appwrite/services/users'
 
 export default function DashboardOverview() {
+  const { user } = useUser()
+  const [profile, setProfile] = useState<UserProfile | null>(null)
   // Modal states
   const [isCreateQuestOpen, setIsCreateQuestOpen] = useState(false)
   const [initialQuestType, setInitialQuestType] = useState<CampaignType>('raid')
   const [isCreateCampaignOpen, setIsCreateCampaignOpen] = useState(false)
+
+  // Fetch user profile from Appwrite
+  useEffect(() => {
+    async function fetchProfile() {
+      if (!user) return
+
+      try {
+        const data = await getUserProfile(user.$id)
+        if (data) {
+          setProfile(data)
+        }
+      } catch (error) {
+        console.error('Failed to fetch profile:', error)
+        // Set default profile if fetch fails
+        setProfile({
+          $id: user.$id,
+          userId: user.$id,
+          username: user.name || 'user',
+          displayName: user.name,
+          verified: false,
+          conviction: 0,
+          totalEarnings: 0,
+          roles: ['Member'],
+          createdAt: new Date().toISOString(),
+        } as any)
+      }
+    }
+
+    fetchProfile()
+  }, [user])
 
   // Calculate KPIs from mock data
   const pendingReviews = mockSubmissions.filter(s => s.status === 'pending').length
@@ -34,7 +70,7 @@ export default function DashboardOverview() {
     .filter(p => p.status === 'paid' && Date.now() - p.createdAt < 30 * 24 * 60 * 60 * 1000)
     .reduce((sum, p) => sum + (p.net || p.amount), 0)
 
-  const conviction = 87 // Mock conviction score
+  const conviction = profile?.conviction || 0
 
   // Format currency with Intl
   const formatUSDC = (amount: number) => {
@@ -83,15 +119,16 @@ export default function DashboardOverview() {
   ]
 
   return (
-    <div className="space-y-6">
-      {/* Header band */}
-      <OverviewHeader
-        handle="@alpha_fren"
-        name="Alpha Fren"
-        roles={['Creator', 'Advertiser']}
-        verified={true}
-        walletAddress="FRENwABC123XYZ789x7gH2"
-      />
+    <ProtectedRoute>
+      <div className="space-y-6">
+        {/* Header band */}
+        <OverviewHeader
+          handle={`@${profile?.username || user?.name || 'user'}`}
+          name={profile?.displayName || user?.name || 'User'}
+          roles={profile?.roles || ['Member']}
+          verified={profile?.verified || false}
+          walletAddress={user?.$id || ''}
+        />
 
       {/* KPI Grid - 6 tiles */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
@@ -180,6 +217,7 @@ export default function DashboardOverview() {
           setIsCreateCampaignOpen(false)
         }}
       />
-    </div>
+      </div>
+    </ProtectedRoute>
   )
 }

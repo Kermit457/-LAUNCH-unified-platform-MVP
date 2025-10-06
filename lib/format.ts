@@ -161,3 +161,20 @@ export function isNewToken(createdAt?: number): boolean {
   const ageMs = Date.now() - createdAt
   return ageMs < 24 * 60 * 60 * 1000 // 24 hours
 }
+
+/**
+ * Format distance to now from timestamp
+ * @example formatDistanceToNow(Date.now() - 3600000) => "1h ago"
+ */
+export function formatDistanceToNow(timestamp: number): string {
+  const diff = Date.now() - timestamp
+  const seconds = Math.floor(diff / 1000)
+  const minutes = Math.floor(seconds / 60)
+  const hours = Math.floor(minutes / 60)
+  const days = Math.floor(hours / 24)
+
+  if (days > 0) return `${days}d ago`
+  if (hours > 0) return `${hours}h ago`
+  if (minutes > 0) return `${minutes}m ago`
+  return 'just now'
+}

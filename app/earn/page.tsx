@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { EarnCard as EarnCardComponent, type EarnType } from '@/components/EarnCard'
 import { earnCards, filterEarnCards } from '@/lib/sampleData'
@@ -10,6 +10,8 @@ import { CreateQuestDrawer } from '@/components/quests/CreateQuestDrawer'
 import { CreateCampaignModal } from '@/components/campaigns/CreateCampaignModal'
 import { CampaignType } from '@/types/quest'
 import { Button } from '@/components/ui/button'
+import { getCampaigns } from '@/lib/appwrite/services/campaigns'
+import type { EarnCard } from '@/components/EarnCard'
 
 const TABS = ['All', 'Campaign', 'Raid', 'Bounty'] as const
 type Tab = typeof TABS[number]
@@ -21,10 +23,57 @@ export default function EarnPage() {
   const [isCreateQuestOpen, setIsCreateQuestOpen] = useState(false)
   const [initialQuestType, setInitialQuestType] = useState<CampaignType>('raid')
   const [isCreateCampaignOpen, setIsCreateCampaignOpen] = useState(false)
+  const [campaigns, setCampaigns] = useState<EarnCard[]>([])
+  const [loading, setLoading] = useState(true)
+
+  // Fetch campaigns from Appwrite
+  useEffect(() => {
+    async function fetchCampaigns() {
+      try {
+        setLoading(true)
+        const data = await getCampaigns({ status: 'active', limit: 100 })
+
+        // Convert Appwrite Campaign type to EarnCard
+        const converted: EarnCard[] = data.map(campaign => ({
+          id: campaign.$id,
+          title: campaign.title,
+          description: campaign.description,
+          type: campaign.type as EarnType,
+          reward: {
+            value: campaign.budget,
+            currency: 'USDC'
+          },
+          participants: campaign.participants,
+          duration: new Date(campaign.deadline).toLocaleDateString(),
+          imageUrl: campaign.imageUrl,
+          tags: campaign.tags,
+          platform: ['LaunchOS'],
+          progress: {
+            paid: campaign.budgetPaid,
+            pool: campaign.budget
+          },
+          status: campaign.status === 'active' ? 'live' : campaign.status === 'completed' ? 'ended' : 'upcoming',
+        }))
+
+        setCampaigns(converted)
+      } catch (error) {
+        console.error('Failed to fetch campaigns:', error)
+        // Fall back to mock data
+        setCampaigns(earnCards)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchCampaigns()
+  }, [])
 
   const filteredCards = useMemo(() => {
     const filterType = activeTab.toLowerCase() as EarnType | 'all'
-    let cards = filterEarnCards(filterType === 'all' ? 'all' : filterType)
+    // Use real data if loaded, otherwise fall back to mock data
+    let cards = campaigns.length > 0
+      ? (filterType === 'all' ? campaigns : campaigns.filter(c => c.type === filterType))
+      : filterEarnCards(filterType === 'all' ? 'all' : filterType)
 
     // Sort
     if (sortBy === 'payout') {
@@ -40,7 +89,7 @@ export default function EarnPage() {
     }
 
     return cards
-  }, [activeTab, sortBy])
+  }, [activeTab, sortBy, campaigns])
 
   return (
     <div className="min-h-screen pb-24">

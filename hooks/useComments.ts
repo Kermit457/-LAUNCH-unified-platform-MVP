@@ -1,130 +1,132 @@
-import { useState, useEffect } from 'react'
-import { Comment } from '@/types'
+import { useState, useEffect, useCallback } from 'react'
+import {
+  getComments,
+  createComment,
+  updateCommentUpvotes,
+  deleteComment,
+  subscribeToComments,
+  type Comment,
+} from '@/lib/appwrite/services/comments'
+import { useUser } from './useUser'
 
-const getStorageKey = (launchId: string) => `comments:${launchId}`
-
-/**
- * Mock comments hook with localStorage and BroadcastChannel sync
- *
- * TODO: Replace with Appwrite Realtime
- * - Subscribe to comments collection filtered by launchId
- * - Listen for create/delete events
- * - Call API to create/delete comments
- */
 export function useComments(launchId: string) {
   const [comments, setComments] = useState<Comment[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const { user } = useUser()
 
-  // Load comments from localStorage on mount
+  // Fetch initial comments
   useEffect(() => {
-    const stored = localStorage.getItem(getStorageKey(launchId))
-    if (stored) {
+    async function fetchComments() {
       try {
-        const parsed = JSON.parse(stored)
-        // Convert timestamp strings back to Date objects
-        const withDates = parsed.map((c: any) => ({
-          ...c,
-          timestamp: new Date(c.timestamp),
-        }))
-        setComments(withDates)
-      } catch (error) {
-        console.error('Error parsing stored comments:', error)
+        setLoading(true)
+        const data = await getComments(launchId)
+        setComments(data)
+        setError(null)
+      } catch (err: any) {
+        console.error('Failed to fetch comments:', err)
+        setError(err.message || 'Failed to load comments')
+      } finally {
+        setLoading(false)
       }
     }
-    setLoading(false)
+
+    if (launchId) {
+      fetchComments()
+    }
   }, [launchId])
 
-  // Multi-tab sync via BroadcastChannel
+  // Subscribe to real-time updates
   useEffect(() => {
-    const channel = new BroadcastChannel(`comments:${launchId}`)
+    if (!launchId) return
 
-    channel.onmessage = (event) => {
-      if (event.data.type === 'comment-added') {
-        setComments((prev) => {
-          // Avoid duplicates
-          if (prev.some((c) => c.id === event.data.comment.id)) {
-            return prev
-          }
-          return [
-            {
-              ...event.data.comment,
-              timestamp: new Date(event.data.comment.timestamp),
-            },
-            ...prev,
-          ]
-        })
-      } else if (event.data.type === 'comment-deleted') {
-        setComments((prev) => prev.filter((c) => c.id !== event.data.commentId))
+    const unsubscribe = subscribeToComments(
+      launchId,
+      // On update
+      (updatedComment) => {
+        setComments((prev) =>
+          prev.map((c) => (c.$id === updatedComment.$id ? updatedComment : c))
+        )
+      },
+      // On create
+      (newComment) => {
+        setComments((prev) => [newComment, ...prev])
+      },
+      // On delete
+      (deletedId) => {
+        setComments((prev) => prev.filter((c) => c.$id !== deletedId))
       }
-    }
+    )
 
-    return () => channel.close()
+    return () => {
+      unsubscribe()
+    }
   }, [launchId])
 
-  const addComment = (text: string, author: string) => {
-    const newComment: Comment = {
-      id: crypto.randomUUID(),
-      author,
-      text,
-      timestamp: new Date(),
+  // Add a new comment
+  const addComment = useCallback(
+    async (content: string) => {
+      if (!user) {
+        throw new Error('You must be logged in to comment')
+      }
+
+      try {
+        await createComment({
+          launchId,
+          userId: user.$id,
+          username: user.name || user.email,
+          userAvatar: undefined, // TODO: Get from user profile
+          content,
+        })
+      } catch (err: any) {
+        console.error('Failed to create comment:', err)
+        throw new Error(err.message || 'Failed to post comment')
+      }
+    },
+    [launchId, user]
+  )
+
+  // Upvote a comment
+  const upvoteComment = useCallback(async (commentId: string) => {
+    try {
+      const comment = comments.find((c) => c.$id === commentId)
+      if (!comment) return
+
+      await updateCommentUpvotes(commentId, comment.upvotes + 1)
+    } catch (err: any) {
+      console.error('Failed to upvote comment:', err)
+      throw new Error(err.message || 'Failed to upvote comment')
     }
+  }, [comments])
 
-    // Optimistic update - add to top
-    setComments((prev) => [newComment, ...prev])
+  // Remove a comment
+  const removeComment = useCallback(
+    async (commentId: string) => {
+      if (!user) {
+        throw new Error('You must be logged in to delete comments')
+      }
 
-    // Save to localStorage
-    const updated = [newComment, ...comments]
-    localStorage.setItem(getStorageKey(launchId), JSON.stringify(updated))
+      const comment = comments.find((c) => c.$id === commentId)
+      if (!comment || comment.userId !== user.$id) {
+        throw new Error('You can only delete your own comments')
+      }
 
-    // Broadcast to other tabs
-    const channel = new BroadcastChannel(`comments:${launchId}`)
-    channel.postMessage({
-      type: 'comment-added',
-      comment: {
-        ...newComment,
-        timestamp: newComment.timestamp.toISOString(),
-      },
-    })
-    channel.close()
-
-    // TODO: Replace with Appwrite API call
-    // const response = await databases.createDocument(
-    //   'main',
-    //   'comments',
-    //   ID.unique(),
-    //   {
-    //     launchId,
-    //     userId: user.id,
-    //     text,
-    //     createdAt: new Date().toISOString()
-    //   }
-    // )
-  }
-
-  const deleteComment = (commentId: string) => {
-    // Optimistic update
-    setComments((prev) => prev.filter((c) => c.id !== commentId))
-
-    // Save to localStorage
-    const updated = comments.filter((c) => c.id !== commentId)
-    localStorage.setItem(getStorageKey(launchId), JSON.stringify(updated))
-
-    // Broadcast to other tabs
-    const channel = new BroadcastChannel(`comments:${launchId}`)
-    channel.postMessage({
-      type: 'comment-deleted',
-      commentId,
-    })
-    channel.close()
-
-    // TODO: Replace with Appwrite API call
-    // await databases.deleteDocument('main', 'comments', commentId)
-  }
+      try {
+        await deleteComment(commentId)
+      } catch (err: any) {
+        console.error('Failed to delete comment:', err)
+        throw new Error(err.message || 'Failed to delete comment')
+      }
+    },
+    [comments, user]
+  )
 
   return {
     comments,
     loading,
+    error,
     addComment,
-    deleteComment,
+    upvoteComment,
+    removeComment,
   }
 }

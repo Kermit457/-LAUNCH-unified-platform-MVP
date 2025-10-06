@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { LiveLaunchCard } from '@/components/launch/cards/LiveLaunchCard'
 import { UpcomingLaunchCard } from '@/components/launch/cards/UpcomingLaunchCard'
@@ -9,6 +9,7 @@ import { LaunchCardData } from '@/types/launch'
 import { TrendingUp, Rocket, Clock, LayoutGrid, Link2, MessageSquare, Flame } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/cn'
+import { getLaunches } from '@/lib/appwrite/services/launches'
 
 type FilterType = 'ALL' | 'ICM' | 'CCM'
 type SortType = 'trending' | 'newest' | 'conviction'
@@ -19,7 +20,46 @@ export default function DiscoverPage() {
   const [selectedLaunch, setSelectedLaunch] = useState<{ id: string; title: string } | null>(null)
   const [filter, setFilter] = useState<FilterType>('ALL')
   const [sortBy, setSortBy] = useState<SortType>('trending')
-  // Mock data for LIVE ICM cards (with real Solana mints for API testing)
+  const [launches, setLaunches] = useState<LaunchCardData[]>([])
+  const [loading, setLoading] = useState(true)
+
+  // Fetch launches from Appwrite
+  useEffect(() => {
+    async function fetchLaunches() {
+      try {
+        setLoading(true)
+        const data = await getLaunches({ limit: 100 })
+
+        // Convert Appwrite Launch type to LaunchCardData
+        const converted: LaunchCardData[] = data.map(launch => ({
+          id: launch.$id,
+          title: launch.tokenName,
+          subtitle: launch.description,
+          logoUrl: launch.tokenImage,
+          scope: launch.tags.includes('ICM') ? 'ICM' : 'CCM',
+          status: launch.status === 'live' ? 'LIVE' : launch.status === 'upcoming' ? 'UPCOMING' : 'LIVE',
+          convictionPct: launch.convictionPct || 0,
+          commentsCount: launch.commentsCount || 0,
+          upvotes: launch.upvotes || 0,
+          mint: launch.$id, // Placeholder - update when you have actual mint data
+          contributors: [], // Placeholder - fetch from users collection later
+          tgeAt: launch.status === 'upcoming' ? new Date(launch.createdAt).getTime() : undefined,
+        }))
+
+        setLaunches(converted)
+      } catch (error) {
+        console.error('Failed to fetch launches:', error)
+        // Fall back to mock data if Appwrite fails
+        setLaunches([...liveICMCards, ...liveCCMCards, ...upcomingCards])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchLaunches()
+  }, [])
+
+  // Mock data for LIVE ICM cards (with real Solana mints for API testing) - FALLBACK ONLY
   const liveICMCards: LaunchCardData[] = [
     {
       id: 'demo-sol',
@@ -164,8 +204,12 @@ export default function DiscoverPage() {
 
   // Combined and filtered data
   const allLaunches = useMemo(() => {
+    // Use real data if loaded, otherwise fall back to mock data
+    if (launches.length > 0) {
+      return launches
+    }
     return [...liveICMCards, ...liveCCMCards, ...upcomingCards]
-  }, [])
+  }, [launches])
 
   const filteredLaunches = useMemo(() => {
     let filtered = allLaunches
@@ -341,12 +385,34 @@ export default function DiscoverPage() {
         </div>
       </div>
 
+      {/* Loading State */}
+      {loading && (
+        <div className="text-center py-16">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-fuchsia-500 mx-auto mb-4"></div>
+          <p className="text-zinc-500">Loading launches...</p>
+        </div>
+      )}
+
       {/* Launches Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredLaunches.map((card) => {
-          if (card.status === 'UPCOMING') {
+      {!loading && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredLaunches.map((card) => {
+            if (card.status === 'UPCOMING') {
+              return (
+                <UpcomingLaunchCard
+                  key={card.id}
+                  data={card}
+                  onUpvote={handleUpvote}
+                  onComment={handleComment}
+                  onBoost={handleBoost}
+                  onFollow={handleFollow}
+                  onView={handleView}
+                  onSetReminder={handleSetReminder}
+                />
+              )
+            }
             return (
-              <UpcomingLaunchCard
+              <LiveLaunchCard
                 key={card.id}
                 data={card}
                 onUpvote={handleUpvote}
@@ -354,26 +420,14 @@ export default function DiscoverPage() {
                 onBoost={handleBoost}
                 onFollow={handleFollow}
                 onView={handleView}
-                onSetReminder={handleSetReminder}
               />
             )
-          }
-          return (
-            <LiveLaunchCard
-              key={card.id}
-              data={card}
-              onUpvote={handleUpvote}
-              onComment={handleComment}
-              onBoost={handleBoost}
-              onFollow={handleFollow}
-              onView={handleView}
-            />
-          )
-        })}
-      </div>
+          })}
+        </div>
+      )}
 
       {/* Empty State */}
-      {filteredLaunches.length === 0 && (
+      {!loading && filteredLaunches.length === 0 && (
         <div className="text-center py-16">
           <Rocket className="w-16 h-16 mx-auto mb-4 text-zinc-700" />
           <p className="text-zinc-500">No launches found for this filter</p>
