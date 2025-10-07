@@ -688,15 +688,34 @@ export default function DiscoverPage() {
             // Upload logo to Appwrite Storage
             let logoUrl = ''
             if (data.logoFile) {
-              console.log('📤 Uploading logo to Appwrite Storage...')
-              logoUrl = await uploadLogo(data.logoFile, launchId)
-              console.log('✅ Logo uploaded:', logoUrl)
+              console.log('📤 Uploading logo to Appwrite Storage...', {
+                fileName: data.logoFile.name,
+                fileSize: data.logoFile.size,
+                fileType: data.logoFile.type,
+                launchId
+              })
+
+              try {
+                logoUrl = await uploadLogo(data.logoFile)
+                console.log('✅ Logo uploaded successfully:', logoUrl)
+
+                if (!logoUrl || logoUrl.startsWith('blob:')) {
+                  throw new Error('Upload returned invalid URL')
+                }
+              } catch (uploadError: any) {
+                console.error('❌ Logo upload failed:', uploadError)
+                alert(`Logo upload failed: ${uploadError.message}. Launch will be created without logo.`)
+                logoUrl = '' // Continue without logo
+              }
             }
+
+            // Map MEME scope to ICM for database storage (MEME is a special type of ICM)
+            const dbScope = data.scope === 'MEME' ? 'ICM' : data.scope
 
             // Create launch with BOTH new and legacy schema fields
             const newLaunch = await createLaunchDocument({
               launchId,
-              scope: data.scope as 'ICM' | 'CCM',  // Type cast to handle MEME -> ICM/CCM mapping
+              scope: dbScope as 'ICM' | 'CCM',
 
               // New schema fields
               title: data.title,        // Token Name (e.g., "Solana")
@@ -743,14 +762,22 @@ export default function DiscoverPage() {
               }
             }
 
+            // Success! Show success message and navigate
+            alert('🎉 Launch created successfully!')
             setIsSubmitLaunchOpen(false)
             setSelectedEntity(null)
 
-            // Refresh launches
-            window.location.reload()
-          } catch (error) {
+            // Navigate to the launch detail page instead of reloading
+            router.push(`/launch/${newLaunch.$id}`)
+          } catch (error: any) {
             console.error('Failed to create launch:', error)
-            alert('Failed to create launch. Please try again.')
+            console.error('Error details:', {
+              message: error?.message,
+              response: error?.response,
+              stack: error?.stack
+            })
+            const errorMessage = error?.message || error?.toString() || 'Unknown error'
+            alert(`Failed to create launch: ${errorMessage}`)
           }
         }}
       />

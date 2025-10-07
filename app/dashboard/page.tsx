@@ -24,6 +24,8 @@ import { getActivities } from '@/lib/appwrite/services/activities'
 import type { Activity as AppwriteActivity } from '@/lib/appwrite/services/activities'
 import { getUserProjects, getLaunch } from '@/lib/appwrite/services/launches'
 import type { Launch } from '@/lib/appwrite/services/launches'
+import { createQuest } from '@/lib/appwrite/services/quests'
+import { createCampaign } from '@/lib/appwrite/services/campaigns'
 
 export default function DashboardOverview() {
   const router = useRouter()
@@ -350,11 +352,63 @@ export default function DashboardOverview() {
         isOpen={isCreateQuestOpen}
         initialType={initialQuestType}
         onClose={() => setIsCreateQuestOpen(false)}
-        onSubmit={(data) => {
-          console.log('Quest created with entity:', selectedEntity, data)
-          // TODO: Save quest with ownerType and ownerId
-          setIsCreateQuestOpen(false)
-          setSelectedEntity(null)
+        onSubmit={async (data) => {
+          if (!userId) {
+            alert('Please sign in to create a quest')
+            return
+          }
+
+          if (!selectedEntity) {
+            alert('Please select an entity first')
+            return
+          }
+
+          try {
+            console.log('🎯 Creating quest with entity:', selectedEntity, data)
+
+            // Upload logo if provided
+            let logoUrl = ''
+            if (data.logoFile) {
+              console.log('📤 Uploading quest logo...')
+              const { uploadLogo } = await import('@/lib/storage')
+              try {
+                logoUrl = await uploadLogo(data.logoFile)
+                console.log('✅ Logo uploaded:', logoUrl)
+              } catch (uploadError: any) {
+                console.error('❌ Logo upload failed:', uploadError)
+                alert(`Logo upload failed: ${uploadError.message}. Quest will be created without logo.`)
+              }
+            }
+
+            // Create quest document
+            const budgetAmount = data.funding?.kind === 'paid' && data.funding.model?.amount ? Number(data.funding.model.amount) : 0
+
+            console.log('💰 Budget amount calculated:', budgetAmount)
+
+            // @ts-ignore - Bypass type check for budgetTotal field
+            const newQuest = await createQuest({
+              questId: data.id || crypto.randomUUID(),
+              type: data.type,
+              title: data.title,
+              description: data.targetUrl || data.title,
+              createdBy: userId,
+              status: 'active' as const,
+              poolAmount: budgetAmount,
+              budgetTotal: budgetAmount,
+              budgetPaid: 0,
+              payPerTask: 0,
+              platforms: data.rules.platforms.map(p => p.toString())
+            })
+
+            console.log('✅ Quest created:', newQuest)
+
+            alert('🎉 Quest created successfully!')
+            setIsCreateQuestOpen(false)
+            setSelectedEntity(null)
+          } catch (error: any) {
+            console.error('Failed to create quest:', error)
+            alert(`Failed to create quest: ${error.message || 'Unknown error'}`)
+          }
         }}
       />
 
@@ -362,11 +416,63 @@ export default function DashboardOverview() {
       <CreateCampaignModal
         isOpen={isCreateCampaignOpen}
         onClose={() => setIsCreateCampaignOpen(false)}
-        onSubmit={(data) => {
-          console.log('Campaign created with entity:', selectedEntity, data)
-          // TODO: Save campaign with ownerType and ownerId
-          setIsCreateCampaignOpen(false)
-          setSelectedEntity(null)
+        onSubmit={async (data) => {
+          if (!userId) {
+            alert('Please sign in to create a campaign')
+            return
+          }
+
+          if (!selectedEntity) {
+            alert('Please select an entity first')
+            return
+          }
+
+          try {
+            console.log('🎬 Creating campaign with entity:', selectedEntity, data)
+
+            // Upload campaign image if provided
+            let imageUrl = ''
+            if (data.image) {
+              console.log('📤 Uploading campaign image...')
+              const { uploadLogo } = await import('@/lib/storage')
+              try {
+                imageUrl = await uploadLogo(data.image)
+                console.log('✅ Image uploaded:', imageUrl)
+              } catch (uploadError: any) {
+                console.error('❌ Image upload failed:', uploadError)
+                alert(`Image upload failed: ${uploadError.message}. Campaign will be created without image.`)
+              }
+            }
+
+            // Create campaign document
+            const newCampaign = await createCampaign({
+              campaignId: crypto.randomUUID(),
+              type: 'clipping',
+              title: data.title,
+              description: data.description || '',
+              createdBy: userId,
+              status: 'active',
+              prizePool: data.prizePoolUsd,
+              budgetTotal: data.prizePoolUsd,
+              ratePerThousand: data.payoutPerKUsd,
+              minViews: data.minViewsRequired || 0,
+              minDuration: data.videoLen?.minSec || 0,
+              maxDuration: data.videoLen?.maxSec || 0,
+              platforms: data.platforms,
+              socialLinks: data.socialLinks,
+              gdocUrl: data.driveLink || '',
+              imageUrl: imageUrl
+            })
+
+            console.log('✅ Campaign created:', newCampaign)
+
+            alert('🎉 Campaign created successfully!')
+            setIsCreateCampaignOpen(false)
+            setSelectedEntity(null)
+          } catch (error: any) {
+            console.error('Failed to create campaign:', error)
+            alert(`Failed to create campaign: ${error.message || 'Unknown error'}`)
+          }
         }}
       />
       </div>

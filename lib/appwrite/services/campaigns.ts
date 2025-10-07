@@ -3,34 +3,24 @@ import { Query } from 'appwrite'
 
 export interface Campaign {
   $id: string
+  $createdAt: string
+  $updatedAt: string
+  campaignId: string
+  type: 'clipping' | 'bounty' | 'airdrop'
   title: string
   description: string
-  type: 'bounty' | 'quest' | 'airdrop'
-  creatorId: string
-  creatorName: string
-  creatorAvatar?: string
-  budget: number
-  budgetPaid: number
-  participants: number
-  deadline: string
+  createdBy: string
   status: 'active' | 'completed' | 'cancelled'
-  requirements: string[]
-  tags: string[]
-  imageUrl?: string
-  createdAt: string
-  ratePerThousand?: number
-  totalViews?: number
-  platforms?: string[]
-  socialLinks?: string[]
-  creatorKitUrl?: string
-  minViews?: number
-  minDuration?: number
-  maxDuration?: number
-  topSubmissions?: any[]
-
-  // Entity scoping fields
-  ownerType: 'user' | 'project'
-  ownerId: string
+  prizePool: number
+  budgetTotal: number
+  ratePerThousand: number
+  minViews: number
+  minDuration: number
+  maxDuration: number
+  platforms: string[]
+  socialLinks: string[]
+  gdocUrl: string
+  imageUrl: string
 }
 
 /**
@@ -118,15 +108,50 @@ export async function getCampaignById(id: string) {
 /**
  * Create a new campaign
  */
-export async function createCampaign(data: Omit<Campaign, '$id' | 'createdAt'>) {
+export async function createCampaign(data: Omit<Campaign, '$id' | '$createdAt' | '$updatedAt'>) {
+  // Ensure required fields exist (defensive against TypeScript caching issues)
+  const campaignId = (data as any).campaignId || `campaign_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+  const createdBy = (data as any).createdBy || (data as any).userId || 'unknown'
+  const ratePerThousand = (data as any).ratePerThousand !== undefined ? (data as any).ratePerThousand : ((data as any).payoutRate || 0)
+  const budgetTotal = (data as any).budgetTotal !== undefined ? (data as any).budgetTotal : ((data as any).prizePool || (data as any).budget || 0)
+
+  // Only include fields that exist in Appwrite schema
+  const documentData: any = {
+    campaignId: campaignId,
+    type: data.type,
+    title: data.title,
+    description: data.description,
+    createdBy: createdBy,
+    status: data.status,
+    prizePool: data.prizePool,
+    budgetTotal: budgetTotal,
+    ratePerThousand: ratePerThousand,
+    minViews: data.minViews,
+    minDuration: data.minDuration,
+    maxDuration: data.maxDuration,
+    platforms: data.platforms,
+    socialLinks: data.socialLinks,
+    gdocUrl: data.gdocUrl,
+    imageUrl: data.imageUrl
+  }
+
+  console.log('🎬 Creating campaign document with data:', documentData)
+  console.log('🎬 campaignId:', documentData.campaignId)
+  console.log('🎬 createdBy:', documentData.createdBy)
+  console.log('🎬 ratePerThousand:', documentData.ratePerThousand)
+  console.log('🎬 budgetTotal:', documentData.budgetTotal)
+  console.log('🎬 prizePool:', documentData.prizePool)
+  console.log('�� All field values:', {
+    campaignId: documentData.campaignId,
+    type: documentData.type,
+    title: documentData.title
+  })
+
   const response = await databases.createDocument(
     DB_ID,
     COLLECTIONS.CAMPAIGNS,
     'unique()',
-    {
-      ...data,
-      createdAt: new Date().toISOString(),
-    }
+    documentData
   )
 
   return response as unknown as Campaign

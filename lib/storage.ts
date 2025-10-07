@@ -11,10 +11,9 @@ import { ID } from 'appwrite'
  * Upload a project logo file to Appwrite Storage
  *
  * @param file - The logo file to upload (PNG/JPG, ≤5MB, ideally 1:1 aspect ratio)
- * @param launchId - Optional launch ID for file naming
  * @returns Promise<string> - Public URL of the uploaded logo
  */
-export async function uploadLogo(file: File, launchId?: string): Promise<string> {
+export async function uploadLogo(file: File): Promise<string> {
   // Validate file type
   const validTypes = ['image/png', 'image/jpeg', 'image/jpg']
   if (!validTypes.includes(file.type)) {
@@ -28,8 +27,9 @@ export async function uploadLogo(file: File, launchId?: string): Promise<string>
   }
 
   try {
-    // Generate unique file ID
-    const fileId = launchId ? `${launchId}_${Date.now()}` : ID.unique()
+    // Generate unique file ID (max 36 chars for Appwrite)
+    // Use Appwrite's ID.unique() which generates a valid short ID
+    const fileId = ID.unique()
 
     // Upload to Appwrite Storage
     const response = await storage.createFile(
@@ -40,8 +40,15 @@ export async function uploadLogo(file: File, launchId?: string): Promise<string>
 
     // Get the file view URL (public preview URL)
     const fileUrl = storage.getFileView(BUCKETS.LAUNCH_LOGOS, response.$id)
+    const urlString = fileUrl.toString()
 
-    return fileUrl.toString()
+    console.log('📸 File uploaded to Appwrite Storage:', {
+      fileId: response.$id,
+      bucketId: BUCKETS.LAUNCH_LOGOS,
+      url: urlString
+    })
+
+    return urlString
   } catch (error) {
     console.error('Failed to upload logo to Appwrite:', error)
     throw new Error('Failed to upload logo. Please try again.')
