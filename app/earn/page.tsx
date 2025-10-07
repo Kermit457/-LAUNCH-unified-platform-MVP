@@ -7,12 +7,15 @@ import { earnCards, filterEarnCards } from '@/lib/sampleData'
 import { Trophy, Filter, TrendingUp, Video, Swords, DollarSign } from 'lucide-react'
 import { CreateQuestDrawer } from '@/components/quests/CreateQuestDrawer'
 import { CreateCampaignModal } from '@/components/campaigns/CreateCampaignModal'
+import { EntitySelectorModal, EntityOption } from '@/components/launch/EntitySelectorModal'
 import { CampaignType } from '@/types/quest'
 import { Button } from '@/components/ui/button'
 import { getCampaigns, createCampaign } from '@/lib/appwrite/services/campaigns'
 import { getQuests, createQuest } from '@/lib/appwrite/services/quests'
 import type { EarnCard } from '@/components/EarnCard'
 import { useUser } from '@/hooks/useUser'
+import { getUserProfile } from '@/lib/appwrite/services/users'
+import { getUserProjects } from '@/lib/appwrite/services/launches'
 import { uploadLogo } from '@/lib/storage'
 
 const TABS = ['All', 'Campaign', 'Raid', 'Bounty'] as const
@@ -28,6 +31,49 @@ export default function EarnPage() {
   const [isCreateCampaignOpen, setIsCreateCampaignOpen] = useState(false)
   const [allCards, setAllCards] = useState<EarnCard[]>([])
   const [loading, setLoading] = useState(true)
+
+  // Entity selector state
+  const [showEntitySelector, setShowEntitySelector] = useState(false)
+  const [entitySelectorAction, setEntitySelectorAction] = useState<'campaign' | 'quest'>('campaign')
+  const [selectedEntity, setSelectedEntity] = useState<EntityOption | null>(null)
+  const [profile, setProfile] = useState<any>(null)
+  const [linkedProjects, setLinkedProjects] = useState<any[]>([])
+
+  // Fetch user profile and projects
+  useEffect(() => {
+    async function fetchUserData() {
+      if (!userId) return
+      try {
+        const [userProfile, projects] = await Promise.all([
+          getUserProfile(userId),
+          getUserProjects(userId)
+        ])
+        setProfile(userProfile)
+        setLinkedProjects(projects.map(p => ({
+          id: p.$id,
+          name: p.title,
+          description: p.subtitle || p.description || '',
+          logo: p.logoUrl
+        })))
+      } catch (error) {
+        console.error('Failed to fetch user data:', error)
+      }
+    }
+    fetchUserData()
+  }, [userId])
+
+  // Handle entity selection and proceed with creating campaign/quest
+  const handleEntitySelected = (entity: EntityOption) => {
+    setSelectedEntity(entity)
+    setShowEntitySelector(false)
+
+    // Open the appropriate creation modal based on action type
+    if (entitySelectorAction === 'campaign') {
+      setIsCreateCampaignOpen(true)
+    } else if (entitySelectorAction === 'quest') {
+      setIsCreateQuestOpen(true)
+    }
+  }
 
   // Fetch campaigns and quests from Appwrite
   useEffect(() => {
@@ -186,7 +232,10 @@ export default function EarnPage() {
       {/* Create Buttons */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <button
-          onClick={() => setIsCreateCampaignOpen(true)}
+          onClick={() => {
+            setEntitySelectorAction('campaign')
+            setShowEntitySelector(true)
+          }}
           className="px-6 py-3 rounded-xl bg-gradient-to-r from-fuchsia-500 via-pink-500 to-purple-600 hover:from-fuchsia-600 hover:via-pink-600 hover:to-purple-700 text-white font-bold text-sm transition-all shadow-lg hover:shadow-fuchsia-500/50 flex items-center justify-center gap-2"
         >
           <Video className="w-5 h-5" />
@@ -195,7 +244,8 @@ export default function EarnPage() {
         <button
           onClick={() => {
             setInitialQuestType('raid')
-            setIsCreateQuestOpen(true)
+            setEntitySelectorAction('quest')
+            setShowEntitySelector(true)
           }}
           className="px-6 py-3 rounded-xl bg-gradient-to-r from-red-500 via-orange-500 to-amber-500 hover:from-red-600 hover:via-orange-600 hover:to-amber-600 text-white font-bold text-sm transition-all shadow-lg hover:shadow-red-500/50 flex items-center justify-center gap-2"
         >
@@ -205,7 +255,8 @@ export default function EarnPage() {
         <button
           onClick={() => {
             setInitialQuestType('bounty')
-            setIsCreateQuestOpen(true)
+            setEntitySelectorAction('quest')
+            setShowEntitySelector(true)
           }}
           className="px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-600 hover:via-teal-600 hover:to-cyan-600 text-white font-bold text-sm transition-all shadow-lg hover:shadow-emerald-500/50 flex items-center justify-center gap-2"
         >
@@ -265,6 +316,25 @@ export default function EarnPage() {
         </div>
       )}
 
+      {/* Entity Selector Modal */}
+      <EntitySelectorModal
+        isOpen={showEntitySelector}
+        onClose={() => setShowEntitySelector(false)}
+        onSelect={handleEntitySelected}
+        userProfile={{
+          id: userId || '',
+          name: name || profile?.name || 'User',
+          username: profile?.username,
+          avatar: profile?.avatar
+        }}
+        projects={linkedProjects.map(p => ({
+          id: p.id,
+          title: p.name,
+          logoUrl: p.logo,
+          scope: 'ICM' as const
+        }))}
+      />
+
       {/* Create Quest Drawer */}
       <CreateQuestDrawer
         isOpen={isCreateQuestOpen}
@@ -272,7 +342,7 @@ export default function EarnPage() {
         onClose={() => setIsCreateQuestOpen(false)}
         onSubmit={async (data: any) => {
           try {
-            // Create quest in Appwrite
+            // Create quest in Appwrite (ownerType/ownerId to be added later)
             const budgetAmount = (data as any).poolAmount || 0
             const quest = await createQuest({
               questId: data.id || `quest_${Date.now()}`,
@@ -287,6 +357,10 @@ export default function EarnPage() {
               payPerTask: 0,
               platforms: (data as any).platforms || []
             })
+
+            // TODO: Add ownerType/ownerId to Quest interface and Appwrite schema
+            // const ownerType = selectedEntity?.type === 'user' ? 'user' : selectedEntity?.type === 'project' ? 'project' : 'user'
+            // const ownerId = selectedEntity?.type === 'user' ? (userId || 'anonymous') : selectedEntity?.type === 'project' ? selectedEntity.id : (userId || 'anonymous')
 
             // Navigate to correct route based on type
             const route = data.type === 'raid' ? `/raids/${quest.$id}` : `/bounties/${quest.$id}`
@@ -319,6 +393,14 @@ export default function EarnPage() {
               }
             }
 
+            // Determine owner from selected entity (fallback to user)
+            const ownerType = selectedEntity?.type === 'user' ? 'user' : selectedEntity?.type === 'project' ? 'project' : 'user'
+            const ownerId = selectedEntity?.type === 'user'
+              ? (userId || 'anonymous')
+              : selectedEntity?.type === 'project'
+                ? selectedEntity.id
+                : (userId || 'anonymous')
+
             // Create campaign in Appwrite with proper fields
             const campaign = await createCampaign({
               campaignId: crypto.randomUUID(),
@@ -337,8 +419,8 @@ export default function EarnPage() {
               socialLinks: data.socialLinks || [],
               gdocUrl: data.driveLink || '',
               imageUrl: imageUrl,
-              ownerType: 'user',
-              ownerId: userId || 'anonymous'
+              ownerType: ownerType,
+              ownerId: ownerId
             })
 
             console.log('✅ Campaign created:', campaign)
