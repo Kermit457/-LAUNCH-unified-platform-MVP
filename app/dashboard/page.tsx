@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { OverviewHeader, DashboardMode, LinkedProject } from '@/components/dashboard/OverviewHeader'
 import { KpiTile } from '@/components/dashboard/KpiTile'
 import { QuickActions } from '@/components/dashboard/QuickActions'
@@ -9,6 +10,7 @@ import { ActivityList, Activity } from '@/components/dashboard/ActivityList'
 import { AlertCircle, TrendingUp, DollarSign, Zap, Target, Award } from 'lucide-react'
 import { CreateQuestDrawer } from '@/components/quests/CreateQuestDrawer'
 import { CreateCampaignModal } from '@/components/campaigns/CreateCampaignModal'
+import { EntitySelectorModal, EntityOption } from '@/components/launch/EntitySelectorModal'
 import { CampaignType } from '@/types/quest'
 import { NetworkActivityWidget } from '@/components/dashboard/NetworkActivityWidget'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
@@ -24,6 +26,7 @@ import { getUserProjects, getLaunch } from '@/lib/appwrite/services/launches'
 import type { Launch } from '@/lib/appwrite/services/launches'
 
 export default function DashboardOverview() {
+  const router = useRouter()
   const { userId } = useUser()
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [kpiData, setKpiData] = useState({
@@ -46,6 +49,11 @@ export default function DashboardOverview() {
   const [isCreateQuestOpen, setIsCreateQuestOpen] = useState(false)
   const [initialQuestType, setInitialQuestType] = useState<CampaignType>('raid')
   const [isCreateCampaignOpen, setIsCreateCampaignOpen] = useState(false)
+
+  // Entity selector state
+  const [showEntitySelector, setShowEntitySelector] = useState(false)
+  const [entitySelectorAction, setEntitySelectorAction] = useState<'campaign' | 'quest'>('campaign')
+  const [selectedEntity, setSelectedEntity] = useState<EntityOption | null>(null)
 
   // Fetch user profile from Appwrite
   useEffect(() => {
@@ -79,9 +87,9 @@ export default function DashboardOverview() {
         const projects = await getUserProjects(userId)
         const projectList: LinkedProject[] = projects.map(p => ({
           id: p.$id,
-          title: p.tokenName,
-          logoUrl: p.tokenImage,
-          scope: 'ICM' as 'ICM' | 'CCM' // Default to ICM for now, can be enhanced later
+          title: p.title || p.tokenName || 'Unnamed Project',
+          logoUrl: p.logoUrl || p.tokenImage,
+          scope: p.scope || 'ICM'
         }))
         setLinkedProjects(projectList)
       } catch (error) {
@@ -119,7 +127,7 @@ export default function DashboardOverview() {
     }
   }
 
-  // Fetch dashboard data from Appwrite
+  // Fetch dashboard data from Appwrite - ENTITY SCOPED
   useEffect(() => {
     async function fetchDashboardData() {
       if (!userId) return
@@ -127,13 +135,35 @@ export default function DashboardOverview() {
       try {
         setLoading(true)
 
-        // Fetch all data in parallel
+        // Determine entity scope based on mode
+        const ownerType = mode === 'project' ? 'project' : 'user'
+        const ownerId = mode === 'project' && selectedProject ? selectedProject.id : userId
+
+        console.log(`📊 Fetching dashboard data for ${ownerType}:`, ownerId)
+
+        // Fetch all data in parallel - ENTITY SCOPED
         const [submissions, campaigns, payouts, userActivities] = await Promise.all([
-          getSubmissions({ userId }),
-          getCampaigns({ createdBy: userId }),
-          getPayouts({ userId }),
-          getActivities(userId, 10)
+          getSubmissions({
+            ownerType,
+            ownerId,
+            userId: mode === 'user' ? userId : undefined // Only filter by userId in user mode
+          }),
+          getCampaigns({
+            ownerType,
+            ownerId
+          }),
+          getPayouts({
+            ownerType,
+            ownerId,
+            userId: mode === 'user' ? userId : undefined
+          }),
+          getActivities(userId, 10, {
+            contextType: ownerType,
+            contextId: ownerId
+          })
         ])
+
+        console.log(`📊 Found: ${campaigns.length} campaigns, ${submissions.length} submissions, ${payouts.length} payouts`)
 
         // Calculate KPIs
         const pendingReviews = submissions.filter(s => s.status === 'pending').length
@@ -179,7 +209,7 @@ export default function DashboardOverview() {
     }
 
     fetchDashboardData()
-  }, [userId])
+  }, [userId, mode, selectedProject])
 
   const conviction = profile?.conviction || 0
 
@@ -254,21 +284,24 @@ export default function DashboardOverview() {
           currentProjectData && <ProjectKpiTiles project={currentProjectData} />
         )}
 
-        {/* Context-Aware Quick Actions */}
+        {/* Unified Quick Actions - Same for User & Project */}
         <QuickActions
-          mode={mode}
-          onCreateCampaign={() => setIsCreateCampaignOpen(true)}
+          onCreateCampaign={() => {
+            setEntitySelectorAction('campaign')
+            setShowEntitySelector(true)
+          }}
           onCreateRaid={() => {
+            setEntitySelectorAction('quest')
             setInitialQuestType('raid')
-            setIsCreateQuestOpen(true)
+            setShowEntitySelector(true)
           }}
           onCreateBounty={() => {
+            setEntitySelectorAction('quest')
             setInitialQuestType('bounty')
-            setIsCreateQuestOpen(true)
+            setShowEntitySelector(true)
           }}
-          onManageTreasury={() => alert('Treasury management coming soon!')}
-          onConfigureProject={() => alert('Project configuration coming soon!')}
-          onViewAnalytics={() => alert('Advanced analytics coming soon!')}
+          onViewAnalytics={() => router.push('/dashboard/analytics')}
+          onOpenSettings={() => router.push('/dashboard/settings')}
         />
 
       {/* Network Summary + Activity */}
@@ -282,14 +315,46 @@ export default function DashboardOverview() {
         </div>
       </div>
 
+      {/* Entity Selector Modal */}
+      {profile && (
+        <EntitySelectorModal
+          isOpen={showEntitySelector}
+          onClose={() => setShowEntitySelector(false)}
+          onSelect={(entity) => {
+            setSelectedEntity(entity)
+            setShowEntitySelector(false)
+
+            // Open appropriate creation modal based on action
+            if (entitySelectorAction === 'campaign') {
+              setIsCreateCampaignOpen(true)
+            } else {
+              setIsCreateQuestOpen(true)
+            }
+          }}
+          onCreateNewProject={() => {
+            // TODO: Implement create new project flow
+            alert('Create new project flow coming soon!')
+          }}
+          userProfile={{
+            id: userId || '',
+            name: profile.displayName || 'User',
+            username: profile.username,
+            avatar: profile.avatar
+          }}
+          projects={linkedProjects}
+        />
+      )}
+
       {/* Create Quest Drawer */}
       <CreateQuestDrawer
         isOpen={isCreateQuestOpen}
         initialType={initialQuestType}
         onClose={() => setIsCreateQuestOpen(false)}
         onSubmit={(data) => {
-          console.log('Quest created:', data)
+          console.log('Quest created with entity:', selectedEntity, data)
+          // TODO: Save quest with ownerType and ownerId
           setIsCreateQuestOpen(false)
+          setSelectedEntity(null)
         }}
       />
 
@@ -298,8 +363,10 @@ export default function DashboardOverview() {
         isOpen={isCreateCampaignOpen}
         onClose={() => setIsCreateCampaignOpen(false)}
         onSubmit={(data) => {
-          console.log('Campaign created:', data)
+          console.log('Campaign created with entity:', selectedEntity, data)
+          // TODO: Save campaign with ownerType and ownerId
           setIsCreateCampaignOpen(false)
+          setSelectedEntity(null)
         }}
       />
       </div>

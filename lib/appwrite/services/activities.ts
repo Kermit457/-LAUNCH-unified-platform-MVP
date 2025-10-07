@@ -13,20 +13,39 @@ export interface Activity {
   actionUrl?: string
   read: boolean
   $createdAt: string
+
+  // Entity scoping fields
+  contextType?: 'user' | 'project'
+  contextId?: string
 }
 
 /**
- * Get activities for a user
+ * Get activities for a user or project context
+ * Supports entity scoping via contextType and contextId
  */
-export async function getActivities(userId: string, limit = 50) {
+export async function getActivities(userId: string, limit = 50, options?: {
+  contextType?: 'user' | 'project'
+  contextId?: string
+}) {
+  const queries = [
+    Query.equal('userId', userId),
+    Query.limit(limit),
+    Query.orderDesc('$createdAt')
+  ]
+
+  // Entity scoping: filter by context
+  if (options?.contextType) {
+    queries.push(Query.equal('contextType', options.contextType))
+  }
+
+  if (options?.contextId) {
+    queries.push(Query.equal('contextId', options.contextId))
+  }
+
   const response = await databases.listDocuments(
     DB_ID,
     COLLECTIONS.ACTIVITIES,
-    [
-      Query.equal('userId', userId),
-      Query.limit(limit),
-      Query.orderDesc('$createdAt')
-    ]
+    queries
   )
 
   return response.documents as unknown as Activity[]

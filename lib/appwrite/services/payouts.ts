@@ -16,14 +16,21 @@ export interface Payout {
   fee?: number
   net?: number
   $createdAt: string
+
+  // Entity scoping fields
+  ownerType?: 'user' | 'project'
+  ownerId?: string
 }
 
 /**
- * Get payouts for a user
+ * Get payouts for a user or project
+ * Supports entity scoping (filter by ownerType and ownerId)
  */
 export async function getPayouts(options?: {
   userId?: string
   status?: string
+  ownerType?: 'user' | 'project'
+  ownerId?: string
   limit?: number
 }) {
   const queries = []
@@ -34,6 +41,15 @@ export async function getPayouts(options?: {
 
   if (options?.status) {
     queries.push(Query.equal('status', options.status))
+  }
+
+  // Entity scoping
+  if (options?.ownerType) {
+    queries.push(Query.equal('ownerType', options.ownerType))
+  }
+
+  if (options?.ownerId) {
+    queries.push(Query.equal('ownerId', options.ownerId))
   }
 
   queries.push(Query.limit(options?.limit || 100))

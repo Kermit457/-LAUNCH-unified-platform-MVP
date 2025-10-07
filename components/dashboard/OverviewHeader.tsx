@@ -59,8 +59,9 @@ export function OverviewHeader({
     <div className="rounded-2xl bg-white/5 border border-white/10 backdrop-blur p-6 mb-6 relative z-10">
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-4">
-          {/* Avatar */}
+          {/* Main Avatar with Quick Switcher Bubbles */}
           <div className="relative">
+            {/* Large Avatar - Current Active Entity */}
             {displayAvatar ? (
               <img
                 src={displayAvatar}
@@ -72,10 +73,93 @@ export function OverviewHeader({
                 {displayName.slice(0, 2).toUpperCase()}
               </div>
             )}
-            <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 border-2 border-[#0B0F1A] rounded-full" />
+
+            {/* Small Avatar Bubbles for Quick Switching - Only show OTHER entities */}
+            {mode === 'project' && linkedProjects.length > 0 ? (
+              // In project mode: show user bubble + other project bubbles
+              <div className="absolute -bottom-1 -right-1 flex -space-x-2">
+                {/* User bubble */}
+                <button
+                  onClick={() => onModeChange('user')}
+                  className="w-7 h-7 rounded-full border-2 border-[#0B0F1A] hover:scale-110 transition-transform bg-white/10 backdrop-blur overflow-hidden shadow-lg"
+                  title={`Switch to ${name}`}
+                >
+                  {avatar ? (
+                    <img src={avatar} alt={name} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-fuchsia-500 to-purple-500 flex items-center justify-center">
+                      <User className="w-3 h-3 text-white" />
+                    </div>
+                  )}
+                </button>
+
+                {/* Other project bubbles (excluding current) */}
+                {linkedProjects
+                  .filter(p => p.id !== selectedProject?.id)
+                  .slice(0, 2)
+                  .map((project) => (
+                    <button
+                      key={project.id}
+                      onClick={() => onModeChange('project', project)}
+                      className="w-7 h-7 rounded-full border-2 border-[#0B0F1A] hover:scale-110 transition-transform bg-white/10 backdrop-blur overflow-hidden shadow-lg"
+                      title={`Switch to ${project.title}`}
+                    >
+                      {project.logoUrl ? (
+                        <img src={project.logoUrl} alt={project.title} className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-cyan-500 to-purple-500 flex items-center justify-center">
+                          <Rocket className="w-3 h-3 text-white" />
+                        </div>
+                      )}
+                    </button>
+                  ))}
+
+                {linkedProjects.filter(p => p.id !== selectedProject?.id).length > 2 && (
+                  <button
+                    onClick={() => setDropdownOpen(true)}
+                    className="w-7 h-7 rounded-full border-2 border-[#0B0F1A] bg-white/10 backdrop-blur flex items-center justify-center hover:scale-110 transition-transform shadow-lg"
+                    title="View all accounts"
+                  >
+                    <span className="text-[10px] font-bold text-white">
+                      +{linkedProjects.filter(p => p.id !== selectedProject?.id).length - 2}
+                    </span>
+                  </button>
+                )}
+              </div>
+            ) : mode === 'user' && linkedProjects.length > 0 ? (
+              // In user mode: show project bubbles only
+              <div className="absolute -bottom-1 -right-1 flex -space-x-2">
+                {linkedProjects.slice(0, 3).map((project) => (
+                  <button
+                    key={project.id}
+                    onClick={() => onModeChange('project', project)}
+                    className="w-7 h-7 rounded-full border-2 border-[#0B0F1A] hover:scale-110 transition-transform bg-white/10 backdrop-blur overflow-hidden shadow-lg"
+                    title={`Switch to ${project.title}`}
+                  >
+                    {project.logoUrl ? (
+                      <img src={project.logoUrl} alt={project.title} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-cyan-500 to-purple-500 flex items-center justify-center">
+                        <Rocket className="w-3 h-3 text-white" />
+                      </div>
+                    )}
+                  </button>
+                ))}
+
+                {linkedProjects.length > 3 && (
+                  <button
+                    onClick={() => setDropdownOpen(true)}
+                    className="w-7 h-7 rounded-full border-2 border-[#0B0F1A] bg-white/10 backdrop-blur flex items-center justify-center hover:scale-110 transition-transform shadow-lg"
+                    title="View all projects"
+                  >
+                    <span className="text-[10px] font-bold text-white">+{linkedProjects.length - 3}</span>
+                  </button>
+                )}
+              </div>
+            ) : null}
           </div>
 
-          {/* Info */}
+          {/* Info - Profile Preview */}
           <div>
             <div className="flex items-center gap-2 mb-2">
               <h1 className="text-xl font-bold text-white">{mode === 'project' ? displayName : handle}</h1>

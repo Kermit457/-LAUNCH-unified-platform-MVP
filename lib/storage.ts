@@ -1,19 +1,18 @@
 /**
- * Mock Storage Helper for Project Logo Uploads
+ * Storage Helper for Project Logo Uploads
  *
- * In production, this would integrate with Supabase Storage or S3
- * For now, returns a data URL for immediate preview
+ * Integrates with Appwrite Storage for persistent file uploads
  */
 
+import { storage, BUCKETS } from './appwrite/client'
+import { ID } from 'appwrite'
+
 /**
- * Upload a project logo file
+ * Upload a project logo file to Appwrite Storage
  *
  * @param file - The logo file to upload (PNG/JPG, ≤5MB, ideally 1:1 aspect ratio)
- * @param launchId - Optional launch ID for path generation
+ * @param launchId - Optional launch ID for file naming
  * @returns Promise<string> - Public URL of the uploaded logo
- *
- * Mock implementation: Returns a data URL
- * Production path: projects/{launchId}/logo.png
  */
 export async function uploadLogo(file: File, launchId?: string): Promise<string> {
   // Validate file type
@@ -28,32 +27,25 @@ export async function uploadLogo(file: File, launchId?: string): Promise<string>
     throw new Error('File size exceeds 5MB. Please upload a smaller image.')
   }
 
-  // Simulate upload delay
-  await new Promise(resolve => setTimeout(resolve, 500))
+  try {
+    // Generate unique file ID
+    const fileId = launchId ? `${launchId}_${Date.now()}` : ID.unique()
 
-  // Mock: Convert to data URL for immediate use
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader()
+    // Upload to Appwrite Storage
+    const response = await storage.createFile(
+      BUCKETS.LAUNCH_LOGOS,
+      fileId,
+      file
+    )
 
-    reader.onload = () => {
-      if (typeof reader.result === 'string') {
-        // In production, this would be:
-        // const path = `projects/${launchId || 'temp'}/logo.png`
-        // const { data, error } = await supabase.storage.from('project-logos').upload(path, file)
-        // return data.publicUrl
+    // Get the file view URL (public preview URL)
+    const fileUrl = storage.getFileView(BUCKETS.LAUNCH_LOGOS, response.$id)
 
-        resolve(reader.result)
-      } else {
-        reject(new Error('Failed to read file'))
-      }
-    }
-
-    reader.onerror = () => {
-      reject(new Error('Failed to read file'))
-    }
-
-    reader.readAsDataURL(file)
-  })
+    return fileUrl.toString()
+  } catch (error) {
+    console.error('Failed to upload logo to Appwrite:', error)
+    throw new Error('Failed to upload logo. Please try again.')
+  }
 }
 
 /**

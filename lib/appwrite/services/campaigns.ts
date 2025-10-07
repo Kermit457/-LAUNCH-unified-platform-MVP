@@ -27,15 +27,22 @@ export interface Campaign {
   minDuration?: number
   maxDuration?: number
   topSubmissions?: any[]
+
+  // Entity scoping fields
+  ownerType: 'user' | 'project'
+  ownerId: string
 }
 
 /**
  * Get all campaigns with optional filters
+ * Supports entity scoping (filter by ownerType and ownerId)
  */
 export async function getCampaigns(options?: {
   type?: 'bounty' | 'quest' | 'airdrop'
   status?: 'active' | 'completed' | 'cancelled'
   createdBy?: string
+  ownerType?: 'user' | 'project'
+  ownerId?: string
   limit?: number
   offset?: number
 }) {
@@ -49,8 +56,18 @@ export async function getCampaigns(options?: {
     queries.push(Query.equal('status', options.status))
   }
 
+  // Legacy support: createdBy (deprecated, use ownerId instead)
   if (options?.createdBy) {
     queries.push(Query.equal('createdBy', options.createdBy))
+  }
+
+  // Entity scoping: filter by owner
+  if (options?.ownerType) {
+    queries.push(Query.equal('ownerType', options.ownerType))
+  }
+
+  if (options?.ownerId) {
+    queries.push(Query.equal('ownerId', options.ownerId))
   }
 
   if (options?.limit) {

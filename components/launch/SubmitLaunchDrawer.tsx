@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from 'react'
-import { X, DollarSign, Calendar } from 'lucide-react'
+import { X, DollarSign, Coins, Camera, Smile } from 'lucide-react'
 import { SubmitLaunchInput } from '@/types/launch'
 import { FileDropzone } from '@/components/common/FileDropzone'
 import { uploadLogo } from '@/lib/storage'
@@ -30,10 +30,10 @@ const isValidBase58 = (str: string): boolean => {
 
 export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit }: SubmitLaunchDrawerProps) {
   // Load persisted scope
-  const [scope, setScope] = useState<"ICM" | "CCM">(() => {
+  const [scope, setScope] = useState<"ICM" | "CCM" | "MEME">(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('launchScope')
-      return (saved === 'ICM' || saved === 'CCM') ? saved : 'ICM'
+      return (saved === 'ICM' || saved === 'CCM' || saved === 'MEME') ? saved : 'ICM'
     }
     return 'ICM'
   })
@@ -41,7 +41,8 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit }: SubmitLaunchDr
   const [title, setTitle] = useState('')
   const [subtitle, setSubtitle] = useState('')
   const [logoFile, setLogoFile] = useState<File | null>(null)
-  const [status, setStatus] = useState<"Live" | "Upcoming">('Live')
+  const [status, setStatus] = useState<"Live" | "Upcoming">('Upcoming')
+  const [tokenAddress, setTokenAddress] = useState('')
   const [description, setDescription] = useState('')
   const [platforms, setPlatforms] = useState<SubmitLaunchInput['platforms']>([])
 
@@ -50,8 +51,6 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit }: SubmitLaunchDr
   const [treasury, setTreasury] = useState('')
 
   const [poolUsd, setPoolUsd] = useState('')
-  const [endDate, setEndDate] = useState('')
-  const [endTime, setEndTime] = useState('')
   const [contributionPoolPct, setContributionPoolPct] = useState('')
   const [feesSharePct, setFeesSharePct] = useState('')
 
@@ -95,7 +94,6 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit }: SubmitLaunchDr
   const areTokenFieldsValid = !existingToken || (scope === 'CCM') || (mint.trim() !== '' && treasury.trim() !== '' && isMintValid && isTreasuryValid)
 
   const isPoolValid = !poolUsd || (!isNaN(Number(poolUsd)) && Number(poolUsd) >= 0)
-  const isEndDateValid = !endDate || !endTime || (new Date(`${endDate}T${endTime}`).getTime() >= Date.now())
 
   const isFormValid =
     isTitleValid &&
@@ -104,8 +102,7 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit }: SubmitLaunchDr
     isDescriptionValid &&
     arePlatformsValid &&
     areTokenFieldsValid &&
-    isPoolValid &&
-    isEndDateValid
+    isPoolValid
 
   const handleSubmit = () => {
     if (!isFormValid || !logoFile) return
@@ -119,12 +116,11 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit }: SubmitLaunchDr
       description: description.trim(),
       platforms,
       economics:
-        poolUsd || contributionPoolPct || feesSharePct || (endDate && endTime)
+        poolUsd || contributionPoolPct || feesSharePct
           ? {
               poolUsd: poolUsd ? Number(poolUsd) : undefined,
               contributionPoolPct: contributionPoolPct ? Number(contributionPoolPct) : undefined,
               feesSharePct: feesSharePct ? Number(feesSharePct) : undefined,
-              endAt: endDate && endTime ? new Date(`${endDate}T${endTime}`).getTime() : undefined,
             }
           : undefined,
       creator: creator.trim() || undefined,
@@ -135,6 +131,7 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit }: SubmitLaunchDr
               treasury: treasury.trim(),
             }
           : undefined,
+      tokenAddress: tokenAddress.trim() || undefined,
     }
 
     onSubmit(output)
@@ -172,32 +169,32 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit }: SubmitLaunchDr
             <div className="space-y-4">
               <h3 className="text-sm font-semibold text-white/90">Required</h3>
 
-              {/* Title */}
+              {/* Token Name */}
               <div>
                 <label className="block text-sm font-medium text-white/70 mb-2">
-                  Title <span className="text-red-400">*</span>
+                  Token Name <span className="text-red-400">*</span>
                 </label>
                 <input
                   type="text"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  placeholder="Project title"
+                  placeholder="e.g., Solana"
                   maxLength={80}
                   className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
                 />
                 <p className="mt-1 text-xs text-white/40 text-right">{title.length}/80</p>
               </div>
 
-              {/* Subtitle */}
+              {/* Token Ticker */}
               <div>
                 <label className="block text-sm font-medium text-white/70 mb-2">
-                  Subtitle <span className="text-red-400">*</span>
+                  Token Ticker <span className="text-red-400">*</span>
                 </label>
                 <input
                   type="text"
                   value={subtitle}
                   onChange={(e) => setSubtitle(e.target.value)}
-                  placeholder="Brief subtitle"
+                  placeholder="e.g., SOL"
                   maxLength={120}
                   className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
                 />
@@ -221,26 +218,51 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit }: SubmitLaunchDr
                 <label className="block text-sm font-medium text-white/70 mb-2">
                   Scope <span className="text-red-400">*</span>
                 </label>
-                <div className="flex gap-3">
-                  <label className="flex items-center gap-2 flex-1 h-12 px-4 rounded-xl bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition-colors">
+                <div className="grid grid-cols-3 gap-3">
+                  <label className={`flex flex-col items-center justify-center h-20 px-4 rounded-xl border cursor-pointer transition-all ${
+                    scope === 'ICM'
+                      ? 'bg-fuchsia-500/20 border-fuchsia-500/50'
+                      : 'bg-white/5 border-white/10 hover:bg-white/10'
+                  }`}>
                     <input
                       type="radio"
                       name="scope"
                       checked={scope === 'ICM'}
                       onChange={() => setScope('ICM')}
-                      className="w-4 h-4 text-fuchsia-500 focus:ring-2 focus:ring-fuchsia-400/80"
+                      className="sr-only"
                     />
-                    <span className="text-sm text-white/90">ICM (Token)</span>
+                    <Coins className={`w-6 h-6 mb-1 ${scope === 'ICM' ? 'text-fuchsia-400' : 'text-white/70'}`} />
+                    <span className={`text-xs font-medium ${scope === 'ICM' ? 'text-fuchsia-300' : 'text-white/70'}`}>ICM</span>
                   </label>
-                  <label className="flex items-center gap-2 flex-1 h-12 px-4 rounded-xl bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition-colors">
+                  <label className={`flex flex-col items-center justify-center h-20 px-4 rounded-xl border cursor-pointer transition-all ${
+                    scope === 'CCM'
+                      ? 'bg-fuchsia-500/20 border-fuchsia-500/50'
+                      : 'bg-white/5 border-white/10 hover:bg-white/10'
+                  }`}>
                     <input
                       type="radio"
                       name="scope"
                       checked={scope === 'CCM'}
                       onChange={() => setScope('CCM')}
-                      className="w-4 h-4 text-fuchsia-500 focus:ring-2 focus:ring-fuchsia-400/80"
+                      className="sr-only"
                     />
-                    <span className="text-sm text-white/90">CCM (Creator)</span>
+                    <Camera className={`w-6 h-6 mb-1 ${scope === 'CCM' ? 'text-fuchsia-400' : 'text-white/70'}`} />
+                    <span className={`text-xs font-medium ${scope === 'CCM' ? 'text-fuchsia-300' : 'text-white/70'}`}>CCM</span>
+                  </label>
+                  <label className={`flex flex-col items-center justify-center h-20 px-4 rounded-xl border cursor-pointer transition-all ${
+                    scope === 'MEME'
+                      ? 'bg-fuchsia-500/20 border-fuchsia-500/50'
+                      : 'bg-white/5 border-white/10 hover:bg-white/10'
+                  }`}>
+                    <input
+                      type="radio"
+                      name="scope"
+                      checked={scope === 'MEME'}
+                      onChange={() => setScope('MEME')}
+                      className="sr-only"
+                    />
+                    <Smile className={`w-6 h-6 mb-1 ${scope === 'MEME' ? 'text-fuchsia-400' : 'text-white/70'}`} />
+                    <span className={`text-xs font-medium ${scope === 'MEME' ? 'text-fuchsia-300' : 'text-white/70'}`}>MEME</span>
                   </label>
                 </div>
               </div>
@@ -250,14 +272,47 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit }: SubmitLaunchDr
                 <label className="block text-sm font-medium text-white/70 mb-2">
                   Status <span className="text-red-400">*</span>
                 </label>
-                <select
-                  value={status}
-                  onChange={(e) => setStatus(e.target.value as "Live" | "Upcoming")}
-                  className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
-                >
-                  <option value="Live">Live</option>
-                  <option value="Upcoming">Upcoming</option>
-                </select>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setStatus('Upcoming')}
+                    className={`h-12 px-4 rounded-xl border font-medium transition-all ${
+                      status === 'Upcoming'
+                        ? 'bg-fuchsia-500/20 border-fuchsia-500/50 text-fuchsia-300'
+                        : 'bg-white/5 border-white/10 text-white/70 hover:bg-white/10'
+                    }`}
+                  >
+                    Upcoming
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setStatus('Live')}
+                    className={`h-12 px-4 rounded-xl border font-medium transition-all ${
+                      status === 'Live'
+                        ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-300'
+                        : 'bg-white/5 border-white/10 text-white/70 hover:bg-white/10'
+                    }`}
+                  >
+                    Live
+                  </button>
+                </div>
+
+                {/* Token Address (only show when Live is selected) */}
+                {status === 'Live' && (
+                  <div className="mt-3">
+                    <label className="block text-sm font-medium text-white/70 mb-2">
+                      Token Address
+                    </label>
+                    <input
+                      type="text"
+                      value={tokenAddress}
+                      onChange={(e) => setTokenAddress(e.target.value)}
+                      placeholder="Enter token contract address"
+                      className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-emerald-400/80"
+                    />
+                    <p className="mt-1 text-xs text-white/40">Optional: Add the contract address if token is already live</p>
+                  </div>
+                )}
               </div>
 
               {/* Description */}
@@ -458,29 +513,6 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit }: SubmitLaunchDr
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 gap-4 mt-4">
-                {/* End Time */}
-                <div>
-                  <label className="block text-sm font-medium text-white/70 mb-2">End Time</label>
-                  <div className="flex gap-2">
-                    <input
-                      type="date"
-                      value={endDate}
-                      onChange={(e) => setEndDate(e.target.value)}
-                      className="flex-1 h-12 px-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
-                    />
-                    <input
-                      type="time"
-                      value={endTime}
-                      onChange={(e) => setEndTime(e.target.value)}
-                      className="w-28 h-12 px-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
-                    />
-                  </div>
-                  {endDate && endTime && !isEndDateValid && (
-                    <p className="mt-1 text-xs text-red-400">End time must be in the future</p>
-                  )}
-                </div>
-              </div>
             </div>
 
             {/* Creator (optional) */}

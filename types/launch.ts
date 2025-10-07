@@ -1,5 +1,5 @@
 export type LaunchStatus = "LIVE" | "UPCOMING"
-export type Scope = "ICM" | "CCM"
+export type Scope = "ICM" | "CCM" | "MEME"
 
 export type Contributor = {
   id: string
@@ -95,7 +95,7 @@ export type SubmitLaunchInput = {
   title: string
   subtitle: string
   logoFile: File              // Required logo file (PNG/JPG, ≤5MB, 1:1 recommended)
-  scope: "ICM" | "CCM"
+  scope: "ICM" | "CCM" | "MEME"
   status: "Live" | "Upcoming"
   description: string
   platforms: ("twitter" | "discord" | "telegram" | "youtube" | "twitch" | "tiktok" | "obs")[]
@@ -110,4 +110,5 @@ export type SubmitLaunchInput = {
     mint: string            // SPL mint
     treasury: string        // Solana wallet address
   } // present only if scope=ICM and toggle on
+  tokenAddress?: string // For Live status with token address
 }

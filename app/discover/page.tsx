@@ -7,14 +7,18 @@ import { UpcomingLaunchCard } from '@/components/launch/cards/UpcomingLaunchCard
 import { CommentsModal } from '@/components/comments/CommentsModal'
 import { SubmitLaunchDrawer } from '@/components/launch/SubmitLaunchDrawer'
 import { CollaborateModal } from '@/components/launch/CollaborateModal'
+import { EntitySelectorModal, EntityOption } from '@/components/launch/EntitySelectorModal'
 import { LaunchCardData } from '@/types/launch'
 import { TrendingUp, Rocket, Clock, LayoutGrid, Link2, MessageSquare, Flame } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/cn'
-import { getLaunches, createLaunchDocument } from '@/lib/appwrite/services/launches'
+import { getLaunches, createLaunchDocument, getUserProjects } from '@/lib/appwrite/services/launches'
 import { addVote, getVoteCount, getUserVotes } from '@/lib/appwrite/services/votes'
 import { getComments } from '@/lib/appwrite/services/comments'
+import { addProjectMember } from '@/lib/appwrite/services/project-members'
+import { getUserProfile } from '@/lib/appwrite/services/users'
 import { useUser } from '@/hooks/useUser'
+import { uploadLogo } from '@/lib/storage'
 
 type FilterType = 'ALL' | 'ICM' | 'CCM'
 type StatusFilterType = 'ALL' | 'LIVE' | 'UPCOMING'
@@ -41,6 +45,38 @@ export default function DiscoverPage() {
     createdBy?: string
   } | null>(null)
 
+  // Entity selector state
+  const [showEntitySelector, setShowEntitySelector] = useState(false)
+  const [selectedEntity, setSelectedEntity] = useState<EntityOption | null>(null)
+  const [userProfile, setUserProfile] = useState<any>(null)
+  const [userProjects, setUserProjects] = useState<any[]>([])
+
+  // Fetch user profile and projects for entity selector
+  useEffect(() => {
+    async function fetchUserData() {
+      if (!userId) return
+
+      try {
+        const [profile, projects] = await Promise.all([
+          getUserProfile(userId),
+          getUserProjects(userId)
+        ])
+
+        setUserProfile(profile)
+        setUserProjects(projects.map(p => ({
+          id: p.$id,
+          title: p.title || p.tokenName || 'Unnamed Project',
+          logoUrl: p.logoUrl || p.tokenImage,
+          scope: p.scope || 'ICM'
+        })))
+      } catch (error) {
+        console.error('Failed to fetch user data:', error)
+      }
+    }
+
+    fetchUserData()
+  }, [userId])
+
   // Fetch launches from Appwrite
   useEffect(() => {
     async function fetchLaunches() {
@@ -63,10 +99,12 @@ export default function DiscoverPage() {
 
             return {
               id: launch.$id,
-              title: launch.tokenName,
-              subtitle: launch.description,
-              logoUrl: launch.tokenImage,
-              scope: (launch.tags && launch.tags.includes('ICM')) ? 'ICM' as const : 'CCM' as const,
+              // Handle both old (tokenName) and new (title) schemas
+              title: launch.title || launch.tokenName || 'Unnamed Launch',
+              subtitle: launch.subtitle || launch.description || '',
+              logoUrl: launch.logoUrl || launch.tokenImage || '',
+              // Handle both scope field and tags array
+              scope: launch.scope || ((launch.tags && launch.tags.includes('ICM')) ? 'ICM' as const : 'CCM' as const),
               status: launch.status === 'live' ? 'LIVE' as const : launch.status === 'upcoming' ? 'UPCOMING' as const : 'LIVE' as const,
               convictionPct: launch.convictionPct || 0,
               commentsCount: comments.length,
@@ -75,7 +113,7 @@ export default function DiscoverPage() {
               feesSharePct: launch.feesSharePct,
               mint: launch.$id,
               contributors: [],
-              tgeAt: launch.status === 'upcoming' ? new Date(launch.createdAt).getTime() : undefined,
+              tgeAt: launch.status === 'upcoming' ? new Date(launch.$createdAt || launch.createdAt).getTime() : undefined,
             }
           })
         )
@@ -435,7 +473,7 @@ export default function DiscoverPage() {
           variant="boost"
           size="lg"
           className="gap-2"
-          onClick={() => setIsSubmitLaunchOpen(true)}
+          onClick={() => setShowEntitySelector(true)}
         >
           <Rocket className="w-5 h-5" />
           Create a Launch
@@ -602,6 +640,30 @@ export default function DiscoverPage() {
         />
       )}
 
+      {/* Entity Selector Modal */}
+      {userProfile && (
+        <EntitySelectorModal
+          isOpen={showEntitySelector}
+          onClose={() => setShowEntitySelector(false)}
+          onSelect={(entity) => {
+            setSelectedEntity(entity)
+            setShowEntitySelector(false)
+            setIsSubmitLaunchOpen(true)
+          }}
+          onCreateNewProject={() => {
+            // TODO: Open create project flow
+            alert('Create new project flow coming soon!')
+          }}
+          userProfile={{
+            id: userId || '',
+            name: userProfile.displayName || 'User',
+            username: userProfile.username,
+            avatar: userProfile.avatar
+          }}
+          projects={userProjects}
+        />
+      )}
+
       {/* Submit Launch Drawer */}
       <SubmitLaunchDrawer
         isOpen={isSubmitLaunchOpen}
@@ -612,23 +674,42 @@ export default function DiscoverPage() {
             return
           }
 
-          try {
-            // Upload logo if provided
-            let logoUrl = ''
-            if (data.logoFile) {
-              // TODO: Upload to storage
-              logoUrl = URL.createObjectURL(data.logoFile) // Temporary - replace with actual upload
-            }
+          if (!selectedEntity) {
+            alert('Please select an entity first')
+            return
+          }
 
-            // Generate unique launch ID
+          try {
+            console.log('🚀 Creating launch with entity context:', selectedEntity)
+
+            // Generate unique launch ID first (needed for upload)
             const launchId = `launch_${data.title.toLowerCase().replace(/\s+/g, '_')}_${Date.now()}`
 
-            await createLaunchDocument({
+            // Upload logo to Appwrite Storage
+            let logoUrl = ''
+            if (data.logoFile) {
+              console.log('📤 Uploading logo to Appwrite Storage...')
+              logoUrl = await uploadLogo(data.logoFile, launchId)
+              console.log('✅ Logo uploaded:', logoUrl)
+            }
+
+            // Create launch with BOTH new and legacy schema fields
+            const newLaunch = await createLaunchDocument({
               launchId,
-              scope: data.scope,
-              title: data.title,
-              subtitle: data.subtitle,
+              scope: data.scope as 'ICM' | 'CCM',  // Type cast to handle MEME -> ICM/CCM mapping
+
+              // New schema fields
+              title: data.title,        // Token Name (e.g., "Solana")
+              subtitle: data.subtitle,  // Token Ticker (e.g., "SOL")
               logoUrl,
+
+              // Legacy schema fields (for backward compatibility)
+              tokenName: data.title,    // Same as title
+              tokenSymbol: data.subtitle, // Same as subtitle
+              tokenImage: logoUrl,      // Same as logoUrl
+              description: data.subtitle ? `${data.title} (${data.subtitle})` : data.title,
+
+              // Metadata
               createdBy: userId,
               convictionPct: 0,
               commentsCount: 0,
@@ -636,9 +717,35 @@ export default function DiscoverPage() {
               contributionPoolPct: data.economics?.contributionPoolPct,
               feesSharePct: data.economics?.feesSharePct,
               status: data.status === 'Live' ? 'live' : 'upcoming',
+
+              // Tags for filtering
+              tags: [data.scope],
             })
 
+            console.log('✅ Launch created:', newLaunch)
+
+            // If launching as a NEW project (not existing), create project_member entry
+            if (selectedEntity.type === 'project') {
+              try {
+                await addProjectMember({
+                  projectId: newLaunch.$id,
+                  userId: userId,
+                  role: 'owner',
+                  userName: userProfile?.displayName,
+                  userAvatar: userProfile?.avatar
+                })
+                console.log('✅ Project member entry created')
+              } catch (error: any) {
+                // Ignore if already exists
+                if (!error.message?.includes('already a member')) {
+                  console.error('Failed to create project member:', error)
+                }
+              }
+            }
+
             setIsSubmitLaunchOpen(false)
+            setSelectedEntity(null)
+
             // Refresh launches
             window.location.reload()
           } catch (error) {

@@ -14,16 +14,23 @@ export interface Submission {
   notes?: string
   reviewedAt?: string
   $createdAt: string
+
+  // Entity scoping fields
+  ownerType?: 'user' | 'project'
+  ownerId?: string
 }
 
 /**
  * Get submissions with filters
+ * Supports entity scoping (filter by ownerType and ownerId)
  */
 export async function getSubmissions(options?: {
   userId?: string
   campaignId?: string
   questId?: string
   status?: string
+  ownerType?: 'user' | 'project'
+  ownerId?: string
   limit?: number
 }) {
   const queries = []
@@ -42,6 +49,15 @@ export async function getSubmissions(options?: {
 
   if (options?.status) {
     queries.push(Query.equal('status', options.status))
+  }
+
+  // Entity scoping
+  if (options?.ownerType) {
+    queries.push(Query.equal('ownerType', options.ownerType))
+  }
+
+  if (options?.ownerId) {
+    queries.push(Query.equal('ownerId', options.ownerId))
   }
 
   queries.push(Query.limit(options?.limit || 100))

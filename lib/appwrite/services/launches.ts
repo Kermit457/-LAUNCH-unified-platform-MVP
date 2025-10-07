@@ -3,25 +3,36 @@ import { Query } from 'appwrite'
 
 export interface Launch {
   $id: string
-  tokenName: string
-  tokenSymbol: string
-  tokenImage?: string
-  description: string
-  creatorId: string
-  creatorName: string
-  creatorAvatar?: string
-  marketCap: number
-  volume24h: number
-  priceChange24h: number
-  holders: number
+  launchId: string
+  scope: 'ICM' | 'CCM'
+  title: string
+  subtitle?: string
+  logoUrl?: string
+  createdBy: string
   convictionPct: number
   commentsCount: number
   upvotes: number
   contributionPoolPct?: number
   feesSharePct?: number
-  tags: string[]
-  createdAt: string
   status: 'live' | 'upcoming' | 'ended'
+  $createdAt: string
+
+  // Optional fields for token data (populated when token is live)
+  tokenName?: string
+  tokenSymbol?: string
+  marketCap?: number
+  volume24h?: number
+  priceChange24h?: number
+  holders?: number
+
+  // Legacy fields (keeping for backward compatibility)
+  tokenImage?: string
+  description?: string
+  creatorId?: string
+  creatorName?: string
+  creatorAvatar?: string
+  tags?: string[]
+  createdAt?: string
   team?: Array<{ name: string; role: string; avatar?: string }>
   contributors?: Array<{ name: string; amount: number; avatar?: string }>
 }
@@ -173,7 +184,7 @@ export async function upvoteLaunch(launchId: string) {
 }
 
 /**
- * Get all launches created by a specific user
+ * Get all projects created by a specific user
  */
 export async function getUserProjects(userId: string) {
   const response = await databases.listDocuments(
@@ -189,14 +200,40 @@ export async function getUserProjects(userId: string) {
 }
 
 /**
+ * Get all projects a user is a member of (including owned projects)
+ * This queries both projects created by the user AND projects they're a member of via project_members
+ */
+export async function getUserAccessibleProjects(userId: string) {
+  // Get projects created by user
+  const ownedProjects = await getUserProjects(userId)
+
+  // Get projects where user is a member (will need project_members collection)
+  // For now, just return owned projects
+  // TODO: Join with project_members when that collection is populated
+
+  return ownedProjects
+}
+
+/**
  * Create a new launch (matching actual Appwrite schema)
  */
 export async function createLaunchDocument(data: {
   launchId: string
   scope: 'ICM' | 'CCM'
+
+  // New schema fields
   title: string
   subtitle?: string
   logoUrl?: string
+
+  // Legacy schema fields (for backward compatibility)
+  tokenName?: string
+  tokenSymbol?: string
+  tokenImage?: string
+  description?: string
+  tags?: string[]
+
+  // Metadata
   createdBy: string
   convictionPct?: number
   commentsCount?: number
@@ -212,9 +249,20 @@ export async function createLaunchDocument(data: {
     {
       launchId: data.launchId,
       scope: data.scope,
+
+      // New schema fields
       title: data.title,
       subtitle: data.subtitle || '',
       logoUrl: data.logoUrl || '',
+
+      // Legacy schema fields (conditionally included for backward compatibility)
+      ...(data.tokenName && { tokenName: data.tokenName }),
+      ...(data.tokenSymbol && { tokenSymbol: data.tokenSymbol }),
+      ...(data.tokenImage && { tokenImage: data.tokenImage }),
+      ...(data.description && { description: data.description }),
+      ...(data.tags && { tags: data.tags }),
+
+      // Metadata
       createdBy: data.createdBy,
       convictionPct: data.convictionPct || 0,
       commentsCount: data.commentsCount || 0,
