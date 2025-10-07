@@ -17,6 +17,7 @@ const COLLECTIONS = {
   USERS: process.env.NEXT_PUBLIC_APPWRITE_USERS_COLLECTION_ID!,
   LAUNCHES: process.env.NEXT_PUBLIC_APPWRITE_LAUNCHES_COLLECTION_ID!,
   CAMPAIGNS: process.env.NEXT_PUBLIC_APPWRITE_CAMPAIGNS_COLLECTION_ID!,
+  QUESTS: process.env.NEXT_PUBLIC_APPWRITE_QUESTS_COLLECTION_ID!,
   NETWORK_INVITES: process.env.NEXT_PUBLIC_APPWRITE_NETWORK_INVITES_COLLECTION_ID || '',
   NETWORK_CONNECTIONS: process.env.NEXT_PUBLIC_APPWRITE_NETWORK_CONNECTIONS_COLLECTION_ID || '',
 }
@@ -195,62 +196,72 @@ const sampleLaunches = [
   {
     launchId: 'launch_solpump',
     scope: 'ICM',
-    status: 'live',
     title: 'SolPump',
-    subtitle: 'Community-driven memecoin on Solana with innovative tokenomics',
+    subtitle: 'Community-driven memecoin on Solana',
     logoUrl: 'https://api.dicebear.com/7.x/identicon/svg?seed=PUMP&backgroundColor=14f195',
-    convictionPct: 87,
-    commentsCount: 156,
-    upvotes: 892,
     createdBy: 'user_crypto_whale',
+    convictionPct: 87,
+    commentsCount: 0,
+    upvotes: 0,
+    contributionPoolPct: 2,
+    feesSharePct: 10,
+    status: 'live',
   },
   {
     launchId: 'launch_defi',
     scope: 'ICM',
-    status: 'live',
     title: 'DeFi Protocol',
-    subtitle: 'Next-gen DeFi protocol with automated yield strategies',
+    subtitle: 'Next-gen DeFi with automated yield strategies',
     logoUrl: 'https://api.dicebear.com/7.x/identicon/svg?seed=DEFI&backgroundColor=2775ca',
-    convictionPct: 92,
-    commentsCount: 342,
-    upvotes: 1567,
     createdBy: 'user_dev_builder',
+    convictionPct: 92,
+    commentsCount: 0,
+    upvotes: 0,
+    contributionPoolPct: 5,
+    feesSharePct: 15,
+    status: 'live',
   },
   {
     launchId: 'launch_gamefi',
     scope: 'ICM',
-    status: 'live',
     title: 'GameFi Arena',
     subtitle: 'Play-to-earn gaming ecosystem with real rewards',
     logoUrl: 'https://api.dicebear.com/7.x/identicon/svg?seed=ARENA&backgroundColor=ff6b00',
-    convictionPct: 79,
-    commentsCount: 234,
-    upvotes: 1023,
     createdBy: 'user_nft_creator',
+    convictionPct: 79,
+    commentsCount: 0,
+    upvotes: 0,
+    contributionPoolPct: 3,
+    feesSharePct: 20,
+    status: 'live',
   },
   {
     launchId: 'launch_aibot',
     scope: 'ICM',
-    status: 'upcoming',
     title: 'AI Trading Bot',
     subtitle: 'AI-powered trading automation for crypto markets',
     logoUrl: 'https://api.dicebear.com/7.x/identicon/svg?seed=AIBOT&backgroundColor=8b5cf6',
-    convictionPct: 85,
-    commentsCount: 89,
-    upvotes: 456,
     createdBy: 'user_degen_trader',
+    convictionPct: 85,
+    commentsCount: 0,
+    upvotes: 0,
+    contributionPoolPct: 1,
+    feesSharePct: 5,
+    status: 'upcoming',
   },
   {
     launchId: 'launch_launchos',
     scope: 'CCM',
-    status: 'live',
     title: 'LaunchOS Platform',
-    subtitle: 'The engine of the internet capital market - LaunchOS native token',
+    subtitle: 'The engine of the internet capital market',
     logoUrl: 'https://api.dicebear.com/7.x/identicon/svg?seed=LOS&backgroundColor=ec4899',
-    convictionPct: 96,
-    commentsCount: 678,
-    upvotes: 3421,
     createdBy: 'user_streamer_pro',
+    convictionPct: 96,
+    commentsCount: 0,
+    upvotes: 0,
+    contributionPoolPct: 3,
+    feesSharePct: 25,
+    status: 'live',
   },
 ]
 
@@ -322,6 +333,97 @@ const sampleCampaigns = [
     platforms: ['twitter', 'reddit'],
     views: 89000,
     endsAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+]
+
+// Sample Quests Data (raids and bounties)
+const sampleQuests = [
+  // RAIDS
+  {
+    questId: 'quest_raid_twitter',
+    type: 'raid',
+    title: 'Twitter Engagement Raid',
+    description: 'Help us reach 10K followers! Like, retweet, and engage with our content for rewards.',
+    createdBy: 'user_social_raider',
+    status: 'live',
+    budgetTotal: 1500,
+    budgetPaid: 0,
+    poolAmount: 1500,
+    platforms: ['twitter'],
+  },
+  {
+    questId: 'quest_raid_discord',
+    type: 'raid',
+    title: 'Discord Community Raid',
+    description: 'Join our Discord and help us grow to 5K members. Invite friends and be active!',
+    createdBy: 'user_dao_coordinator',
+    status: 'live',
+    budgetTotal: 2000,
+    budgetPaid: 0,
+    poolAmount: 2000,
+    platforms: ['discord'],
+  },
+  {
+    questId: 'quest_raid_youtube',
+    type: 'raid',
+    title: 'YouTube Subscribe Raid',
+    description: 'Subscribe to our channel and watch our latest video for a share of the pool!',
+    createdBy: 'user_streamer_pro',
+    status: 'live',
+    budgetTotal: 1000,
+    budgetPaid: 0,
+    poolAmount: 1000,
+    platforms: ['youtube'],
+  },
+
+  // BOUNTIES
+  {
+    questId: 'quest_bounty_content',
+    type: 'bounty',
+    title: 'Content Creation Bounty',
+    description: 'Create educational content about our DeFi protocol. Articles, videos, or threads welcome!',
+    createdBy: 'user_dev_builder',
+    status: 'live',
+    budgetTotal: 5000,
+    budgetPaid: 0,
+    poolAmount: 5000,
+    platforms: ['twitter', 'youtube', 'medium'],
+  },
+  {
+    questId: 'quest_bounty_design',
+    type: 'bounty',
+    title: 'Logo Design Bounty',
+    description: 'Design a new logo for our upcoming NFT collection. Best design wins $500 USDC!',
+    createdBy: 'user_nft_creator',
+    status: 'live',
+    budgetTotal: 500,
+    budgetPaid: 0,
+    poolAmount: 500,
+    platforms: ['behance', 'dribbble'],
+  },
+  {
+    questId: 'quest_bounty_translation',
+    type: 'bounty',
+    title: 'Documentation Translation',
+    description: 'Translate our docs to Spanish, French, or Chinese. $50 per language!',
+    createdBy: 'user_project_launcher',
+    status: 'live',
+    budgetTotal: 300,
+    budgetPaid: 0,
+    poolAmount: 300,
+    platforms: ['github'],
+  },
+  {
+    questId: 'quest_bounty_security',
+    type: 'bounty',
+    title: 'Smart Contract Audit Bounty',
+    description: 'Find bugs in our smart contracts. Critical bugs pay up to $10K!',
+    createdBy: 'user_protocol_researcher',
+    status: 'live',
+    budgetTotal: 15000,
+    budgetPaid: 0,
+    poolAmount: 15000,
+    platforms: ['github'],
   },
 ]
 
@@ -473,6 +575,26 @@ async function seedDatabase() {
       }
     }
 
+    // Seed Quests (raids and bounties)
+    console.log('\n🎯 Creating sample quests (raids & bounties)...')
+    for (const questData of sampleQuests) {
+      try {
+        await databases.createDocument(
+          DB_ID,
+          COLLECTIONS.QUESTS,
+          ID.unique(),
+          questData
+        )
+        console.log(`✅ Created ${questData.type}: ${questData.title}`)
+      } catch (error: any) {
+        if (error.code === 409) {
+          console.log(`⚠️  Quest ${questData.title} already exists`)
+        } else {
+          console.error(`❌ Error creating quest ${questData.title}:`, error.message)
+        }
+      }
+    }
+
     // Seed Network Invites (if collection exists)
     if (COLLECTIONS.NETWORK_INVITES) {
       console.log('\n💌 Creating network invites...')
@@ -526,14 +648,15 @@ async function seedDatabase() {
     console.log(`   Users: ${sampleUsers.length}`)
     console.log(`   Launches: ${sampleLaunches.length}`)
     console.log(`   Campaigns: ${sampleCampaigns.length}`)
+    console.log(`   Quests: ${sampleQuests.length} (${sampleQuests.filter(q => q.type === 'raid').length} raids, ${sampleQuests.filter(q => q.type === 'bounty').length} bounties)`)
     console.log(`   Network Invites: ${COLLECTIONS.NETWORK_INVITES ? sampleNetworkInvites.length : 0}`)
     console.log(`   Network Connections: ${COLLECTIONS.NETWORK_CONNECTIONS ? sampleNetworkConnections.length : 0}`)
     console.log('\n🎉 Your database is now populated with sample data!')
     console.log('\n🔗 Check it out:')
-    console.log('   - Discover: http://localhost:3002/discover')
-    console.log('   - Earn: http://localhost:3002/earn')
-    console.log('   - Network: http://localhost:3002/network')
-    console.log('   - Dashboard: http://localhost:3002/dashboard')
+    console.log('   - Discover: http://localhost:3001/discover')
+    console.log('   - Earn: http://localhost:3001/earn')
+    console.log('   - Network: http://localhost:3001/network')
+    console.log('   - Dashboard: http://localhost:3001/dashboard')
 
   } catch (error) {
     console.error('❌ Seed failed:', error)

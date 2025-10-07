@@ -5,7 +5,7 @@ import { fmtMoney } from '@/lib/format'
 import { StatusBadge } from './StatusBadge'
 import { ProgressBar } from './ProgressBar'
 import { CopyButton } from '../common/CopyButton'
-import { ExternalLink, Pause, Play, Edit, DollarSign, CheckCircle2, XCircle, AlertCircle } from 'lucide-react'
+import { ExternalLink, Pause, Play, Edit, DollarSign, CheckCircle2, XCircle, AlertCircle, FileText } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 // Campaign Table
@@ -15,9 +15,10 @@ interface CampaignTableProps {
   onResume?: (id: string) => void
   onEdit?: (campaign: Campaign) => void
   onTopUp?: (id: string, amount: number) => void
+  onReview?: (id: string) => void
 }
 
-export function CampaignTable({ campaigns, onPause, onResume, onEdit, onTopUp }: CampaignTableProps) {
+export function CampaignTable({ campaigns, onPause, onResume, onEdit, onTopUp, onReview }: CampaignTableProps) {
   const formatDate = (timestamp: number) => {
     return new Date(timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
   }
@@ -78,6 +79,15 @@ export function CampaignTable({ campaigns, onPause, onResume, onEdit, onTopUp }:
                   </td>
                   <td className="px-4 py-4">
                     <div className="flex items-center justify-end gap-2">
+                      {onReview && (
+                        <button
+                          onClick={() => onReview(campaign.id)}
+                          className="p-2 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/40 text-cyan-300 hover:text-cyan-200 transition-all"
+                          aria-label="Review Submissions"
+                        >
+                          <FileText className="w-4 h-4" />
+                        </button>
+                      )}
                       {campaign.status === 'live' && onPause && (
                         <button
                           onClick={() => onPause(campaign.id)}
@@ -218,14 +228,14 @@ export function SubmissionTable({
                   <span className="text-sm text-white">{sub.userId}</span>
                 </td>
                 <td className="px-4 py-4">
-                  <span className="text-sm text-white/70">{sub.campaignId}</span>
+                  <span className="text-sm text-white/70">{sub.campaignId || sub.questId || 'N/A'}</span>
                 </td>
                 <td className="px-4 py-4">
-                  <span className="text-sm text-white/70 capitalize">{sub.platform}</span>
+                  <span className="text-sm text-white/70 capitalize">-</span>
                 </td>
                 <td className="px-4 py-4" onClick={(e) => e.stopPropagation()}>
                   <a
-                    href={sub.link}
+                    href={sub.mediaUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1 text-sm text-purple-400 hover:text-purple-300"
@@ -236,17 +246,14 @@ export function SubmissionTable({
                 </td>
                 <td className="px-4 py-4">
                   <div className="flex flex-wrap gap-1">
-                    {getCheckBadge(sub.checks.linkOk, 'Link')}
-                    {getCheckBadge(sub.checks.tagOk, 'Tags')}
-                    {getCheckBadge(sub.checks.durationOk, 'Duration')}
-                    {sub.checks.watermarkOk !== undefined && getCheckBadge(sub.checks.watermarkOk, 'Watermark')}
+                    <span className="text-xs text-white/50">N/A</span>
                   </div>
                 </td>
                 <td className="px-4 py-4">
-                  <span className="text-sm text-white font-medium">{sub.viewsVerified.toLocaleString('en-US')}</span>
+                  <span className="text-sm text-white font-medium">{(sub.views || 0).toLocaleString('en-US')}</span>
                 </td>
                 <td className="px-4 py-4">
-                  <div className="text-sm text-white font-medium">{fmtMoney(sub.reward)}</div>
+                  <div className="text-sm text-white font-medium">${(sub.earnings || 0).toFixed(2)}</div>
                 </td>
                 <td className="px-4 py-4">
                   <StatusBadge status={sub.status} />

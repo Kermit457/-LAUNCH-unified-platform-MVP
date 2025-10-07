@@ -8,7 +8,11 @@
     "start": "next start",
     "lint": "next lint",
     "setup-appwrite": "tsx scripts/setup-appwrite.ts",
-    "seed": "tsx scripts/seed-database.ts"
+    "seed": "tsx scripts/seed-database.ts",
+    "create-votes": "tsx scripts/create-votes-collection.ts",
+    "add-economics": "tsx scripts/add-economics-attributes.ts",
+    "migrate-economics": "tsx scripts/add-economics-to-existing-launches.ts",
+    "test-launch": "tsx scripts/test-launch-create.ts"
   },
   "dependencies": {
     "@privy-io/react-auth": "^1.27.0",

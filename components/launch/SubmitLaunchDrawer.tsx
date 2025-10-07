@@ -52,6 +52,8 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit }: SubmitLaunchDr
   const [poolUsd, setPoolUsd] = useState('')
   const [endDate, setEndDate] = useState('')
   const [endTime, setEndTime] = useState('')
+  const [contributionPoolPct, setContributionPoolPct] = useState('')
+  const [feesSharePct, setFeesSharePct] = useState('')
 
   const [creator, setCreator] = useState('')
 
@@ -117,9 +119,11 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit }: SubmitLaunchDr
       description: description.trim(),
       platforms,
       economics:
-        poolUsd || (endDate && endTime)
+        poolUsd || contributionPoolPct || feesSharePct || (endDate && endTime)
           ? {
               poolUsd: poolUsd ? Number(poolUsd) : undefined,
+              contributionPoolPct: contributionPoolPct ? Number(contributionPoolPct) : undefined,
+              feesSharePct: feesSharePct ? Number(feesSharePct) : undefined,
               endAt: endDate && endTime ? new Date(`${endDate}T${endTime}`).getTime() : undefined,
             }
           : undefined,
@@ -378,7 +382,7 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit }: SubmitLaunchDr
             <div className="space-y-4 pt-4 border-t border-white/10">
               <h3 className="text-sm font-semibold text-white/90">Economics (optional)</h3>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4">
                 {/* Pool $ */}
                 <div>
                   <label className="block text-sm font-medium text-white/70 mb-2">Pool $</label>
@@ -404,6 +408,57 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit }: SubmitLaunchDr
                   </div>
                 </div>
 
+                {/* Contribution Pool % and Fees Share % */}
+                <div className="grid grid-cols-2 gap-4">
+                  {/* Contribution Pool % */}
+                  <div>
+                    <label className="block text-sm font-medium text-white/70 mb-2">
+                      🪙 Contribution Pool %
+                    </label>
+                    <input
+                      type="number"
+                      value={contributionPoolPct}
+                      onChange={(e) => {
+                        const val = e.target.value
+                        if (val === '' || (/^\d+\.?\d{0,2}$/.test(val) && Number(val) <= 100)) {
+                          setContributionPoolPct(val)
+                        }
+                      }}
+                      placeholder="e.g., 2"
+                      step="0.1"
+                      min="0"
+                      max="100"
+                      className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
+                    />
+                    <p className="text-xs text-white/40 mt-1">% of supply</p>
+                  </div>
+
+                  {/* Fees Share % */}
+                  <div>
+                    <label className="block text-sm font-medium text-white/70 mb-2">
+                      💰 Fees Share %
+                    </label>
+                    <input
+                      type="number"
+                      value={feesSharePct}
+                      onChange={(e) => {
+                        const val = e.target.value
+                        if (val === '' || (/^\d+\.?\d{0,2}$/.test(val) && Number(val) <= 100)) {
+                          setFeesSharePct(val)
+                        }
+                      }}
+                      placeholder="e.g., 10"
+                      step="0.1"
+                      min="0"
+                      max="100"
+                      className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
+                    />
+                    <p className="text-xs text-white/40 mt-1">% of fees</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 mt-4">
                 {/* End Time */}
                 <div>
                   <label className="block text-sm font-medium text-white/70 mb-2">End Time</label>

@@ -1,6 +1,6 @@
 "use client"
 
-import { ArrowUp, MessageSquare } from 'lucide-react'
+import { ArrowUp, MessageSquare, Bell, Share2 } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { LaunchCardData } from '@/types/launch'
 import { ContributorRow } from '@/components/ContributorRow'
@@ -8,11 +8,12 @@ import { ContributorRow } from '@/components/ContributorRow'
 interface BaseLaunchCardProps {
   data: LaunchCardData
   children?: React.ReactNode
+  hasVoted?: boolean
   onUpvote?: (id: string) => void
   onComment?: (id: string) => void
 }
 
-export function BaseLaunchCard({ data, children, onUpvote, onComment }: BaseLaunchCardProps) {
+export function BaseLaunchCard({ data, children, hasVoted = false, onUpvote, onComment }: BaseLaunchCardProps) {
   const {
     id,
     title,
@@ -23,6 +24,8 @@ export function BaseLaunchCard({ data, children, onUpvote, onComment }: BaseLaun
     convictionPct,
     commentsCount,
     upvotes,
+    contributionPoolPct,
+    feesSharePct,
   } = data
 
   const scopeColors = {
@@ -45,9 +48,20 @@ export function BaseLaunchCard({ data, children, onUpvote, onComment }: BaseLaun
             onClick={() => onUpvote?.(id)}
             className="flex flex-col items-center gap-1 group"
             aria-label="Upvote"
+            disabled={hasVoted}
           >
-            <div className="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center transition-all group-hover:border-fuchsia-400/50 group-hover:bg-fuchsia-500/10">
-              <ArrowUp className="w-5 h-5 text-white/70 group-hover:text-fuchsia-400 transition-colors" />
+            <div className={cn(
+              "w-10 h-10 rounded-lg border flex items-center justify-center transition-all",
+              hasVoted
+                ? "bg-fuchsia-500/20 border-fuchsia-400/50"
+                : "bg-white/5 hover:bg-white/10 border-white/10 group-hover:border-fuchsia-400/50 group-hover:bg-fuchsia-500/10"
+            )}>
+              <ArrowUp className={cn(
+                "w-5 h-5 transition-colors",
+                hasVoted
+                  ? "text-fuchsia-400"
+                  : "text-white/70 group-hover:text-fuchsia-400"
+              )} />
             </div>
             <span className="text-sm text-white/50 font-medium">{upvotes}</span>
           </button>
@@ -80,8 +94,8 @@ export function BaseLaunchCard({ data, children, onUpvote, onComment }: BaseLaun
 
             {/* Title & Subtitle */}
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-0.5">
-                <h3 className="font-bold text-white text-base truncate">{title}</h3>
+              <div className="flex items-center gap-2 mb-0.5 flex-wrap">
+                <h3 className="font-bold text-white text-base truncate">{title || 'Untitled Launch'}</h3>
                 <span
                   className={cn(
                     'px-2 py-0.5 rounded text-xs font-bold border flex-shrink-0',
@@ -100,6 +114,24 @@ export function BaseLaunchCard({ data, children, onUpvote, onComment }: BaseLaun
                     {status}
                   </span>
                 )}
+
+                {/* Action Icons - Bell & Share */}
+                <div className="flex items-center gap-1.5 ml-auto">
+                  <button
+                    onClick={() => console.log('Set reminder for:', id)}
+                    className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center transition-all hover:border-amber-400/50 hover:bg-amber-500/10 group flex-shrink-0"
+                    aria-label="Set reminder"
+                  >
+                    <Bell className="w-3.5 h-3.5 text-white/70 group-hover:text-amber-400 transition-colors" />
+                  </button>
+                  <button
+                    onClick={() => console.log('Share launch:', id)}
+                    className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center transition-all hover:border-cyan-400/50 hover:bg-cyan-500/10 group flex-shrink-0"
+                    aria-label="Share"
+                  >
+                    <Share2 className="w-3.5 h-3.5 text-white/70 group-hover:text-cyan-400 transition-colors" />
+                  </button>
+                </div>
               </div>
               {subtitle && (
                 <p className="text-sm text-white/60 truncate">{subtitle}</p>
@@ -120,6 +152,31 @@ export function BaseLaunchCard({ data, children, onUpvote, onComment }: BaseLaun
               />
             </div>
           </div>
+
+          {/* Economics Badges */}
+          {((contributionPoolPct !== undefined && contributionPoolPct > 0) || (feesSharePct !== undefined && feesSharePct > 0)) && (
+            <div className="mb-3 flex flex-wrap gap-2">
+              {/* Contribution Pool Badge */}
+              {contributionPoolPct !== undefined && contributionPoolPct > 0 && (
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/30">
+                  <span className="text-lg">🪙</span>
+                  <span className="text-xs font-semibold text-emerald-300">
+                    {contributionPoolPct}% Total Supply
+                  </span>
+                </div>
+              )}
+
+              {/* Fees Share Badge */}
+              {feesSharePct !== undefined && feesSharePct > 0 && (
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/30">
+                  <span className="text-lg">💰</span>
+                  <span className="text-xs font-semibold text-amber-300">
+                    {feesSharePct}% Fees Share
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Contributors Row */}
           {data.contributors && data.contributors.length > 0 && (

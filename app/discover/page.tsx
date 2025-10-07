@@ -6,11 +6,15 @@ import { LiveLaunchCard } from '@/components/launch/cards/LiveLaunchCard'
 import { UpcomingLaunchCard } from '@/components/launch/cards/UpcomingLaunchCard'
 import { CommentsModal } from '@/components/comments/CommentsModal'
 import { SubmitLaunchDrawer } from '@/components/launch/SubmitLaunchDrawer'
+import { CollaborateModal } from '@/components/launch/CollaborateModal'
 import { LaunchCardData } from '@/types/launch'
 import { TrendingUp, Rocket, Clock, LayoutGrid, Link2, MessageSquare, Flame } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/cn'
-import { getLaunches } from '@/lib/appwrite/services/launches'
+import { getLaunches, createLaunch } from '@/lib/appwrite/services/launches'
+import { addVote, getVoteCount, getUserVotes } from '@/lib/appwrite/services/votes'
+import { getComments } from '@/lib/appwrite/services/comments'
+import { useUser } from '@/hooks/useUser'
 
 type FilterType = 'ALL' | 'ICM' | 'CCM'
 type StatusFilterType = 'ALL' | 'LIVE' | 'UPCOMING'
@@ -18,6 +22,7 @@ type SortType = 'trending' | 'newest' | 'conviction'
 
 export default function DiscoverPage() {
   const router = useRouter()
+  const { userId, isAuthenticated } = useUser()
   const [commentsOpen, setCommentsOpen] = useState(false)
   const [selectedLaunch, setSelectedLaunch] = useState<{ id: string; title: string } | null>(null)
   const [filter, setFilter] = useState<FilterType>('ALL')
@@ -26,42 +31,66 @@ export default function DiscoverPage() {
   const [launches, setLaunches] = useState<LaunchCardData[]>([])
   const [loading, setLoading] = useState(true)
   const [isSubmitLaunchOpen, setIsSubmitLaunchOpen] = useState(false)
+  const [userVotedLaunches, setUserVotedLaunches] = useState<Set<string>>(new Set())
+  const [collaborateOpen, setCollaborateOpen] = useState(false)
+  const [selectedCollaborateLaunch, setSelectedCollaborateLaunch] = useState<{
+    id: string
+    title: string
+    creatorName?: string
+    creatorAvatar?: string
+    createdBy?: string
+  } | null>(null)
 
   // Fetch launches from Appwrite
   useEffect(() => {
     async function fetchLaunches() {
       try {
         setLoading(true)
-        const data = await getLaunches({ limit: 100 })
+        const [data, votedLaunches] = await Promise.all([
+          getLaunches({ limit: 100 }),
+          userId ? getUserVotes(userId) : Promise.resolve([])
+        ])
 
-        // Convert Appwrite Launch type to LaunchCardData
-        const converted: LaunchCardData[] = data.map(launch => ({
-          id: launch.$id,
-          title: launch.tokenName || launch.title || 'Unknown',
-          subtitle: launch.description || launch.subtitle || '',
-          logoUrl: launch.tokenImage || launch.logoUrl,
-          scope: launch.scope || ((launch.tags && launch.tags.includes('ICM')) ? 'ICM' : 'CCM'),
-          status: launch.status === 'live' ? 'LIVE' : launch.status === 'upcoming' ? 'UPCOMING' : 'LIVE',
-          convictionPct: launch.convictionPct || 0,
-          commentsCount: launch.commentsCount || 0,
-          upvotes: launch.upvotes || 0,
-          mint: launch.$id, // Placeholder - update when you have actual mint data
-          contributors: [], // Placeholder - fetch from users collection later
-          tgeAt: launch.status === 'upcoming' ? new Date(launch.createdAt).getTime() : undefined,
-        }))
+        setUserVotedLaunches(new Set(votedLaunches))
 
-        setLaunches(converted)
+        // Get real vote and comment counts for each launch
+        const launchesWithCounts = await Promise.all(
+          data.map(async (launch) => {
+            const [voteCount, comments] = await Promise.all([
+              getVoteCount(launch.$id),
+              getComments(launch.$id).catch(() => [])
+            ])
+
+            return {
+              id: launch.$id,
+              title: launch.tokenName,
+              subtitle: launch.description,
+              logoUrl: launch.tokenImage,
+              scope: (launch.tags && launch.tags.includes('ICM')) ? 'ICM' as const : 'CCM' as const,
+              status: launch.status === 'live' ? 'LIVE' as const : launch.status === 'upcoming' ? 'UPCOMING' as const : 'LIVE' as const,
+              convictionPct: launch.convictionPct || 0,
+              commentsCount: comments.length,
+              upvotes: voteCount,
+              contributionPoolPct: launch.contributionPoolPct,
+              feesSharePct: launch.feesSharePct,
+              mint: launch.$id,
+              contributors: [],
+              tgeAt: launch.status === 'upcoming' ? new Date(launch.createdAt).getTime() : undefined,
+            }
+          })
+        )
+
+        setLaunches(launchesWithCounts)
       } catch (error) {
         console.error('Failed to fetch launches:', error)
-        // Fall back to mock data if Appwrite fails
-        setLaunches([...liveICMCards, ...liveCCMCards, ...upcomingCards])
+        setLaunches([])
       } finally {
         setLoading(false)
       }
     }
 
     fetchLaunches()
-  }, [])
+  }, [userId])
 
   // Mock data for LIVE ICM cards (with real Solana mints for API testing) - FALLBACK ONLY
   const liveICMCards: LaunchCardData[] = [
@@ -75,6 +104,8 @@ export default function DiscoverPage() {
       convictionPct: 94,
       commentsCount: 342,
       upvotes: 1240,
+      contributionPoolPct: 2,
+      feesSharePct: 10,
       mint: 'So11111111111111111111111111111111111111112', // Real SOL mint
       contributors: [
         { id: 'anatoly', name: 'Anatoly Yakovenko', twitter: 'aeyakovenko', avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=AY&backgroundColor=14f195' },
@@ -108,6 +139,8 @@ export default function DiscoverPage() {
       convictionPct: 76,
       commentsCount: 523,
       upvotes: 2103,
+      contributionPoolPct: 5,
+      feesSharePct: 15,
       mint: 'DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263', // Real BONK mint
       contributors: [
         { id: 'bonk1', name: 'BONK Team', twitter: 'bonk_inu', avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=BT&backgroundColor=ff6b00' },
@@ -129,6 +162,8 @@ export default function DiscoverPage() {
       convictionPct: 92,
       commentsCount: 287,
       upvotes: 1456,
+      contributionPoolPct: 3,
+      feesSharePct: 20,
       contributors: [
         { id: 'los1', name: 'Core Dev', twitter: 'launchos_dev', avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=CD&backgroundColor=8b5cf6' },
         { id: 'los2', name: 'Product Lead', twitter: 'launchos_product', avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=PL&backgroundColor=a855f7' },
@@ -190,19 +225,29 @@ export default function DiscoverPage() {
   ]
 
   // Callback handlers
-  const handleUpvote = async (id: string) => {
+  const handleUpvote = async (launchId: string) => {
+    if (!isAuthenticated || !userId) {
+      alert('Please sign in to vote')
+      return
+    }
+
+    // Check if already voted
+    if (userVotedLaunches.has(launchId)) {
+      alert('You have already voted for this launch')
+      return
+    }
+
     try {
-      const response = await fetch(`/api/launches/${id}/upvote`, {
-        method: 'POST'
-      })
-      if (response.ok) {
-        // Optimistically update UI
-        setLaunches(prev => prev.map(l =>
-          l.id === id ? { ...l, upvotes: (l.upvotes || 0) + 1 } : l
-        ))
-      }
-    } catch (error) {
+      await addVote(launchId, userId)
+
+      // Update local state
+      setUserVotedLaunches(prev => new Set(Array.from(prev).concat(launchId)))
+      setLaunches(prev => prev.map(l =>
+        l.id === launchId ? { ...l, upvotes: (l.upvotes || 0) + 1 } : l
+      ))
+    } catch (error: any) {
       console.error('Failed to upvote:', error)
+      alert(error.message || 'Failed to vote')
     }
   }
 
@@ -219,22 +264,42 @@ export default function DiscoverPage() {
     alert('Boost feature coming soon! This will allow you to promote launches.')
   }
 
-  const handleFollow = async (id: string) => {
-    try {
-      // TODO: Get user ID from auth context
-      const userId = 'current-user-id' // Replace with actual user ID
-      const response = await fetch(`/api/launches/${id}/follow`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId })
-      })
-      if (response.ok) {
-        const data = await response.json()
-        alert(data.isFollowing ? 'Following!' : 'Unfollowed')
-      }
-    } catch (error) {
-      console.error('Failed to follow:', error)
+  const handleCollaborate = async (launchId: string) => {
+    if (!isAuthenticated || !userId) {
+      alert('Please sign in to collaborate')
+      return
     }
+
+    const launch = launches.find(l => l.id === launchId)
+    if (launch) {
+      setSelectedCollaborateLaunch({
+        id: launchId,
+        title: launch.title,
+        creatorName: launch.creatorName,
+        creatorAvatar: launch.creatorAvatar,
+        createdBy: launch.createdBy
+      })
+      setCollaborateOpen(true)
+    }
+  }
+
+  const handleSendCollaborationInvite = async (message: string) => {
+    if (!userId || !selectedCollaborateLaunch) return
+
+    // TODO: Implement collaboration invite sending
+    // await sendCollaborationInvite({
+    //   launchId: selectedCollaborateLaunch.id,
+    //   senderId: userId,
+    //   receiverId: selectedCollaborateLaunch.createdBy,
+    //   message
+    // })
+
+    console.log('Sending collaboration request to project owner:', {
+      launchId: selectedCollaborateLaunch.id,
+      senderId: userId,
+      receiverId: selectedCollaborateLaunch.createdBy,
+      message
+    })
   }
 
   const handleView = (id: string) => {
@@ -473,15 +538,18 @@ export default function DiscoverPage() {
       {!loading && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredLaunches.map((card) => {
+            const hasVoted = userVotedLaunches.has(card.id)
+
             if (card.status === 'UPCOMING') {
               return (
                 <UpcomingLaunchCard
                   key={card.id}
                   data={card}
+                  hasVoted={hasVoted}
                   onUpvote={handleUpvote}
                   onComment={handleComment}
                   onBoost={handleBoost}
-                  onFollow={handleFollow}
+                  onFollow={handleCollaborate}
                   onView={handleView}
                   onSetReminder={handleSetReminder}
                 />
@@ -491,10 +559,11 @@ export default function DiscoverPage() {
               <LiveLaunchCard
                 key={card.id}
                 data={card}
+                hasVoted={hasVoted}
                 onUpvote={handleUpvote}
                 onComment={handleComment}
                 onBoost={handleBoost}
-                onFollow={handleFollow}
+                onFollow={handleCollaborate}
                 onView={handleView}
               />
             )
@@ -520,15 +589,67 @@ export default function DiscoverPage() {
         />
       )}
 
+      {/* Collaborate Modal */}
+      {selectedCollaborateLaunch && (
+        <CollaborateModal
+          open={collaborateOpen}
+          onClose={() => setCollaborateOpen(false)}
+          launchId={selectedCollaborateLaunch.id}
+          launchTitle={selectedCollaborateLaunch.title}
+          creatorName={selectedCollaborateLaunch.creatorName}
+          creatorAvatar={selectedCollaborateLaunch.creatorAvatar}
+          onSendInvite={handleSendCollaborationInvite}
+        />
+      )}
+
       {/* Submit Launch Drawer */}
       <SubmitLaunchDrawer
         isOpen={isSubmitLaunchOpen}
         onClose={() => setIsSubmitLaunchOpen(false)}
-        onSubmit={(data) => {
-          console.log('Launch submitted:', data)
-          setIsSubmitLaunchOpen(false)
-          // Refresh launches
-          window.location.reload()
+        onSubmit={async (data) => {
+          if (!isAuthenticated || !userId) {
+            alert('Please sign in to create a launch')
+            return
+          }
+
+          try {
+            // Upload logo if provided
+            let logoUrl = ''
+            if (data.logoFile) {
+              // TODO: Upload to storage
+              logoUrl = URL.createObjectURL(data.logoFile) // Temporary - replace with actual upload
+            }
+
+            await createLaunch({
+              tokenName: data.title,
+              tokenSymbol: data.title.substring(0, 6).toUpperCase(),
+              tokenImage: logoUrl,
+              description: data.description,
+              creatorId: userId,
+              creatorName: 'Creator', // TODO: Get from user profile
+              creatorAvatar: undefined,
+              marketCap: 0,
+              volume24h: 0,
+              priceChange24h: 0,
+              holders: 0,
+              convictionPct: 0,
+              commentsCount: 0,
+              upvotes: 0,
+              contributionPoolPct: data.economics?.contributionPoolPct,
+              feesSharePct: data.economics?.feesSharePct,
+              tags: data.platforms.map(p => `#${p}`),
+              status: data.status === 'Live' ? 'live' : 'upcoming',
+              team: [],
+              contributors: [],
+            })
+
+            setIsSubmitLaunchOpen(false)
+            // Refresh launches
+            window.location.reload()
+          } catch (error) {
+            console.error('Failed to create launch:', error)
+            alert('Failed to create launch. Please try again.')
+          }
         }}
       />
     </div>

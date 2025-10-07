@@ -36,6 +36,7 @@ export const COLLECTIONS = {
   PAYOUTS: process.env.NEXT_PUBLIC_APPWRITE_PAYOUTS_COLLECTION_ID || 'payouts',
   ACTIVITIES: process.env.NEXT_PUBLIC_APPWRITE_ACTIVITIES_COLLECTION_ID || 'activities',
   THREADS: process.env.NEXT_PUBLIC_APPWRITE_THREADS_COLLECTION_ID || 'threads',
+  VOTES: process.env.NEXT_PUBLIC_APPWRITE_VOTES_COLLECTION_ID || 'votes',
 } as const
 
 // Storage Bucket IDs

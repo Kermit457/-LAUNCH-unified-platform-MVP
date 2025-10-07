@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { Plus } from 'lucide-react'
 import { CampaignTable } from '@/components/dashboard/Tables'
 import { CampaignEditor } from '@/components/drawers/CampaignEditor'
@@ -38,6 +39,7 @@ function appwriteToDashboard(ac: AppwriteCampaign): Campaign {
 }
 
 export default function CampaignsPage() {
+  const router = useRouter()
   const { user } = useUser()
   const [isEditorOpen, setIsEditorOpen] = useState(false)
   const [editingCampaign, setEditingCampaign] = useState<Campaign | undefined>()
@@ -170,6 +172,10 @@ export default function CampaignsPage() {
     }
   }
 
+  const handleReview = (id: string) => {
+    router.push(`/dashboard/campaigns/${id}/review`)
+  }
+
   return (
     <>
       <div className="space-y-6">
@@ -207,6 +213,7 @@ export default function CampaignsPage() {
               onPause={handlePause}
               onResume={handleResume}
               onTopUp={handleTopUp}
+              onReview={handleReview}
             />
           )}
         </div>

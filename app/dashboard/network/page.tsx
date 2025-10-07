@@ -16,10 +16,10 @@ import {
   rejectNetworkInvite,
   getUserConnections
 } from '@/lib/appwrite/services/network'
-import { getUserThreads } from '@/lib/appwrite/services/messages'
+import { getUserThreads, createDMThread, createGroupThread } from '@/lib/appwrite/services/messages'
 
 export default function NetworkPage() {
-  const { user } = useUser()
+  const { user, userId } = useUser()
   const searchParams = useSearchParams()
   const [selectedConnections, setSelectedConnections] = useState<string[]>([])
   const [isCreateRoomOpen, setIsCreateRoomOpen] = useState(false)
@@ -178,30 +178,40 @@ export default function NetworkPage() {
     ids.forEach(id => handleDeclineInvite(id))
   }
 
-  const handleDM = (userId: string) => {
-    let threadId: string
-    const existingThread = threads.find(
-      t => t.type === 'dm' && t.participantUserIds.includes(userId)
-    )
+  const handleDM = async (otherUserId: string) => {
+    if (!userId) return
 
-    if (existingThread) {
-      threadId = existingThread.id
-    } else {
-      const newThread: Thread = {
-        id: `thread_${Date.now()}`,
-        type: 'dm',
-        participantUserIds: [userId],
-        createdAt: Date.now(),
-        lastMsgAt: Date.now(),
-        unread: 0,
-        pinned: false,
+    try {
+      let threadId: string
+      const existingThread = threads.find(
+        t => t.type === 'dm' && t.participantUserIds.includes(otherUserId)
+      )
+
+      if (existingThread) {
+        threadId = existingThread.id
+      } else {
+        // Create DM thread in Appwrite
+        const appwriteThread = await createDMThread(userId, otherUserId)
+
+        const newThread: Thread = {
+          id: appwriteThread.$id,
+          type: 'dm',
+          participantUserIds: [otherUserId],
+          createdAt: new Date(appwriteThread.$createdAt).getTime(),
+          lastMsgAt: Date.now(),
+          unread: 0,
+          pinned: false,
+        }
+        addThread(newThread)
+        threadId = newThread.id
       }
-      addThread(newThread)
-      threadId = newThread.id
-    }
 
-    setActiveThread(threadId)
-    setIsChatOpen(true)
+      setActiveThread(threadId)
+      setIsChatOpen(true)
+    } catch (error) {
+      console.error('Failed to create DM thread:', error)
+      showToast('Failed to open chat')
+    }
   }
 
   const handleInviteToCampaign = (userId: string) => {
@@ -227,23 +237,38 @@ export default function NetworkPage() {
     setIsCreateRoomOpen(true)
   }
 
-  const handleCreateRoom = (name: string, projectId?: string, campaignId?: string) => {
-    const newRoom: Thread = {
-      id: `room_${Date.now()}`,
-      type: 'group',
-      name,
-      projectId,
-      campaignId,
-      participantUserIds: selectedConnections,
-      createdAt: Date.now(),
-      lastMsgAt: Date.now(),
-      unread: 0,
-      pinned: false,
+  const handleCreateRoom = async (data: { name: string; projectId?: string; campaignId?: string }) => {
+    if (!userId) return
+
+    try {
+      // Create group thread in Appwrite
+      const appwriteThread = await createGroupThread({
+        name: data.name,
+        participantIds: [...selectedConnections, userId],
+        projectId: data.projectId,
+        campaignId: data.campaignId
+      })
+
+      const newRoom: Thread = {
+        id: appwriteThread.$id,
+        type: 'group',
+        name: data.name,
+        projectId: data.projectId,
+        campaignId: data.campaignId,
+        participantUserIds: selectedConnections,
+        createdAt: new Date(appwriteThread.$createdAt).getTime(),
+        lastMsgAt: Date.now(),
+        unread: 0,
+        pinned: false,
+      }
+      addThread(newRoom)
+      setIsCreateRoomOpen(false)
+      setSelectedConnections([])
+      showToast(`Group "${data.name}" created`)
+    } catch (error) {
+      console.error('Failed to create group:', error)
+      showToast('Failed to create group')
     }
-    addThread(newRoom)
-    setIsCreateRoomOpen(false)
-    setSelectedConnections([])
-    showToast(`Group "${name}" created`)
   }
 
   const handleSelectRoom = (roomId: string) => {

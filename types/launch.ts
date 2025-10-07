@@ -18,10 +18,15 @@ export type LaunchCardData = {
   convictionPct: number
   commentsCount: number
   upvotes: number
+  contributionPoolPct?: number // Percentage of total supply for contribution pool (e.g., 2 for 2%)
+  feesSharePct?: number // Percentage of fees shared with contributors (e.g., 10 for 10%)
   tgeAt?: number // for UPCOMING (epoch ms)
   mint?: string // base58 (LIVE + ICM)
   dexPairId?: string // Dexscreener pair ID for chart embed (e.g. "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU")
   contributors?: Contributor[] // Optional project contributors/team
+  createdBy?: string // User ID of the project creator
+  creatorName?: string // Display name of the project creator
+  creatorAvatar?: string // Avatar URL of the project creator
 }
 
 export type LaunchTimeseriesPoint = {
@@ -96,6 +101,8 @@ export type SubmitLaunchInput = {
   platforms: ("twitter" | "discord" | "telegram" | "youtube" | "twitch" | "tiktok" | "obs")[]
   economics?: {
     poolUsd?: number
+    contributionPoolPct?: number
+    feesSharePct?: number
     endAt?: number
   }
   creator?: string

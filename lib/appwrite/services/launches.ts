@@ -17,6 +17,8 @@ export interface Launch {
   convictionPct: number
   commentsCount: number
   upvotes: number
+  contributionPoolPct?: number
+  feesSharePct?: number
   tags: string[]
   createdAt: string
   status: 'live' | 'upcoming' | 'ended'
@@ -148,4 +150,24 @@ export async function searchLaunches(searchTerm: string) {
   )
 
   return response.documents as unknown as Launch[]
+}
+
+/**
+ * Upvote a launch (increment upvotes count)
+ */
+export async function upvoteLaunch(launchId: string) {
+  // Get current launch to get current upvote count
+  const launch = await getLaunch(launchId)
+
+  // Increment upvotes
+  const response = await databases.updateDocument(
+    DB_ID,
+    COLLECTIONS.LAUNCHES,
+    launchId,
+    {
+      upvotes: (launch.upvotes || 0) + 1
+    }
+  )
+
+  return response as unknown as Launch
 }

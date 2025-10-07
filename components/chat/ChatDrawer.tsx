@@ -1,11 +1,13 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { X, Users, Hash } from 'lucide-react'
 import { MessageList } from './MessageList'
 import { MessageInput } from './MessageInput'
 import { useNetworkStore } from '@/lib/stores/useNetworkStore'
-import { generateId } from '@/lib/utils'
+import { useUser } from '@/hooks/useUser'
+import { getThreadMessages, sendMessage, markThreadAsRead as markThreadRead } from '@/lib/appwrite/services/messages'
+import type { Message as AppwriteMessage } from '@/lib/appwrite/services/messages'
 
 interface ChatDrawerProps {
   isOpen: boolean
@@ -13,35 +15,85 @@ interface ChatDrawerProps {
 }
 
 export function ChatDrawer({ isOpen, onClose }: ChatDrawerProps) {
+  const { userId } = useUser()
   const activeThreadId = useNetworkStore(state => state.activeThreadId)
   const getThreadById = useNetworkStore(state => state.getThreadById)
-  const getThreadMessages = useNetworkStore(state => state.getThreadMessages)
   const connections = useNetworkStore(state => state.connections)
-  const addMessage = useNetworkStore(state => state.addMessage)
-  const markThreadAsRead = useNetworkStore(state => state.markThreadAsRead)
+
+  const [messages, setMessages] = useState<Array<{ id: string; threadId: string; fromUserId: string; fromHandle: string; content: string; sentAt: number }>>([])
+  const [loading, setLoading] = useState(false)
 
   const thread = activeThreadId ? getThreadById(activeThreadId) : null
-  const messages = activeThreadId ? getThreadMessages(activeThreadId) : []
 
+  // Fetch messages from Appwrite when thread changes
   useEffect(() => {
-    if (isOpen && activeThreadId) {
-      markThreadAsRead(activeThreadId)
+    async function fetchMessages() {
+      if (!activeThreadId) return
+
+      try {
+        setLoading(true)
+        const appwriteMessages = await getThreadMessages(activeThreadId)
+
+        // Convert to component format
+        const formattedMessages = appwriteMessages.map(m => ({
+          id: m.$id,
+          threadId: m.threadId,
+          fromUserId: m.senderId,
+          fromHandle: '@user', // TODO: Fetch user details
+          content: m.content,
+          sentAt: new Date(m.$createdAt).getTime()
+        }))
+
+        setMessages(formattedMessages)
+      } catch (error) {
+        console.error('Failed to fetch messages:', error)
+      } finally {
+        setLoading(false)
+      }
     }
-  }, [isOpen, activeThreadId, markThreadAsRead])
 
-  const handleSend = (content: string) => {
-    if (!activeThreadId) return
+    fetchMessages()
+  }, [activeThreadId])
 
-    const newMessage = {
-      id: generateId(),
-      threadId: activeThreadId,
-      fromUserId: 'current_user',
-      fromHandle: '@alpha_fren',
-      content,
-      sentAt: Date.now()
+  // Mark thread as read when opened
+  useEffect(() => {
+    async function markAsRead() {
+      if (isOpen && activeThreadId && userId) {
+        try {
+          await markThreadRead(activeThreadId, userId)
+        } catch (error) {
+          console.error('Failed to mark thread as read:', error)
+        }
+      }
     }
 
-    addMessage(newMessage)
+    markAsRead()
+  }, [isOpen, activeThreadId, userId])
+
+  const handleSend = async (content: string) => {
+    if (!activeThreadId || !userId) return
+
+    try {
+      const message = await sendMessage({
+        threadId: activeThreadId,
+        senderId: userId,
+        content
+      })
+
+      // Add to local state optimistically
+      const newMessage = {
+        id: message.$id,
+        threadId: message.threadId,
+        fromUserId: message.senderId,
+        fromHandle: '@you',
+        content: message.content,
+        sentAt: new Date(message.$createdAt).getTime()
+      }
+
+      setMessages(prev => [...prev, newMessage])
+    } catch (error) {
+      console.error('Failed to send message:', error)
+    }
   }
 
   if (!isOpen || !thread) return null

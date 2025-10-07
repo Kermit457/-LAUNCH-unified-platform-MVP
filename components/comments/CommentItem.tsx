@@ -23,15 +23,23 @@ function formatTime(timestamp: Date): string {
 }
 
 export function CommentItem({ comment, onDelete, canDelete = false }: CommentItemProps) {
-  const { id, author, text, timestamp } = comment
+  const { id, author, text, timestamp, avatar } = comment
 
   return (
     <div className="rounded-xl bg-white/5 p-3 border border-white/10 hover:border-white/15 transition-colors">
       <div className="flex items-start gap-3">
-        {/* Avatar - gradient circle with initial */}
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
-          {author[0]?.toUpperCase() || '?'}
-        </div>
+        {/* Avatar - show image if available, otherwise gradient circle with initial */}
+        {avatar ? (
+          <img
+            src={avatar}
+            alt={author}
+            className="w-8 h-8 rounded-full object-cover flex-shrink-0"
+          />
+        ) : (
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+            {author?.[0]?.toUpperCase() || '?'}
+          </div>
+        )}
 
         <div className="flex-1 min-w-0">
           {/* Author + timestamp + delete button */}

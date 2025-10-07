@@ -11,7 +11,7 @@ import { CreateCampaignModal } from '@/components/campaigns/CreateCampaignModal'
 import { CampaignType } from '@/types/quest'
 import { Button } from '@/components/ui/button'
 import { getCampaigns, createCampaign } from '@/lib/appwrite/services/campaigns'
-import { createQuest } from '@/lib/appwrite/services/quests'
+import { getQuests, createQuest } from '@/lib/appwrite/services/quests'
 import type { EarnCard } from '@/components/EarnCard'
 import { useUser } from '@/hooks/useUser'
 
@@ -20,62 +20,98 @@ type Tab = typeof TABS[number]
 
 export default function EarnPage() {
   const router = useRouter()
-  const { user } = useUser()
+  const { userId, name } = useUser()
   const [activeTab, setActiveTab] = useState<Tab>('All')
   const [sortBy, setSortBy] = useState<'trending' | 'payout' | 'closing'>('trending')
   const [isCreateQuestOpen, setIsCreateQuestOpen] = useState(false)
   const [initialQuestType, setInitialQuestType] = useState<CampaignType>('raid')
   const [isCreateCampaignOpen, setIsCreateCampaignOpen] = useState(false)
-  const [campaigns, setCampaigns] = useState<EarnCard[]>([])
+  const [allCards, setAllCards] = useState<EarnCard[]>([])
   const [loading, setLoading] = useState(true)
 
-  // Fetch campaigns from Appwrite
+  // Fetch campaigns and quests from Appwrite
   useEffect(() => {
-    async function fetchCampaigns() {
+    async function fetchData() {
       try {
         setLoading(true)
-        const data = await getCampaigns({ status: 'active', limit: 100 })
 
-        // Convert Appwrite Campaign type to EarnCard
-        const converted: EarnCard[] = data.map(campaign => ({
+        // Fetch both campaigns and quests in parallel
+        // Note: Don't filter by status - fetch all and filter client-side
+        const [campaignsData, questsData] = await Promise.all([
+          getCampaigns({ limit: 100 }),
+          getQuests({ limit: 100 })
+        ])
+
+        // Convert campaigns to EarnCard
+        const campaignCards: EarnCard[] = campaignsData.map(campaign => ({
           id: campaign.$id,
-          title: campaign.title,
-          description: campaign.description,
-          type: campaign.type as EarnType,
+          title: campaign.title || 'Untitled Campaign',
+          description: campaign.description || '',
+          type: 'campaign' as EarnType,
           reward: {
-            value: campaign.budget,
+            value: campaign.budget || 0,
             currency: 'USDC'
           },
-          participants: campaign.participants,
-          duration: new Date(campaign.deadline).toLocaleDateString(),
+          participants: campaign.participants || 0,
+          duration: campaign.deadline ? new Date(campaign.deadline).toLocaleDateString() : 'No deadline',
           imageUrl: campaign.imageUrl,
-          tags: campaign.tags,
-          platform: ['LaunchOS'],
+          tags: campaign.tags || [],
+          platform: campaign.platforms || ['LaunchOS'],
           progress: {
-            paid: campaign.budgetPaid,
-            pool: campaign.budget
+            paid: campaign.budgetPaid || 0,
+            pool: campaign.budget || 0
           },
-          status: campaign.status === 'active' ? 'live' : campaign.status === 'completed' ? 'ended' : 'upcoming',
+          status: (campaign.status as any) === 'live' || campaign.status === 'active' ? 'live' : campaign.status === 'completed' ? 'ended' : 'live',
         }))
 
-        setCampaigns(converted)
+        // Convert quests to EarnCard
+        const questCards: EarnCard[] = questsData.map(quest => ({
+          id: quest.$id,
+          title: quest.title,
+          description: quest.description,
+          type: quest.type as EarnType, // 'raid' or 'bounty'
+          reward: {
+            value: quest.poolAmount,
+            currency: 'USDC'
+          },
+          participants: quest.participants,
+          duration: new Date(quest.deadline).toLocaleDateString(),
+          imageUrl: undefined, // Quest doesn't have imageUrl field
+          tags: quest.platforms || [],
+          platform: quest.platforms || ['LaunchOS'],
+          progress: {
+            paid: 0,
+            pool: quest.poolAmount
+          },
+          status: quest.status === 'active' ? 'live' : quest.status === 'completed' ? 'ended' : 'upcoming',
+        }))
+
+        // Combine both
+        const combined = [...campaignCards, ...questCards]
+        console.log('📊 Fetched from Appwrite:', {
+          campaigns: campaignCards.length,
+          quests: questCards.length,
+          total: combined.length
+        })
+        setAllCards(combined)
       } catch (error) {
-        console.error('Failed to fetch campaigns:', error)
+        console.error('❌ Failed to fetch data from Appwrite:', error)
+        console.log('⚠️ Falling back to mock data')
         // Fall back to mock data
-        setCampaigns(earnCards)
+        setAllCards(earnCards)
       } finally {
         setLoading(false)
       }
     }
 
-    fetchCampaigns()
+    fetchData()
   }, [])
 
   const filteredCards = useMemo(() => {
     const filterType = activeTab.toLowerCase() as EarnType | 'all'
     // Use real data if loaded, otherwise fall back to mock data
-    let cards = campaigns.length > 0
-      ? (filterType === 'all' ? campaigns : campaigns.filter(c => c.type === filterType))
+    let cards = allCards.length > 0
+      ? (filterType === 'all' ? allCards : allCards.filter(c => c.type === filterType))
       : filterEarnCards(filterType === 'all' ? 'all' : filterType)
 
     // Sort
@@ -92,7 +128,7 @@ export default function EarnPage() {
     }
 
     return cards
-  }, [activeTab, sortBy, campaigns])
+  }, [activeTab, sortBy, allCards])
 
   return (
     <div className="min-h-screen pb-24">
@@ -204,17 +240,28 @@ export default function EarnPage() {
         </div>
       </div>
 
-      {/* Earn Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredCards.map(card => (
-          <EarnCardComponent key={card.id} {...card} />
-        ))}
-      </div>
+      {/* Loading State */}
+      {loading && (
+        <div className="text-center py-16">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-purple-500 mx-auto mb-4"></div>
+          <p className="text-zinc-400">Loading opportunities from Appwrite...</p>
+        </div>
+      )}
 
-      {filteredCards.length === 0 && (
+      {/* Earn Cards Grid */}
+      {!loading && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredCards.map(card => (
+            <EarnCardComponent key={card.id} {...card} />
+          ))}
+        </div>
+      )}
+
+      {!loading && filteredCards.length === 0 && (
         <div className="text-center py-16 text-zinc-500">
           <Trophy className="w-16 h-16 mx-auto mb-4 text-zinc-700" />
           <p>No earning opportunities found for this filter</p>
+          <p className="text-sm mt-2">Try running: npm run seed</p>
         </div>
       )}
 
@@ -231,7 +278,7 @@ export default function EarnPage() {
               type: data.type,
               title: data.title,
               description: (data as any).description || '',
-              createdBy: user?.$id || 'anonymous',
+              createdBy: userId || 'anonymous',
               status: 'active',
               poolAmount: (data as any).poolAmount || 0,
               participants: 0,
@@ -262,8 +309,8 @@ export default function EarnPage() {
               title: data.title,
               description: data.description || '',
               type: 'bounty',
-              creatorId: user?.$id || 'anonymous',
-              creatorName: user?.name || 'Anonymous',
+              creatorId: userId || 'anonymous',
+              creatorName: name || 'Anonymous',
               budget: (data as any).budget || 0,
               budgetPaid: 0,
               participants: 0,

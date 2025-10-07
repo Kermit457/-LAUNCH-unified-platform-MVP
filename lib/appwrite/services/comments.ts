@@ -7,7 +7,7 @@ export interface Comment {
   userId: string
   username: string
   userAvatar?: string
-  content: string
+  content: string // Maps to 'text' field in Appwrite
   upvotes: number
   createdAt: string
 }
@@ -26,7 +26,17 @@ export async function getComments(launchId: string, limit = 50) {
     ]
   )
 
-  return response.documents as unknown as Comment[]
+  // Map Appwrite 'text' field to 'content' field
+  return response.documents.map((doc: any) => ({
+    $id: doc.$id,
+    launchId: doc.launchId,
+    userId: doc.userId,
+    username: doc.username,
+    userAvatar: doc.avatar,
+    content: doc.text,
+    upvotes: doc.upvotes,
+    createdAt: doc.$createdAt,
+  })) as Comment[]
 }
 
 /**
@@ -39,18 +49,38 @@ export async function createComment(data: {
   userAvatar?: string
   content: string
 }): Promise<Comment> {
+  const payload = {
+    commentId: `comment_${Date.now()}_${data.userId}`,
+    launchId: data.launchId,
+    campaignId: '',
+    userId: data.userId,
+    username: data.username,
+    avatar: data.userAvatar || '',
+    text: data.content,
+    upvotes: 0,
+    parentId: '',
+  }
+
+  console.log('createComment - payload:', payload)
+
   const response = await databases.createDocument(
     DB_ID,
     COLLECTIONS.COMMENTS,
     'unique()',
-    {
-      ...data,
-      upvotes: 0,
-      createdAt: new Date().toISOString(),
-    }
+    payload
   )
 
-  return response as unknown as Comment
+  // Map Appwrite response to Comment type
+  return {
+    $id: response.$id,
+    launchId: (response as any).launchId,
+    userId: (response as any).userId,
+    username: (response as any).username,
+    userAvatar: (response as any).avatar,
+    content: (response as any).text,
+    upvotes: (response as any).upvotes,
+    createdAt: response.$createdAt,
+  }
 }
 
 /**

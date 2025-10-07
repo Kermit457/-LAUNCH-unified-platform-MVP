@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils'
 import { useUser } from '@/hooks/useUser'
 import { getCampaigns } from '@/lib/appwrite/services/campaigns'
 import { getPayouts, claimPayout } from '@/lib/appwrite/services/payouts'
+import { getSubmissions } from '@/lib/appwrite/services/submissions'
 import type { Payout as AppwritePayout } from '@/lib/appwrite/services/payouts'
 
 type DashboardPayout = {
@@ -24,27 +25,42 @@ type DashboardPayout = {
 }
 
 export default function EarningsPage() {
-  const { user } = useUser()
+  const { user, userId } = useUser()
   const [selectedPayouts, setSelectedPayouts] = useState<Set<string>>(new Set())
   const [loading, setLoading] = useState(true)
   const [campaigns, setCampaigns] = useState<any[]>([])
   const [payouts, setPayouts] = useState<DashboardPayout[]>([])
+  const [totalEarnings, setTotalEarnings] = useState(0)
+  const [earningsBySource, setEarningsBySource] = useState<{ [key: string]: number }>({})
 
   const walletAddress = 'FRENw...x7gH2'
 
-  // Fetch campaigns and payouts
+  // Fetch campaigns, payouts, and submissions
   useEffect(() => {
     async function fetchData() {
-      if (!user) return
+      if (!userId) return
 
       try {
         setLoading(true)
-        const [campaignsData, payoutsData] = await Promise.all([
-          getCampaigns({ createdBy: user.$id }),
-          getPayouts({ userId: user.$id })
+        const [campaignsData, payoutsData, submissionsData] = await Promise.all([
+          getCampaigns({ createdBy: userId }),
+          getPayouts({ userId: userId }),
+          getSubmissions({ userId: userId, status: 'approved' })
         ])
 
         setCampaigns(campaignsData)
+
+        // Calculate total earnings from approved submissions
+        const total = submissionsData.reduce((sum, sub) => sum + (sub.earnings || 0), 0)
+        setTotalEarnings(total)
+
+        // Calculate earnings by source (campaign/quest)
+        const bySource: { [key: string]: number } = {}
+        submissionsData.forEach(sub => {
+          const source = sub.campaignId || sub.questId || 'Unknown'
+          bySource[source] = (bySource[source] || 0) + (sub.earnings || 0)
+        })
+        setEarningsBySource(bySource)
 
         // Convert Appwrite payouts to dashboard format
         const converted: DashboardPayout[] = payoutsData.map(p => ({
@@ -166,6 +182,46 @@ export default function EarningsPage() {
             View on Solscan
           </button>
         </div>
+      </div>
+
+      {/* Total Earnings Summary */}
+      <div className="bg-gradient-to-r from-purple-500/10 via-fuchsia-500/10 to-cyan-500/10 backdrop-blur-sm border border-white/10 rounded-xl p-6">
+        <h3 className="text-lg font-bold text-white mb-4">Total Earnings</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-white/5 rounded-lg p-4">
+            <div className="text-sm text-white/50 mb-1">Total Earned</div>
+            <div className="text-3xl font-bold bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
+              ${totalEarnings.toFixed(2)}
+            </div>
+          </div>
+          <div className="bg-white/5 rounded-lg p-4">
+            <div className="text-sm text-white/50 mb-1">Claimable</div>
+            <div className="text-3xl font-bold text-cyan-400">
+              ${totalClaimable.toFixed(2)}
+            </div>
+          </div>
+          <div className="bg-white/5 rounded-lg p-4">
+            <div className="text-sm text-white/50 mb-1">Total Claimed</div>
+            <div className="text-3xl font-bold text-white">
+              ${paidPayouts.reduce((sum, p) => sum + (p.net || p.amount), 0).toFixed(2)}
+            </div>
+          </div>
+        </div>
+
+        {/* Earnings Breakdown */}
+        {Object.keys(earningsBySource).length > 0 && (
+          <div className="mt-6">
+            <h4 className="text-sm font-semibold text-white/70 mb-3">Earnings by Source</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+              {Object.entries(earningsBySource).map(([source, amount]) => (
+                <div key={source} className="bg-white/5 rounded-lg p-3 flex items-center justify-between">
+                  <span className="text-sm text-white/70 truncate flex-1">{source}</span>
+                  <span className="text-sm font-bold text-green-400 ml-2">${amount.toFixed(2)}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Escrow Summary */}

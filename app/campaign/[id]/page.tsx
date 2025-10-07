@@ -4,13 +4,62 @@ import { useParams, useRouter } from 'next/navigation'
 import { ArrowLeft, Share2, Video, Clock, Users, DollarSign, Upload, Eye, Link2, Package } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { getCampaignById } from '@/lib/appwrite/services/campaigns'
+import { createSubmission } from '@/lib/appwrite/services/submissions'
+import { useUser } from '@/hooks/useUser'
 
 export default function CampaignDetailPage() {
   const params = useParams()
   const router = useRouter()
+  const { userId, isAuthenticated } = useUser()
   const [hasJoined, setHasJoined] = useState(false)
   const [loading, setLoading] = useState(true)
   const [campaign, setCampaign] = useState<any>(null)
+
+  // Submission form state
+  const [platform, setPlatform] = useState('')
+  const [videoUrl, setVideoUrl] = useState('')
+  const [description, setDescription] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+  const [submitSuccess, setSubmitSuccess] = useState(false)
+  const [submitError, setSubmitError] = useState('')
+
+  const handleSubmit = async () => {
+    if (!isAuthenticated || !userId) {
+      setSubmitError('Please sign in to submit')
+      return
+    }
+
+    if (!platform || !videoUrl) {
+      setSubmitError('Platform and video URL are required')
+      return
+    }
+
+    try {
+      setSubmitting(true)
+      setSubmitError('')
+
+      await createSubmission({
+        submissionId: `sub_${Date.now()}_${userId}`,
+        campaignId: campaign.id,
+        userId: userId,
+        status: 'pending',
+        mediaUrl: videoUrl,
+        views: 0,
+        earnings: 0,
+        notes: description || undefined,
+      })
+
+      setSubmitSuccess(true)
+      setPlatform('')
+      setVideoUrl('')
+      setDescription('')
+    } catch (error) {
+      console.error('Failed to submit:', error)
+      setSubmitError('Failed to submit. Please try again.')
+    } finally {
+      setSubmitting(false)
+    }
+  }
 
   useEffect(() => {
     async function fetchCampaign() {
@@ -224,9 +273,13 @@ export default function CampaignDetailPage() {
                   <label className="block text-sm font-medium text-zinc-400 mb-2">
                     Platform <span className="text-red-400">*</span>
                   </label>
-                  <select className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80">
+                  <select
+                    value={platform}
+                    onChange={(e) => setPlatform(e.target.value)}
+                    className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
+                  >
                     <option value="">Select platform</option>
-                    {campaign.rules.platforms.map(p => (
+                    {campaign.rules.platforms.map((p: string) => (
                       <option key={p} value={p} className="bg-neutral-900">{p.charAt(0).toUpperCase() + p.slice(1)}</option>
                     ))}
                   </select>
@@ -237,6 +290,8 @@ export default function CampaignDetailPage() {
                   </label>
                   <input
                     type="url"
+                    value={videoUrl}
+                    onChange={(e) => setVideoUrl(e.target.value)}
                     placeholder="https://youtube.com/watch?v=..."
                     className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
                   />
@@ -247,13 +302,35 @@ export default function CampaignDetailPage() {
                     Description (optional)
                   </label>
                   <textarea
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
                     rows={3}
                     placeholder="Tell us about your clip..."
                     className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80 resize-none"
                   />
                 </div>
-                <button className="w-full h-12 rounded-xl bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 hover:from-fuchsia-600 hover:via-purple-600 hover:to-cyan-600 text-white font-bold transition-all">
-                  Submit Clip
+
+                {/* Success Message */}
+                {submitSuccess && (
+                  <div className="p-4 rounded-xl bg-green-500/20 border border-green-500/40">
+                    <p className="text-green-300 font-semibold">✓ Submission created successfully!</p>
+                    <p className="text-sm text-green-400/80 mt-1">Your clip is pending review</p>
+                  </div>
+                )}
+
+                {/* Error Message */}
+                {submitError && (
+                  <div className="p-4 rounded-xl bg-red-500/20 border border-red-500/40">
+                    <p className="text-red-300 font-semibold">{submitError}</p>
+                  </div>
+                )}
+
+                <button
+                  onClick={handleSubmit}
+                  disabled={submitting}
+                  className="w-full h-12 rounded-xl bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 hover:from-fuchsia-600 hover:via-purple-600 hover:to-cyan-600 text-white font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {submitting ? 'Submitting...' : 'Submit Clip'}
                 </button>
               </div>
             </div>

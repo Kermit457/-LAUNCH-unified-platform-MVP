@@ -9,6 +9,7 @@ import { fmtUsd, fmtPct, fmtNum, isNewToken } from '@/lib/format'
 
 interface LiveLaunchCardProps {
   data: LaunchCardData
+  hasVoted?: boolean
   onUpvote?: (id: string) => void
   onComment?: (id: string) => void
   onBoost?: (id: string) => void
@@ -18,6 +19,7 @@ interface LiveLaunchCardProps {
 
 export function LiveLaunchCard({
   data,
+  hasVoted = false,
   onUpvote,
   onComment,
   onBoost,
@@ -39,7 +41,7 @@ export function LiveLaunchCard({
   const showNewBadge = isNewToken(tokenData.createdAt)
 
   return (
-    <BaseLaunchCard data={data} onUpvote={onUpvote} onComment={onComment}>
+    <BaseLaunchCard data={data} hasVoted={hasVoted} onUpvote={onUpvote} onComment={onComment}>
       {/* Token Row (only for ICM with mint) */}
       {data.scope === 'ICM' && data.mint && (
         <div className="mb-3 pb-3 border-b border-white/10">
@@ -183,14 +185,14 @@ export function LiveLaunchCard({
           Boost
         </button>
 
-        {/* Follow */}
+        {/* Collab */}
         <button
           onClick={() => onFollow?.(data.id)}
           className="h-9 px-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-white/70 hover:text-white text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-white/20 flex items-center gap-1.5"
-          data-cta="card-follow-launch"
+          data-cta="card-collab-launch"
         >
           <Heart className="w-4 h-4" />
-          <span className="hidden sm:inline">Follow</span>
+          <span className="hidden sm:inline">Collab</span>
         </button>
 
         {/* View Launch */}

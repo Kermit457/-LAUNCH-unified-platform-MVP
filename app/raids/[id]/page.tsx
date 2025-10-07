@@ -4,14 +4,22 @@ import { useParams, useRouter } from 'next/navigation'
 import { ArrowLeft, Share2, Eye, TrendingUp, Clock, Users, Target, Coins, Upload } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { getQuestById } from '@/lib/appwrite/services/quests'
-import { getSubmissions } from '@/lib/appwrite/services/submissions'
+import { getSubmissions, createSubmission } from '@/lib/appwrite/services/submissions'
+import { useUser } from '@/hooks/useUser'
 
 export default function RaidDetailPage() {
   const params = useParams()
   const router = useRouter()
+  const { userId, isAuthenticated } = useUser()
   const [hasJoined, setHasJoined] = useState(false)
   const [loading, setLoading] = useState(true)
   const [raid, setRaid] = useState<any>(null)
+
+  // Submission form state
+  const [proofUrl, setProofUrl] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+  const [submitSuccess, setSubmitSuccess] = useState(false)
+  const [submitError, setSubmitError] = useState('')
 
   // Fetch raid data from Appwrite
   useEffect(() => {
@@ -84,6 +92,42 @@ export default function RaidDetailPage() {
       fetchRaid()
     }
   }, [params.id])
+
+  // Handle submission
+  const handleSubmit = async () => {
+    if (!isAuthenticated || !userId) {
+      setSubmitError('Please sign in to submit')
+      return
+    }
+
+    if (!proofUrl) {
+      setSubmitError('Proof URL is required')
+      return
+    }
+
+    try {
+      setSubmitting(true)
+      setSubmitError('')
+
+      await createSubmission({
+        submissionId: `sub_${Date.now()}_${userId}`,
+        questId: raid.id,
+        userId: userId,
+        status: 'pending',
+        mediaUrl: proofUrl,
+        views: 0,
+        earnings: 0,
+      })
+
+      setSubmitSuccess(true)
+      setProofUrl('')
+    } catch (error) {
+      console.error('Failed to submit:', error)
+      setSubmitError('Failed to submit. Please try again.')
+    } finally {
+      setSubmitting(false)
+    }
+  }
 
   if (loading || !raid) {
     return (
@@ -256,13 +300,32 @@ export default function RaidDetailPage() {
                   </label>
                   <input
                     type="url"
+                    value={proofUrl}
+                    onChange={(e) => setProofUrl(e.target.value)}
                     placeholder="https://..."
                     className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-purple-500 backdrop-blur-xl"
                   />
                   <p className="mt-1 text-xs text-zinc-500">Link to your completed action (tweet, post, etc.)</p>
                 </div>
-                <button className="w-full h-12 rounded-xl bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 hover:shadow-[0_0_30px_rgba(168,85,247,0.4)] text-white font-bold transition-all">
-                  Submit for Review
+
+                {submitError && (
+                  <div className="p-3 rounded-xl bg-red-500/20 border border-red-500/40 text-red-300 text-sm">
+                    {submitError}
+                  </div>
+                )}
+
+                {submitSuccess && (
+                  <div className="p-3 rounded-xl bg-green-500/20 border border-green-500/40 text-green-300 text-sm">
+                    ✓ Submission received! Check your dashboard to track its status.
+                  </div>
+                )}
+
+                <button
+                  onClick={handleSubmit}
+                  disabled={submitting}
+                  className="w-full h-12 rounded-xl bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 hover:shadow-[0_0_30px_rgba(168,85,247,0.4)] text-white font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {submitting ? 'Submitting...' : 'Submit for Review'}
                 </button>
               </div>
             </div>

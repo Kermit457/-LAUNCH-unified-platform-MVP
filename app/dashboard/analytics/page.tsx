@@ -6,24 +6,29 @@ import { useUser } from '@/hooks/useUser'
 import { getCampaigns } from '@/lib/appwrite/services/campaigns'
 import { getPayouts } from '@/lib/appwrite/services/payouts'
 import { getSubmissions } from '@/lib/appwrite/services/submissions'
+import { getQuests } from '@/lib/appwrite/services/quests'
 
 export default function AnalyticsPage() {
-  const { user } = useUser()
+  const { user, userId } = useUser()
   const [loading, setLoading] = useState(true)
   const [earningsData, setEarningsData] = useState<Array<{ date: string; amount: number }>>([])
   const [submissionsPerDay, setSubmissionsPerDay] = useState<Array<{ date: string; count: number }>>([])
   const [topCampaigns, setTopCampaigns] = useState<Array<{ name: string; spent: number; revenue: number; roi: number }>>([])
+  const [totalViews, setTotalViews] = useState(0)
+  const [avgEngagementRate, setAvgEngagementRate] = useState(0)
+  const [questMetrics, setQuestMetrics] = useState<{ raids: number; bounties: number; totalEarned: number }>({ raids: 0, bounties: 0, totalEarned: 0 })
 
   useEffect(() => {
     async function fetchAnalytics() {
-      if (!user) return
+      if (!userId) return
 
       try {
         setLoading(true)
-        const [campaigns, payouts, submissions] = await Promise.all([
-          getCampaigns({ createdBy: user.$id }),
-          getPayouts({ userId: user.$id }),
-          getSubmissions({ userId: user.$id })
+        const [campaigns, payouts, submissions, quests] = await Promise.all([
+          getCampaigns({ createdBy: userId }),
+          getPayouts({ userId: userId }),
+          getSubmissions({ userId: userId }),
+          getQuests({ limit: 100 })
         ])
 
         // Calculate 30-day earnings from payouts
@@ -70,6 +75,31 @@ export default function AnalyticsPage() {
         })
         setSubmissionsPerDay(submissionsData)
 
+        // Calculate total views and engagement
+        const views = submissions.reduce((sum, s) => sum + (s.views || 0), 0)
+        setTotalViews(views)
+
+        // Calculate engagement rate (views per submission)
+        const engagementRate = submissions.length > 0 ? views / submissions.length : 0
+        setAvgEngagementRate(engagementRate)
+
+        // Calculate quest metrics
+        const userQuestSubmissions = submissions.filter(s => s.questId)
+        const raidSubmissions = userQuestSubmissions.filter(s => {
+          const quest = quests.find(q => q.$id === s.questId)
+          return quest?.type === 'raid'
+        })
+        const bountySubmissions = userQuestSubmissions.filter(s => {
+          const quest = quests.find(q => q.$id === s.questId)
+          return quest?.type === 'bounty'
+        })
+        const questEarnings = userQuestSubmissions.reduce((sum, s) => sum + (s.earnings || 0), 0)
+        setQuestMetrics({
+          raids: raidSubmissions.length,
+          bounties: bountySubmissions.length,
+          totalEarned: questEarnings
+        })
+
         // Calculate top campaigns by spending
         const campaignsWithMetrics = campaigns.map(c => ({
           name: c.title,
@@ -114,6 +144,57 @@ export default function AnalyticsPage() {
       <div>
         <h1 className="text-2xl font-bold text-white">Analytics</h1>
         <p className="text-sm text-white/50 mt-1">Track your performance and growth metrics</p>
+      </div>
+
+      {/* KPI Summary */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-gradient-to-br from-purple-500/10 to-fuchsia-500/10 border border-white/10 rounded-xl p-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center">
+              <Eye className="w-5 h-5 text-purple-300" />
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-white">{totalViews.toLocaleString()}</div>
+              <div className="text-xs text-white/50">Total Views</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-gradient-to-br from-cyan-500/10 to-blue-500/10 border border-white/10 rounded-xl p-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-cyan-500/20 flex items-center justify-center">
+              <TrendingUp className="w-5 h-5 text-cyan-300" />
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-white">{avgEngagementRate.toFixed(0)}</div>
+              <div className="text-xs text-white/50">Avg Views/Sub</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-white/10 rounded-xl p-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center">
+              <DollarSign className="w-5 h-5 text-green-300" />
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-white">${questMetrics.totalEarned.toFixed(2)}</div>
+              <div className="text-xs text-white/50">Quest Earnings</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-gradient-to-br from-orange-500/10 to-red-500/10 border border-white/10 rounded-xl p-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-orange-500/20 flex items-center justify-center">
+              <Users className="w-5 h-5 text-orange-300" />
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-white">{questMetrics.raids + questMetrics.bounties}</div>
+              <div className="text-xs text-white/50">Quest Submissions</div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* 30-day Earnings Chart */}
