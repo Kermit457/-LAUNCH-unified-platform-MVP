@@ -171,3 +171,59 @@ export async function upvoteLaunch(launchId: string) {
 
   return response as unknown as Launch
 }
+
+/**
+ * Get all launches created by a specific user
+ */
+export async function getUserProjects(userId: string) {
+  const response = await databases.listDocuments(
+    DB_ID,
+    COLLECTIONS.LAUNCHES,
+    [
+      Query.equal('createdBy', userId),
+      Query.orderDesc('$createdAt')
+    ]
+  )
+
+  return response.documents as unknown as Launch[]
+}
+
+/**
+ * Create a new launch (matching actual Appwrite schema)
+ */
+export async function createLaunchDocument(data: {
+  launchId: string
+  scope: 'ICM' | 'CCM'
+  title: string
+  subtitle?: string
+  logoUrl?: string
+  createdBy: string
+  convictionPct?: number
+  commentsCount?: number
+  upvotes?: number
+  contributionPoolPct?: number
+  feesSharePct?: number
+  status?: 'live' | 'upcoming' | 'ended'
+}) {
+  const response = await databases.createDocument(
+    DB_ID,
+    COLLECTIONS.LAUNCHES,
+    'unique()',
+    {
+      launchId: data.launchId,
+      scope: data.scope,
+      title: data.title,
+      subtitle: data.subtitle || '',
+      logoUrl: data.logoUrl || '',
+      createdBy: data.createdBy,
+      convictionPct: data.convictionPct || 0,
+      commentsCount: data.commentsCount || 0,
+      upvotes: data.upvotes || 0,
+      contributionPoolPct: data.contributionPoolPct,
+      feesSharePct: data.feesSharePct,
+      status: data.status || 'upcoming',
+    }
+  )
+
+  return response
+}

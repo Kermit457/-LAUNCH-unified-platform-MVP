@@ -9,6 +9,7 @@ import { useNetworkStore } from '@/lib/stores/useNetworkStore'
 import { useUser } from '@/hooks/useUser'
 import { getUserProfile } from '@/lib/appwrite/services/users'
 import type { UserProfile } from '@/lib/appwrite/services/users'
+import { DashboardProvider } from '@/contexts/DashboardContext'
 
 const tabs = [
   { href: '/dashboard', label: 'Overview', icon: Home },
@@ -59,47 +60,49 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   }, [user])
 
   return (
-    <div className="min-h-screen bg-[#0B0F1A] relative">
-      {/* Gradient overlay */}
-      <div className="absolute top-0 left-0 right-0 h-64 bg-gradient-to-b from-[#121830] to-transparent pointer-events-none z-0" />
+    <DashboardProvider>
+      <div className="min-h-screen bg-[#0B0F1A] relative">
+        {/* Gradient overlay */}
+        <div className="absolute top-0 left-0 right-0 h-64 bg-gradient-to-b from-[#121830] to-transparent pointer-events-none z-0" />
 
-      {/* Header with Navigation Tabs */}
-      <header className="border-b border-white/10 bg-black/20 backdrop-blur-xl sticky top-0 z-40 relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <nav className="flex gap-1">
-            {tabs.map((tab) => {
-              const Icon = tab.icon
-              const isActive = pathname === tab.href
-              const showBadge = tab.badge && (pendingInvites > 0 || unreadDMs > 0)
-              return (
-                <Link
-                  key={tab.href}
-                  href={tab.href}
-                  className={cn(
-                    'flex items-center gap-2 px-4 py-4 text-sm font-medium border-b-2 transition-all',
-                    isActive
-                      ? 'border-purple-500 text-white'
-                      : 'border-transparent text-white/50 hover:text-white/70 hover:border-white/20'
-                  )}
-                >
-                  <Icon className="w-4 h-4" />
-                  {tab.label}
-                  {showBadge && (
-                    <span className="text-xs text-white/60">
-                      ({pendingInvites}/{unreadDMs})
-                    </span>
-                  )}
-                </Link>
-              )
-            })}
-          </nav>
-        </div>
-      </header>
+        {/* Header with Navigation Tabs */}
+        <header className="border-b border-white/10 bg-black/20 backdrop-blur-xl sticky top-0 z-40">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <nav className="flex gap-1 overflow-x-auto">
+              {tabs.map((tab) => {
+                const Icon = tab.icon
+                const isActive = pathname === tab.href
+                const showBadge = tab.badge && (pendingInvites > 0 || unreadDMs > 0)
+                return (
+                  <Link
+                    key={tab.href}
+                    href={tab.href}
+                    className={cn(
+                      'flex items-center gap-2 px-4 py-4 text-sm font-medium border-b-2 transition-all whitespace-nowrap',
+                      isActive
+                        ? 'border-fuchsia-500 text-white'
+                        : 'border-transparent text-white/50 hover:text-white/70 hover:border-white/20'
+                    )}
+                  >
+                    <Icon className="w-4 h-4" />
+                    {tab.label}
+                    {showBadge && (
+                      <span className="text-xs text-white/60">
+                        ({pendingInvites}/{unreadDMs})
+                      </span>
+                    )}
+                  </Link>
+                )
+              })}
+            </nav>
+          </div>
+        </header>
 
-      {/* Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
-        {children}
-      </main>
-    </div>
+        {/* Content */}
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+          {children}
+        </main>
+      </div>
+    </DashboardProvider>
   )
 }

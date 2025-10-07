@@ -11,7 +11,7 @@ import { LaunchCardData } from '@/types/launch'
 import { TrendingUp, Rocket, Clock, LayoutGrid, Link2, MessageSquare, Flame } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/cn'
-import { getLaunches, createLaunch } from '@/lib/appwrite/services/launches'
+import { getLaunches, createLaunchDocument } from '@/lib/appwrite/services/launches'
 import { addVote, getVoteCount, getUserVotes } from '@/lib/appwrite/services/votes'
 import { getComments } from '@/lib/appwrite/services/comments'
 import { useUser } from '@/hooks/useUser'
@@ -620,27 +620,22 @@ export default function DiscoverPage() {
               logoUrl = URL.createObjectURL(data.logoFile) // Temporary - replace with actual upload
             }
 
-            await createLaunch({
-              tokenName: data.title,
-              tokenSymbol: data.title.substring(0, 6).toUpperCase(),
-              tokenImage: logoUrl,
-              description: data.description,
-              creatorId: userId,
-              creatorName: 'Creator', // TODO: Get from user profile
-              creatorAvatar: undefined,
-              marketCap: 0,
-              volume24h: 0,
-              priceChange24h: 0,
-              holders: 0,
+            // Generate unique launch ID
+            const launchId = `launch_${data.title.toLowerCase().replace(/\s+/g, '_')}_${Date.now()}`
+
+            await createLaunchDocument({
+              launchId,
+              scope: data.scope,
+              title: data.title,
+              subtitle: data.subtitle,
+              logoUrl,
+              createdBy: userId,
               convictionPct: 0,
               commentsCount: 0,
               upvotes: 0,
               contributionPoolPct: data.economics?.contributionPoolPct,
               feesSharePct: data.economics?.feesSharePct,
-              tags: data.platforms.map(p => `#${p}`),
               status: data.status === 'Live' ? 'live' : 'upcoming',
-              team: [],
-              contributors: [],
             })
 
             setIsSubmitLaunchOpen(false)

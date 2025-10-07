@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { cn } from '@/lib/cn'
-import { LayoutGrid, Swords, Wrench, Users, Wallet, Menu, X, Trophy, Network, Zap, Bell, LogOut, User } from 'lucide-react'
+import { LayoutGrid, Swords, Wrench, Users, Wallet, Menu, X, Trophy, Network, Zap, Bell, LogOut, User, Rocket } from 'lucide-react'
 import { useNetwork } from '@/lib/contexts/NetworkContext'
 import { useNotifications } from '@/lib/contexts/NotificationContext'
 import { NotificationDropdown } from '@/components/notifications/NotificationDropdown'
@@ -114,21 +114,48 @@ export default function NavBar() {
                 {/* Wallet Dropdown */}
                 {walletDropdownOpen && (
                   <div
-                    className="absolute right-0 mt-2 w-56 rounded-xl bg-zinc-900/95 border border-white/10 shadow-xl backdrop-blur-xl z-50"
+                    className="absolute right-0 mt-2 w-64 rounded-xl bg-zinc-900/95 border border-fuchsia-500/20 shadow-xl shadow-fuchsia-500/10 backdrop-blur-xl z-[100]"
                     onMouseLeave={() => setWalletDropdownOpen(false)}
                   >
                     <div className="p-2">
+                      {/* Account Mode Header */}
+                      <div className="px-4 py-2 border-b border-white/10 mb-2">
+                        <div className="text-xs font-medium text-white/50 mb-2">Dashboard Mode</div>
+                      </div>
+
+                      {/* Personal Account Option */}
                       <button
                         onClick={() => {
-                          router.push('/dashboard')
+                          router.push('/dashboard?mode=user')
                           setWalletDropdownOpen(false)
                         }}
-                        className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-white hover:bg-white/10 transition-all text-left"
+                        className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-white hover:bg-fuchsia-500/10 hover:border-l-2 hover:border-fuchsia-400 transition-all text-left"
                       >
-                        <User size={18} />
-                        <span className="text-sm font-medium">Dashboard</span>
+                        <User size={18} className="text-fuchsia-400" />
+                        <div>
+                          <div className="text-sm font-medium">Personal Account</div>
+                          <div className="text-xs text-white/50">Campaigns & Earnings</div>
+                        </div>
                       </button>
-                      <div className="h-px bg-white/10 my-1" />
+
+                      {/* Project Account Option */}
+                      <button
+                        onClick={() => {
+                          router.push('/dashboard?mode=project')
+                          setWalletDropdownOpen(false)
+                        }}
+                        className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-white hover:bg-cyan-500/10 hover:border-l-2 hover:border-cyan-400 transition-all text-left"
+                      >
+                        <Rocket size={18} className="text-cyan-400" />
+                        <div>
+                          <div className="text-sm font-medium">Project Account</div>
+                          <div className="text-xs text-white/50">Token & Treasury</div>
+                        </div>
+                      </button>
+
+                      <div className="h-px bg-white/10 my-2" />
+
+                      {/* Disconnect */}
                       <button
                         onClick={() => {
                           disconnect()
