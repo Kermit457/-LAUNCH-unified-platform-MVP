@@ -12,7 +12,8 @@
     "create-votes": "tsx scripts/create-votes-collection.ts",
     "add-economics": "tsx scripts/add-economics-attributes.ts",
     "migrate-economics": "tsx scripts/add-economics-to-existing-launches.ts",
-    "test-launch": "tsx scripts/test-launch-create.ts"
+    "test-launch": "tsx scripts/test-launch-create.ts",
+    "fix-campaigns": "tsx scripts/fix-campaigns-schema.ts"
   },
   "dependencies": {
     "@privy-io/react-auth": "^1.27.0",

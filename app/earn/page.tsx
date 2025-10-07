@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import { EarnCard as EarnCardComponent, type EarnType } from '@/components/EarnCard'
 import { earnCards, filterEarnCards } from '@/lib/sampleData'
 import { Trophy, Filter, TrendingUp, Video, Swords, DollarSign } from 'lucide-react'
-import { cn } from '@/lib/cn'
 import { CreateQuestDrawer } from '@/components/quests/CreateQuestDrawer'
 import { CreateCampaignModal } from '@/components/campaigns/CreateCampaignModal'
 import { CampaignType } from '@/types/quest'
@@ -14,6 +13,7 @@ import { getCampaigns, createCampaign } from '@/lib/appwrite/services/campaigns'
 import { getQuests, createQuest } from '@/lib/appwrite/services/quests'
 import type { EarnCard } from '@/components/EarnCard'
 import { useUser } from '@/hooks/useUser'
+import { uploadLogo } from '@/lib/storage'
 
 const TABS = ['All', 'Campaign', 'Raid', 'Bounty'] as const
 type Tab = typeof TABS[number]
@@ -49,7 +49,7 @@ export default function EarnPage() {
           description: campaign.description || '',
           type: 'campaign' as EarnType,
           reward: {
-            value: campaign.budget || 0,
+            value: campaign.budgetTotal || campaign.prizePool || 0,
             currency: 'USDC'
           },
           participants: campaign.participants || 0,
@@ -59,7 +59,7 @@ export default function EarnPage() {
           platform: campaign.platforms || ['LaunchOS'],
           progress: {
             paid: campaign.budgetPaid || 0,
-            pool: campaign.budget || 0
+            pool: campaign.budgetTotal || campaign.prizePool || 0
           },
           status: (campaign.status as any) === 'live' || campaign.status === 'active' ? 'live' : campaign.status === 'completed' ? 'ended' : 'live',
         }))
@@ -74,8 +74,8 @@ export default function EarnPage() {
             value: quest.poolAmount,
             currency: 'USDC'
           },
-          participants: quest.participants,
-          duration: new Date(quest.deadline).toLocaleDateString(),
+          participants: quest.participants || 0,
+          duration: quest.deadline ? new Date(quest.deadline).toLocaleDateString() : 'No deadline',
           imageUrl: undefined, // Quest doesn't have imageUrl field
           tags: quest.platforms || [],
           platform: quest.platforms || ['LaunchOS'],
@@ -273,6 +273,7 @@ export default function EarnPage() {
         onSubmit={async (data: any) => {
           try {
             // Create quest in Appwrite
+            const budgetAmount = (data as any).poolAmount || 0
             const quest = await createQuest({
               questId: data.id || `quest_${Date.now()}`,
               type: data.type,
@@ -280,11 +281,11 @@ export default function EarnPage() {
               description: (data as any).description || '',
               createdBy: userId || 'anonymous',
               status: 'active',
-              poolAmount: (data as any).poolAmount || 0,
-              participants: 0,
-              requirements: (data as any).requirements || [],
-              platforms: (data as any).platforms || [],
-              deadline: (data as any).deadline || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+              poolAmount: budgetAmount,
+              budgetTotal: budgetAmount,
+              budgetPaid: 0,
+              payPerTask: 0,
+              platforms: (data as any).platforms || []
             })
 
             // Navigate to correct route based on type
@@ -304,27 +305,49 @@ export default function EarnPage() {
         onClose={() => setIsCreateCampaignOpen(false)}
         onSubmit={async (data: any) => {
           try {
-            // Create campaign in Appwrite
+            console.log('🎬 Creating campaign from /earn page with data:', data)
+
+            // Upload image if provided
+            let imageUrl = ''
+            if (data.image) {
+              try {
+                imageUrl = await uploadLogo(data.image)
+                console.log('✅ Image uploaded:', imageUrl)
+              } catch (uploadError: any) {
+                console.error('❌ Image upload failed:', uploadError)
+                alert(`Image upload failed: ${uploadError.message}. Campaign will be created without image.`)
+              }
+            }
+
+            // Create campaign in Appwrite with proper fields
             const campaign = await createCampaign({
+              campaignId: crypto.randomUUID(),
+              type: 'clipping',
               title: data.title,
               description: data.description || '',
-              type: 'bounty',
-              creatorId: userId || 'anonymous',
-              creatorName: name || 'Anonymous',
-              budget: (data as any).budget || 0,
-              budgetPaid: 0,
-              participants: 0,
-              deadline: (data as any).deadline || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+              createdBy: userId || 'anonymous',
               status: 'active',
-              requirements: (data as any).requirements || [],
-              tags: (data as any).tags || []
+              prizePool: data.prizePoolUsd || 0,
+              budgetTotal: data.prizePoolUsd || 0,
+              ratePerThousand: data.payoutPerKUsd || 0,
+              minViews: data.minViewsRequired || 0,
+              minDuration: data.videoLen?.minSec || 0,
+              maxDuration: data.videoLen?.maxSec || 0,
+              platforms: data.platforms || [],
+              socialLinks: data.socialLinks || [],
+              gdocUrl: data.driveLink || '',
+              imageUrl: imageUrl,
+              ownerType: 'user',
+              ownerId: userId || 'anonymous'
             })
 
+            console.log('✅ Campaign created:', campaign)
+            alert('🎉 Campaign created successfully!')
             router.push(`/campaign/${campaign.$id}`)
             setIsCreateCampaignOpen(false)
-          } catch (error) {
+          } catch (error: any) {
             console.error('Failed to create campaign:', error)
-            alert('Failed to create campaign. Please try again.')
+            alert(`Failed to create campaign: ${error.message || 'Unknown error'}`)
           }
         }}
       />

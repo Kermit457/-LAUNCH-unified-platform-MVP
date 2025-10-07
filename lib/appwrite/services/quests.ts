@@ -16,6 +16,9 @@ export interface Quest {
   budgetPaid: number
   payPerTask: number
   platforms: string[]
+  participants?: number
+  deadline?: string
+  requirements?: string[]
 }
 
 export async function createQuest(data: Omit<Quest, '$id' | '$createdAt' | '$updatedAt'>) {

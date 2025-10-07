@@ -444,7 +444,11 @@ export default function DashboardOverview() {
               }
             }
 
-            // Create campaign document
+            // Determine entity context from selectedEntity
+            const ownerType = selectedEntity.type === 'user' ? 'user' : 'project'
+            const ownerId = selectedEntity.type === 'user' ? userId : selectedEntity.id
+
+            // Create campaign document with entity scoping
             const newCampaign = await createCampaign({
               campaignId: crypto.randomUUID(),
               type: 'clipping',
@@ -461,7 +465,9 @@ export default function DashboardOverview() {
               platforms: data.platforms,
               socialLinks: data.socialLinks,
               gdocUrl: data.driveLink || '',
-              imageUrl: imageUrl
+              imageUrl: imageUrl,
+              ownerType: ownerType,
+              ownerId: ownerId
             })
 
             console.log('✅ Campaign created:', newCampaign)
