@@ -14,6 +14,13 @@ export interface UserProfile {
   roles: string[]
   walletAddress?: string
   followedLaunches?: string[]
+  twitter?: string
+  discord?: string
+  website?: string
+  instagram?: string
+  tiktok?: string
+  youtube?: string
+  contributionsJson?: string  // JSON string of contributions array
 }
 
 /**

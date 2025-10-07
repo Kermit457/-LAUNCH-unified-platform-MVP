@@ -13,6 +13,7 @@ import { ProfileCardData } from '@/types/profile'
 import { getAllUsers, getUsersByIds } from '@/lib/appwrite/services/users'
 import { getUserConnections, getMutualConnections, getNetworkInvites } from '@/lib/appwrite/services/network'
 import { useUser } from '@/hooks/useUser'
+import { UserDebugInfo } from '@/components/UserDebugInfo'
 
 export default function NetworkPage() {
   const router = useRouter()
@@ -32,12 +33,20 @@ export default function NetworkPage() {
     async function fetchProfiles() {
       try {
         setLoading(true)
-        const [allUsers, myConnections, sentInvites] = await Promise.all([
-          getAllUsers(100),
-          userId ? getUserConnections(userId) : Promise.resolve([]),
-          // Fetch ALL sent invites (not just pending) to track who we've invited
-          userId ? getNetworkInvites({ userId, type: 'sent' }) : Promise.resolve([])
-        ])
+        console.log('🔄 Fetching users from Appwrite...')
+        const allUsers = await getAllUsers(100)
+        console.log('✅ Got users:', allUsers.length)
+
+        const myConnections = userId ? await getUserConnections(userId) : []
+        const sentInvites = userId ? await getNetworkInvites({ userId, type: 'sent' }) : []
+
+        console.log('📊 Network page data:', {
+          totalUsers: allUsers.length,
+          myConnections: myConnections.length,
+          sentInvites: sentInvites.length,
+          currentUserId: userId,
+          sampleUser: allUsers[0]?.username || 'none'
+        })
 
         setConnectedUserIds(myConnections)
 
@@ -66,8 +75,18 @@ export default function NetworkPage() {
             const mutuals = mutualProfiles.map(m => ({
               id: m.$id,
               username: m.username,
-              avatar: m.avatar,
+              avatar: m.avatar || '',
             }))
+
+            // Parse contributions from JSON
+            let contributions = []
+            try {
+              if (userProfile.contributionsJson) {
+                contributions = JSON.parse(userProfile.contributionsJson)
+              }
+            } catch (e) {
+              console.warn(`Failed to parse contributions for ${userProfile.username}`)
+            }
 
             return {
               id: userProfile.$id,
@@ -81,10 +100,17 @@ export default function NetworkPage() {
               roles: userProfile.roles,
               mutuals,
               bio: userProfile.bio,
-              socials: {},
+              socials: {
+                twitter: userProfile.twitter,
+                discord: userProfile.discord,
+                website: userProfile.website,
+                instagram: userProfile.instagram,
+                tiktok: userProfile.tiktok,
+                youtube: userProfile.youtube,
+              },
               connected: isConnected,
               inviteSent: hasInvitePending,
-              contributions: [], // TODO: Fetch from submissions collection
+              contributions: contributions,
             }
           })
         )
@@ -167,6 +193,7 @@ export default function NetworkPage() {
 
   return (
     <div className="min-h-screen pb-24">
+      <UserDebugInfo />
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-4 mb-4">
@@ -183,7 +210,7 @@ export default function NetworkPage() {
       {/* Filters */}
       <div className="flex items-center justify-between mb-6">
         <div className="text-white/60 text-sm">
-          Showing {filteredAndSortedProfiles.length} of {mockProfiles.length} profiles
+          Showing {filteredAndSortedProfiles.length} of {allProfiles.length} profiles
         </div>
         <NetworkFilters onFilterChange={setFilters} />
       </div>

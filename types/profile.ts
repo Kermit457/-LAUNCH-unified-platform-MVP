@@ -35,6 +35,9 @@ export interface SocialLinks {
   twitter?: string
   discord?: string
   website?: string
+  instagram?: string
+  tiktok?: string
+  youtube?: string
 }
 
 export type ProfileCardVariant = 'default' | 'compact' | 'minimal'
