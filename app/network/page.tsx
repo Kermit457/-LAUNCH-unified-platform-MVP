@@ -10,10 +10,13 @@ import { Card } from '@/components/ui/card'
 import { mockProfiles } from '@/lib/mockProfileData'
 import { NetworkFilters, FilterState } from '@/components/network/NetworkFilters'
 import { ProfileCardData } from '@/types/profile'
-import { searchUsers } from '@/lib/appwrite/services/users'
+import { getAllUsers, getUsersByIds } from '@/lib/appwrite/services/users'
+import { getUserConnections, getMutualConnections, getNetworkInvites } from '@/lib/appwrite/services/network'
+import { useUser } from '@/hooks/useUser'
 
 export default function NetworkPage() {
   const router = useRouter()
+  const { userId } = useUser()
   const [filters, setFilters] = useState<FilterState>({
     connectionStatus: 'all',
     roles: [],
@@ -21,33 +24,72 @@ export default function NetworkPage() {
   })
   const [profiles, setProfiles] = useState<ProfileCardData[]>([])
   const [loading, setLoading] = useState(true)
+  const [connectedUserIds, setConnectedUserIds] = useState<string[]>([])
+  const [sentInviteUserIds, setSentInviteUserIds] = useState<string[]>([])
 
   // Fetch users from Appwrite
   useEffect(() => {
     async function fetchProfiles() {
       try {
         setLoading(true)
-        const data = await searchUsers('', 100) // Fetch all users
+        const [allUsers, myConnections, sentInvites] = await Promise.all([
+          getAllUsers(100),
+          userId ? getUserConnections(userId) : Promise.resolve([]),
+          // Fetch ALL sent invites (not just pending) to track who we've invited
+          userId ? getNetworkInvites({ userId, type: 'sent' }) : Promise.resolve([])
+        ])
 
-        // Convert Appwrite UserProfile to ProfileCardData
-        const converted: ProfileCardData[] = data.map(user => ({
-          id: user.$id,
-          username: user.username,
-          displayName: user.displayName || user.username,
-          name: user.displayName || user.username,
-          handle: `@${user.username}`,
-          avatarUrl: user.avatarUrl,
-          bannerUrl: user.bannerUrl,
-          verified: user.verified,
-          roles: user.roles,
-          mutuals: [], // TODO: Calculate mutual connections
-          bio: user.bio,
-          socials: user.socialLinks || {},
-          connected: false, // TODO: Fetch connection status from invites collection
-          contributions: [], // TODO: Fetch from submissions collection
-        }))
+        setConnectedUserIds(myConnections)
 
-        setProfiles(converted)
+        // Extract receiver IDs from sent invites
+        const sentInviteIds = sentInvites.map(invite => invite.receiverId)
+        setSentInviteUserIds(sentInviteIds)
+
+        // Calculate mutual connections for each user
+        const profilesWithMutuals = await Promise.all(
+          allUsers.map(async (userProfile) => {
+            const isConnected = myConnections.includes(userProfile.userId)
+            // Only mark as inviteSent if NOT already connected
+            const hasInvitePending = !isConnected && sentInviteIds.includes(userProfile.userId)
+
+            // Get mutual connection IDs
+            let mutualIds: string[] = []
+            if (userId && userProfile.userId !== userId) {
+              mutualIds = await getMutualConnections(userId, userProfile.userId)
+            }
+
+            // Fetch mutual user details
+            const mutualProfiles = mutualIds.length > 0
+              ? await getUsersByIds(mutualIds)
+              : []
+
+            const mutuals = mutualProfiles.map(m => ({
+              id: m.$id,
+              username: m.username,
+              avatar: m.avatar,
+            }))
+
+            return {
+              id: userProfile.$id,
+              userId: userProfile.userId,
+              username: userProfile.username,
+              displayName: userProfile.displayName || userProfile.username,
+              name: userProfile.displayName || userProfile.username,
+              handle: `@${userProfile.username}`,
+              avatar: userProfile.avatar,
+              verified: userProfile.verified,
+              roles: userProfile.roles,
+              mutuals,
+              bio: userProfile.bio,
+              socials: {},
+              connected: isConnected,
+              inviteSent: hasInvitePending,
+              contributions: [], // TODO: Fetch from submissions collection
+            }
+          })
+        )
+
+        setProfiles(profilesWithMutuals)
       } catch (error) {
         console.error('Failed to fetch profiles:', error)
         // Fall back to mock data
@@ -58,7 +100,7 @@ export default function NetworkPage() {
     }
 
     fetchProfiles()
-  }, [])
+  }, [userId])
 
   // Calculate recommendation score
   const getRecommendationScore = (profile: ProfileCardData): number => {

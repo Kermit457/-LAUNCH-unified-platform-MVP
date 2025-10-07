@@ -8,11 +8,12 @@ import { MutualAvatars } from './MutualAvatars'
 import { SocialLinks } from './SocialLinks'
 import { cn } from '@/lib/cn'
 import { useNetwork } from '@/lib/contexts/NetworkContext'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useUser } from '@/hooks/useUser'
 import { sendNetworkInvite } from '@/lib/appwrite/services/network'
 import { createDMThread } from '@/lib/appwrite/services/messages'
 import { useRouter } from 'next/navigation'
+import { usePrivy } from '@privy-io/react-auth'
 
 interface ProfileCardProps {
   data: ProfileCardData
@@ -29,6 +30,7 @@ export function ProfileCard({
 }: ProfileCardProps) {
   const {
     id,
+    userId,
     username,
     displayName,
     avatar,
@@ -40,29 +42,39 @@ export function ProfileCard({
     mutuals,
     socials,
     connected,
+    inviteSent: initialInviteSent,
     onInvite,
     onMessage
   } = data
 
   const { user } = useUser()
+  const { login } = usePrivy()
   const router = useRouter()
   const { addInvite, addMessage } = useNetwork()
-  const [inviteSent, setInviteSent] = useState(false)
+  const [inviteSent, setInviteSent] = useState(initialInviteSent || false)
+
+  // Update inviteSent when the prop changes (e.g., when data refreshes)
+  useEffect(() => {
+    setInviteSent(initialInviteSent || false)
+  }, [initialInviteSent])
 
   const isCompact = variant === 'compact'
   const isMinimal = variant === 'minimal'
 
   const handleInviteClick = async () => {
     if (!user) {
-      alert('Please log in to send invites')
+      // Show Privy login modal
+      login()
       return
     }
+
+    const targetUserId = userId || id
 
     try {
       // Call Appwrite to send network invite
       await sendNetworkInvite({
         senderId: user.$id,
-        receiverId: id,
+        receiverId: targetUserId,
         message: `Hi ${displayName}, let's connect!`
       })
 
@@ -72,28 +84,31 @@ export function ProfileCard({
       }
 
       // Update local state
-      addInvite(id, username, displayName, avatar)
+      addInvite(targetUserId, username, displayName, avatar)
       setInviteSent(true)
     } catch (error: any) {
       console.error('Failed to send invite:', error)
       if (error.message?.includes('already sent')) {
-        alert('You already sent an invite to this user')
+        // Mark as sent even if the API says it's already sent
         setInviteSent(true)
       } else {
-        alert('Failed to send invite. Please try again.')
+        console.error('Unexpected error sending invite:', error)
       }
     }
   }
 
   const handleMessageClick = async () => {
     if (!user) {
-      alert('Please log in to send messages')
+      // Show Privy login modal
+      login()
       return
     }
 
+    const targetUserId = userId || id
+
     try {
       // Create or get existing DM thread
-      const thread = await createDMThread(user.$id, id)
+      const thread = await createDMThread(user.$id, targetUserId)
 
       // Navigate to dashboard/network with the thread open
       router.push(`/dashboard/network?thread=${thread.$id}`)
@@ -104,7 +119,7 @@ export function ProfileCard({
       }
     } catch (error) {
       console.error('Failed to create message thread:', error)
-      alert('Failed to open chat. Please try again.')
+      // Silently fail - user can try again if needed
     }
   }
 
@@ -212,25 +227,27 @@ export function ProfileCard({
 
             {/* Action Buttons */}
             <div className="flex items-center gap-2">
-              {/* Invite Button */}
-              <button
-                onClick={(e) => {
-                  e.stopPropagation()
-                  handleInviteClick()
-                }}
-                disabled={inviteSent}
-                className={cn(
-                  "rounded-xl font-semibold transition-all",
-                  isCompact
-                    ? "px-4 py-2 text-xs"
-                    : "px-6 py-2.5 text-sm",
-                  inviteSent
-                    ? "bg-white/10 text-zinc-400 cursor-not-allowed"
-                    : "bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 hover:shadow-[0_0_20px_rgba(147,51,234,0.4)] text-white"
-                )}
-              >
-                {inviteSent ? '✓ Invited' : 'Invite'}
-              </button>
+              {/* Invite Button - Only show if NOT connected */}
+              {!connected && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleInviteClick()
+                  }}
+                  disabled={inviteSent}
+                  className={cn(
+                    "rounded-xl font-semibold transition-all",
+                    isCompact
+                      ? "px-4 py-2 text-xs"
+                      : "px-6 py-2.5 text-sm",
+                    inviteSent
+                      ? "bg-white/10 text-zinc-400 cursor-not-allowed"
+                      : "bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 hover:shadow-[0_0_20px_rgba(147,51,234,0.4)] text-white"
+                  )}
+                >
+                  {inviteSent ? '✓ Invited' : 'Invite'}
+                </button>
+              )}
 
               {/* Message Button - Only if connected */}
               {connected && (

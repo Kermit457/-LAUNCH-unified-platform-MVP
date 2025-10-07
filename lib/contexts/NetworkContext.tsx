@@ -1,6 +1,9 @@
 "use client"
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { useUser } from '@/hooks/useUser'
+import { getNetworkInvites, acceptNetworkInvite, rejectNetworkInvite } from '@/lib/appwrite/services/network'
+import { getUserProfile } from '@/lib/appwrite/services/users'
 
 export interface NetworkActivity {
   id: string
@@ -34,24 +37,55 @@ interface NetworkContextType {
 const NetworkContext = createContext<NetworkContextType | undefined>(undefined)
 
 export function NetworkProvider({ children }: { children: ReactNode }) {
+  const { userId } = useUser()
   const [activities, setActivities] = useState<NetworkActivity[]>([])
+  const [loading, setLoading] = useState(true)
 
-  // Load from localStorage on mount
+  // Fetch invites from Appwrite
   useEffect(() => {
-    const stored = localStorage.getItem('network_activities')
-    if (stored) {
+    async function fetchInvites() {
+      if (!userId) {
+        setLoading(false)
+        return
+      }
+
       try {
-        setActivities(JSON.parse(stored))
-      } catch (e) {
-        console.error('Failed to parse network activities:', e)
+        // Get received invites
+        const receivedInvites = await getNetworkInvites({
+          userId,
+          type: 'received',
+          status: 'pending'
+        })
+
+        // Fetch sender details and convert to NetworkActivity
+        const inviteActivities = await Promise.all(
+          receivedInvites.map(async (invite) => {
+            const senderProfile = await getUserProfile(invite.senderId)
+
+            return {
+              id: invite.$id,
+              type: 'invite_received' as const,
+              userId: invite.senderId,
+              username: senderProfile?.username || 'unknown',
+              displayName: senderProfile?.displayName || senderProfile?.username || 'Unknown User',
+              avatar: senderProfile?.avatar,
+              timestamp: new Date(invite.$createdAt).getTime(),
+              status: 'pending' as const,
+              metadata: invite.message ? { message: invite.message } : undefined
+            }
+          })
+        )
+
+        setActivities(inviteActivities)
+      } catch (error) {
+        console.error('Failed to fetch network invites:', error)
+      } finally {
+        setLoading(false)
       }
     }
-  }, [])
 
-  // Save to localStorage whenever activities change
-  useEffect(() => {
-    localStorage.setItem('network_activities', JSON.stringify(activities))
-  }, [activities])
+    fetchInvites()
+  }, [userId])
 
   const addInvite = (userId: string, username: string, displayName: string, avatar?: string) => {
     const newActivity: NetworkActivity = {
@@ -82,24 +116,32 @@ export function NetworkProvider({ children }: { children: ReactNode }) {
     setActivities(prev => [newActivity, ...prev])
   }
 
-  const acceptInvite = (activityId: string) => {
-    setActivities(prev =>
-      prev.map(activity =>
-        activity.id === activityId
-          ? { ...activity, status: 'accepted' as const }
-          : activity
+  const acceptInvite = async (activityId: string) => {
+    try {
+      // Call Appwrite API
+      await acceptNetworkInvite(activityId)
+
+      // Update local state
+      setActivities(prev =>
+        prev.filter(activity => activity.id !== activityId)
       )
-    )
+    } catch (error) {
+      console.error('Failed to accept invite:', error)
+    }
   }
 
-  const declineInvite = (activityId: string) => {
-    setActivities(prev =>
-      prev.map(activity =>
-        activity.id === activityId
-          ? { ...activity, status: 'declined' as const }
-          : activity
+  const declineInvite = async (activityId: string) => {
+    try {
+      // Call Appwrite API
+      await rejectNetworkInvite(activityId)
+
+      // Update local state
+      setActivities(prev =>
+        prev.filter(activity => activity.id !== activityId)
       )
-    )
+    } catch (error) {
+      console.error('Failed to decline invite:', error)
+    }
   }
 
   const markMessageAsRead = (activityId: string) => {

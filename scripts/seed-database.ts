@@ -17,25 +17,29 @@ const COLLECTIONS = {
   USERS: process.env.NEXT_PUBLIC_APPWRITE_USERS_COLLECTION_ID!,
   LAUNCHES: process.env.NEXT_PUBLIC_APPWRITE_LAUNCHES_COLLECTION_ID!,
   CAMPAIGNS: process.env.NEXT_PUBLIC_APPWRITE_CAMPAIGNS_COLLECTION_ID!,
+  NETWORK_INVITES: process.env.NEXT_PUBLIC_APPWRITE_NETWORK_INVITES_COLLECTION_ID || '',
+  NETWORK_CONNECTIONS: process.env.NEXT_PUBLIC_APPWRITE_NETWORK_CONNECTIONS_COLLECTION_ID || '',
 }
 
-// Sample Users Data (matching actual schema)
+// Sample Users Data (matching actual Appwrite schema)
 const sampleUsers = [
   {
     userId: 'user_crypto_whale',
     username: 'crypto_whale',
-    displayName: 'Crypto Whale',
-    bio: 'DeFi maximalist | Building the future of finance',
-    verified: false,
+    displayName: 'Crypto Whale 🐋',
+    bio: 'DeFi maximalist | Building the future of finance | #Web3',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=cryptowhale&backgroundColor=b6e3f4',
+    verified: true,
     conviction: 95,
     totalEarnings: 12500,
-    roles: ['Trader', 'Investor'],
+    roles: ['Trader', 'Investor', 'Alpha'],
   },
   {
     userId: 'user_nft_creator',
     username: 'nft_creator',
     displayName: 'NFT Artist',
-    bio: 'Digital artist creating unique NFT collections',
+    bio: 'Digital artist creating unique NFT collections | 1/1 art 🎨',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=nftcreator&backgroundColor=ffd5dc',
     verified: false,
     conviction: 88,
     totalEarnings: 8900,
@@ -45,7 +49,8 @@ const sampleUsers = [
     userId: 'user_degen_trader',
     username: 'degen_trader',
     displayName: 'Degen Trader',
-    bio: 'High risk, high reward. WAGMI 🚀',
+    bio: 'High risk, high reward. WAGMI 🚀 | Not financial advice',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=degentrader&backgroundColor=c0aede',
     verified: false,
     conviction: 72,
     totalEarnings: 3400,
@@ -54,9 +59,10 @@ const sampleUsers = [
   {
     userId: 'user_streamer_pro',
     username: 'streamer_pro',
-    displayName: 'StreamerPro',
-    bio: 'Crypto streaming daily | Building in public',
-    verified: false,
+    displayName: 'StreamerPro 🎮',
+    bio: 'Crypto streaming daily | Building in public | Solana maxi',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=streamerpro&backgroundColor=d1d4f9',
+    verified: true,
     conviction: 91,
     totalEarnings: 15600,
     roles: ['Streamer', 'Creator'],
@@ -65,11 +71,122 @@ const sampleUsers = [
     userId: 'user_dev_builder',
     username: 'dev_builder',
     displayName: 'Dev Builder',
-    bio: 'Full-stack developer | Solana ecosystem',
-    verified: false,
+    bio: 'Full-stack developer | Solana ecosystem | Open source contributor',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=devbuilder&backgroundColor=ffdfbf',
+    verified: true,
     conviction: 94,
     totalEarnings: 22100,
     roles: ['Developer', 'Builder'],
+  },
+  {
+    userId: 'user_alpha_hunter',
+    username: 'alpha_hunter',
+    displayName: 'Alpha Hunter 🎯',
+    bio: 'On-chain alpha | Early caller | 100x hunter | Follow for gems 💎',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=alphahunter&backgroundColor=b6e3f4',
+    verified: true,
+    conviction: 97,
+    totalEarnings: 45000,
+    roles: ['Alpha', 'Trader', 'Influencer'],
+  },
+  {
+    userId: 'user_meme_queen',
+    username: 'meme_queen',
+    displayName: 'Meme Queen 👑',
+    bio: 'Memecoin enthusiast | Creating viral content | Community first 🔥',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=memequeen&backgroundColor=ffd5dc',
+    verified: false,
+    conviction: 68,
+    totalEarnings: 5600,
+    roles: ['Creator', 'Degen', 'Entertainer'],
+  },
+  {
+    userId: 'user_yield_farmer',
+    username: 'yield_farmer',
+    displayName: 'Yield Farmer 🌾',
+    bio: 'DeFi yield optimization | LP strategies | Teaching sustainable farming',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=yieldfarmer&backgroundColor=c0aede',
+    verified: false,
+    conviction: 85,
+    totalEarnings: 18900,
+    roles: ['Trader', 'Educator'],
+  },
+  {
+    userId: 'user_nft_flipper',
+    username: 'nft_flipper',
+    displayName: 'NFT Flipper',
+    bio: 'NFT trader | Floor sweeper | Rare trait hunter | Up only 📈',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=nftflipper&backgroundColor=d1d4f9',
+    verified: false,
+    conviction: 76,
+    totalEarnings: 12300,
+    roles: ['Trader', 'Collector'],
+  },
+  {
+    userId: 'user_web3_designer',
+    username: 'web3_designer',
+    displayName: 'Web3 Designer ✨',
+    bio: 'UI/UX for Web3 | Building beautiful dApps | Design system enthusiast',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=web3designer&backgroundColor=ffdfbf',
+    verified: false,
+    conviction: 82,
+    totalEarnings: 9800,
+    roles: ['Creator', 'Designer'],
+  },
+  {
+    userId: 'user_dao_coordinator',
+    username: 'dao_coordinator',
+    displayName: 'DAO Coordinator',
+    bio: 'Governance expert | Community organizer | Decentralization advocate',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=daocoordinator&backgroundColor=b6e3f4',
+    verified: true,
+    conviction: 89,
+    totalEarnings: 14200,
+    roles: ['Manager', 'Organizer'],
+  },
+  {
+    userId: 'user_clipper_king',
+    username: 'clipper_king',
+    displayName: 'Clipper King 🎬',
+    bio: 'Creating viral clips | Stream highlights | Video editor | 10M+ views',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=clipperking&backgroundColor=ffd5dc',
+    verified: false,
+    conviction: 73,
+    totalEarnings: 7800,
+    roles: ['Clipper', 'Editor', 'Creator'],
+  },
+  {
+    userId: 'user_protocol_researcher',
+    username: 'protocol_researcher',
+    displayName: 'Protocol Researcher 🔬',
+    bio: 'Deep diving into protocols | Security auditor | Smart contract analyst',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=protocolresearcher&backgroundColor=c0aede',
+    verified: true,
+    conviction: 96,
+    totalEarnings: 31500,
+    roles: ['Researcher', 'Developer'],
+  },
+  {
+    userId: 'user_social_raider',
+    username: 'social_raider',
+    displayName: 'Social Raider ⚡',
+    bio: 'Community raids | Engagement farming | Growth hacker | Let\'s grow together',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=socialraider&backgroundColor=d1d4f9',
+    verified: false,
+    conviction: 65,
+    totalEarnings: 4200,
+    roles: ['Raider', 'Marketer'],
+  },
+  {
+    userId: 'user_project_launcher',
+    username: 'project_launcher',
+    displayName: 'Project Launcher 🚀',
+    bio: 'Serial entrepreneur | 5 successful launches | Building the next unicorn',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=projectlauncher&backgroundColor=ffdfbf',
+    verified: true,
+    conviction: 92,
+    totalEarnings: 67800,
+    roles: ['Project', 'Founder', 'Builder'],
   },
 ]
 
@@ -78,102 +195,62 @@ const sampleLaunches = [
   {
     launchId: 'launch_solpump',
     scope: 'ICM',
-    tokenName: 'SolPump',
-    tokenSymbol: 'PUMP',
-    tokenImage: 'https://api.dicebear.com/7.x/identicon/svg?seed=PUMP&backgroundColor=14f195',
-    description: 'Community-driven memecoin on Solana with innovative tokenomics',
-    creatorId: 'user_crypto_whale',
-    creatorName: 'Crypto Whale',
-    marketCap: 1500000,
-    volume24h: 250000,
-    priceChange24h: 12.5,
-    holders: 2500,
+    status: 'live',
+    title: 'SolPump',
+    subtitle: 'Community-driven memecoin on Solana with innovative tokenomics',
+    logoUrl: 'https://api.dicebear.com/7.x/identicon/svg?seed=PUMP&backgroundColor=14f195',
     convictionPct: 87,
     commentsCount: 156,
     upvotes: 892,
-    tags: ['ICM', 'meme', 'solana'],
-    status: 'live',
-    createdAt: new Date().toISOString(),
+    createdBy: 'user_crypto_whale',
   },
   {
     launchId: 'launch_defi',
     scope: 'ICM',
-    tokenName: 'DeFi Protocol',
-    tokenSymbol: 'DEFI',
-    tokenImage: 'https://api.dicebear.com/7.x/identicon/svg?seed=DEFI&backgroundColor=2775ca',
-    description: 'Next-gen DeFi protocol with automated yield strategies',
-    creatorId: 'user_dev_builder',
-    creatorName: 'Dev Builder',
-    marketCap: 5000000,
-    volume24h: 800000,
-    priceChange24h: 8.3,
-    holders: 5200,
+    status: 'live',
+    title: 'DeFi Protocol',
+    subtitle: 'Next-gen DeFi protocol with automated yield strategies',
+    logoUrl: 'https://api.dicebear.com/7.x/identicon/svg?seed=DEFI&backgroundColor=2775ca',
     convictionPct: 92,
     commentsCount: 342,
     upvotes: 1567,
-    tags: ['ICM', 'defi', 'yield'],
-    status: 'live',
-    createdAt: new Date().toISOString(),
+    createdBy: 'user_dev_builder',
   },
   {
     launchId: 'launch_gamefi',
     scope: 'ICM',
-    tokenName: 'GameFi Arena',
-    tokenSymbol: 'ARENA',
-    tokenImage: 'https://api.dicebear.com/7.x/identicon/svg?seed=ARENA&backgroundColor=ff6b00',
-    description: 'Play-to-earn gaming ecosystem with real rewards',
-    creatorId: 'user_nft_creator',
-    creatorName: 'NFT Creator',
-    marketCap: 2200000,
-    volume24h: 450000,
-    priceChange24h: -3.2,
-    holders: 3800,
+    status: 'live',
+    title: 'GameFi Arena',
+    subtitle: 'Play-to-earn gaming ecosystem with real rewards',
+    logoUrl: 'https://api.dicebear.com/7.x/identicon/svg?seed=ARENA&backgroundColor=ff6b00',
     convictionPct: 79,
     commentsCount: 234,
     upvotes: 1023,
-    tags: ['ICM', 'gaming', 'p2e'],
-    status: 'live',
-    createdAt: new Date().toISOString(),
+    createdBy: 'user_nft_creator',
   },
   {
     launchId: 'launch_aibot',
     scope: 'ICM',
-    tokenName: 'AI Trading Bot',
-    tokenSymbol: 'AIBOT',
-    tokenImage: 'https://api.dicebear.com/7.x/identicon/svg?seed=AIBOT&backgroundColor=8b5cf6',
-    description: 'AI-powered trading automation for crypto markets',
-    creatorId: 'user_degen_trader',
-    creatorName: 'Degen Trader',
-    marketCap: 0,
-    volume24h: 0,
-    priceChange24h: 0,
-    holders: 0,
+    status: 'upcoming',
+    title: 'AI Trading Bot',
+    subtitle: 'AI-powered trading automation for crypto markets',
+    logoUrl: 'https://api.dicebear.com/7.x/identicon/svg?seed=AIBOT&backgroundColor=8b5cf6',
     convictionPct: 85,
     commentsCount: 89,
     upvotes: 456,
-    tags: ['ICM', 'ai', 'trading'],
-    status: 'upcoming',
-    createdAt: new Date().toISOString(),
+    createdBy: 'user_degen_trader',
   },
   {
     launchId: 'launch_launchos',
     scope: 'CCM',
-    tokenName: 'LaunchOS Platform',
-    tokenSymbol: 'LOS',
-    tokenImage: 'https://api.dicebear.com/7.x/identicon/svg?seed=LOS&backgroundColor=ec4899',
-    description: 'The engine of the internet capital market - LaunchOS native token',
-    creatorId: 'user_streamer_pro',
-    creatorName: 'Streamer Pro',
-    marketCap: 10000000,
-    volume24h: 1500000,
-    priceChange24h: 25.7,
-    holders: 8900,
+    status: 'live',
+    title: 'LaunchOS Platform',
+    subtitle: 'The engine of the internet capital market - LaunchOS native token',
+    logoUrl: 'https://api.dicebear.com/7.x/identicon/svg?seed=LOS&backgroundColor=ec4899',
     convictionPct: 96,
     commentsCount: 678,
     upvotes: 3421,
-    tags: ['CCM', 'platform', 'launchpad'],
-    status: 'live',
-    createdAt: new Date().toISOString(),
+    createdBy: 'user_streamer_pro',
   },
 ]
 
@@ -248,6 +325,90 @@ const sampleCampaigns = [
   },
 ]
 
+// Sample Network Invites (pending connection requests)
+const sampleNetworkInvites = [
+  {
+    inviteId: 'invite_1',
+    senderId: 'user_alpha_hunter',
+    receiverId: 'user_crypto_whale',
+    message: 'Hey! Love your DeFi insights. Let\'s connect and share alpha!',
+    status: 'pending',
+  },
+  {
+    inviteId: 'invite_2',
+    senderId: 'user_dao_coordinator',
+    receiverId: 'user_dev_builder',
+    message: 'We need your expertise for our DAO governance implementation!',
+    status: 'pending',
+  },
+  {
+    inviteId: 'invite_3',
+    senderId: 'user_clipper_king',
+    receiverId: 'user_streamer_pro',
+    message: 'Want to collab on some viral clips? I think we could create something amazing!',
+    status: 'pending',
+  },
+  {
+    inviteId: 'invite_4',
+    senderId: 'user_meme_queen',
+    receiverId: 'user_nft_creator',
+    message: 'Your art is incredible! Let\'s create some meme NFTs together!',
+    status: 'pending',
+  },
+]
+
+// Sample Network Connections (accepted connections)
+const sampleNetworkConnections = [
+  {
+    connectionId: 'conn_1',
+    userId1: 'user_crypto_whale',
+    userId2: 'user_dev_builder',
+    connectedAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days ago
+  },
+  {
+    connectionId: 'conn_2',
+    userId1: 'user_streamer_pro',
+    userId2: 'user_nft_creator',
+    connectedAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    connectionId: 'conn_3',
+    userId1: 'user_alpha_hunter',
+    userId2: 'user_protocol_researcher',
+    connectedAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    connectionId: 'conn_4',
+    userId1: 'user_dev_builder',
+    userId2: 'user_protocol_researcher',
+    connectedAt: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    connectionId: 'conn_5',
+    userId1: 'user_project_launcher',
+    userId2: 'user_dao_coordinator',
+    connectedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    connectionId: 'conn_6',
+    userId1: 'user_yield_farmer',
+    userId2: 'user_crypto_whale',
+    connectedAt: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    connectionId: 'conn_7',
+    userId1: 'user_nft_flipper',
+    userId2: 'user_nft_creator',
+    connectedAt: new Date(Date.now() - 18 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    connectionId: 'conn_8',
+    userId1: 'user_web3_designer',
+    userId2: 'user_project_launcher',
+    connectedAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+]
+
 async function seedDatabase() {
   console.log('🌱 Starting database seed...\n')
 
@@ -282,12 +443,12 @@ async function seedDatabase() {
           ID.unique(),
           launchData
         )
-        console.log(`✅ Created launch: ${launchData.tokenName}`)
+        console.log(`✅ Created launch: ${launchData.title}`)
       } catch (error: any) {
         if (error.code === 409) {
-          console.log(`⚠️  Launch ${launchData.tokenName} already exists`)
+          console.log(`⚠️  Launch ${launchData.title} already exists`)
         } else {
-          console.error(`❌ Error creating launch ${launchData.tokenName}:`, error.message)
+          console.error(`❌ Error creating launch ${launchData.title}:`, error.message)
         }
       }
     }
@@ -312,16 +473,67 @@ async function seedDatabase() {
       }
     }
 
+    // Seed Network Invites (if collection exists)
+    if (COLLECTIONS.NETWORK_INVITES) {
+      console.log('\n💌 Creating network invites...')
+      for (const inviteData of sampleNetworkInvites) {
+        try {
+          await databases.createDocument(
+            DB_ID,
+            COLLECTIONS.NETWORK_INVITES,
+            ID.unique(),
+            inviteData
+          )
+          console.log(`✅ Created invite: ${inviteData.senderId} → ${inviteData.receiverId}`)
+        } catch (error: any) {
+          if (error.code === 409) {
+            console.log(`⚠️  Invite already exists`)
+          } else {
+            console.error(`❌ Error creating invite:`, error.message)
+          }
+        }
+      }
+    } else {
+      console.log('\n⚠️  Skipping network invites (collection not configured)')
+    }
+
+    // Seed Network Connections (if collection exists)
+    if (COLLECTIONS.NETWORK_CONNECTIONS) {
+      console.log('\n🤝 Creating network connections...')
+      for (const connectionData of sampleNetworkConnections) {
+        try {
+          await databases.createDocument(
+            DB_ID,
+            COLLECTIONS.NETWORK_CONNECTIONS,
+            ID.unique(),
+            connectionData
+          )
+          console.log(`✅ Created connection: ${connectionData.userId1} ↔ ${connectionData.userId2}`)
+        } catch (error: any) {
+          if (error.code === 409) {
+            console.log(`⚠️  Connection already exists`)
+          } else {
+            console.error(`❌ Error creating connection:`, error.message)
+          }
+        }
+      }
+    } else {
+      console.log('\n⚠️  Skipping network connections (collection not configured)')
+    }
+
     console.log('\n✨ Database seeding complete!')
     console.log('\n📊 Summary:')
     console.log(`   Users: ${sampleUsers.length}`)
     console.log(`   Launches: ${sampleLaunches.length}`)
     console.log(`   Campaigns: ${sampleCampaigns.length}`)
+    console.log(`   Network Invites: ${COLLECTIONS.NETWORK_INVITES ? sampleNetworkInvites.length : 0}`)
+    console.log(`   Network Connections: ${COLLECTIONS.NETWORK_CONNECTIONS ? sampleNetworkConnections.length : 0}`)
     console.log('\n🎉 Your database is now populated with sample data!')
     console.log('\n🔗 Check it out:')
     console.log('   - Discover: http://localhost:3002/discover')
     console.log('   - Earn: http://localhost:3002/earn')
     console.log('   - Network: http://localhost:3002/network')
+    console.log('   - Dashboard: http://localhost:3002/dashboard')
 
   } catch (error) {
     console.error('❌ Seed failed:', error)

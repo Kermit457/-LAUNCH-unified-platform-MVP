@@ -97,28 +97,39 @@ export function InviteRow({
 
             {/* Action buttons */}
             <div className="flex items-center gap-2">
-              <button
-                onClick={onAccept}
-                className="px-3 py-1 rounded-lg bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 text-white text-xs font-medium hover:opacity-90 transition-all focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
-                aria-label="Accept invite"
-              >
-                <Check className="w-3 h-3 inline mr-1" />
-                Accept
-              </button>
-              <button
-                onClick={onChat}
-                className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
-                aria-label="Chat"
-              >
-                <MessageSquare className="w-4 h-4" />
-              </button>
-              <button
-                onClick={onDecline}
-                className="p-1.5 rounded-lg bg-white/5 hover:bg-red-500/20 text-white/70 hover:text-red-300 transition-all focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
-                aria-label="Decline"
-              >
-                <X className="w-4 h-4" />
-              </button>
+              {/* Show different buttons based on invite status */}
+              {invite.status === 'sent' ? (
+                // For sent invites, just show pending status
+                <span className="px-3 py-1 rounded-lg bg-amber-500/20 text-amber-300 text-xs font-medium border border-amber-500/30">
+                  Pending Response
+                </span>
+              ) : (
+                // For received invites, show accept/decline buttons
+                <>
+                  <button
+                    onClick={onAccept}
+                    className="px-3 py-1 rounded-lg bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 text-white text-xs font-medium hover:opacity-90 transition-all focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
+                    aria-label="Accept invite"
+                  >
+                    <Check className="w-3 h-3 inline mr-1" />
+                    Accept
+                  </button>
+                  <button
+                    onClick={onChat}
+                    className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
+                    aria-label="Chat"
+                  >
+                    <MessageSquare className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={onDecline}
+                    className="p-1.5 rounded-lg bg-white/5 hover:bg-red-500/20 text-white/70 hover:text-red-300 transition-all focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
+                    aria-label="Decline"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </>
+              )}
 
               {/* Overflow menu */}
               <div className="relative">

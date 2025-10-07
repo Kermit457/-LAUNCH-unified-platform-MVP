@@ -46,14 +46,15 @@ export default function NetworkPage() {
 
       try {
         setLoading(true)
-        const [appwriteInvites, connectionIds, appwriteThreads] = await Promise.all([
+        const [receivedInvites, sentInvites, connectionIds, appwriteThreads] = await Promise.all([
           getNetworkInvites({ userId: user.$id, type: 'received', status: 'pending' }),
+          getNetworkInvites({ userId: user.$id, type: 'sent', status: 'pending' }),
           getUserConnections(user.$id),
           getUserThreads(user.$id).catch(() => []) // Threads collection may not exist yet
         ])
 
-        // Convert Appwrite invites to dashboard format
-        const dashboardInvites: Invite[] = appwriteInvites.map(inv => ({
+        // Convert received invites to dashboard format
+        const dashboardReceivedInvites: Invite[] = receivedInvites.map(inv => ({
           id: inv.$id,
           fromUserId: inv.senderId,
           fromHandle: '@user', // Would need to fetch user details
@@ -62,6 +63,20 @@ export default function NetworkPage() {
           status: 'pending',
           priority: 1
         }))
+
+        // Convert sent invites to dashboard format (mark them differently)
+        const dashboardSentInvites: Invite[] = sentInvites.map(inv => ({
+          id: inv.$id,
+          fromUserId: inv.receiverId,
+          fromHandle: '@user', // Would need to fetch user details
+          mutuals: 0,
+          sentAt: new Date(inv.$createdAt).getTime(),
+          status: 'sent' as any, // Mark as 'sent' to differentiate
+          priority: 0.5
+        }))
+
+        // Combine all invites (received first, then sent)
+        const dashboardInvites = [...dashboardReceivedInvites, ...dashboardSentInvites]
 
         // Convert connection IDs to Connection objects (simplified)
         const dashboardConnections: Connection[] = connectionIds.map(id => ({

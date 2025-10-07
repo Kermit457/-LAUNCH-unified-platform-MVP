@@ -5,38 +5,42 @@ export interface UserProfile {
   $id: string
   userId: string
   username: string
-  displayName?: string
+  displayName: string
   bio?: string
-  avatarUrl?: string
-  bannerUrl?: string
+  avatar?: string  // Changed from avatarUrl
   verified: boolean
   conviction: number
   totalEarnings: number
   roles: string[]
-  socialLinks?: {
-    twitter?: string
-    youtube?: string
-    twitch?: string
-    discord?: string
-  }
-  createdAt: string
+  walletAddress?: string
+  followedLaunches?: string[]
 }
 
 /**
  * Get user profile by user ID
  */
 export async function getUserProfile(userId: string) {
-  const response = await databases.listDocuments(
-    DB_ID,
-    COLLECTIONS.USERS,
-    [Query.equal('userId', userId), Query.limit(1)]
-  )
-
-  if (response.documents.length === 0) {
+  if (!userId) {
+    console.warn('getUserProfile called with empty userId')
     return null
   }
 
-  return response.documents[0] as unknown as UserProfile
+  try {
+    const response = await databases.listDocuments(
+      DB_ID,
+      COLLECTIONS.USERS,
+      [Query.equal('userId', userId), Query.limit(1)]
+    )
+
+    if (response.documents.length === 0) {
+      return null
+    }
+
+    return response.documents[0] as unknown as UserProfile
+  } catch (error) {
+    console.error('Error fetching user profile:', error)
+    return null
+  }
 }
 
 /**
@@ -59,15 +63,12 @@ export async function getUserByUsername(username: string) {
 /**
  * Create user profile
  */
-export async function createUserProfile(data: Omit<UserProfile, '$id' | 'createdAt'>) {
+export async function createUserProfile(data: Omit<UserProfile, '$id'>) {
   const response = await databases.createDocument(
     DB_ID,
     COLLECTIONS.USERS,
     'unique()',
-    {
-      ...data,
-      createdAt: new Date().toISOString(),
-    }
+    data
   )
 
   return response as unknown as UserProfile
@@ -113,6 +114,40 @@ export async function getTopUsers(limit = 10) {
     [
       Query.orderDesc('conviction'),
       Query.limit(limit)
+    ]
+  )
+
+  return response.documents as unknown as UserProfile[]
+}
+
+/**
+ * Get all users (for network page)
+ */
+export async function getAllUsers(limit = 100) {
+  const response = await databases.listDocuments(
+    DB_ID,
+    COLLECTIONS.USERS,
+    [
+      Query.limit(limit),
+      Query.orderDesc('conviction')
+    ]
+  )
+
+  return response.documents as unknown as UserProfile[]
+}
+
+/**
+ * Get multiple users by their user IDs
+ */
+export async function getUsersByIds(userIds: string[]) {
+  if (userIds.length === 0) return []
+
+  const response = await databases.listDocuments(
+    DB_ID,
+    COLLECTIONS.USERS,
+    [
+      Query.equal('userId', userIds),
+      Query.limit(100)
     ]
   )
 

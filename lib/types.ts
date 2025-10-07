@@ -99,7 +99,7 @@ export type Invite = {
   offer?: string
   note?: string
   sentAt: number
-  status: "pending" | "accepted" | "declined" | "expired"
+  status: "pending" | "accepted" | "declined" | "expired" | "sent"
   priority: number
 }
 

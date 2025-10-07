@@ -21,7 +21,7 @@ import { getActivities } from '@/lib/appwrite/services/activities'
 import type { Activity as AppwriteActivity } from '@/lib/appwrite/services/activities'
 
 export default function DashboardOverview() {
-  const { user } = useUser()
+  const { user, userId } = useUser()
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [kpiData, setKpiData] = useState({
     pendingReviews: 0,
@@ -41,47 +41,40 @@ export default function DashboardOverview() {
   // Fetch user profile from Appwrite
   useEffect(() => {
     async function fetchProfile() {
-      if (!user) return
+      if (!userId) return
+
+      console.log('📊 Dashboard fetching profile for userId:', userId)
 
       try {
-        const data = await getUserProfile(user.$id)
+        const data = await getUserProfile(userId)
+        console.log('📊 Profile data from Appwrite:', data)
         if (data) {
           setProfile(data)
+        } else {
+          console.warn('📊 No profile found in Appwrite for userId:', userId)
         }
       } catch (error) {
         console.error('Failed to fetch profile:', error)
-        // Set default profile if fetch fails
-        setProfile({
-          $id: user.$id,
-          userId: user.$id,
-          username: user.name || 'user',
-          displayName: user.name,
-          verified: false,
-          conviction: 0,
-          totalEarnings: 0,
-          roles: ['Member'],
-          createdAt: new Date().toISOString(),
-        } as any)
       }
     }
 
     fetchProfile()
-  }, [user])
+  }, [userId])
 
   // Fetch dashboard data from Appwrite
   useEffect(() => {
     async function fetchDashboardData() {
-      if (!user) return
+      if (!userId) return
 
       try {
         setLoading(true)
 
         // Fetch all data in parallel
         const [submissions, campaigns, payouts, userActivities] = await Promise.all([
-          getSubmissions({ userId: user.$id }),
-          getCampaigns({ createdBy: user.$id }),
-          getPayouts({ userId: user.$id }),
-          getActivities(user.$id, 10)
+          getSubmissions({ userId }),
+          getCampaigns({ createdBy: userId }),
+          getPayouts({ userId }),
+          getActivities(userId, 10)
         ])
 
         // Calculate KPIs
@@ -128,7 +121,7 @@ export default function DashboardOverview() {
     }
 
     fetchDashboardData()
-  }, [user])
+  }, [userId])
 
   const conviction = profile?.conviction || 0
 
@@ -147,11 +140,12 @@ export default function DashboardOverview() {
       <div className="space-y-6">
         {/* Header band */}
         <OverviewHeader
-          handle={`@${profile?.username || user?.name || 'user'}`}
-          name={profile?.displayName || user?.name || 'User'}
+          handle={`@${profile?.username || 'user'}`}
+          name={profile?.displayName || 'User'}
           roles={profile?.roles || ['Member']}
           verified={profile?.verified || false}
-          walletAddress={user?.$id || ''}
+          walletAddress={userId || ''}
+          avatar={profile?.avatar}
         />
 
       {/* KPI Grid - 6 tiles */}

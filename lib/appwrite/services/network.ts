@@ -206,3 +206,16 @@ export async function areUsersConnected(userId1: string, userId2: string): Promi
 
   return invites.total > 0
 }
+
+/**
+ * Get mutual connections between two users
+ */
+export async function getMutualConnections(userId1: string, userId2: string): Promise<string[]> {
+  const [connections1, connections2] = await Promise.all([
+    getUserConnections(userId1),
+    getUserConnections(userId2)
+  ])
+
+  // Find intersection
+  return connections1.filter(id => connections2.includes(id))
+}

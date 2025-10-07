@@ -9,9 +9,10 @@ interface OverviewHeaderProps {
   roles: string[]
   verified?: boolean
   walletAddress: string
+  avatar?: string
 }
 
-export function OverviewHeader({ handle, name, roles, verified, walletAddress }: OverviewHeaderProps) {
+export function OverviewHeader({ handle, name, roles, verified, walletAddress, avatar }: OverviewHeaderProps) {
   const shortAddr = `${walletAddress.slice(0, 4)}...${walletAddress.slice(-4)}`
 
   return (
@@ -20,9 +21,17 @@ export function OverviewHeader({ handle, name, roles, verified, walletAddress }:
         <div className="flex items-center gap-4">
           {/* Avatar */}
           <div className="relative">
-            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-fuchsia-500 via-purple-500 to-cyan-500 flex items-center justify-center text-white font-bold text-xl">
-              {name.slice(0, 2).toUpperCase()}
-            </div>
+            {avatar ? (
+              <img
+                src={avatar}
+                alt={name}
+                className="w-16 h-16 rounded-full object-cover border-2 border-white/20"
+              />
+            ) : (
+              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-fuchsia-500 via-purple-500 to-cyan-500 flex items-center justify-center text-white font-bold text-xl">
+                {name.slice(0, 2).toUpperCase()}
+              </div>
+            )}
             <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 border-2 border-[#0B0F1A] rounded-full" />
           </div>
 
@@ -51,21 +60,11 @@ export function OverviewHeader({ handle, name, roles, verified, walletAddress }:
 
         {/* Actions */}
         <div className="flex items-center gap-2">
-          <Link
-            href={`/profile/${handle}`}
-            className="px-4 py-2 rounded-lg text-sm font-medium text-white/70 hover:text-white hover:bg-white/5 transition-all focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80 inline-flex items-center gap-2"
-          >
-            Public Profile →
-          </Link>
           <button
             className="p-2 rounded-lg text-white/70 hover:text-white hover:bg-white/5 transition-all focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
             aria-label="Share profile"
           >
             <Share2 className="w-5 h-5" />
-          </button>
-          <button className="px-4 py-2 rounded-lg bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 text-white font-medium hover:opacity-90 transition-all focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80 flex items-center gap-2">
-            <UserPlus className="w-4 h-4" />
-            Follow
           </button>
         </div>
       </div>

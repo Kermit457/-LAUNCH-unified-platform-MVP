@@ -232,10 +232,31 @@ async function setupAppwrite() {
         attributes: [
           { key: 'inviteId', type: 'string', size: 100, required: true },
           { key: 'senderId', type: 'string', size: 100, required: true },
+          { key: 'senderUsername', type: 'string', size: 50, required: true },
+          { key: 'senderDisplayName', type: 'string', size: 100, required: true },
+          { key: 'senderAvatarUrl', type: 'string', size: 500, required: false },
           { key: 'receiverId', type: 'string', size: 100, required: true },
+          { key: 'receiverUsername', type: 'string', size: 50, required: true },
           { key: 'status', type: 'string', size: 20, required: true },
           { key: 'message', type: 'string', size: 500, required: false },
+          { key: 'createdAt', type: 'datetime', required: true },
           { key: 'respondedAt', type: 'datetime', required: false }
+        ]
+      },
+      {
+        id: 'network_connections',
+        name: 'Network Connections',
+        permissions: [
+          Permission.read(Role.users()),
+          Permission.create(Role.users()),
+          Permission.update(Role.users()),
+          Permission.delete(Role.users())
+        ],
+        attributes: [
+          { key: 'connectionId', type: 'string', size: 100, required: true },
+          { key: 'userId1', type: 'string', size: 100, required: true },
+          { key: 'userId2', type: 'string', size: 100, required: true },
+          { key: 'connectedAt', type: 'datetime', required: true }
         ]
       },
       {
@@ -448,9 +469,11 @@ async function setupAppwrite() {
 
     console.log('\n\n🎉 Appwrite setup complete!')
     console.log('✅ Database created: launchos_db')
-    console.log('✅ 9 collections created')
+    console.log('✅ 13 collections created')
     console.log('✅ 3 storage buckets created')
-    console.log('\nYou can now run: npm run dev')
+    console.log('\nYou can now run:')
+    console.log('  - npm run seed  (to populate with sample data)')
+    console.log('  - npm run dev   (to start the app)')
 
   } catch (error: any) {
     console.error('❌ Setup failed:', error.message)
