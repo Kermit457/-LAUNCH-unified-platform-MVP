@@ -59,52 +59,64 @@ export function useRealtimeActivities(
   useEffect(() => {
     if (!userId) return
 
-    const unsubscribe = client.subscribe(
-      [`databases.${DB_ID}.collections.${COLLECTIONS.ACTIVITIES}.documents`],
-      (response) => {
-        const payload = response.payload as Activity
+    let unsubscribe: (() => void) | null = null
 
-        // Filter: only show activities for this user
-        if (payload.userId !== userId) return
+    // Add a small delay to ensure WebSocket is ready
+    const timer = setTimeout(() => {
+      try {
+        unsubscribe = client.subscribe(
+          [`databases.${DB_ID}.collections.${COLLECTIONS.ACTIVITIES}.documents`],
+          (response) => {
+            const payload = response.payload as Activity
 
-        // Filter by context if specified
-        if (options?.contextType && payload.contextType !== options.contextType) return
-        if (options?.contextId && payload.contextId !== options.contextId) return
+            // Filter: only show activities for this user
+            if (payload.userId !== userId) return
 
-        if (response.events.includes('databases.*.collections.*.documents.*.create')) {
-          // New activity - prepend to list, respect limit
-          setActivities(prev => [payload, ...prev].slice(0, limit))
+            // Filter by context if specified
+            if (options?.contextType && payload.contextType !== options.contextType) return
+            if (options?.contextId && payload.contextId !== options.contextId) return
 
-          // Update unread count if not read
-          if (!payload.read) {
-            setUnreadCount(prev => prev + 1)
+            if (response.events.includes('databases.*.collections.*.documents.*.create')) {
+              // New activity - prepend to list, respect limit
+              setActivities(prev => [payload, ...prev].slice(0, limit))
+
+              // Update unread count if not read
+              if (!payload.read) {
+                setUnreadCount(prev => prev + 1)
+              }
+            } else if (response.events.includes('databases.*.collections.*.documents.*.update')) {
+              // Activity updated (e.g., marked as read)
+              setActivities(prev => prev.map(activity =>
+                activity.$id === payload.$id ? payload : activity
+              ))
+
+              // Recalculate unread count
+              setActivities(prev => {
+                const unread = prev.filter(a => !a.read).length
+                setUnreadCount(unread)
+                return prev
+              })
+            } else if (response.events.includes('databases.*.collections.*.documents.*.delete')) {
+              // Activity deleted
+              setActivities(prev => prev.filter(activity => activity.$id !== payload.$id))
+
+              // Update unread count if was unread
+              if (!payload.read) {
+                setUnreadCount(prev => Math.max(0, prev - 1))
+              }
+            }
           }
-        } else if (response.events.includes('databases.*.collections.*.documents.*.update')) {
-          // Activity updated (e.g., marked as read)
-          setActivities(prev => prev.map(activity =>
-            activity.$id === payload.$id ? payload : activity
-          ))
-
-          // Recalculate unread count
-          setActivities(prev => {
-            const unread = prev.filter(a => !a.read).length
-            setUnreadCount(unread)
-            return prev
-          })
-        } else if (response.events.includes('databases.*.collections.*.documents.*.delete')) {
-          // Activity deleted
-          setActivities(prev => prev.filter(activity => activity.$id !== payload.$id))
-
-          // Update unread count if was unread
-          if (!payload.read) {
-            setUnreadCount(prev => Math.max(0, prev - 1))
-          }
-        }
+        )
+      } catch (err) {
+        console.error('Failed to subscribe to activities:', err)
       }
-    )
+    }, 100)
 
     return () => {
-      unsubscribe()
+      clearTimeout(timer)
+      if (unsubscribe) {
+        unsubscribe()
+      }
     }
   }, [userId, limit, options?.contextType, options?.contextId])
 

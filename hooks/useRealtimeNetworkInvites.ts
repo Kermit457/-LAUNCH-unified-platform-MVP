@@ -58,59 +58,71 @@ export function useRealtimeNetworkInvites(
   useEffect(() => {
     if (!userId) return
 
-    const unsubscribe = client.subscribe(
-      [`databases.${DB_ID}.collections.${COLLECTIONS.NETWORK_INVITES}.documents`],
-      (response) => {
-        const payload = response.payload as NetworkInvite
+    let unsubscribe: (() => void) | null = null
 
-        // Filter: only show invites for this user
-        const isForUser = payload.senderId === userId || payload.receiverId === userId
+    // Add a small delay to ensure WebSocket is ready
+    const timer = setTimeout(() => {
+      try {
+        unsubscribe = client.subscribe(
+          [`databases.${DB_ID}.collections.${COLLECTIONS.NETWORK_INVITES}.documents`],
+          (response) => {
+            const payload = response.payload as NetworkInvite
 
-        if (!isForUser) return
+            // Filter: only show invites for this user
+            const isForUser = payload.senderId === userId || payload.receiverId === userId
 
-        // Apply type filter
-        if (type === 'sent' && payload.senderId !== userId) return
-        if (type === 'received' && payload.receiverId !== userId) return
+            if (!isForUser) return
 
-        // Apply status filter
-        if (status && payload.status !== status) return
+            // Apply type filter
+            if (type === 'sent' && payload.senderId !== userId) return
+            if (type === 'received' && payload.receiverId !== userId) return
 
-        if (response.events.includes('databases.*.collections.*.documents.*.create')) {
-          // New invite - prepend to list
-          setInvites(prev => [payload, ...prev])
+            // Apply status filter
+            if (status && payload.status !== status) return
 
-          // Update pending count if it's a pending received invite
-          if (payload.receiverId === userId && payload.status === 'pending') {
-            setPendingCount(prev => prev + 1)
+            if (response.events.includes('databases.*.collections.*.documents.*.create')) {
+              // New invite - prepend to list
+              setInvites(prev => [payload, ...prev])
+
+              // Update pending count if it's a pending received invite
+              if (payload.receiverId === userId && payload.status === 'pending') {
+                setPendingCount(prev => prev + 1)
+              }
+            } else if (response.events.includes('databases.*.collections.*.documents.*.update')) {
+              // Invite updated (e.g., accepted/rejected)
+              setInvites(prev => prev.map(invite =>
+                invite.$id === payload.$id ? payload : invite
+              ))
+
+              // Recalculate pending count
+              setInvites(prev => {
+                const pending = prev.filter(
+                  inv => inv.receiverId === userId && inv.status === 'pending'
+                ).length
+                setPendingCount(pending)
+                return prev
+              })
+            } else if (response.events.includes('databases.*.collections.*.documents.*.delete')) {
+              // Invite deleted
+              setInvites(prev => prev.filter(invite => invite.$id !== payload.$id))
+
+              // Update pending count if was pending
+              if (payload.receiverId === userId && payload.status === 'pending') {
+                setPendingCount(prev => Math.max(0, prev - 1))
+              }
+            }
           }
-        } else if (response.events.includes('databases.*.collections.*.documents.*.update')) {
-          // Invite updated (e.g., accepted/rejected)
-          setInvites(prev => prev.map(invite =>
-            invite.$id === payload.$id ? payload : invite
-          ))
-
-          // Recalculate pending count
-          setInvites(prev => {
-            const pending = prev.filter(
-              inv => inv.receiverId === userId && inv.status === 'pending'
-            ).length
-            setPendingCount(pending)
-            return prev
-          })
-        } else if (response.events.includes('databases.*.collections.*.documents.*.delete')) {
-          // Invite deleted
-          setInvites(prev => prev.filter(invite => invite.$id !== payload.$id))
-
-          // Update pending count if was pending
-          if (payload.receiverId === userId && payload.status === 'pending') {
-            setPendingCount(prev => Math.max(0, prev - 1))
-          }
-        }
+        )
+      } catch (err) {
+        console.error('Failed to subscribe to network invites:', err)
       }
-    )
+    }, 100)
 
     return () => {
-      unsubscribe()
+      clearTimeout(timer)
+      if (unsubscribe) {
+        unsubscribe()
+      }
     }
   }, [userId, type, status])
 

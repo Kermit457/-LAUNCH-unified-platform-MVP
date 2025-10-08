@@ -9,6 +9,7 @@ import { useNetwork } from '@/lib/contexts/NetworkContext'
 import { useNotifications } from '@/lib/contexts/NotificationContext'
 import { NotificationDropdown } from '@/components/notifications/NotificationDropdown'
 import { useWallet } from '@/contexts/WalletContext'
+import { InviteBadge } from '@/components/InviteBadge'
 
 export default function NavBar() {
   const pathname = usePathname()
@@ -79,6 +80,9 @@ export default function NavBar() {
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center gap-3">
+            {/* Network Invite Badge */}
+            <InviteBadge />
+
             {/* Notification Bell */}
             <div className="relative">
               <button

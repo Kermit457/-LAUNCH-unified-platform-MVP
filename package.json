@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "setup-appwrite": "tsx scripts/setup-appwrite.ts",
+    "setup-realtime": "node scripts/setup-realtime-fields.js",
     "seed": "tsx scripts/seed-database.ts",
     "create-votes": "tsx scripts/create-votes-collection.ts",
     "add-economics": "tsx scripts/add-economics-attributes.ts",

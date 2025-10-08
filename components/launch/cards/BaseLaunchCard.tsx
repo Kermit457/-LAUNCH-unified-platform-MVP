@@ -1,6 +1,6 @@
 "use client"
 
-import { ArrowUp, MessageSquare, Bell, Share2 } from 'lucide-react'
+import { ArrowUp, MessageSquare, Bell, Share2, Zap, Eye } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { LaunchCardData } from '@/types/launch'
 import { ContributorRow } from '@/components/ContributorRow'
@@ -172,6 +172,31 @@ export function BaseLaunchCard({ data, children, hasVoted = false, onUpvote, onC
                   <span className="text-lg">💰</span>
                   <span className="text-xs font-semibold text-amber-300">
                     {feesSharePct}% Fees Share
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Engagement Badges (Boost & View Counts) */}
+          {((data.boostCount !== undefined && data.boostCount > 0) || (data.viewCount !== undefined && data.viewCount > 0)) && (
+            <div className="mb-3 flex flex-wrap gap-2">
+              {/* Boost Count Badge */}
+              {data.boostCount !== undefined && data.boostCount > 0 && (
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-fuchsia-500/10 border border-fuchsia-500/30">
+                  <Zap className="w-3.5 h-3.5 text-fuchsia-400" />
+                  <span className="text-xs font-semibold text-fuchsia-300">
+                    {data.boostCount} {data.boostCount === 1 ? 'Boost' : 'Boosts'}
+                  </span>
+                </div>
+              )}
+
+              {/* View Count Badge */}
+              {data.viewCount !== undefined && data.viewCount > 0 && (
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-green-500/10 border border-green-500/30">
+                  <Eye className="w-3.5 h-3.5 text-green-400" />
+                  <span className="text-xs font-semibold text-green-300">
+                    {data.viewCount} {data.viewCount === 1 ? 'View' : 'Views'}
                   </span>
                 </div>
               )}

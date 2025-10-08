@@ -27,6 +27,8 @@ export type LaunchCardData = {
   createdBy?: string // User ID of the project creator
   creatorName?: string // Display name of the project creator
   creatorAvatar?: string // Avatar URL of the project creator
+  boostCount?: number // Real-time boost count
+  viewCount?: number // Real-time view count
 }
 
 export type LaunchTimeseriesPoint = {

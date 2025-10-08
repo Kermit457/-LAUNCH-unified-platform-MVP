@@ -114,6 +114,8 @@ export default function DiscoverPage() {
               mint: launch.$id,
               contributors: [],
               tgeAt: launch.status === 'upcoming' ? new Date(launch.$createdAt || launch.createdAt).getTime() : undefined,
+              boostCount: launch.boostCount || 0,
+              viewCount: launch.viewCount || 0,
             }
           })
         )

@@ -15,6 +15,7 @@ import { CampaignType } from '@/types/quest'
 import { NetworkActivityWidget } from '@/components/dashboard/NetworkActivityWidget'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import { useUser } from '@/hooks/useUser'
+import { ActivitiesFeed } from '@/components/ActivitiesFeed'
 import { getUserProfile } from '@/lib/appwrite/services/users'
 import type { UserProfile } from '@/lib/appwrite/services/users'
 import { getSubmissions } from '@/lib/appwrite/services/submissions'
@@ -315,6 +316,11 @@ export default function DashboardOverview() {
         <div className="lg:col-span-3">
           <ActivityList activities={activities} />
         </div>
+      </div>
+
+      {/* Real-time Activities Feed */}
+      <div className="glass-card p-6">
+        <ActivitiesFeed />
       </div>
 
       {/* Entity Selector Modal */}
