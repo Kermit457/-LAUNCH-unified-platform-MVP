@@ -19,50 +19,60 @@ export async function getNetworkInvites(options: {
   userId: string
   status?: string
   type?: 'sent' | 'received'
-}) {
-  const queries = []
+}): Promise<NetworkInvite[]> {
+  try {
+    const queries = []
 
-  if (options.type === 'sent') {
-    queries.push(Query.equal('senderId', options.userId))
-  } else if (options.type === 'received') {
-    queries.push(Query.equal('receiverId', options.userId))
-  } else {
-    // Get both sent and received
-    queries.push(
-      Query.or([
-        Query.equal('senderId', options.userId),
-        Query.equal('receiverId', options.userId)
-      ])
+    if (options.type === 'sent') {
+      queries.push(Query.equal('senderId', options.userId))
+    } else if (options.type === 'received') {
+      queries.push(Query.equal('receiverId', options.userId))
+    } else {
+      // Get both sent and received
+      queries.push(
+        Query.or([
+          Query.equal('senderId', options.userId),
+          Query.equal('receiverId', options.userId)
+        ])
+      )
+    }
+
+    if (options.status) {
+      queries.push(Query.equal('status', options.status))
+    }
+
+    queries.push(Query.orderDesc('$createdAt'))
+    queries.push(Query.limit(100))
+
+    const response = await databases.listDocuments(
+      DB_ID,
+      COLLECTIONS.NETWORK_INVITES,
+      queries
     )
+
+    return response.documents as unknown as NetworkInvite[]
+  } catch (error) {
+    console.error('Failed to fetch network invites:', error)
+    return []
   }
-
-  if (options.status) {
-    queries.push(Query.equal('status', options.status))
-  }
-
-  queries.push(Query.orderDesc('$createdAt'))
-  queries.push(Query.limit(100))
-
-  const response = await databases.listDocuments(
-    DB_ID,
-    COLLECTIONS.NETWORK_INVITES,
-    queries
-  )
-
-  return response.documents as unknown as NetworkInvite[]
 }
 
 /**
  * Get a single invite by ID
  */
-export async function getNetworkInvite(id: string) {
-  const invite = await databases.getDocument(
-    DB_ID,
-    COLLECTIONS.NETWORK_INVITES,
-    id
-  )
+export async function getNetworkInvite(id: string): Promise<NetworkInvite | null> {
+  try {
+    const invite = await databases.getDocument(
+      DB_ID,
+      COLLECTIONS.NETWORK_INVITES,
+      id
+    )
 
-  return invite as unknown as NetworkInvite
+    return invite as unknown as NetworkInvite
+  } catch (error) {
+    console.error(`Failed to fetch network invite ${id}:`, error)
+    return null
+  }
 }
 
 /**
@@ -72,33 +82,39 @@ export async function sendNetworkInvite(data: {
   senderId: string
   receiverId: string
   message?: string
-}) {
-  // Check if invite already exists
-  const existing = await databases.listDocuments(
-    DB_ID,
-    COLLECTIONS.NETWORK_INVITES,
-    [
-      Query.equal('senderId', data.senderId),
-      Query.equal('receiverId', data.receiverId)
-    ]
-  )
+}): Promise<NetworkInvite | null> {
+  try {
+    // Check if invite already exists
+    const existing = await databases.listDocuments(
+      DB_ID,
+      COLLECTIONS.NETWORK_INVITES,
+      [
+        Query.equal('senderId', data.senderId),
+        Query.equal('receiverId', data.receiverId)
+      ]
+    )
 
-  if (existing.total > 0) {
-    throw new Error('Invite already sent to this user')
-  }
-
-  const invite = await databases.createDocument(
-    DB_ID,
-    COLLECTIONS.NETWORK_INVITES,
-    ID.unique(),
-    {
-      inviteId: `invite_${Date.now()}`,
-      ...data,
-      status: 'pending'
+    if (existing.total > 0) {
+      console.warn('Invite already sent to this user')
+      return null
     }
-  )
 
-  return invite as unknown as NetworkInvite
+    const invite = await databases.createDocument(
+      DB_ID,
+      COLLECTIONS.NETWORK_INVITES,
+      ID.unique(),
+      {
+        inviteId: `invite_${Date.now()}`,
+        ...data,
+        status: 'pending'
+      }
+    )
+
+    return invite as unknown as NetworkInvite
+  } catch (error) {
+    console.error('Failed to send network invite:', error)
+    return null
+  }
 }
 
 /**

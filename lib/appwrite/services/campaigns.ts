@@ -42,150 +42,181 @@ export async function getCampaigns(options?: {
   ownerId?: string
   limit?: number
   offset?: number
-}) {
-  const queries = []
+}): Promise<Campaign[]> {
+  try {
+    const queries = []
 
-  if (options?.type) {
-    queries.push(Query.equal('type', options.type))
+    if (options?.type) {
+      queries.push(Query.equal('type', options.type))
+    }
+
+    if (options?.status) {
+      queries.push(Query.equal('status', options.status))
+    }
+
+    // Legacy support: createdBy (deprecated, use ownerId instead)
+    if (options?.createdBy) {
+      queries.push(Query.equal('createdBy', options.createdBy))
+    }
+
+    // Entity scoping: filter by owner
+    if (options?.ownerType) {
+      queries.push(Query.equal('ownerType', options.ownerType))
+    }
+
+    if (options?.ownerId) {
+      queries.push(Query.equal('ownerId', options.ownerId))
+    }
+
+    if (options?.limit) {
+      queries.push(Query.limit(options.limit))
+    }
+
+    if (options?.offset) {
+      queries.push(Query.offset(options.offset))
+    }
+
+    queries.push(Query.orderDesc('$createdAt'))
+
+    const response = await databases.listDocuments(
+      DB_ID,
+      COLLECTIONS.CAMPAIGNS,
+      queries
+    )
+
+    return response.documents as unknown as Campaign[]
+  } catch (error) {
+    console.error('Failed to fetch campaigns:', error)
+    return []
   }
-
-  if (options?.status) {
-    queries.push(Query.equal('status', options.status))
-  }
-
-  // Legacy support: createdBy (deprecated, use ownerId instead)
-  if (options?.createdBy) {
-    queries.push(Query.equal('createdBy', options.createdBy))
-  }
-
-  // Entity scoping: filter by owner
-  if (options?.ownerType) {
-    queries.push(Query.equal('ownerType', options.ownerType))
-  }
-
-  if (options?.ownerId) {
-    queries.push(Query.equal('ownerId', options.ownerId))
-  }
-
-  if (options?.limit) {
-    queries.push(Query.limit(options.limit))
-  }
-
-  if (options?.offset) {
-    queries.push(Query.offset(options.offset))
-  }
-
-  queries.push(Query.orderDesc('$createdAt'))
-
-  const response = await databases.listDocuments(
-    DB_ID,
-    COLLECTIONS.CAMPAIGNS,
-    queries
-  )
-
-  return response.documents as unknown as Campaign[]
 }
 
 /**
  * Get a single campaign by ID
  */
-export async function getCampaign(campaignId: string) {
-  const response = await databases.getDocument(
-    DB_ID,
-    COLLECTIONS.CAMPAIGNS,
-    campaignId
-  )
+export async function getCampaign(campaignId: string): Promise<Campaign | null> {
+  try {
+    const response = await databases.getDocument(
+      DB_ID,
+      COLLECTIONS.CAMPAIGNS,
+      campaignId
+    )
 
-  return response as unknown as Campaign
+    return response as unknown as Campaign
+  } catch (error) {
+    console.error(`Failed to fetch campaign ${campaignId}:`, error)
+    return null
+  }
 }
 
 /**
  * Get a single campaign by ID
  */
-export async function getCampaignById(id: string) {
-  const campaign = await databases.getDocument(
-    DB_ID,
-    COLLECTIONS.CAMPAIGNS,
-    id
-  )
+export async function getCampaignById(id: string): Promise<Campaign | null> {
+  try {
+    const campaign = await databases.getDocument(
+      DB_ID,
+      COLLECTIONS.CAMPAIGNS,
+      id
+    )
 
-  return campaign as unknown as Campaign
+    return campaign as unknown as Campaign
+  } catch (error) {
+    console.error(`Failed to fetch campaign ${id}:`, error)
+    return null
+  }
 }
 
 /**
  * Create a new campaign
  */
-export async function createCampaign(data: Omit<Campaign, '$id' | '$createdAt' | '$updatedAt'>) {
-  // Ensure required fields exist with proper fallbacks
-  const campaignId = data.campaignId || `campaign_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-  const createdBy = data.createdBy || 'unknown'
-  const ratePerThousand = data.ratePerThousand ?? 0
-  const budgetTotal = data.budgetTotal ?? data.prizePool ?? 0
-  const prizePool = data.prizePool ?? 0
-  const platforms = Array.isArray(data.platforms) ? data.platforms : []
-  const socialLinks = Array.isArray(data.socialLinks) ? data.socialLinks : []
+export async function createCampaign(data: Omit<Campaign, '$id' | '$createdAt' | '$updatedAt'>): Promise<Campaign | null> {
+  try {
+    // Ensure required fields exist with proper fallbacks
+    const campaignId = data.campaignId || `campaign_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`
+    const createdBy = data.createdBy || 'unknown'
+    const ratePerThousand = data.ratePerThousand ?? 0
+    const budgetTotal = data.budgetTotal ?? data.prizePool ?? 0
+    const prizePool = data.prizePool ?? 0
+    const platforms = Array.isArray(data.platforms) ? data.platforms : []
+    const socialLinks = Array.isArray(data.socialLinks) ? data.socialLinks : []
 
-  // Ensure entity scoping fields exist
-  const ownerType = data.ownerType || 'user'
-  const ownerId = data.ownerId || createdBy
+    // Ensure entity scoping fields exist
+    const ownerType = data.ownerType || 'user'
+    const ownerId = data.ownerId || createdBy
 
-  // Only include fields that exist in Appwrite schema
-  const documentData: any = {
-    campaignId,
-    type: data.type,
-    title: data.title,
-    description: data.description || '',
-    createdBy,
-    status: data.status,
-    prizePool,
-    budgetTotal,
-    ratePerThousand,
-    minViews: data.minViews ?? 0,
-    minDuration: data.minDuration ?? 0,
-    maxDuration: data.maxDuration ?? 0,
-    platforms,
-    socialLinks,
-    gdocUrl: data.gdocUrl || '',
-    imageUrl: data.imageUrl || '',
-    ownerType,
-    ownerId
+    // Only include fields that exist in Appwrite schema
+    const documentData: any = {
+      campaignId,
+      type: data.type,
+      title: data.title,
+      description: data.description || '',
+      createdBy,
+      status: data.status,
+      prizePool,
+      budgetTotal,
+      ratePerThousand,
+      minViews: data.minViews ?? 0,
+      minDuration: data.minDuration ?? 0,
+      maxDuration: data.maxDuration ?? 0,
+      platforms,
+      socialLinks,
+      gdocUrl: data.gdocUrl || '',
+      imageUrl: data.imageUrl || '',
+      ownerType,
+      ownerId
+    }
+
+    console.log('🎬 Creating campaign document with data:', documentData)
+
+    const response = await databases.createDocument(
+      DB_ID,
+      COLLECTIONS.CAMPAIGNS,
+      'unique()',
+      documentData
+    )
+
+    return response as unknown as Campaign
+  } catch (error) {
+    console.error('Failed to create campaign:', error)
+    return null
   }
-
-  console.log('🎬 Creating campaign document with data:', documentData)
-
-  const response = await databases.createDocument(
-    DB_ID,
-    COLLECTIONS.CAMPAIGNS,
-    'unique()',
-    documentData
-  )
-
-  return response as unknown as Campaign
 }
 
 /**
  * Update a campaign
  */
-export async function updateCampaign(campaignId: string, data: Partial<Campaign>) {
-  const response = await databases.updateDocument(
-    DB_ID,
-    COLLECTIONS.CAMPAIGNS,
-    campaignId,
-    data
-  )
+export async function updateCampaign(campaignId: string, data: Partial<Campaign>): Promise<Campaign | null> {
+  try {
+    const response = await databases.updateDocument(
+      DB_ID,
+      COLLECTIONS.CAMPAIGNS,
+      campaignId,
+      data
+    )
 
-  return response as unknown as Campaign
+    return response as unknown as Campaign
+  } catch (error) {
+    console.error(`Failed to update campaign ${campaignId}:`, error)
+    return null
+  }
 }
 
 /**
  * Delete a campaign
  */
-export async function deleteCampaign(campaignId: string) {
-  await databases.deleteDocument(
-    DB_ID,
-    COLLECTIONS.CAMPAIGNS,
-    campaignId
-  )
+export async function deleteCampaign(campaignId: string): Promise<boolean> {
+  try {
+    await databases.deleteDocument(
+      DB_ID,
+      COLLECTIONS.CAMPAIGNS,
+      campaignId
+    )
+    return true
+  } catch (error) {
+    console.error(`Failed to delete campaign ${campaignId}:`, error)
+    return false
+  }
 }
 
 /**

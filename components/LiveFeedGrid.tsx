@@ -16,6 +16,23 @@ export function LiveFeedGrid({ projects, limit = 6 }: LiveFeedGridProps) {
     .sort((a, b) => (b.upvotes || 0) - (a.upvotes || 0))
     .slice(0, limit)
 
+  // Empty state
+  if (!projects || projects.length === 0) {
+    return (
+      <section className="container mx-auto px-4 py-16">
+        <div className="mb-8">
+          <h2 className="text-3xl md:text-4xl font-bold mb-2">
+            <span className="gradient-text-launchos">Live Feed</span>
+          </h2>
+          <p className="text-white/60">Top trending projects right now</p>
+        </div>
+        <div className="glass-launchos p-12 text-center">
+          <p className="text-white/60 text-lg">No projects available yet. Check back soon!</p>
+        </div>
+      </section>
+    )
+  }
+
   const typeColors = {
     launch: 'from-blue-500 to-cyan-500',
     campaign: 'from-purple-500 to-pink-500',

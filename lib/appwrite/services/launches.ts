@@ -45,100 +45,126 @@ export async function getLaunches(options?: {
   limit?: number
   offset?: number
   sortBy?: 'recent' | 'marketCap' | 'volume' | 'conviction'
-}) {
-  const queries = []
+}): Promise<Launch[]> {
+  try {
+    const queries = []
 
-  if (options?.status) {
-    queries.push(Query.equal('status', options.status))
+    if (options?.status) {
+      queries.push(Query.equal('status', options.status))
+    }
+
+    if (options?.limit) {
+      queries.push(Query.limit(options.limit))
+    }
+
+    if (options?.offset) {
+      queries.push(Query.offset(options.offset))
+    }
+
+    // Sort options
+    switch (options?.sortBy) {
+      case 'marketCap':
+        queries.push(Query.orderDesc('marketCap'))
+        break
+      case 'volume':
+        queries.push(Query.orderDesc('volume24h'))
+        break
+      case 'conviction':
+        queries.push(Query.orderDesc('convictionPct'))
+        break
+      case 'recent':
+      default:
+        queries.push(Query.orderDesc('$createdAt'))
+        break
+    }
+
+    const response = await databases.listDocuments(
+      DB_ID,
+      COLLECTIONS.LAUNCHES,
+      queries
+    )
+
+    return response.documents as unknown as Launch[]
+  } catch (error) {
+    console.error('Failed to fetch launches:', error)
+    return []
   }
-
-  if (options?.limit) {
-    queries.push(Query.limit(options.limit))
-  }
-
-  if (options?.offset) {
-    queries.push(Query.offset(options.offset))
-  }
-
-  // Sort options
-  switch (options?.sortBy) {
-    case 'marketCap':
-      queries.push(Query.orderDesc('marketCap'))
-      break
-    case 'volume':
-      queries.push(Query.orderDesc('volume24h'))
-      break
-    case 'conviction':
-      queries.push(Query.orderDesc('convictionPct'))
-      break
-    case 'recent':
-    default:
-      queries.push(Query.orderDesc('$createdAt'))
-      break
-  }
-
-  const response = await databases.listDocuments(
-    DB_ID,
-    COLLECTIONS.LAUNCHES,
-    queries
-  )
-
-  return response.documents as unknown as Launch[]
 }
 
 /**
  * Get a single launch by ID
  */
-export async function getLaunch(launchId: string) {
-  const response = await databases.getDocument(
-    DB_ID,
-    COLLECTIONS.LAUNCHES,
-    launchId
-  )
+export async function getLaunch(launchId: string): Promise<Launch | null> {
+  try {
+    const response = await databases.getDocument(
+      DB_ID,
+      COLLECTIONS.LAUNCHES,
+      launchId
+    )
 
-  return response as unknown as Launch
+    return response as unknown as Launch
+  } catch (error) {
+    console.error(`Failed to fetch launch ${launchId}:`, error)
+    return null
+  }
 }
 
 /**
  * Create a new launch
  */
-export async function createLaunch(data: Omit<Launch, '$id' | 'createdAt'>) {
-  const response = await databases.createDocument(
-    DB_ID,
-    COLLECTIONS.LAUNCHES,
-    'unique()',
-    {
-      ...data,
-      createdAt: new Date().toISOString(),
-    }
-  )
+export async function createLaunch(data: Omit<Launch, '$id' | 'createdAt'>): Promise<Launch | null> {
+  try {
+    const response = await databases.createDocument(
+      DB_ID,
+      COLLECTIONS.LAUNCHES,
+      'unique()',
+      {
+        ...data,
+        createdAt: new Date().toISOString(),
+      }
+    )
 
-  return response as unknown as Launch
+    return response as unknown as Launch
+  } catch (error) {
+    console.error('Failed to create launch:', error)
+    return null
+  }
 }
 
 /**
  * Update a launch
  */
-export async function updateLaunch(launchId: string, data: Partial<Launch>) {
-  const response = await databases.updateDocument(
-    DB_ID,
-    COLLECTIONS.LAUNCHES,
-    launchId,
-    data
-  )
+export async function updateLaunch(launchId: string, data: Partial<Launch>): Promise<Launch | null> {
+  try {
+    const response = await databases.updateDocument(
+      DB_ID,
+      COLLECTIONS.LAUNCHES,
+      launchId,
+      data
+    )
 
-  return response as unknown as Launch
+    return response as unknown as Launch
+  } catch (error) {
+    console.error(`Failed to update launch ${launchId}:`, error)
+    return null
+  }
 }
 
 /**
  * Delete a launch
  */
-export async function deleteLaunch(launchId: string) {
-  await databases.deleteDocument(
-    DB_ID,
-    COLLECTIONS.LAUNCHES,
-    launchId
-  )
+export async function deleteLaunch(launchId: string): Promise<boolean> {
+  try {
+    await databases.deleteDocument(
+      DB_ID,
+      COLLECTIONS.LAUNCHES,
+      launchId
+    )
+    return true
+  } catch (error) {
+    console.error(`Failed to delete launch ${launchId}:`, error)
+    return false
+  }
 }
 
 /**
@@ -151,36 +177,51 @@ export async function getLiveLaunches(limit = 10) {
 /**
  * Search launches by name or symbol
  */
-export async function searchLaunches(searchTerm: string) {
-  const response = await databases.listDocuments(
-    DB_ID,
-    COLLECTIONS.LAUNCHES,
-    [
-      Query.search('tokenName', searchTerm),
-    ]
-  )
+export async function searchLaunches(searchTerm: string): Promise<Launch[]> {
+  try {
+    const response = await databases.listDocuments(
+      DB_ID,
+      COLLECTIONS.LAUNCHES,
+      [
+        Query.search('tokenName', searchTerm),
+      ]
+    )
 
-  return response.documents as unknown as Launch[]
+    return response.documents as unknown as Launch[]
+  } catch (error) {
+    console.error(`Failed to search launches for "${searchTerm}":`, error)
+    return []
+  }
 }
 
 /**
  * Upvote a launch (increment upvotes count)
  */
-export async function upvoteLaunch(launchId: string) {
-  // Get current launch to get current upvote count
-  const launch = await getLaunch(launchId)
+export async function upvoteLaunch(launchId: string): Promise<Launch | null> {
+  try {
+    // Get current launch to get current upvote count
+    const launch = await getLaunch(launchId)
 
-  // Increment upvotes
-  const response = await databases.updateDocument(
-    DB_ID,
-    COLLECTIONS.LAUNCHES,
-    launchId,
-    {
-      upvotes: (launch.upvotes || 0) + 1
+    if (!launch) {
+      console.error(`Cannot upvote: launch ${launchId} not found`)
+      return null
     }
-  )
 
-  return response as unknown as Launch
+    // Increment upvotes
+    const response = await databases.updateDocument(
+      DB_ID,
+      COLLECTIONS.LAUNCHES,
+      launchId,
+      {
+        upvotes: (launch.upvotes || 0) + 1
+      }
+    )
+
+    return response as unknown as Launch
+  } catch (error) {
+    console.error(`Failed to upvote launch ${launchId}:`, error)
+    return null
+  }
 }
 
 /**

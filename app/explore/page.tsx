@@ -4,8 +4,8 @@ import { useMemo, useState, useEffect } from 'react';
 import { ProjectCard } from '@/components/ProjectCard';
 import { SubmitLaunchDrawer } from '@/components/launch/SubmitLaunchDrawer';
 import { MarketSwitcher } from '@/components/MarketSwitcher';
-import { launchProjects, sortProjects } from '@/lib/sampleData';
-import { getLaunches } from '@/lib/appwrite/services/launches';
+import { sortProjects } from '@/lib/sampleData';
+import { getDataLaunches } from '@/lib/data-source';
 import type { Project, MarketType } from '@/types';
 import { LayoutGrid, Rocket, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -24,21 +24,22 @@ export default function ExplorePage() {
   const [market, setMarket] = useState<MarketType>('all');
   const [sortBy, setSortBy] = useState<SortOption>('trending');
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
-  const [projects, setProjects] = useState<Project[]>(launchProjects);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const { success } = useToast();
 
   // Fetch launches from Appwrite
   useEffect(() => {
     async function fetchLaunches() {
       try {
-        const data = await getLaunches({ limit: 100 })
+        const data = await getDataLaunches({ limit: 100 })
         if (data && data.length > 0) {
           setProjects(data as any)
         }
       } catch (error) {
         console.error('Failed to fetch launches:', error)
-        // Keep using mock data on error
+        setError('Failed to load launches')
       } finally {
         setLoading(false)
       }
@@ -67,6 +68,41 @@ export default function ExplorePage() {
       prev.map(p => p.id === updatedProject.id ? updatedProject : p)
     );
   };
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen pb-24">
+        <div className="mb-8">
+          <div className="flex items-center gap-4 mb-4">
+            <LayoutGrid className="w-8 h-8 neon-text-fuchsia" />
+            <h1 className="text-4xl font-bold gradient-text-launchos">Launch</h1>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="glass-launchos p-6 animate-pulse">
+              <div className="h-12 w-12 bg-white/10 rounded-lg mb-4"></div>
+              <div className="h-6 bg-white/10 rounded mb-2 w-3/4"></div>
+              <div className="h-4 bg-white/10 rounded w-1/2"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="min-h-screen pb-24">
+        <div className="glass-launchos p-8 text-center">
+          <p className="text-red-400 mb-4">{error}</p>
+          <Button onClick={() => window.location.reload()}>Retry</Button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen pb-24">
