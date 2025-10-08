@@ -9,6 +9,8 @@ import { VoteButton } from './VoteButton';
 import { BoostButton } from './BoostButton';
 import { CommentsDrawer } from './CommentsDrawer';
 import { BeliefScore } from './BeliefScore';
+import { useRealtimeVotes } from '@/hooks/useRealtimeVotes';
+import { useToast } from '@/hooks/useToast';
 
 interface ProjectCardProps extends Project {
   onUpdateProject?: (updatedProject: Project) => void;
@@ -21,6 +23,17 @@ export function ProjectCard(props: ProjectCardProps) {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [localUpvotes, setLocalUpvotes] = useState(project.upvotes || 0);
+  const [voteFlash, setVoteFlash] = useState(false);
+
+  const { success, error: showError } = useToast();
+
+  // Real-time votes for launch-type projects
+  const {
+    voteCount,
+    hasVoted,
+    toggleVote,
+    isVoting
+  } = useRealtimeVotes(project.type === 'launch' ? project.id : '');
 
   const handleAddComment = (comment: Comment) => {
     const updated = {
@@ -82,12 +95,37 @@ export function ProjectCard(props: ProjectCardProps) {
             {/* Left rail */}
             <div className="w-16 p-2 flex flex-col items-center gap-2 bg-neutral-900/60">
               <button
-                onClick={() => setLocalUpvotes(localUpvotes + 1)}
-                className={cn("flex flex-col items-center justify-center w-12 h-12 rounded-xl bg-neutral-800 hover:bg-neutral-700 focus:outline-none focus:ring-2 transition-colors", focusRing)}
+                onClick={async () => {
+                  if (project.type === 'launch') {
+                    try {
+                      await toggleVote()
+                      // Flash animation
+                      setVoteFlash(true)
+                      setTimeout(() => setVoteFlash(false), 500)
+                      // Toast notification
+                      success('Voted!', `${hasVoted ? 'Removed' : 'Added'} vote for ${project.title}`)
+                    } catch (error: any) {
+                      console.error('Vote failed:', error.message)
+                      showError('Vote failed', error.message)
+                    }
+                  } else {
+                    setLocalUpvotes(localUpvotes + 1)
+                  }
+                }}
+                disabled={project.type === 'launch' && isVoting}
+                className={cn(
+                  "flex flex-col items-center justify-center w-12 h-12 rounded-xl transition-colors focus:outline-none focus:ring-2",
+                  project.type === 'launch' && hasVoted
+                    ? "bg-fuchsia-500/20 border border-fuchsia-500/40 text-fuchsia-400"
+                    : "bg-neutral-800 hover:bg-neutral-700",
+                  focusRing,
+                  isVoting && "opacity-50 cursor-not-allowed",
+                  voteFlash && "animate-flash"
+                )}
                 aria-label="Upvote"
               >
-                <ArrowBigUp className="w-5 h-5" />
-                <span className="text-xs mt-0.5">{localUpvotes}</span>
+                <ArrowBigUp className={cn("w-5 h-5", project.type === 'launch' && hasVoted && "fill-fuchsia-400")} />
+                <span className="text-xs mt-0.5">{project.type === 'launch' ? voteCount : localUpvotes}</span>
               </button>
 
               <button
@@ -131,9 +169,14 @@ export function ProjectCard(props: ProjectCardProps) {
                 </div>
                 {/* Stats badges */}
                 <div className="flex items-center gap-1">
-                  <div className="flex items-center gap-0.5 px-1.5 py-0.5 bg-neutral-900 rounded text-[10px] text-fuchsia-400">
+                  <div className={cn(
+                    "flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px]",
+                    project.type === 'launch' && hasVoted
+                      ? "bg-fuchsia-500/20 text-fuchsia-400"
+                      : "bg-neutral-900 text-fuchsia-400"
+                  )}>
                     <TrendingUp className="w-3 h-3" />
-                    {localUpvotes}
+                    {project.type === 'launch' ? voteCount : localUpvotes}
                   </div>
                   {project.boosted && (
                     <div className="flex items-center gap-0.5 px-1.5 py-0.5 bg-yellow-500/20 rounded text-[10px] text-yellow-400">

@@ -14,6 +14,9 @@ export interface Launch {
   upvotes: number
   contributionPoolPct?: number
   feesSharePct?: number
+  tgeDate?: string
+  boostCount?: number
+  viewCount?: number
   status: 'live' | 'upcoming' | 'ended'
   $createdAt: string
 

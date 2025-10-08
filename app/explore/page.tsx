@@ -1,11 +1,10 @@
 "use client"
 
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState } from 'react';
 import { ProjectCard } from '@/components/ProjectCard';
 import { SubmitLaunchDrawer } from '@/components/launch/SubmitLaunchDrawer';
 import { MarketSwitcher } from '@/components/MarketSwitcher';
 import { sortProjects } from '@/lib/sampleData';
-import { getDataLaunches } from '@/lib/data-source';
 import type { Project, MarketType } from '@/types';
 import { LayoutGrid, Rocket, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -17,6 +16,9 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useToast } from '@/hooks/useToast';
+import { useLiveLaunches } from '@/hooks/useLiveLaunches';
+import { LaunchGridSkeleton } from '@/components/LoadingSkeletons';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 type SortOption = 'trending' | 'new' | 'votes' | 'belief' | 'fdv';
 
@@ -24,28 +26,11 @@ export default function ExplorePage() {
   const [market, setMarket] = useState<MarketType>('all');
   const [sortBy, setSortBy] = useState<SortOption>('trending');
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const { success } = useToast();
 
-  // Fetch launches from Appwrite
-  useEffect(() => {
-    async function fetchLaunches() {
-      try {
-        const data = await getDataLaunches({ limit: 100 })
-        if (data && data.length > 0) {
-          setProjects(data as any)
-        }
-      } catch (error) {
-        console.error('Failed to fetch launches:', error)
-        setError('Failed to load launches')
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetchLaunches()
-  }, [])
+  // Real-time launches with Appwrite subscriptions
+  const { launches, loading, error } = useLiveLaunches(100)
+  const projects = launches as any[]
 
   const filteredAndSortedProjects = useMemo(() => {
     // Filter by market type: ALL, ICM (launches) or CCM (non-launch projects)
@@ -58,15 +43,9 @@ export default function ExplorePage() {
     return sortProjects(filtered, sortBy);
   }, [projects, market, sortBy]);
 
-  const handleSubmitProject = (newProject: Project) => {
-    setProjects(prev => [newProject, ...prev]);
-    success('Project submitted! 🚀', 'Your project is now live on the Explore page');
-  };
-
   const handleUpdateProject = (updatedProject: Project) => {
-    setProjects(prev =>
-      prev.map(p => p.id === updatedProject.id ? updatedProject : p)
-    );
+    // Real-time updates handled automatically by useLiveLaunches
+    console.log('Project updated:', updatedProject)
   };
 
   // Loading state
@@ -78,16 +57,11 @@ export default function ExplorePage() {
             <LayoutGrid className="w-8 h-8 neon-text-fuchsia" />
             <h1 className="text-4xl font-bold gradient-text-launchos">Launch</h1>
           </div>
+          <p className="text-white/60 text-lg">
+            Loading launches...
+          </p>
         </div>
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-          {[...Array(6)].map((_, i) => (
-            <div key={i} className="glass-launchos p-6 animate-pulse">
-              <div className="h-12 w-12 bg-white/10 rounded-lg mb-4"></div>
-              <div className="h-6 bg-white/10 rounded mb-2 w-3/4"></div>
-              <div className="h-4 bg-white/10 rounded w-1/2"></div>
-            </div>
-          ))}
-        </div>
+        <LaunchGridSkeleton count={6} />
       </div>
     )
   }
@@ -95,12 +69,18 @@ export default function ExplorePage() {
   // Error state
   if (error) {
     return (
-      <div className="min-h-screen pb-24">
-        <div className="glass-launchos p-8 text-center">
-          <p className="text-red-400 mb-4">{error}</p>
-          <Button onClick={() => window.location.reload()}>Retry</Button>
-        </div>
-      </div>
+      <ErrorBoundary
+        fallback={
+          <div className="min-h-screen pb-24 flex items-center justify-center">
+            <div className="glass-card p-8 text-center max-w-md">
+              <p className="text-red-400 mb-4">{error}</p>
+              <Button onClick={() => window.location.reload()}>Retry</Button>
+            </div>
+          </div>
+        }
+      >
+        <div>{error}</div>
+      </ErrorBoundary>
     )
   }
 
@@ -114,6 +94,10 @@ export default function ExplorePage() {
             <h1 className="text-4xl font-bold gradient-text-launchos">
               Launch
             </h1>
+            <div className="flex items-center gap-1 text-xs text-green-400 px-2 py-1 bg-green-400/10 rounded-full border border-green-400/20">
+              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+              LIVE
+            </div>
           </div>
           <div className="flex flex-col gap-3">
             <MarketSwitcher market={market} onMarketChange={setMarket} />

@@ -1,7 +1,7 @@
 "use client"
 
 import { useParams, useRouter } from 'next/navigation'
-import { ArrowLeft, TrendingUp, Heart, Eye } from 'lucide-react'
+import { ArrowLeft, TrendingUp, Heart, Eye, MessageCircle, Send, ArrowBigUp, Clock, Users, Coins } from 'lucide-react'
 import { LaunchHeaderCompact } from '@/components/launch/LaunchHeaderCompact'
 import { ChartTabs } from '@/components/launch/ChartTabs'
 import { TokenStatsCompact } from '@/components/launch/TokenStatsCompact'
@@ -13,6 +13,12 @@ import type { Contributor, Candle, ActivityPoint } from '@/types/launch'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { getLaunch } from '@/lib/appwrite/services/launches'
+import { useComments } from '@/hooks/useComments'
+import { useRealtimeVotes } from '@/hooks/useRealtimeVotes'
+import { useToast } from '@/hooks/useToast'
+import { LaunchHeaderSkeleton, StatsCardSkeleton, ChartSkeleton, CommentSkeleton } from '@/components/LoadingSkeletons'
+import { ErrorBoundary } from '@/components/ErrorBoundary'
+import { useRealtimeTracking } from '@/hooks/useRealtimeTracking'
 
 export default function LaunchDetailPage() {
   const params = useParams()
@@ -24,6 +30,19 @@ export default function LaunchDetailPage() {
     candles: [],
     activity: [],
   })
+  const [newComment, setNewComment] = useState('')
+  const [voteFlash, setVoteFlash] = useState(false)
+
+  const { success, error: showError } = useToast()
+
+  // Real-time comments
+  const { comments, loading: commentsLoading, addComment, upvoteComment } = useComments(params.id as string)
+
+  // Real-time votes
+  const { voteCount, hasVoted, toggleVote, isVoting } = useRealtimeVotes(params.id as string)
+
+  // Real-time tracking (views & boosts)
+  const { viewCount, boostCount, boost, isBoosting } = useRealtimeTracking(params.id as string, true)
 
   // Fetch launch data from Appwrite
   useEffect(() => {
@@ -32,6 +51,10 @@ export default function LaunchDetailPage() {
         setLoading(true)
         const data = await getLaunch(params.id as string)
 
+        if (!data) {
+          throw new Error('Launch not found')
+        }
+
         // Convert Appwrite Launch to component format
         setLaunch({
           id: data.$id,
@@ -39,10 +62,13 @@ export default function LaunchDetailPage() {
           subtitle: data.description || data.subtitle || '',
           logoUrl: data.tokenImage || data.logoUrl,
           scope: data.scope || ((data.tags && data.tags.includes('ICM')) ? 'ICM' : 'CCM'),
-          status: (data.status?.toUpperCase() === 'LIVE' || data.status === 'LIVE') ? 'LIVE' : 'UPCOMING',
-          mint: data.tokenSymbol || data.mint || '',
+          status: data.status === 'live' ? 'LIVE' : data.status === 'upcoming' ? 'UPCOMING' : 'ENDED',
+          mint: data.tokenSymbol || '',
           dexPairId: data.launchId || data.$id,
           convictionPct: data.convictionPct || 0,
+          contributionPoolPct: data.contributionPoolPct,
+          feesSharePct: data.feesSharePct,
+          tgeDate: data.tgeDate,
           socials: {
             twitter: (data.tags && data.tags.find(t => t.startsWith('@'))) || '',
             discord: '',
@@ -112,16 +138,45 @@ export default function LaunchDetailPage() {
   // Show loading state while fetching
   if (loading || !launch) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-fuchsia-500"></div>
+      <div className="min-h-screen bg-gradient-to-br from-black via-purple-950/20 to-black pb-20 lg:pb-8">
+        <div className="max-w-4xl mx-auto px-4 py-6">
+          {/* Back Button Skeleton */}
+          <div className="mb-4 h-8 w-20 bg-white/10 rounded animate-pulse"></div>
+
+          {/* Header Skeleton */}
+          <LaunchHeaderSkeleton />
+
+          {/* Stats Skeleton */}
+          <div className="mt-4">
+            <StatsCardSkeleton />
+          </div>
+
+          {/* Chart Skeleton */}
+          <div className="mt-4">
+            <ChartSkeleton />
+          </div>
+
+          {/* Comments Skeleton */}
+          <Card variant="default" hover={false} className="mt-4">
+            <div className="p-6">
+              <div className="h-6 w-32 bg-white/10 rounded mb-4 animate-pulse"></div>
+              <div className="space-y-4">
+                <CommentSkeleton />
+                <CommentSkeleton />
+                <CommentSkeleton />
+              </div>
+            </div>
+          </Card>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-purple-950/20 to-black pb-20 lg:pb-8">
-      {/* Content Wrapper - Compact max-width */}
-      <div className="max-w-4xl mx-auto px-4 py-6">
+    <ErrorBoundary>
+      <div className="min-h-screen bg-gradient-to-br from-black via-purple-950/20 to-black pb-20 lg:pb-8">
+        {/* Content Wrapper - Compact max-width */}
+        <div className="max-w-4xl mx-auto px-4 py-6">
         {/* Back Button */}
         <button
           onClick={() => router.back()}
@@ -144,6 +199,131 @@ export default function LaunchDetailPage() {
           contributors={launch.contributors}
           className="mb-4"
         />
+
+        {/* ENGAGEMENT STATS BAR */}
+        <Card variant="default" hover={false} className="mb-4">
+          <div className="p-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {/* Votes */}
+              <button
+                onClick={async () => {
+                  try {
+                    await toggleVote()
+                    // Trigger flash animation
+                    setVoteFlash(true)
+                    setTimeout(() => setVoteFlash(false), 500)
+
+                    // Show toast notification
+                    if (hasVoted) {
+                      success('Vote removed!', 'You can change your mind anytime')
+                    } else {
+                      success('Voted!', 'Thanks for supporting this launch')
+                    }
+                  } catch (error: any) {
+                    console.error('Vote failed:', error.message)
+                    showError('Failed to vote', error.message)
+                  }
+                }}
+                disabled={isVoting}
+                className={`flex flex-col items-center gap-2 p-3 rounded-xl transition-all ${
+                  hasVoted
+                    ? 'bg-fuchsia-500/20 border border-fuchsia-500/40'
+                    : 'bg-white/5 hover:bg-white/10 border border-white/10 hover:border-fuchsia-500/40'
+                } ${isVoting ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'} ${voteFlash ? 'animate-flash' : ''}`}
+              >
+                <ArrowBigUp className={`w-6 h-6 ${hasVoted ? 'text-fuchsia-400 fill-fuchsia-400' : 'text-white/70'}`} />
+                <div className="text-center">
+                  <div className={`text-xl font-bold ${hasVoted ? 'text-fuchsia-400' : 'text-white'}`}>{voteCount}</div>
+                  <div className="text-xs text-white/60">Upvotes</div>
+                </div>
+              </button>
+
+              {/* Comments */}
+              <div className="flex flex-col items-center gap-2 p-3 rounded-xl bg-white/5 border border-white/10">
+                <MessageCircle className="w-6 h-6 text-cyan-400" />
+                <div className="text-center">
+                  <div className="text-xl font-bold text-white">{comments.length}</div>
+                  <div className="text-xs text-white/60">Comments</div>
+                </div>
+              </div>
+
+              {/* Contributors */}
+              <div className="flex flex-col items-center gap-2 p-3 rounded-xl bg-white/5 border border-white/10">
+                <Users className="w-6 h-6 text-purple-400" />
+                <div className="text-center">
+                  <div className="text-xl font-bold text-white">{launch.contributors?.length || 0}</div>
+                  <div className="text-xs text-white/60">Contributors</div>
+                </div>
+              </div>
+
+              {/* Views (real-time) */}
+              <div className="flex flex-col items-center gap-2 p-3 rounded-xl bg-white/5 border border-white/10">
+                <Eye className="w-6 h-6 text-green-400" />
+                <div className="text-center">
+                  <div className="text-xl font-bold text-white">{viewCount}</div>
+                  <div className="text-xs text-white/60">Views</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Card>
+
+        {/* ECONOMICS & TGE INFO */}
+        {((launch.contributionPoolPct && launch.contributionPoolPct > 0) ||
+          (launch.feesSharePct && launch.feesSharePct > 0) ||
+          launch.tgeDate) && (
+          <Card variant="default" hover={false} className="mb-4">
+            <div className="p-4">
+              <h3 className="text-sm font-semibold text-white/60 mb-3">Launch Details</h3>
+              <div className="flex flex-wrap gap-3">
+                {/* Contribution Pool Badge */}
+                {launch.contributionPoolPct && launch.contributionPoolPct > 0 && (
+                  <div className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30">
+                    <Coins className="w-5 h-5 text-emerald-400" />
+                    <div>
+                      <div className="text-sm font-semibold text-emerald-300">
+                        {launch.contributionPoolPct}% Total Supply
+                      </div>
+                      <div className="text-xs text-emerald-400/60">Contribution Pool</div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Fees Share Badge */}
+                {launch.feesSharePct && launch.feesSharePct > 0 && (
+                  <div className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-amber-500/10 border border-amber-500/30">
+                    <TrendingUp className="w-5 h-5 text-amber-400" />
+                    <div>
+                      <div className="text-sm font-semibold text-amber-300">
+                        {launch.feesSharePct}% Fees Share
+                      </div>
+                      <div className="text-xs text-amber-400/60">Revenue Split</div>
+                    </div>
+                  </div>
+                )}
+
+                {/* TGE Date Badge */}
+                {launch.tgeDate && (
+                  <div className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-cyan-500/10 border border-cyan-500/30">
+                    <Clock className="w-5 h-5 text-cyan-400" />
+                    <div>
+                      <div className="text-sm font-semibold text-cyan-300">
+                        {new Date(launch.tgeDate).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric',
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </div>
+                      <div className="text-xs text-cyan-400/60">TGE Date</div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </Card>
+        )}
 
         {/* CHART TABS - Only for LIVE tokens with dexPairId */}
         {launch.status === "LIVE" && launch.dexPairId && (
@@ -191,6 +371,103 @@ export default function LaunchDetailPage() {
           </div>
         </Card>
 
+        {/* COMMENTS SECTION - Real-time */}
+        <Card variant="default" hover={false} className="mb-4">
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                <MessageCircle className="w-5 h-5" />
+                Comments
+                <span className="text-sm text-white/40">({comments.length})</span>
+              </h3>
+              <div className="flex items-center gap-1 text-xs text-green-400">
+                <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                LIVE
+              </div>
+            </div>
+
+            {/* Add Comment */}
+            <div className="mb-6">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  onKeyDown={async (e) => {
+                    if (e.key === 'Enter' && newComment.trim()) {
+                      try {
+                        await addComment(newComment)
+                        setNewComment('')
+                        success('Comment added!', 'Your comment is now live')
+                      } catch (error: any) {
+                        showError('Failed to post comment', error.message)
+                      }
+                    }
+                  }}
+                  placeholder="Add a comment..."
+                  className="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white placeholder:text-white/40 focus:outline-none focus:border-fuchsia-500/50"
+                />
+                <Button
+                  onClick={async () => {
+                    if (newComment.trim()) {
+                      try {
+                        await addComment(newComment)
+                        setNewComment('')
+                        success('Comment added!', 'Your comment is now live')
+                      } catch (error: any) {
+                        showError('Failed to post comment', error.message)
+                      }
+                    }
+                  }}
+                  disabled={!newComment.trim()}
+                  className="px-4"
+                >
+                  <Send className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+
+            {/* Comments List */}
+            {commentsLoading ? (
+              <div className="text-center py-8 text-white/40">
+                Loading comments...
+              </div>
+            ) : comments.length === 0 ? (
+              <div className="text-center py-8 text-white/40">
+                No comments yet. Be the first to comment!
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {comments.map((comment) => (
+                  <div key={comment.id} className="flex gap-3">
+                    <img
+                      src={comment.avatar || `https://api.dicebear.com/7.x/avatars/svg?seed=${comment.author}`}
+                      alt={comment.author}
+                      className="w-8 h-8 rounded-full"
+                    />
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-semibold text-white text-sm">{comment.author}</span>
+                        <span className="text-xs text-white/40">
+                          {new Date(comment.timestamp).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <p className="text-white/80 text-sm mb-2">{comment.text}</p>
+                      <button
+                        onClick={() => upvoteComment(comment.id)}
+                        className="flex items-center gap-1 text-xs text-white/60 hover:text-fuchsia-400 transition-colors"
+                      >
+                        <Heart className="w-3 h-3" />
+                        {comment.upvotes || 0}
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </Card>
+
         {/* ACTIONS - Sticky on Mobile */}
         <div className="fixed lg:relative bottom-0 left-0 right-0
                         border-t lg:border-0 border-white/10
@@ -198,11 +475,20 @@ export default function LaunchDetailPage() {
                         p-4 lg:p-0 flex gap-2 z-50">
           <Button
             variant="boost"
-            onClick={() => setIsBoosted(true)}
-            className="flex-1 lg:flex-none lg:px-8"
+            onClick={async () => {
+              try {
+                await boost()
+                setIsBoosted(true)
+                success('Boosted!', `This launch now has ${boostCount + 1} boosts`)
+              } catch (error: any) {
+                showError('Boost failed', error.message)
+              }
+            }}
+            disabled={isBoosting}
+            className="flex-1 lg:flex-none lg:px-8 gap-2"
           >
             <TrendingUp className="w-5 h-5" />
-            Boost
+            Boost {boostCount > 0 && `(${boostCount})`}
           </Button>
           <Button variant="secondary" className="px-4 lg:px-6">
             <Heart className="w-4 h-4" />
@@ -215,5 +501,6 @@ export default function LaunchDetailPage() {
         </div>
       </div>
     </div>
+    </ErrorBoundary>
   )
 }
