@@ -46,11 +46,12 @@ export default function NetworkPage() {
 
       try {
         setLoading(true)
+        const userId = (user as any).$id || (user as any).id
         const [receivedInvites, sentInvites, connectionIds, appwriteThreads] = await Promise.all([
-          getNetworkInvites({ userId: user.$id, type: 'received', status: 'pending' }),
-          getNetworkInvites({ userId: user.$id, type: 'sent', status: 'pending' }),
-          getUserConnections(user.$id),
-          getUserThreads(user.$id).catch(() => []) // Threads collection may not exist yet
+          getNetworkInvites({ userId, type: 'received', status: 'pending' }),
+          getNetworkInvites({ userId, type: 'sent', status: 'pending' }),
+          getUserConnections(userId),
+          getUserThreads(userId).catch(() => []) // Threads collection may not exist yet
         ])
 
         // Convert received invites to dashboard format

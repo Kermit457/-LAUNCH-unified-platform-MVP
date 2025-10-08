@@ -47,8 +47,8 @@ export default function ProfilePage() {
 
     try {
       const updated = await updateUserProfile(profile.$id, {
-        avatarUrl: url,
-      })
+        avatar: url,
+      } as any)
       setProfile(updated)
     } catch (error) {
       console.error('Failed to update avatar:', error)
@@ -117,7 +117,7 @@ export default function ProfilePage() {
             <div className="rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl p-6">
               <h2 className="text-lg font-semibold text-white mb-4">Profile Picture</h2>
               <AvatarUpload
-                currentAvatar={profile?.avatarUrl}
+                currentAvatar={profile?.avatar}
                 onUploadComplete={handleAvatarUpload}
                 onError={(error) => console.error(error)}
               />

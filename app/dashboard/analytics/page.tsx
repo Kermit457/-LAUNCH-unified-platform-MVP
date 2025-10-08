@@ -105,7 +105,7 @@ export default function AnalyticsPage() {
           name: c.title,
           spent: c.budgetPaid || 0,
           revenue: c.budgetPaid || 0,
-          roi: c.budget > 0 ? ((c.budgetPaid / c.budget) * 100) : 0
+          roi: (c as any).budget > 0 ? (((c.budgetPaid || 0) / (c as any).budget) * 100) : 0
         }))
         setTopCampaigns(campaignsWithMetrics.sort((a, b) => b.spent - a.spent).slice(0, 5))
       } catch (error) {

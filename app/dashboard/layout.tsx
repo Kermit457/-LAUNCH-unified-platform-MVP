@@ -35,7 +35,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       if (!user) return
 
       try {
-        const data = await getUserProfile(user.$id)
+        const data = await getUserProfile((user as any).$id || (user as any).id)
         if (data) {
           setProfile(data)
         }
@@ -43,10 +43,10 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         console.error('Failed to fetch profile:', error)
         // Set default profile if fetch fails
         setProfile({
-          $id: user.$id,
-          userId: user.$id,
-          username: user.name || 'user',
-          displayName: user.name,
+          $id: (user as any).$id || (user as any).id,
+          userId: (user as any).$id || (user as any).id,
+          username: (user as any).name || 'user',
+          displayName: (user as any).name,
           verified: false,
           conviction: 0,
           totalEarnings: 0,

@@ -67,27 +67,32 @@ export default function CampaignDetailPage() {
         setLoading(true)
         const data = await getCampaignById(params.id as string)
 
+        if (!data) {
+          setLoading(false)
+          return
+        }
+
         // Convert Appwrite Campaign to page format
         setCampaign({
           id: data.$id,
           title: data.title,
           description: data.description,
-          pool: data.budget || 0,
-          paid: data.budgetPaid || 0,
+          pool: (data as any).budget || 0,
+          paid: (data as any).budgetPaid || 0,
           ratePerThousand: data.ratePerThousand || 20,
           participants: data.participants || 0,
-          views: data.totalViews || 0,
+          views: (data as any).totalViews || 0,
           platforms: data.platforms || ['youtube', 'tiktok', 'twitch'],
-          duration: new Date(data.deadline).toLocaleDateString(),
-          socialLinks: data.socialLinks || [],
-          driveLink: data.creatorKitUrl || '',
+          duration: data.deadline ? new Date(data.deadline).toLocaleDateString() : 'No deadline',
+          socialLinks: (data as any).socialLinks || [],
+          driveLink: (data as any).creatorKitUrl || '',
           rules: {
             minViews: data.minViews || 1000,
             minDuration: data.minDuration || 30,
             maxDuration: data.maxDuration || 180,
             platforms: data.platforms || ['youtube', 'tiktok', 'twitch'],
           },
-          examples: data.topSubmissions || []
+          examples: (data as any).topSubmissions || []
         })
       } catch (error) {
         console.error('Failed to fetch campaign:', error)
@@ -239,7 +244,7 @@ export default function CampaignDetailPage() {
               <div>
                 <div className="text-sm text-zinc-500 mb-2 uppercase tracking-wide">Platforms</div>
                 <div className="flex flex-wrap gap-2">
-                  {campaign.rules.platforms.map((platform, i) => (
+                  {campaign.rules.platforms.map((platform: string, i: number) => (
                     <span key={i} className="px-3 py-1 rounded-lg bg-fuchsia-500/20 border border-fuchsia-500/40 text-fuchsia-300 text-sm font-medium capitalize">
                       {platform}
                     </span>
@@ -343,7 +348,7 @@ export default function CampaignDetailPage() {
               Top Performing Clips
             </h2>
             <div className="space-y-3">
-              {campaign.examples.map((example, i) => (
+              {campaign.examples.map((example: any, i: number) => (
                 <div key={example.id} className="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
                   <div className="flex items-center gap-3">
                     <span className="text-zinc-400 font-semibold">#{i + 1}</span>
@@ -411,7 +416,7 @@ export default function CampaignDetailPage() {
                 <div>
                   <div className="text-sm text-zinc-500 mb-2 uppercase tracking-wide">Social Links</div>
                   <div className="space-y-2">
-                    {campaign.socialLinks.map((link, i) => (
+                    {campaign.socialLinks.map((link: any, i: number) => (
                       <a
                         key={i}
                         href={link}
@@ -459,7 +464,7 @@ export default function CampaignDetailPage() {
               Top Creators
             </h2>
             <div className="space-y-2">
-              {campaign.examples.slice(0, 5).map((creator, i) => (
+              {campaign.examples.slice(0, 5).map((creator: any, i: number) => (
                 <div key={i} className="flex items-center justify-between p-2 rounded-lg bg-white/5">
                   <div className="flex items-center gap-2">
                     <span className="text-zinc-400 text-sm">#{i + 1}</span>

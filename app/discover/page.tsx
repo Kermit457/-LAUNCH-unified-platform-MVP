@@ -113,7 +113,7 @@ export default function DiscoverPage() {
               feesSharePct: launch.feesSharePct,
               mint: launch.$id,
               contributors: [],
-              tgeAt: launch.status === 'upcoming' ? new Date(launch.$createdAt || launch.createdAt).getTime() : undefined,
+              tgeAt: launch.status === 'upcoming' ? new Date(launch.$createdAt || (launch as any).createdAt || Date.now()).getTime() : undefined,
               boostCount: launch.boostCount || 0,
               viewCount: launch.viewCount || 0,
             }

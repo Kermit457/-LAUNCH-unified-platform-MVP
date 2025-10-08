@@ -28,6 +28,11 @@ export default function RaidDetailPage() {
         setLoading(true)
         const data = await getQuestById(params.id as string)
 
+        if (!data) {
+          setLoading(false)
+          return
+        }
+
         // Calculate total paid from approved submissions
         const submissions = await getSubmissions({
           questId: data.$id,
@@ -49,7 +54,7 @@ export default function RaidDetailPage() {
           maxParticipants: 100,
           views: 0,
           platforms: data.platforms || ['twitter'],
-          duration: new Date(data.deadline).toLocaleDateString(),
+          duration: data.deadline ? new Date(data.deadline).toLocaleDateString() : 'No deadline',
           rules: {
             platforms: data.platforms || ['twitter'],
             requiredTags: [],
@@ -258,7 +263,7 @@ export default function RaidDetailPage() {
               <div>
                 <div className="text-sm text-zinc-500 mb-2 uppercase tracking-wide">Required Tags</div>
                 <div className="flex flex-wrap gap-2">
-                  {raid.rules.requiredTags?.map((tag, i) => (
+                  {raid.rules.requiredTags?.map((tag: string, i: number) => (
                     <span key={i} className="px-3 py-1 rounded-lg bg-fuchsia-500/20 border border-fuchsia-500/40 text-fuchsia-300 text-sm font-medium">
                       {tag}
                     </span>

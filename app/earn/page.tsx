@@ -363,8 +363,10 @@ export default function EarnPage() {
             // const ownerId = selectedEntity?.type === 'user' ? (userId || 'anonymous') : selectedEntity?.type === 'project' ? selectedEntity.id : (userId || 'anonymous')
 
             // Navigate to correct route based on type
-            const route = data.type === 'raid' ? `/raids/${quest.$id}` : `/bounties/${quest.$id}`
-            router.push(route)
+            if (quest) {
+              const route = data.type === 'raid' ? `/raids/${quest.$id}` : `/bounties/${quest.$id}`
+              router.push(route)
+            }
             setIsCreateQuestOpen(false)
           } catch (error) {
             console.error('Failed to create quest:', error)
@@ -425,7 +427,9 @@ export default function EarnPage() {
 
             console.log('✅ Campaign created:', campaign)
             alert('🎉 Campaign created successfully!')
-            router.push(`/campaign/${campaign.$id}`)
+            if (campaign) {
+              router.push(`/campaign/${campaign.$id}`)
+            }
             setIsCreateCampaignOpen(false)
           } catch (error: any) {
             console.error('Failed to create campaign:', error)

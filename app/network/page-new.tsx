@@ -44,7 +44,7 @@ export default function NetworkPage() {
     async function fetchInviteSenders() {
       if (invites.length === 0) return
 
-      const senderIds = [...new Set(invites.map(inv => inv.senderId))]
+      const senderIds = Array.from(new Set(invites.map(inv => inv.senderId)))
       const users = await getUsersByIds(senderIds)
 
       const senderMap: Record<string, UserProfile> = {}

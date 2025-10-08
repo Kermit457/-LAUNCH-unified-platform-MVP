@@ -44,7 +44,7 @@ export default function SubmissionsPage() {
 
       try {
         setLoading(true)
-        const data = await getSubmissions({ userId: user.$id })
+        const data = await getSubmissions({ userId: (user as any).$id || (user as any).id })
         const converted = data.map(appwriteToDashboard)
         setSubmissions(converted)
       } catch (error) {

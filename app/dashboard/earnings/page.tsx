@@ -327,7 +327,7 @@ export default function EarningsPage() {
                     ${payout.net?.toFixed(2) || payout.amount.toFixed(2)}
                   </td>
                   <td className="py-3 text-center">
-                    <StatusBadge status={payout.status} />
+                    <StatusBadge status={payout.status as any} />
                   </td>
                   <td className="py-3 text-right text-sm text-white/50">
                     {new Date(payout.createdAt).toLocaleDateString()}
@@ -368,7 +368,7 @@ export default function EarningsPage() {
                     ${payout.net?.toFixed(2) || payout.amount.toFixed(2)}
                   </td>
                   <td className="py-3 text-center">
-                    <StatusBadge status={payout.status} />
+                    <StatusBadge status={payout.status as any} />
                   </td>
                   <td className="py-3">
                     {payout.txHash && (

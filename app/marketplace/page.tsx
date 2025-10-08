@@ -166,7 +166,7 @@ export default function MarketplacePage() {
                   {/* Options with tallies */}
                   <div className="space-y-2">
                     {prediction.options.map((option) => {
-                      const votes = prediction.tallies[option] || 0
+                      const votes = (prediction.tallies as any)[option] || 0
                       const percentage = totalVotes > 0 ? (votes / totalVotes) * 100 : 0
 
                       return (
