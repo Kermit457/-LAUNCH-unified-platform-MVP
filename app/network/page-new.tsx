@@ -6,13 +6,12 @@ import { useUser } from '@/hooks/useUser'
 import { useRealtimeNetworkInvites } from '@/hooks/useRealtimeNetworkInvites'
 import { InviteCard } from '@/components/network/InviteCard'
 import { ConnectionCard } from '@/components/network/ConnectionCard'
-import { ProfileCard } from '@/components/profile/ProfileCard'
 import { acceptNetworkInvite, rejectNetworkInvite, getUserConnections } from '@/lib/appwrite/services/network'
-import { getAllUsers, getUsersByIds } from '@/lib/appwrite/services/users'
+import { getUsersByIds } from '@/lib/appwrite/services/users'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/hooks/useToast'
 
-type Tab = 'discover' | 'invites' | 'connections'
+type Tab = 'invites' | 'connections' | 'discover'
 
 interface UserProfile {
   userId: string
@@ -27,11 +26,9 @@ interface UserProfile {
 export default function NetworkPage() {
   const { userId } = useUser()
   const { success, error: showError } = useToast()
-  const [activeTab, setActiveTab] = useState<Tab>('discover')
+  const [activeTab, setActiveTab] = useState<Tab>('invites')
   const [connections, setConnections] = useState<UserProfile[]>([])
   const [loadingConnections, setLoadingConnections] = useState(false)
-  const [allUsers, setAllUsers] = useState<any[]>([])
-  const [loadingUsers, setLoadingUsers] = useState(false)
 
   // Real-time pending invites
   const { invites, pendingCount, loading: invitesLoading } = useRealtimeNetworkInvites(
@@ -47,7 +44,7 @@ export default function NetworkPage() {
     async function fetchInviteSenders() {
       if (invites.length === 0) return
 
-      const senderIds = Array.from(new Set(invites.map(inv => inv.senderId)))
+      const senderIds = [...new Set(invites.map(inv => inv.senderId))]
       const users = await getUsersByIds(senderIds)
 
       const senderMap: Record<string, UserProfile> = {}
@@ -87,50 +84,6 @@ export default function NetworkPage() {
     fetchConnections()
   }, [userId, activeTab])
 
-  // Fetch all users for discovery
-  useEffect(() => {
-    async function fetchAllUsers() {
-      if (activeTab !== 'discover') return
-
-      try {
-        setLoadingUsers(true)
-        const users = await getAllUsers(100)
-
-        // Convert to ProfileCard format
-        const profiles = users.map(user => ({
-          id: user.$id,
-          userId: user.userId,
-          username: user.username,
-          displayName: user.displayName || user.username,
-          name: user.displayName || user.username,
-          handle: `@${user.username}`,
-          avatar: user.avatar,
-          verified: user.verified || false,
-          roles: user.roles || [],
-          mutuals: [],
-          bio: user.bio,
-          socials: {
-            twitter: user.twitter,
-            discord: user.discord,
-            website: user.website,
-          },
-          connected: connections.some(c => c.userId === user.userId),
-          inviteSent: false,
-          contributions: [],
-        }))
-
-        setAllUsers(profiles)
-      } catch (error) {
-        console.error('Failed to fetch users:', error)
-        setAllUsers([])
-      } finally {
-        setLoadingUsers(false)
-      }
-    }
-
-    fetchAllUsers()
-  }, [activeTab, connections])
-
   // Accept invite handler
   const handleAcceptInvite = async (inviteId: string) => {
     try {
@@ -151,7 +104,7 @@ export default function NetworkPage() {
       // Real-time hook will update the UI automatically
     } catch (error: any) {
       console.error('Failed to reject invite:', error)
-      showError(error.message || 'Failed to accept invite')
+      showError(error.message || 'Failed to reject invite')
     }
   }
 
@@ -179,20 +132,6 @@ export default function NetworkPage() {
 
       {/* Tabs */}
       <div className="flex items-center gap-2 mb-8 border-b border-white/10">
-        <button
-          onClick={() => setActiveTab('discover')}
-          className={`px-6 py-3 font-semibold transition-all relative ${
-            activeTab === 'discover'
-              ? 'text-white border-b-2 border-fuchsia-500'
-              : 'text-white/60 hover:text-white'
-          }`}
-        >
-          <span className="flex items-center gap-2">
-            <Users className="w-4 h-4" />
-            Discover
-          </span>
-        </button>
-
         <button
           onClick={() => setActiveTab('invites')}
           className={`px-6 py-3 font-semibold transition-all relative ${
@@ -224,6 +163,20 @@ export default function NetworkPage() {
             <Check className="w-4 h-4" />
             Connections
             <span className="text-xs text-white/60">({connections.length})</span>
+          </span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('discover')}
+          className={`px-6 py-3 font-semibold transition-all relative ${
+            activeTab === 'discover'
+              ? 'text-white border-b-2 border-fuchsia-500'
+              : 'text-white/60 hover:text-white'
+          }`}
+        >
+          <span className="flex items-center gap-2">
+            <Users className="w-4 h-4" />
+            Discover
           </span>
         </button>
       </div>
@@ -354,45 +307,17 @@ export default function NetworkPage() {
         </div>
       )}
 
-      {/* Discover Tab */}
+      {/* Discover Tab - Placeholder */}
       {activeTab === 'discover' && (
-        <div>
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-white">
-              Discover People
-              <span className="ml-3 text-lg font-normal text-white/60">
-                ({allUsers.length} users)
-              </span>
-            </h2>
-          </div>
-
-          {/* Loading State */}
-          {loadingUsers && (
-            <div className="text-center py-16">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-fuchsia-500 mx-auto mb-4"></div>
-              <p className="text-zinc-500">Loading users...</p>
-            </div>
-          )}
-
-          {/* Users Grid */}
-          {!loadingUsers && allUsers.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {allUsers.map(profile => (
-                <ProfileCard key={profile.id} data={profile} />
-              ))}
-            </div>
-          )}
-
-          {/* Empty State */}
-          {!loadingUsers && allUsers.length === 0 && (
-            <div className="text-center py-16 px-4 rounded-xl bg-white/5 border border-white/10">
-              <Users className="w-16 h-16 mx-auto mb-4 text-white/40" />
-              <h3 className="text-xl font-semibold text-white mb-2">No users found</h3>
-              <p className="text-white/60">
-                Check back later to discover new people to connect with.
-              </p>
-            </div>
-          )}
+        <div className="text-center py-16 px-4 rounded-xl bg-white/5 border border-white/10">
+          <Users className="w-16 h-16 mx-auto mb-4 text-white/40" />
+          <h3 className="text-xl font-semibold text-white mb-2">Discover People (Coming Soon)</h3>
+          <p className="text-white/60 mb-6">
+            This feature will help you find and connect with creators, streamers, and traders.
+          </p>
+          <p className="text-sm text-white/50">
+            For now, you can browse the full network on the main page.
+          </p>
         </div>
       )}
     </div>

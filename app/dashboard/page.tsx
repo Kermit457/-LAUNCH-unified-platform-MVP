@@ -13,6 +13,7 @@ import { CreateCampaignModal } from '@/components/campaigns/CreateCampaignModal'
 import { EntitySelectorModal, EntityOption } from '@/components/launch/EntitySelectorModal'
 import { CampaignType } from '@/types/quest'
 import { NetworkActivityWidget } from '@/components/dashboard/NetworkActivityWidget'
+import { NetworkInvitesWidget } from '@/components/dashboard/NetworkInvitesWidget'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import { useUser } from '@/hooks/useUser'
 import { ActivitiesFeed } from '@/components/ActivitiesFeed'
@@ -306,6 +307,9 @@ export default function DashboardOverview() {
           onViewAnalytics={() => router.push('/dashboard/analytics')}
           onOpenSettings={() => router.push('/dashboard/settings')}
         />
+
+      {/* Network Invites (if any) */}
+      <NetworkInvitesWidget />
 
       {/* Network Summary + Activity */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
