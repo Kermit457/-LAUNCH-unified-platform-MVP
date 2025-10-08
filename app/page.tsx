@@ -6,7 +6,6 @@ import { HeroSection } from '@/components/HeroSection'
 import { LiveTicker } from '@/components/LiveTicker'
 import { Flywheel } from '@/components/Flywheel'
 import { MarketsSplit } from '@/components/MarketsSplit'
-import { TrendingCarousel } from '@/components/TrendingCarousel'
 import { LiveFeedGrid } from '@/components/LiveFeedGrid'
 import { StickyCTA } from '@/components/StickyCTA'
 import { getDataLaunches } from '@/lib/data-source'
@@ -47,9 +46,6 @@ export default function HomePage() {
 
       {/* Markets Split - ICM vs CCM */}
       <MarketsSplit />
-
-      {/* Trending Carousel */}
-      <TrendingCarousel projects={launches} />
 
       {/* Live Feed Grid */}
       <LiveFeedGrid projects={launches} limit={6} />

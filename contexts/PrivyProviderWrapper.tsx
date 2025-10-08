@@ -6,8 +6,10 @@ import { ReactNode } from 'react'
 export function PrivyProviderWrapper({ children }: { children: ReactNode }) {
   const appId = process.env.NEXT_PUBLIC_PRIVY_APP_ID
 
+  // Graceful fallback during dev - don't crash the entire app
   if (!appId) {
-    throw new Error('NEXT_PUBLIC_PRIVY_APP_ID is not set')
+    console.warn('⚠️ NEXT_PUBLIC_PRIVY_APP_ID not found - running without auth')
+    return <>{children}</>
   }
 
   return (
@@ -17,7 +19,6 @@ export function PrivyProviderWrapper({ children }: { children: ReactNode }) {
         appearance: {
           theme: 'dark',
           accentColor: '#8B5CF6',
-          logo: '/logo.png',
         },
         loginMethods: ['email', 'twitter', 'wallet'],
         embeddedWallets: {

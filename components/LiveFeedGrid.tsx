@@ -1,6 +1,6 @@
 'use client'
 
-import { TrendingUp, DollarSign, Zap, Radio, Trophy, Target, Clock, Users, Eye } from 'lucide-react'
+import { TrendingUp, Zap, Radio } from 'lucide-react'
 import type { Project } from '@/types'
 import { BeliefScore } from './BeliefScore'
 import { cn } from '@/lib/cn'
@@ -48,7 +48,7 @@ export function LiveFeedGrid({ projects, limit = 6 }: LiveFeedGridProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {topProjects.map((project) => (
           <div
-            key={project.id}
+            key={project.id || (project as any).launchId || (project as any).$id}
             className="glass-launchos p-4 hover:border-launchos-fuchsia/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-neon-fuchsia group cursor-pointer"
           >
             {/* Header */}
