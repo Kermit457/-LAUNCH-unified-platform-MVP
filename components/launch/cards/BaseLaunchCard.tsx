@@ -28,9 +28,10 @@ export function BaseLaunchCard({ data, children, hasVoted = false, onUpvote, onC
     feesSharePct,
   } = data
 
-  const scopeColors = {
+  const scopeColors: Record<string, string> = {
     ICM: 'bg-fuchsia-500/20 text-fuchsia-300 border-fuchsia-500/40',
     CCM: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40',
+    MEME: 'bg-purple-500/20 text-purple-300 border-purple-500/40',
   }
 
   const statusColors = {

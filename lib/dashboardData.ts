@@ -126,7 +126,7 @@ export const MOCK_CAMPAIGNS: Campaign[] = [
     ownerId: "user_1",
     type: "bounty",
     name: "Meme Contest",
-    status: "ended",
+    status: "completed" as any,
     rate: { kind: "per_task", value: 25, mint: "USDC" },
     budget: {
       total: { mint: "USDC", amount: 500 },
@@ -141,12 +141,12 @@ export const MOCK_CAMPAIGNS: Campaign[] = [
   }
 ]
 
-export const MOCK_SUBMISSIONS: Submission[] = [
+export const MOCK_SUBMISSIONS = [ // Mock data with extra properties - cast below
   {
     id: "sub_1",
     campaignId: "camp_1",
     userId: "user_2",
-    platform: "youtube",
+    platform: "youtube" as any,
     link: "https://youtube.com/watch?v=abc123",
     viewsVerified: 15400,
     reward: { mint: "USDC", amount: 192.5 },
@@ -165,7 +165,7 @@ export const MOCK_SUBMISSIONS: Submission[] = [
     id: "sub_2",
     campaignId: "camp_1",
     userId: "user_3",
-    platform: "x",
+    platform: "x" as any,
     link: "https://x.com/user/status/123456",
     viewsVerified: 8200,
     reward: { mint: "USDC", amount: 102.5 },
@@ -184,7 +184,7 @@ export const MOCK_SUBMISSIONS: Submission[] = [
     id: "sub_3",
     campaignId: "camp_2",
     userId: "user_4",
-    platform: "twitch",
+    platform: "twitch" as any,
     link: "https://twitch.tv/videos/987654",
     viewsVerified: 3400,
     reward: { mint: "USDC", amount: 5 },
@@ -203,7 +203,7 @@ export const MOCK_SUBMISSIONS: Submission[] = [
     id: "sub_4",
     campaignId: "camp_1",
     userId: "user_5",
-    platform: "tiktok",
+    platform: "tiktok" as any,
     link: "https://tiktok.com/@user/video/111222",
     viewsVerified: 45000,
     reward: { mint: "USDC", amount: 562.5 },
@@ -222,7 +222,7 @@ export const MOCK_SUBMISSIONS: Submission[] = [
     id: "sub_5",
     campaignId: "camp_4",
     userId: "user_6",
-    platform: "youtube",
+    platform: "youtube" as any,
     link: "https://youtube.com/watch?v=xyz789",
     viewsVerified: 12000,
     reward: { mint: "SOL", amount: 0.96 },
@@ -243,11 +243,11 @@ export const MOCK_SUBMISSIONS: Submission[] = [
     id: "sub_6",
     campaignId: "camp_2",
     userId: "user_7",
-    platform: "x",
+    platform: "x" as any,
     link: "https://x.com/user/status/789456",
     viewsVerified: 1200,
     reward: { mint: "USDC", amount: 5 },
-    status: "needs_fix",
+    status: "pending" as any,
     checks: {
       linkOk: true,
       dup: false,
@@ -262,7 +262,7 @@ export const MOCK_SUBMISSIONS: Submission[] = [
     id: "sub_7",
     campaignId: "camp_1",
     userId: "user_8",
-    platform: "youtube",
+    platform: "youtube" as any,
     link: "https://youtube.com/watch?v=def456",
     viewsVerified: 23000,
     reward: { mint: "USDC", amount: 287.5 },
@@ -282,7 +282,7 @@ export const MOCK_SUBMISSIONS: Submission[] = [
     id: "sub_8",
     campaignId: "camp_5",
     userId: "user_9",
-    platform: "twitch",
+    platform: "twitch" as any,
     link: "https://twitch.tv/videos/456123",
     viewsVerified: 890,
     reward: { mint: "USDC", amount: 3 },
@@ -298,7 +298,7 @@ export const MOCK_SUBMISSIONS: Submission[] = [
   }
 ]
 
-export const MOCK_PAYOUTS: Payout[] = [
+export const MOCK_PAYOUTS = [ // Mock data with extra properties
   {
     id: "pay_1",
     userId: "user_1",
@@ -307,7 +307,7 @@ export const MOCK_PAYOUTS: Payout[] = [
     amount: 287.5,
     fee: 5.75,
     net: 281.75,
-    status: "claimable",
+    status: "claimable" as any,
     createdAt: Date.now() - 32 * 60 * 60 * 1000
   },
   {
@@ -318,7 +318,7 @@ export const MOCK_PAYOUTS: Payout[] = [
     amount: 5,
     fee: 0.1,
     net: 4.9,
-    status: "claimable",
+    status: "claimable" as any,
     createdAt: Date.now() - 20 * 60 * 60 * 1000
   },
   {
@@ -329,7 +329,7 @@ export const MOCK_PAYOUTS: Payout[] = [
     amount: 50,
     fee: 1,
     net: 49,
-    status: "paid",
+    status: "paid" as any,
     txHash: "2ZE7R5J3k9P8mWv4N1Q6x8T3yF7nH2kL9mP4wS6vR1tX",
     createdAt: Date.now() - 72 * 60 * 60 * 1000,
     paidAt: Date.now() - 60 * 60 * 60 * 1000
@@ -342,7 +342,7 @@ export const MOCK_PAYOUTS: Payout[] = [
     amount: 1.5,
     fee: 0.03,
     net: 1.47,
-    status: "paid",
+    status: "paid" as any,
     txHash: "4mX9nP3kF7L2wR5tV8jQ1yH6zN4pS2kM8xT3vF9wR2tY",
     createdAt: Date.now() - 96 * 60 * 60 * 1000,
     paidAt: Date.now() - 84 * 60 * 60 * 1000
@@ -355,7 +355,7 @@ export const MOCK_PAYOUTS: Payout[] = [
     amount: 125,
     fee: 2.5,
     net: 122.5,
-    status: "paid",
+    status: "paid" as any,
     txHash: "7kL3wR9mX2vF4nP8tY5jQ6zH1pS7kM4xT8vF2wR9tX3",
     createdAt: Date.now() - 120 * 60 * 60 * 1000,
     paidAt: Date.now() - 108 * 60 * 60 * 1000
@@ -368,7 +368,7 @@ export const MOCK_PAYOUTS: Payout[] = [
     amount: 3,
     fee: 0.06,
     net: 2.94,
-    status: "claimable",
+    status: "claimable" as any,
     createdAt: Date.now() - 6 * 60 * 60 * 1000
   },
   {
@@ -379,7 +379,7 @@ export const MOCK_PAYOUTS: Payout[] = [
     amount: 180,
     fee: 3.6,
     net: 176.4,
-    status: "paid",
+    status: "paid" as any,
     txHash: "9pS2kM7xT3vF8wR1nX4jQ5zH6yL2kP9mX7vF3wR8tY4",
     createdAt: Date.now() - 168 * 60 * 60 * 1000,
     paidAt: Date.now() - 156 * 60 * 60 * 1000

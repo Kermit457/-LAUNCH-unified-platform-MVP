@@ -70,7 +70,7 @@ export function CampaignTable({ campaigns, onPause, onResume, onEdit, onTopUp, o
                     <div className="text-xs text-white/50">{campaign.rate.mint}</div>
                   </td>
                   <td className="px-4 py-4">
-                    <StatusBadge status={campaign.status} />
+                    <StatusBadge status={campaign.status as any} />
                   </td>
                   <td className="px-4 py-4">
                     <span className="text-sm text-white/70">
@@ -106,7 +106,7 @@ export function CampaignTable({ campaigns, onPause, onResume, onEdit, onTopUp, o
                           <Play className="w-4 h-4" />
                         </button>
                       )}
-                      {campaign.status !== 'ended' && onEdit && (
+                      {(campaign.status as any) !== 'ended' && onEdit && (
                         <button
                           onClick={() => onEdit(campaign)}
                           className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition-all"
@@ -115,7 +115,7 @@ export function CampaignTable({ campaigns, onPause, onResume, onEdit, onTopUp, o
                           <Edit className="w-4 h-4" />
                         </button>
                       )}
-                      {campaign.status !== 'ended' && onTopUp && (
+                      {(campaign.status as any) !== 'ended' && onTopUp && (
                         <button
                           onClick={() => {
                             const amount = prompt('Enter top-up amount in USDC:')
@@ -228,14 +228,14 @@ export function SubmissionTable({
                   <span className="text-sm text-white">{sub.userId}</span>
                 </td>
                 <td className="px-4 py-4">
-                  <span className="text-sm text-white/70">{sub.campaignId || sub.questId || 'N/A'}</span>
+                  <span className="text-sm text-white/70">{sub.campaignId || (sub as any).questId || 'N/A'}</span>
                 </td>
                 <td className="px-4 py-4">
                   <span className="text-sm text-white/70 capitalize">-</span>
                 </td>
                 <td className="px-4 py-4" onClick={(e) => e.stopPropagation()}>
                   <a
-                    href={sub.mediaUrl}
+                    href={(sub as any).mediaUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1 text-sm text-purple-400 hover:text-purple-300"
@@ -250,7 +250,7 @@ export function SubmissionTable({
                   </div>
                 </td>
                 <td className="px-4 py-4">
-                  <span className="text-sm text-white font-medium">{(sub.views || 0).toLocaleString('en-US')}</span>
+                  <span className="text-sm text-white font-medium">{((sub as any).views || 0).toLocaleString('en-US')}</span>
                 </td>
                 <td className="px-4 py-4">
                   <div className="text-sm text-white font-medium">${(sub.earnings || 0).toFixed(2)}</div>
@@ -308,7 +308,7 @@ interface PayoutTableProps {
 
 export function PayoutTable({ payouts, selectedIds = [], onSelectChange }: PayoutTableProps) {
   const handleSelectAll = () => {
-    const claimable = payouts.filter(p => p.status === 'claimable')
+    const claimable = payouts.filter(p => (p.status as any) === 'claimable')
     if (selectedIds.length === claimable.length) {
       onSelectChange?.([])
     } else {
@@ -346,7 +346,7 @@ export function PayoutTable({ payouts, selectedIds = [], onSelectChange }: Payou
               <th className="px-4 py-3">
                 <input
                   type="checkbox"
-                  checked={selectedIds.length > 0 && selectedIds.length === payouts.filter(p => p.status === 'claimable').length}
+                  checked={selectedIds.length > 0 && selectedIds.length === payouts.filter(p => (p.status as any) === 'claimable').length}
                   onChange={handleSelectAll}
                   className="rounded border-white/20 bg-white/5"
                 />
@@ -364,7 +364,7 @@ export function PayoutTable({ payouts, selectedIds = [], onSelectChange }: Payou
             {payouts.map((payout) => (
               <tr key={payout.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
                 <td className="px-4 py-4">
-                  {payout.status === 'claimable' && (
+                  {(payout.status as any) === 'claimable' && (
                     <input
                       type="checkbox"
                       checked={selectedIds.includes(payout.id)}
@@ -374,36 +374,36 @@ export function PayoutTable({ payouts, selectedIds = [], onSelectChange }: Payou
                   )}
                 </td>
                 <td className="px-4 py-4">
-                  <span className="text-sm text-white capitalize">{payout.source}</span>
+                  <span className="text-sm text-white capitalize">{(payout as any).source}</span>
                 </td>
                 <td className="px-4 py-4">
                   <div className="flex items-center gap-2">
                     <span className="text-sm text-white font-medium">
-                      {payout.mint === 'USDC' ? `$${payout.amount.toFixed(2)}` : `${payout.amount.toFixed(3)} SOL`}
+                      {(payout as any).mint === 'USDC' ? `$${payout.amount.toFixed(2)}` : `${payout.amount.toFixed(3)} SOL`}
                     </span>
-                    {getMintBadge(payout.mint)}
+                    {getMintBadge((payout as any).mint)}
                   </div>
                 </td>
                 <td className="px-4 py-4">
                   <span className="text-sm text-white/60">
-                    {payout.fee ? (payout.mint === 'USDC' ? `$${payout.fee.toFixed(2)}` : `${payout.fee.toFixed(3)} SOL`) : '—'}
+                    {(payout as any).fee ? ((payout as any).mint === 'USDC' ? `$${(payout as any).fee.toFixed(2)}` : `${(payout as any).fee.toFixed(3)} SOL`) : '—'}
                   </span>
                 </td>
                 <td className="px-4 py-4">
                   <span className="text-sm text-white font-medium">
-                    {payout.net ? (payout.mint === 'USDC' ? `$${payout.net.toFixed(2)}` : `${payout.net.toFixed(3)} SOL`) : '—'}
+                    {(payout as any).net ? ((payout as any).mint === 'USDC' ? `$${(payout as any).net.toFixed(2)}` : `${(payout as any).net.toFixed(3)} SOL`) : '—'}
                   </span>
                 </td>
                 <td className="px-4 py-4">
-                  <StatusBadge status={payout.status} />
+                  <StatusBadge status={payout.status as any} />
                 </td>
                 <td className="px-4 py-4">
-                  {payout.txHash ? (
+                  {(payout as any).txHash ? (
                     <div className="flex items-center gap-2">
                       <code className="text-xs text-white/70 font-mono">
-                        {payout.txHash.slice(0, 4)}...{payout.txHash.slice(-4)}
+                        {(payout as any).txHash.slice(0, 4)}...{(payout as any).txHash.slice(-4)}
                       </code>
-                      <CopyButton text={payout.txHash} />
+                      <CopyButton text={(payout as any).txHash} />
                     </div>
                   ) : (
                     <span className="text-sm text-white/40">—</span>

@@ -23,7 +23,7 @@ async function checkUsersSchema() {
     const collection = await databases.getCollection(DB_ID, USERS_COLLECTION_ID)
 
     console.log('📋 Collection:', collection.name)
-    console.log('📊 Total documents:', collection.total)
+    console.log('📊 Total documents:', (collection as any).total)
     console.log('\n📝 Attributes:')
 
     // Required attributes for UserProfile interface

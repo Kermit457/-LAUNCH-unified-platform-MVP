@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { createContext, useContext, useState, useEffect, ReactNode, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { useUser } from '@/hooks/useUser'
 import { getUserProjects } from '@/lib/appwrite/services/launches'
@@ -31,7 +31,7 @@ interface DashboardContextType {
 
 const DashboardContext = createContext<DashboardContextType | undefined>(undefined)
 
-export function DashboardProvider({ children }: { children: ReactNode }) {
+function DashboardProviderInner({ children }: { children: ReactNode }) {
   const { userId } = useUser()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -53,8 +53,8 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
         const projects = await getUserProjects(userId)
         const projectList: LinkedProject[] = projects.map(p => ({
           id: p.$id,
-          title: p.tokenName,
-          logoUrl: p.tokenImage,
+          title: p.tokenName || 'Untitled',
+          logoUrl: p.tokenImage || '',
           scope: 'ICM' as 'ICM' | 'CCM', // TODO: Add scope field to schema
         }))
         setLinkedProjects(projectList)
@@ -122,6 +122,14 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
     <DashboardContext.Provider value={{ currentScope, linkedProjects, switchScope, isLoading }}>
       {children}
     </DashboardContext.Provider>
+  )
+}
+
+export function DashboardProvider({ children }: { children: ReactNode }) {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <DashboardProviderInner>{children}</DashboardProviderInner>
+    </Suspense>
   )
 }
 

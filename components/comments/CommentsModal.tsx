@@ -18,7 +18,7 @@ export function CommentsModal({ open, onClose, launchId, launchTitle }: Comments
   const [liveMessage, setLiveMessage] = useState('') // For screen reader announcements
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  const { comments, loading, addComment, deleteComment } = useComments(launchId)
+  const { comments, loading, addComment, removeComment } = useComments(launchId)
   const { isSignedIn, hasJoined, userName, signIn, joinLaunch } = useJoinGate(launchId)
 
   // Close on ESC key
@@ -50,7 +50,7 @@ export function CommentsModal({ open, onClose, launchId, launchTitle }: Comments
 
     if (!text.trim() || !userName) return
 
-    addComment(text.trim(), userName)
+    addComment(text.trim())
     setText('')
     setLiveMessage('Comment posted successfully')
 
@@ -59,7 +59,7 @@ export function CommentsModal({ open, onClose, launchId, launchTitle }: Comments
   }
 
   const handleDelete = (commentId: string) => {
-    deleteComment(commentId)
+    removeComment(commentId)
     setLiveMessage('Comment deleted')
     setTimeout(() => setLiveMessage(''), 2000)
   }

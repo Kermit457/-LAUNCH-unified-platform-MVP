@@ -92,7 +92,7 @@ export function useTokenData(mint?: string, pollMs = 15000) {
       try {
         setLoading(true)
         setError(null)
-        const d = await fetchTokenData(mint)
+        const d = await fetchTokenData(mint!)
         if (alive) {
           setData(d)
           setLoading(false)

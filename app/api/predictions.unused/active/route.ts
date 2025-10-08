@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { mockPredictions } from '@/lib/mock-data'
 
+export const dynamic = 'force-dynamic'
+
 // GET /api/predictions/active?streamer=<id>
 export async function GET(request: NextRequest) {
   try {

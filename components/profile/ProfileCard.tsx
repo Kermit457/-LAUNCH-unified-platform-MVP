@@ -73,7 +73,7 @@ export function ProfileCard({
     try {
       // Call Appwrite to send network invite
       await sendNetworkInvite({
-        senderId: user.$id,
+        senderId: (user as any).$id || (user as any).id,
         receiverId: targetUserId,
         message: `Hi ${displayName}, let's connect!`
       })
@@ -108,7 +108,7 @@ export function ProfileCard({
 
     try {
       // Create or get existing DM thread
-      const thread = await createDMThread(user.$id, targetUserId)
+      const thread = await createDMThread((user as any).$id || (user as any).id, targetUserId)
 
       // Navigate to dashboard/network with the thread open
       router.push(`/dashboard/network?thread=${thread.$id}`)

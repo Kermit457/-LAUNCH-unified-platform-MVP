@@ -2,7 +2,10 @@
 
 import { useState } from 'react'
 import { X } from 'lucide-react'
-import { Campaign, CampaignType, Mint } from '@/lib/types'
+import { Campaign } from '@/lib/types'
+
+type CampaignType = 'clipping' | 'bounty'
+type Mint = 'USDC' | 'SOL'
 import { cn } from '@/lib/cn'
 
 interface CampaignEditorProps {
@@ -22,7 +25,7 @@ export function CampaignEditor({ isOpen, onClose, campaign, onSave }: CampaignEd
     rateMint: campaign?.rate.mint || 'USDC' as Mint,
     budgetTotal: campaign?.budget.total.amount || 0,
     minDurationSec: campaign?.rules.minDurationSec || 0,
-    maxDurationSec: campaign?.rules.maxDurationSec || 0,
+    maxDurationSec: (campaign?.rules as any)?.maxDurationSec || 0,
     requiredTags: campaign?.rules.requiredTags?.join(', ') || '',
     requireWatermark: campaign?.rules.requireWatermark || false,
     endsAt: campaign?.endsAt ? new Date(campaign.endsAt).toISOString().split('T')[0] : ''
@@ -50,7 +53,7 @@ export function CampaignEditor({ isOpen, onClose, campaign, onSave }: CampaignEd
         maxDurationSec: formData.maxDurationSec || undefined,
         requiredTags: formData.requiredTags ? formData.requiredTags.split(',').map(t => t.trim()) : undefined,
         requireWatermark: formData.requireWatermark
-      },
+      } as any,
       endsAt: formData.endsAt ? new Date(formData.endsAt).getTime() : undefined
     })
     onClose()

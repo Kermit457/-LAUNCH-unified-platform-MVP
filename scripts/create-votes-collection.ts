@@ -100,7 +100,7 @@ async function createVotesCollection() {
       DB_ID,
       'votes',
       'idx_launchId',
-      'key',
+      'key' as any,
       ['launchId']
     )
     console.log('  ✓ launchId index created')
@@ -110,7 +110,7 @@ async function createVotesCollection() {
       DB_ID,
       'votes',
       'idx_userId',
-      'key',
+      'key' as any,
       ['userId']
     )
     console.log('  ✓ userId index created')
@@ -120,7 +120,7 @@ async function createVotesCollection() {
       DB_ID,
       'votes',
       'idx_launchId_userId',
-      'key',
+      'key' as any,
       ['launchId', 'userId']
     )
     console.log('  ✓ Composite index created')

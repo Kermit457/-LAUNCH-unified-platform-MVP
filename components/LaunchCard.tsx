@@ -1,6 +1,6 @@
 "use client"
 
-import { ArrowBigUp, MessageSquareText, Eye, ExternalLink, Rocket, Twitter } from "lucide-react";
+import { ArrowBigUp, MessageSquare, Eye, ExternalLink, Rocket, Twitter } from "lucide-react";
 
 type LaunchCardProps = {
   name: string
@@ -54,7 +54,7 @@ export default function LaunchCard({
             className="w-12 h-12 rounded-xl bg-neutral-800 hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-yellow-400 flex flex-col items-center justify-center transition-colors"
             aria-label="Comments"
           >
-            <MessageSquareText className="w-4 h-4" />
+            <MessageSquare className="w-4 h-4" />
             <span className="text-[10px] mt-0.5">{comments}</span>
           </button>
 

@@ -93,15 +93,15 @@ export function SubmissionViewer({
             </div>
             <div className="rounded-2xl bg-white/5 border border-white/10 p-4">
               <div className="text-sm text-white/60 mb-1">Reward</div>
-              <div className="text-lg font-bold text-white">{fmtMoney(submission.reward)}</div>
+              <div className="text-lg font-bold text-white">{fmtMoney((submission as any).reward)}</div>
             </div>
             <div className="rounded-2xl bg-white/5 border border-white/10 p-4">
               <div className="text-sm text-white/60 mb-1">Platform</div>
-              <div className="text-lg font-bold text-white capitalize">{submission.platform}</div>
+              <div className="text-lg font-bold text-white capitalize">{(submission as any).platform}</div>
             </div>
             <div className="rounded-2xl bg-white/5 border border-white/10 p-4">
               <div className="text-sm text-white/60 mb-1">Verified Views</div>
-              <div className="text-lg font-bold text-white">{submission.viewsVerified.toLocaleString('en-US')}</div>
+              <div className="text-lg font-bold text-white">{(submission as any).viewsVerified?.toLocaleString('en-US') || 0}</div>
             </div>
           </div>
 
@@ -109,12 +109,12 @@ export function SubmissionViewer({
           <div className="rounded-2xl bg-white/5 border border-white/10 p-5">
             <h3 className="text-lg font-semibold text-white mb-4">Auto-checks</h3>
             <div className="flex flex-wrap gap-2">
-              {getCheckBadge(submission.checks.linkOk, 'Link OK')}
-              {getCheckBadge(!submission.checks.dup, 'No Duplicate')}
-              {getCheckBadge(submission.checks.tagOk, 'Tags OK')}
-              {getCheckBadge(submission.checks.durationOk, 'Duration OK')}
-              {submission.checks.watermarkOk !== undefined && getCheckBadge(submission.checks.watermarkOk, 'Watermark OK')}
-              {submission.checks.banned !== undefined && getCheckBadge(!submission.checks.banned, 'Not Banned')}
+              {getCheckBadge((submission as any).checks?.linkOk, 'Link OK')}
+              {getCheckBadge(!(submission as any).checks?.dup, 'No Duplicate')}
+              {getCheckBadge((submission as any).checks?.tagOk, 'Tags OK')}
+              {getCheckBadge((submission as any).checks?.durationOk, 'Duration OK')}
+              {(submission as any).checks?.watermarkOk !== undefined && getCheckBadge((submission as any).checks.watermarkOk, 'Watermark OK')}
+              {(submission as any).checks?.banned !== undefined && getCheckBadge(!(submission as any).checks.banned, 'Not Banned')}
             </div>
           </div>
 
@@ -123,7 +123,7 @@ export function SubmissionViewer({
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-white">Content Link</h3>
               <a
-                href={submission.link}
+                href={(submission as any).link}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500 hover:bg-purple-600 text-white text-sm font-medium transition-all"
@@ -135,40 +135,40 @@ export function SubmissionViewer({
 
             {/* Iframe Preview */}
             <div className="rounded-xl bg-black/40 border border-white/10 aspect-video overflow-hidden">
-              {submission.platform === 'youtube' && submission.link.includes('youtube.com/watch?v=') && (
+              {(submission as any).platform === 'youtube' && (submission as any).link?.includes('youtube.com/watch?v=') && (
                 <iframe
-                  src={`https://www.youtube.com/embed/${new URL(submission.link).searchParams.get('v')}`}
+                  src={`https://www.youtube.com/embed/${new URL((submission as any).link).searchParams.get('v')}`}
                   className="w-full h-full"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                   title="YouTube video preview"
                 />
               )}
-              {submission.platform === 'twitch' && (
+              {(submission as any).platform === 'twitch' && (
                 <div className="flex items-center justify-center h-full text-white/60">
                   <div className="text-center">
                     <p className="mb-2">Twitch embed preview</p>
-                    <a href={submission.link} target="_blank" rel="noopener noreferrer" className="text-purple-400 underline">
+                    <a href={(submission as any).link} target="_blank" rel="noopener noreferrer" className="text-purple-400 underline">
                       View on Twitch
                     </a>
                   </div>
                 </div>
               )}
-              {submission.platform === 'x' && (
+              {(submission as any).platform === 'x' && (
                 <div className="flex items-center justify-center h-full text-white/60">
                   <div className="text-center">
                     <p className="mb-2">X/Twitter post</p>
-                    <a href={submission.link} target="_blank" rel="noopener noreferrer" className="text-purple-400 underline">
+                    <a href={(submission as any).link} target="_blank" rel="noopener noreferrer" className="text-purple-400 underline">
                       View on X
                     </a>
                   </div>
                 </div>
               )}
-              {submission.platform === 'tiktok' && (
+              {(submission as any).platform === 'tiktok' && (
                 <div className="flex items-center justify-center h-full text-white/60">
                   <div className="text-center">
                     <p className="mb-2">TikTok video</p>
-                    <a href={submission.link} target="_blank" rel="noopener noreferrer" className="text-purple-400 underline">
+                    <a href={(submission as any).link} target="_blank" rel="noopener noreferrer" className="text-purple-400 underline">
                       View on TikTok
                     </a>
                   </div>
@@ -178,10 +178,10 @@ export function SubmissionViewer({
           </div>
 
           {/* Existing Notes */}
-          {submission.notes && (
+          {(submission as any).notes && (
             <div className="rounded-2xl bg-yellow-500/10 border border-yellow-500/20 p-5">
               <h3 className="text-lg font-semibold text-yellow-300 mb-2">Notes</h3>
-              <p className="text-white/80">{submission.notes}</p>
+              <p className="text-white/80">{(submission as any).notes}</p>
             </div>
           )}
 

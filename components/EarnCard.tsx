@@ -120,7 +120,7 @@ export function EarnCard(props: EarnCardProps) {
     }
   }
 
-  const config = typeConfig[type]
+  const config = (typeConfig as any)[type] || typeConfig.quest
 
   const formatReward = () => {
     const symbol = reward.currency === 'USDC' ? '$' : reward.currency === 'LAUNCH' ? '$LAUNCH' : ''

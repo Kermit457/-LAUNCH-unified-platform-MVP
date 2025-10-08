@@ -15,9 +15,9 @@ if (!ENDPOINT || !PROJECT_ID || !API_KEY || !DB_ID || !LAUNCHES_COLLECTION_ID) {
 }
 
 const client = new Client()
-  .setEndpoint(ENDPOINT)
-  .setProject(PROJECT_ID)
-  .setKey(API_KEY)
+  .setEndpoint(ENDPOINT!)
+  .setProject(PROJECT_ID!)
+  .setKey(API_KEY!)
 
 const databases = new Databases(client)
 
@@ -27,8 +27,8 @@ async function addEconomicsToLaunches() {
 
     // Get all launches
     const response = await databases.listDocuments(
-      DB_ID,
-      LAUNCHES_COLLECTION_ID,
+      DB_ID!,
+      LAUNCHES_COLLECTION_ID!,
       [Query.limit(100)]
     )
 
@@ -48,8 +48,8 @@ async function addEconomicsToLaunches() {
         const feesSharePct = Math.floor(Math.random() * 20) + 5 // 5-25%
 
         await databases.updateDocument(
-          DB_ID,
-          LAUNCHES_COLLECTION_ID,
+          DB_ID!,
+          LAUNCHES_COLLECTION_ID!,
           launch.$id,
           {
             contributionPoolPct,

@@ -9,7 +9,7 @@ export function useUser() {
   // Get Twitter account data if linked
   const twitterAccount = user?.linkedAccounts?.find(
     (account: any) => account.type === 'twitter_oauth'
-  )
+  ) as any
 
   return {
     user,

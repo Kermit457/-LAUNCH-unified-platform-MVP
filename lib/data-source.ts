@@ -102,8 +102,7 @@ export async function getDataCampaigns(options?: CampaignsOptions): Promise<Camp
         title: 'Clip $COIN Launch Video',
         description: 'Create engaging short-form content showcasing the $COIN token launch.',
         type: 'bounty' as const,
-        creatorId: 'creator1',
-        creatorName: 'COIN Team',
+        createdBy: 'creator1' as any,
         budget: 2000,
         budgetPaid: 400,
         participants: 23,
@@ -115,7 +114,7 @@ export async function getDataCampaigns(options?: CampaignsOptions): Promise<Camp
         ratePerThousand: 20,
         totalViews: 45,
         platforms: ['youtube', 'tiktok', 'twitch']
-      }
+      } as any
     ]
   } else {
     console.log('🔥 Fetching campaigns from Appwrite')
@@ -137,7 +136,9 @@ export async function getDataCampaign(id: string): Promise<Campaign> {
     return campaign
   } else {
     console.log(`🔥 Fetching campaign ${id} from Appwrite`)
-    return await getCampaignById(id)
+    const campaign = await getCampaignById(id)
+    if (!campaign) throw new Error(`Campaign not found: ${id}`)
+    return campaign
   }
 }
 
@@ -170,8 +171,8 @@ export async function getDataQuests(options?: QuestsOptions): Promise<Quest[]> {
         requirements: ['Follow @coinproject', 'Like launch tweet', 'Retweet with tag'],
         platforms: ['twitter'],
         deadline: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
-        createdAt: new Date().toISOString()
-      }
+        $createdAt: new Date().toISOString()
+      } as any
     ]
   } else {
     console.log('🔥 Fetching quests from Appwrite')
@@ -193,7 +194,9 @@ export async function getDataQuest(id: string): Promise<Quest> {
     return quest
   } else {
     console.log(`🔥 Fetching quest ${id} from Appwrite`)
-    return await getQuestById(id)
+    const quest = await getQuestById(id)
+    if (!quest) throw new Error(`Quest not found: ${id}`)
+    return quest
   }
 }
 

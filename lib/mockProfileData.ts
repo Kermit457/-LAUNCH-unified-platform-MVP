@@ -85,7 +85,7 @@ export const mockProfiles: ProfileCardData[] = [
     tagline: '500+ NFT portfolio',
     contributions: [
       { name: 'ArtDAO', logo: 'https://api.dicebear.com/7.x/identicon/svg?seed=ART&backgroundColor=ec4899', role: 'Advisor' },
-      { name: 'NFTMarket', logo: 'https://api.dicebear.com/7.x/identicon/svg?seed=NFT&backgroundColor=a855f7', role: 'Investor' }
+      { name: 'NFTMarket', logo: 'https://api.dicebear.com/7.x/identicon/svg?seed=NFT&backgroundColor=a855f7', role: 'Advisor' as any }
     ],
     mutuals: [
       { username: 'degen_trader', avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=DT&backgroundColor=a855f7', sharedProject: 'ArtDAO' }

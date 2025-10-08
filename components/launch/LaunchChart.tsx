@@ -65,34 +65,34 @@ export function LaunchChart({ data }: LaunchChartProps) {
       <div className="rounded-xl bg-[#0D1220] border border-white/20 p-3 shadow-xl">
         <p className="text-xs text-white/60 mb-2">{date}</p>
         <div className="space-y-1 text-xs">
-          {point.convictionPct > 0 && (
+          {(point as any).convictionPct > 0 && (
             <div className="flex items-center justify-between gap-4">
               <span className="text-white/70">Conviction:</span>
-              <span className="text-fuchsia-400 font-semibold">{point.convictionPct.toFixed(1)}%</span>
+              <span className="text-fuchsia-400 font-semibold">{(point as any).convictionPct.toFixed(1)}%</span>
             </div>
           )}
-          {point.feesUsd > 0 && (
+          {(point as any).feesUsd > 0 && (
             <div className="flex items-center justify-between gap-4">
               <span className="text-white/70">Fees:</span>
-              <span className="text-emerald-400 font-semibold">${point.feesUsd.toLocaleString()}</span>
+              <span className="text-emerald-400 font-semibold">${(point as any).feesUsd.toLocaleString()}</span>
             </div>
           )}
-          {point.contributors > 0 && (
+          {(point as any).contributors > 0 && (
             <div className="flex items-center justify-between gap-4">
               <span className="text-white/70">Contributors:</span>
-              <span className="text-cyan-400 font-semibold">{point.contributors}</span>
+              <span className="text-cyan-400 font-semibold">{(point as any).contributors}</span>
             </div>
           )}
-          {point.boostsUsd > 0 && (
+          {(point as any).boostsUsd > 0 && (
             <div className="flex items-center justify-between gap-4">
               <span className="text-white/70">Boosts:</span>
-              <span className="text-amber-400 font-semibold">${point.boostsUsd.toLocaleString()}</span>
+              <span className="text-amber-400 font-semibold">${(point as any).boostsUsd.toLocaleString()}</span>
             </div>
           )}
-          {point.buybacksUsd > 0 && (
+          {(point as any).buybacksUsd > 0 && (
             <div className="flex items-center justify-between gap-4">
               <span className="text-white/70">Buybacks:</span>
-              <span className="text-purple-400 font-semibold">${point.buybacksUsd.toLocaleString()}</span>
+              <span className="text-purple-400 font-semibold">${(point as any).buybacksUsd.toLocaleString()}</span>
             </div>
           )}
           {point.views > 0 && (
@@ -101,22 +101,22 @@ export function LaunchChart({ data }: LaunchChartProps) {
               <span className="text-blue-400 font-semibold">{point.views.toLocaleString()}</span>
             </div>
           )}
-          {point.networkInteractions > 0 && (
+          {(point as any).networkInteractions > 0 && (
             <div className="flex items-center justify-between gap-4">
               <span className="text-white/70">Network Activity:</span>
-              <span className="text-pink-400 font-semibold">{point.networkInteractions.toLocaleString()}</span>
+              <span className="text-pink-400 font-semibold">{(point as any).networkInteractions.toLocaleString()}</span>
             </div>
           )}
-          {point.liveMinutes > 0 && (
+          {(point as any).liveMinutes > 0 && (
             <div className="flex items-center justify-between gap-4">
               <span className="text-white/70">Live Time:</span>
-              <span className="text-orange-400 font-semibold">{Math.round(point.liveMinutes / 60)}h</span>
+              <span className="text-orange-400 font-semibold">{Math.round((point as any).liveMinutes / 60)}h</span>
             </div>
           )}
-          {point.chatMessages > 0 && (
+          {(point as any).chatMessages > 0 && (
             <div className="flex items-center justify-between gap-4">
               <span className="text-white/70">Chat:</span>
-              <span className="text-indigo-400 font-semibold">{point.chatMessages.toLocaleString()}</span>
+              <span className="text-indigo-400 font-semibold">{(point as any).chatMessages.toLocaleString()}</span>
             </div>
           )}
           {point.upvotes > 0 && (

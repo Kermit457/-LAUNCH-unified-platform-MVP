@@ -20,9 +20,9 @@ if (!ENDPOINT || !PROJECT_ID || !API_KEY || !DB_ID || !LAUNCHES_COLLECTION_ID) {
 }
 
 const client = new Client()
-  .setEndpoint(ENDPOINT)
-  .setProject(PROJECT_ID)
-  .setKey(API_KEY)
+  .setEndpoint(ENDPOINT!)
+  .setProject(PROJECT_ID!)
+  .setKey(API_KEY!)
 
 const databases = new Databases(client)
 
@@ -33,8 +33,8 @@ async function addEconomicsAttributes() {
     // Add contributionPoolPct attribute
     console.log('Adding contributionPoolPct attribute...')
     await databases.createFloatAttribute(
-      DB_ID,
-      LAUNCHES_COLLECTION_ID,
+      DB_ID!,
+      LAUNCHES_COLLECTION_ID!,
       'contributionPoolPct',
       false, // not required
       undefined, // min
@@ -47,8 +47,8 @@ async function addEconomicsAttributes() {
     // Add feesSharePct attribute
     console.log('Adding feesSharePct attribute...')
     await databases.createFloatAttribute(
-      DB_ID,
-      LAUNCHES_COLLECTION_ID,
+      DB_ID!,
+      LAUNCHES_COLLECTION_ID!,
       'feesSharePct',
       false, // not required
       undefined, // min

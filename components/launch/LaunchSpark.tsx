@@ -22,8 +22,8 @@ export function LaunchSpark({ points }: LaunchSparkProps) {
   }
 
   // Determine color: green if latest conviction > prior day, else neutral
-  const latest = last7Days[last7Days.length - 1]
-  const prior = last7Days[last7Days.length - 2]
+  const latest = last7Days[last7Days.length - 1] as any
+  const prior = last7Days[last7Days.length - 2] as any
   const isUp = latest.convictionPct > prior.convictionPct
   const color = isUp ? 'rgb(16, 185, 129)' : 'rgba(255, 255, 255, 0.4)'
 
