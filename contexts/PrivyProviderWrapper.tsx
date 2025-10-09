@@ -13,7 +13,8 @@ export function PrivyProviderWrapper({ children }: { children: ReactNode }) {
   }
 
   // Additional validation to prevent invalid app ID errors
-  if (appId.length < 10 || !appId.match(/^[a-z0-9]+$/)) {
+  // Privy app IDs are typically 25+ characters with lowercase letters and numbers
+  if (appId.length < 20) {
     console.error('⚠️ Invalid NEXT_PUBLIC_PRIVY_APP_ID format - running without auth')
     return <>{children}</>
   }

@@ -11,7 +11,7 @@ import { useUser } from '@/hooks/useUser'
 export default function CampaignReviewPage() {
   const params = useParams()
   const router = useRouter()
-  const { userId } = useUser()
+  useUser()
   const [loading, setLoading] = useState(true)
   const [campaign, setCampaign] = useState<any>(null)
   const [submissions, setSubmissions] = useState<any[]>([])
@@ -28,6 +28,8 @@ export default function CampaignReviewPage() {
 
   useEffect(() => {
     async function fetchData() {
+      if (!params?.id) return
+
       try {
         setLoading(true)
 
@@ -52,10 +54,10 @@ export default function CampaignReviewPage() {
       }
     }
 
-    if (params.id) {
+    if (params?.id) {
       fetchData()
     }
-  }, [params.id])
+  }, [params?.id])
 
   const handleApprove = async () => {
     if (!approvalModal || !viewCount) return

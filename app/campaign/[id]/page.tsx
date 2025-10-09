@@ -63,6 +63,8 @@ export default function CampaignDetailPage() {
 
   useEffect(() => {
     async function fetchCampaign() {
+      if (!params?.id) return
+
       try {
         setLoading(true)
         const data = await getCampaignById(params.id as string)
@@ -131,10 +133,10 @@ export default function CampaignDetailPage() {
       }
     }
 
-    if (params.id) {
+    if (params?.id) {
       fetchCampaign()
     }
-  }, [params.id])
+  }, [params?.id])
 
   if (loading || !campaign) {
     return (
