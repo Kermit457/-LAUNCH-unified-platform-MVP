@@ -24,6 +24,8 @@ export default function BountyDetailPage() {
   // Fetch bounty data from Appwrite
   useEffect(() => {
     async function fetchBounty() {
+      if (!params?.id) return
+
       try {
         setLoading(true)
         const data = await getQuestById(params.id as string)
@@ -94,10 +96,10 @@ export default function BountyDetailPage() {
       }
     }
 
-    if (params.id) {
+    if (params?.id) {
       fetchBounty()
     }
-  }, [params.id])
+  }, [params?.id])
 
   // Handle submission
   const handleSubmit = async () => {

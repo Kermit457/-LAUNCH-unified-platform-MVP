@@ -21,12 +21,16 @@ export default function RaidDetailPage() {
   const [submitSuccess, setSubmitSuccess] = useState(false)
   const [submitError, setSubmitError] = useState('')
 
+  const raidId = params?.id as string
+
   // Fetch raid data from Appwrite
   useEffect(() => {
     async function fetchRaid() {
+      if (!raidId) return
+
       try {
         setLoading(true)
-        const data = await getQuestById(params.id as string)
+        const data = await getQuestById(raidId)
 
         if (!data) {
           setLoading(false)
@@ -73,7 +77,7 @@ export default function RaidDetailPage() {
         console.error('Failed to fetch raid:', error)
         // Fallback
         setRaid({
-          id: params.id,
+          id: raidId,
           type: 'raid' as const,
           title: 'Raid Not Found',
           description: 'This raid may have been removed or does not exist',
@@ -93,10 +97,10 @@ export default function RaidDetailPage() {
       }
     }
 
-    if (params.id) {
+    if (raidId) {
       fetchRaid()
     }
-  }, [params.id])
+  }, [raidId])
 
   // Handle submission
   const handleSubmit = async () => {

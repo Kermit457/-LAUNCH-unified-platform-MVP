@@ -6,7 +6,9 @@ import Link from 'next/link'
 
 export default function PublicProfilePage() {
   const params = useParams()
-  const handle = params.handle as string
+  const handle = params?.handle as string
+
+  if (!handle) return null
 
   return (
     <div className="min-h-screen pb-24">

@@ -17,6 +17,8 @@ export default function QuestDetailPage() {
   const router = useRouter()
 
   useEffect(() => {
+    if (!searchParams || !params?.id) return
+
     const type = searchParams.get('type')
     const id = params.id
 
@@ -30,7 +32,7 @@ export default function QuestDetailPage() {
       // No type specified - show error
       console.error('Legacy quest URL missing type parameter')
     }
-  }, [params.id, searchParams, router])
+  }, [params?.id, searchParams, router])
 
   // Show loading state while redirecting
   return (

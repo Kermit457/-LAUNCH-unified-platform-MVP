@@ -35,21 +35,25 @@ export default function LaunchDetailPage() {
 
   const { success, error: showError } = useToast()
 
+  const launchId = params?.id as string
+
   // Real-time comments
-  const { comments, loading: commentsLoading, addComment, upvoteComment } = useComments(params.id as string)
+  const { comments, loading: commentsLoading, addComment, upvoteComment } = useComments(launchId)
 
   // Real-time votes
-  const { voteCount, hasVoted, toggleVote, isVoting } = useRealtimeVotes(params.id as string)
+  const { voteCount, hasVoted, toggleVote, isVoting } = useRealtimeVotes(launchId)
 
   // Real-time tracking (views & boosts)
-  const { viewCount, boostCount, boost, isBoosting } = useRealtimeTracking(params.id as string, true)
+  const { viewCount, boostCount, boost, isBoosting } = useRealtimeTracking(launchId, true)
 
   // Fetch launch data from Appwrite
   useEffect(() => {
     async function fetchLaunch() {
+      if (!launchId) return
+
       try {
         setLoading(true)
-        const data = await getLaunch(params.id as string)
+        const data = await getLaunch(launchId)
 
         if (!data) {
           throw new Error('Launch not found')
@@ -83,7 +87,7 @@ export default function LaunchDetailPage() {
         console.error('Failed to fetch launch:', error)
         // Fallback to mock data
         setLaunch({
-          id: params.id,
+          id: launchId,
           title: 'Launch Not Found',
           subtitle: 'This launch may have been removed or does not exist',
           logoUrl: 'https://api.dicebear.com/7.x/identicon/svg?seed=404',
@@ -102,10 +106,10 @@ export default function LaunchDetailPage() {
       }
     }
 
-    if (params.id) {
+    if (launchId) {
       fetchLaunch()
     }
-  }, [params.id])
+  }, [launchId])
 
   const isICM = launch?.scope === 'ICM'
 

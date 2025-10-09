@@ -7,6 +7,17 @@ import SocialWidget from '@/components/SocialWidget'
 
 function WidgetContent() {
   const searchParams = useSearchParams()
+
+  if (!searchParams) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-transparent">
+        <div className="text-red-500 font-semibold">
+          Error: Invalid request
+        </div>
+      </div>
+    )
+  }
+
   const mode = searchParams.get('mode')
   const streamer = searchParams.get('streamer')
 
