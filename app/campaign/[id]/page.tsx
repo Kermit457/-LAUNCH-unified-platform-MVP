@@ -70,6 +70,37 @@ export default function CampaignDetailPage() {
         const data = await getCampaignById(params.id as string)
 
         if (!data) {
+          // Campaign not found - use mock data
+          console.warn('Campaign not found in Appwrite, using mock data')
+          setCampaign({
+            id: params.id as string,
+            title: 'Clip $COIN Launch Video',
+            description: 'Create engaging short-form content showcasing the $COIN token launch. Best clips will be featured across our social channels!',
+            pool: 2000,
+            paid: 400,
+            ratePerThousand: 20,
+            participants: 23,
+            views: 45,
+            platforms: ['youtube', 'tiktok', 'twitch'],
+            duration: '5 days left',
+            socialLinks: [
+              'https://twitter.com/coinproject',
+              'https://discord.gg/coinproject',
+              'https://t.me/coinproject'
+            ],
+            driveLink: 'https://drive.google.com/drive/folders/creator-kit',
+            rules: {
+              minViews: 1000,
+              minDuration: 30,
+              maxDuration: 180,
+              platforms: ['youtube', 'tiktok', 'twitch'],
+            },
+            examples: [
+              { id: '1', creator: '@creator1', views: 15000, earned: 300 },
+              { id: '2', creator: '@creator2', views: 12000, earned: 240 },
+              { id: '3', creator: '@creator3', views: 8500, earned: 170 },
+            ]
+          })
           setLoading(false)
           return
         }

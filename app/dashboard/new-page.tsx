@@ -1,15 +1,16 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import {
   TrendingUp, DollarSign, Zap, Target, Award, Users, Rocket, Video,
-  Trophy, LayoutGrid, Activity, ArrowUpRight, ChevronRight,
-  MessageSquare, Star, Eye, TrendingDown
+  Trophy, Network, LayoutGrid, Activity, ArrowUpRight, ChevronRight,
+  Bell, MessageSquare, Star, Flame, Eye, Clock, TrendingDown
 } from 'lucide-react'
-import { PremiumButton } from '@/components/design-system'
+import { PremiumButton, GlassCard } from '@/components/design-system'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
+import { useUser } from '@/hooks/useUser'
 
 interface StatCardProps {
   icon: any
@@ -80,7 +81,8 @@ const QuickLink = ({ icon: Icon, label, href, count, gradient }: QuickLinkProps)
 
 export default function UnifiedDashboard() {
   const router = useRouter()
-  const [stats] = useState({
+  const { userId } = useUser()
+  const [stats, setStats] = useState({
     totalEarnings: 5432.50,
     activeProjects: 12,
     networkSize: 248,

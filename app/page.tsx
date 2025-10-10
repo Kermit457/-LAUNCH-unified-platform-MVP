@@ -11,23 +11,21 @@ import {
   TrendingUp, Clock, Eye, MessageSquare
 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import PerfectHeroSection from '@/components/design-system/PerfectHeroSection';
-import DesignSystemShowcase, {
-  GlassCard,
-  PremiumButton
-} from '@/components/design-system/DesignSystemShowcase';
 import {
+  GlassCard,
+  PremiumButton,
+  PerfectHeroSection,
   SheetModal,
   StoriesViewer,
   InteractiveListItem,
-  SegmentedControl
-} from '@/components/design-system/MobileComponents';
+  SegmentedControl,
+  SectionDivider,
+  ScrollNavigation
+} from '@/components/design-system';
 
 // Import new sections
 import { NetworkSection } from '@/app/design-test/sections/NetworkSection';
 import { LiveSection } from '@/app/design-test/sections/LiveSection';
-import { SectionDivider } from '@/components/design-system/SectionDivider';
-import { ScrollNavigation } from '@/components/design-system/ScrollNavigation';
 
 // Section navigation config
 const navigationSections = [
@@ -570,18 +568,6 @@ export default function HomePage() {
               <NetworkSection />
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Design System Showcase */}
-      <section className="py-20 px-6 border-t border-zinc-900">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">
-            <span className="bg-gradient-to-r from-violet-400 to-fuchsia-400 text-transparent bg-clip-text">
-              Component Library
-            </span>
-          </h2>
-          <DesignSystemShowcase />
         </div>
       </section>
 

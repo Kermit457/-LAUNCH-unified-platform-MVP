@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from 'react'
 import { X, ExternalLink, TrendingUp, Users, DollarSign } from 'lucide-react'
-import { cn } from '@/lib/cn'
 
 interface StreamModalProps {
   isOpen: boolean
@@ -59,7 +58,7 @@ export function StreamModal({ isOpen, onClose, coin, formatMarketCap, formatTime
       onClick={handleBackdropClick}
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-200"
     >
-      <div className="relative w-full max-w-6xl max-h-[90vh] bg-gradient-to-br from-neutral-900 to-neutral-800 rounded-2xl border border-white/20 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+      <div className="relative w-full max-w-6xl max-h-[90vh] bg-design-zinc-950/95 backdrop-blur-xl rounded-2xl border border-design-zinc-800 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -82,7 +81,7 @@ export function StreamModal({ isOpen, onClose, coin, formatMarketCap, formatTime
           </div>
 
           {/* Info Sidebar */}
-          <div className="w-full lg:w-96 p-6 overflow-y-auto border-t lg:border-t-0 lg:border-l border-white/10">
+          <div className="w-full lg:w-96 p-6 overflow-y-auto border-t lg:border-t-0 lg:border-l border-design-zinc-800">
             {/* Token Header */}
             <div className="flex items-start gap-4 mb-6">
               {coin.image_uri ? (
@@ -115,15 +114,15 @@ export function StreamModal({ isOpen, onClose, coin, formatMarketCap, formatTime
 
             {/* Stats */}
             <div className="grid grid-cols-2 gap-4 mb-6">
-              <div className="p-4 rounded-xl bg-white/5 border border-white/10">
-                <div className="flex items-center gap-2 text-white/60 text-xs mb-1">
+              <div className="p-4 rounded-xl bg-design-zinc-900/50 border border-design-zinc-800">
+                <div className="flex items-center gap-2 text-design-zinc-400 text-xs mb-1">
                   <DollarSign className="w-3 h-3" />
                   Market Cap
                 </div>
                 <div className="text-lg font-bold text-green-400">{formatMarketCap(coin.usd_market_cap)}</div>
               </div>
-              <div className="p-4 rounded-xl bg-white/5 border border-white/10">
-                <div className="flex items-center gap-2 text-white/60 text-xs mb-1">
+              <div className="p-4 rounded-xl bg-design-zinc-900/50 border border-design-zinc-800">
+                <div className="flex items-center gap-2 text-design-zinc-400 text-xs mb-1">
                   <TrendingUp className="w-3 h-3" />
                   Created
                 </div>
@@ -133,7 +132,7 @@ export function StreamModal({ isOpen, onClose, coin, formatMarketCap, formatTime
 
             {/* Creator */}
             {coin.username && (
-              <div className="mb-6 p-4 rounded-xl bg-white/5 border border-white/10">
+              <div className="mb-6 p-4 rounded-xl bg-design-zinc-900/50 border border-design-zinc-800">
                 <h3 className="text-sm font-semibold text-white/80 mb-3">Creator</h3>
                 <div className="flex items-center gap-3">
                   {coin.profile_image ? (
@@ -161,7 +160,7 @@ export function StreamModal({ isOpen, onClose, coin, formatMarketCap, formatTime
                       href={coin.twitter}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-white/70 hover:text-white transition-all text-sm"
+                      className="flex items-center gap-2 px-4 py-2 rounded-lg bg-design-zinc-900/50 hover:bg-design-zinc-800 border border-design-zinc-800 hover:border-design-zinc-700 text-design-zinc-300 hover:text-white transition-all text-sm"
                     >
                       <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
@@ -175,7 +174,7 @@ export function StreamModal({ isOpen, onClose, coin, formatMarketCap, formatTime
                       href={coin.telegram}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-white/70 hover:text-white transition-all text-sm"
+                      className="flex items-center gap-2 px-4 py-2 rounded-lg bg-design-zinc-900/50 hover:bg-design-zinc-800 border border-design-zinc-800 hover:border-design-zinc-700 text-design-zinc-300 hover:text-white transition-all text-sm"
                     >
                       <Users className="w-4 h-4" />
                       Telegram
@@ -187,7 +186,7 @@ export function StreamModal({ isOpen, onClose, coin, formatMarketCap, formatTime
                       href={coin.website}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-white/70 hover:text-white transition-all text-sm"
+                      className="flex items-center gap-2 px-4 py-2 rounded-lg bg-design-zinc-900/50 hover:bg-design-zinc-800 border border-design-zinc-800 hover:border-design-zinc-700 text-design-zinc-300 hover:text-white transition-all text-sm"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <circle cx="12" cy="12" r="10"/>
@@ -206,7 +205,7 @@ export function StreamModal({ isOpen, onClose, coin, formatMarketCap, formatTime
               href={`https://pump.fun/${coin.mint}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-bold transition-all shadow-lg"
+              className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-design-purple-500 to-design-pink-600 hover:from-design-purple-600 hover:to-design-pink-700 text-white font-bold transition-all shadow-lg"
             >
               <ExternalLink className="w-4 h-4" />
               View on pump.fun

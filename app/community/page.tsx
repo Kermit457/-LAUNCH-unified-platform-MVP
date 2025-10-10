@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import {
   Users, MessageSquare, ThumbsUp, Share2, Eye, Zap,
@@ -151,8 +151,8 @@ const FEATURED_QUESTS = [
   }
 ]
 
-// Enhanced leaderboard data
-const leaderboardData = [
+// Mock fallback leaderboard data
+const mockLeaderboardData = [
   { rank: 1, name: 'sarah_crypto', points: 12847, avatar: 'S', tier: 'Diamond', change: '+2' },
   { rank: 2, name: 'crypto_king', points: 11923, avatar: 'C', tier: 'Diamond', change: '0' },
   { rank: 3, name: 'mike_trader', points: 10456, avatar: 'M', tier: 'Platinum', change: '+1' },
@@ -172,25 +172,25 @@ const MetricCard = ({ metric, index }: { metric: any; index: number }) => {
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ delay: index * 0.05 }}
-      whileHover={{ scale: 1.03, y: -4 }}
+      transition={{ delay: index * 0.02 }}
+      whileHover={{ scale: 1.02 }}
       className="relative group cursor-pointer"
     >
       {/* Glow effect */}
-      <div className={`absolute -inset-0.5 bg-gradient-to-r ${metric.color} rounded-xl opacity-0 group-hover:opacity-30 blur transition-opacity`} />
+      <div className={`absolute -inset-0.5 bg-gradient-to-r ${metric.color} rounded-lg opacity-0 group-hover:opacity-20 blur transition-opacity`} />
 
-      <GlassCard className="relative p-4 h-full">
-        <div className="flex items-start gap-3">
+      <GlassCard className="relative p-3 h-full">
+        <div className="flex flex-col items-center text-center gap-2">
           {/* Icon */}
-          <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${metric.color} flex items-center justify-center flex-shrink-0 shadow-lg`}>
-            <Icon className="w-5 h-5 text-white" />
+          <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${metric.color} flex items-center justify-center shadow-lg`}>
+            <Icon className="w-4 h-4 text-white" />
           </div>
 
           {/* Content */}
-          <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-bold text-white mb-1">{metric.title}</h3>
-            <p className="text-xs text-design-zinc-400 mb-1">{metric.description}</p>
-            <p className="text-[10px] text-design-zinc-500 italic">{metric.impact}</p>
+          <div>
+            <h3 className="text-xs font-bold text-white mb-0.5">{metric.title}</h3>
+            <p className="text-[10px] text-design-zinc-400 leading-tight">{metric.description}</p>
+            <p className="text-[9px] text-design-zinc-500 italic mt-1">{metric.impact}</p>
           </div>
         </div>
       </GlassCard>
@@ -322,6 +322,38 @@ function QuestCard({ quest }: { quest: typeof FEATURED_QUESTS[0] }) {
 
 export default function CommunityPage() {
   const [timeFilter, setTimeFilter] = useState('30 days')
+  const [leaderboardData, setLeaderboardData] = useState(mockLeaderboardData)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchLeaderboard() {
+      try {
+        setLoading(true)
+        const response = await fetch('/api/leaderboard?limit=50')
+        const data = await response.json()
+
+        if (data.leaderboard && data.leaderboard.length > 0) {
+          // Convert API data to component format
+          const formatted = data.leaderboard.map((user: any, index: number) => ({
+            rank: user.rank,
+            name: user.name || `User ${user.userId.slice(0, 8)}`,
+            points: user.totalEarnings || 0,
+            avatar: user.name ? user.name.charAt(0).toUpperCase() : 'U',
+            tier: user.totalEarnings > 10000 ? 'Diamond' : user.totalEarnings > 5000 ? 'Platinum' : user.totalEarnings > 2000 ? 'Gold' : 'Silver',
+            change: index < 3 ? '+1' : '0'
+          }))
+          setLeaderboardData(formatted)
+        }
+      } catch (error) {
+        console.error('Failed to fetch leaderboard:', error)
+        // Keep using mock data on error
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchLeaderboard()
+  }, [])
 
   return (
     <div className="min-h-screen pb-24 relative">
@@ -366,19 +398,19 @@ export default function CommunityPage() {
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="mb-16"
+        className="mb-12"
       >
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-white mb-3 flex items-center justify-center gap-3">
-            <Zap className="w-8 h-8 text-yellow-400" />
+        <div className="text-center mb-6">
+          <h2 className="text-2xl font-bold text-white mb-2 flex items-center justify-center gap-2">
+            <Zap className="w-6 h-6 text-yellow-400" />
             Community Power Index
           </h2>
-          <p className="text-design-zinc-400 text-lg max-w-2xl mx-auto">
+          <p className="text-design-zinc-400 text-sm max-w-2xl mx-auto">
             Every action fuels growth. The more you contribute, the higher you rise.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
           {contributionMetrics.map((metric, index) => (
             <MetricCard key={metric.id} metric={metric} index={index} />
           ))}
@@ -392,15 +424,8 @@ export default function CommunityPage() {
         viewport={{ once: true }}
         className="mb-16"
       >
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h2 className="text-3xl font-bold bg-gradient-to-r from-design-purple-400 to-design-fuchsia-400 bg-clip-text text-transparent mb-2">
-              Current Rankings
-            </h2>
-            <p className="text-design-zinc-400">Top contributors this season</p>
-          </div>
-
-          {/* Time Filter */}
+        {/* Time Filter */}
+        <div className="flex justify-end mb-6">
           <select
             value={timeFilter}
             onChange={(e) => setTimeFilter(e.target.value)}
@@ -412,52 +437,37 @@ export default function CommunityPage() {
           </select>
         </div>
 
-        {/* Custom Leaderboard Rows */}
-        <div className="space-y-3 mb-8">
-          {leaderboardData.map((user, index) => (
-            <LeaderboardRow key={user.rank} user={user} index={index} />
-          ))}
-        </div>
-
-        {/* Original Leaderboard Table */}
-        <div className="mb-8">
-          <h3 className="text-xl font-bold text-white mb-4">Full Leaderboard</h3>
-          <LeaderboardTable />
-        </div>
-
-        {/* View More Button */}
-        <div className="text-center">
-          <PremiumButton variant="secondary" className="px-8 py-3">
-            View Full Leaderboard
-          </PremiumButton>
-        </div>
-      </motion.section>
-
-      {/* Featured Quests */}
-      <motion.section
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        className="mb-16"
-      >
-        <div className="flex items-center justify-between mb-6">
+        {/* Two Column Leaderboards */}
+        <div className="grid lg:grid-cols-2 gap-6">
+          {/* Top Contributors */}
           <div>
-            <h2 className="section-heading mb-1">Featured Quests</h2>
-            <p className="text-design-zinc-400">Complete quests to boost your Impact Score</p>
+            <div className="mb-4">
+              <h2 className="text-2xl font-bold bg-gradient-to-r from-design-purple-400 to-design-fuchsia-400 bg-clip-text text-transparent mb-1">
+                Top Contributors
+              </h2>
+              <p className="text-design-zinc-400 text-sm">Top contributors this season</p>
+            </div>
+            <div className="space-y-3">
+              {leaderboardData.map((user, index) => (
+                <LeaderboardRow key={user.rank} user={user} index={index} />
+              ))}
+            </div>
           </div>
-          <PremiumButton
-            variant="secondary"
-            size="sm"
-            onClick={() => window.location.href = '/earn'}
-          >
-            View All Quests
-          </PremiumButton>
-        </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
-          {FEATURED_QUESTS.map(quest => (
-            <QuestCard key={quest.id} quest={quest} />
-          ))}
+          {/* Cult Leaders */}
+          <div>
+            <div className="mb-4">
+              <h2 className="text-2xl font-bold bg-gradient-to-r from-design-orange-400 to-design-red-400 bg-clip-text text-transparent mb-1">
+                Cult Leaders
+              </h2>
+              <p className="text-design-zinc-400 text-sm">Most influential creators</p>
+            </div>
+            <div className="space-y-3">
+              {leaderboardData.map((user, index) => (
+                <LeaderboardRow key={`cult-${user.rank}`} user={user} index={index} />
+              ))}
+            </div>
+          </div>
         </div>
       </motion.section>
 

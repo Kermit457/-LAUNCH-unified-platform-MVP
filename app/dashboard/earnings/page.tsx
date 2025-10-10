@@ -1,79 +1,59 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Wallet, Copy, Check, ExternalLink } from 'lucide-react'
-import { StatusBadge } from '@/components/dashboard/StatusBadge'
-import { CopyButton } from '@/components/common/CopyButton'
-import { cn } from '@/lib/utils'
+import { DollarSign, TrendingUp, Wallet, ArrowUpRight, Download, Check } from 'lucide-react'
+import { PremiumButton } from '@/components/design-system'
 import { useUser } from '@/hooks/useUser'
-import { getCampaigns } from '@/lib/appwrite/services/campaigns'
-import { getPayouts, claimPayout } from '@/lib/appwrite/services/payouts'
+import { getPayouts } from '@/lib/appwrite/services/payouts'
 import { getSubmissions } from '@/lib/appwrite/services/submissions'
-import type { Payout as AppwritePayout } from '@/lib/appwrite/services/payouts'
+import { motion } from 'framer-motion'
 
 type DashboardPayout = {
   id: string
   source: string
   amount: number
-  mint: 'USDC' | 'SOL'
-  fee?: number
-  net?: number
   status: string
   createdAt: number
-  paidAt?: number
-  txHash?: string
 }
 
 export default function EarningsPage() {
-  const { user, userId } = useUser()
-  const [selectedPayouts, setSelectedPayouts] = useState<Set<string>>(new Set())
+  const { userId } = useUser()
   const [loading, setLoading] = useState(true)
-  const [campaigns, setCampaigns] = useState<any[]>([])
   const [payouts, setPayouts] = useState<DashboardPayout[]>([])
   const [totalEarnings, setTotalEarnings] = useState(0)
-  const [earningsBySource, setEarningsBySource] = useState<{ [key: string]: number }>({})
+  const [claimable, setClaimable] = useState(0)
+  const [pending, setPending] = useState(0)
 
-  const walletAddress = 'FRENw...x7gH2'
-
-  // Fetch campaigns, payouts, and submissions
   useEffect(() => {
     async function fetchData() {
       if (!userId) return
 
       try {
         setLoading(true)
-        const [campaignsData, payoutsData, submissionsData] = await Promise.all([
-          getCampaigns({ createdBy: userId }),
+        const [payoutsData, submissionsData] = await Promise.all([
           getPayouts({ userId: userId }),
           getSubmissions({ userId: userId, status: 'approved' })
         ])
 
-        setCampaigns(campaignsData)
-
-        // Calculate total earnings from approved submissions
         const total = submissionsData.reduce((sum, sub) => sum + (sub.earnings || 0), 0)
         setTotalEarnings(total)
 
-        // Calculate earnings by source (campaign/quest)
-        const bySource: { [key: string]: number } = {}
-        submissionsData.forEach(sub => {
-          const source = sub.campaignId || sub.questId || 'Unknown'
-          bySource[source] = (bySource[source] || 0) + (sub.earnings || 0)
-        })
-        setEarningsBySource(bySource)
+        const claimableAmount = payoutsData
+          .filter(p => p.status === 'claimable')
+          .reduce((sum, p) => sum + (p.net || p.amount), 0)
+        setClaimable(claimableAmount)
 
-        // Convert Appwrite payouts to dashboard format
+        const pendingAmount = submissionsData
+          .filter(s => s.status === 'approved')
+          .reduce((sum, s) => sum + (s.earnings || 0), 0)
+        setPending(pendingAmount)
+
         const converted: DashboardPayout[] = payoutsData.map(p => ({
           id: p.$id,
           source: p.campaignId || p.questId || 'campaign',
-          amount: p.amount,
-          mint: p.currency === 'SOL' ? 'SOL' : 'USDC',
-          fee: p.fee,
-          net: p.net,
+          amount: p.net || p.amount,
           status: p.status,
           createdAt: new Date(p.$createdAt).getTime(),
-          paidAt: p.paidAt ? new Date(p.paidAt).getTime() : undefined,
-          txHash: p.txHash
         }))
         setPayouts(converted)
       } catch (error) {
@@ -84,309 +64,164 @@ export default function EarningsPage() {
     }
 
     fetchData()
-  }, [user])
-
-  // Calculate escrow summary per campaign
-  const escrowSummary = campaigns.map(c => ({
-    campaignName: c.title,
-    locked: 0,
-    available: (c.budget || 0) - (c.budgetPaid || 0),
-    spent: c.budgetPaid || 0,
-    mint: 'USDC' as const
-  }))
-
-  const claimablePayouts = payouts.filter(p => p.status === 'claimable')
-  const paidPayouts = payouts.filter(p => p.status === 'claimed' || p.status === 'paid')
-
-  const totalClaimable = claimablePayouts.reduce((sum, p) => sum + (p.net || p.amount), 0)
-
-  const togglePayout = (id: string) => {
-    const next = new Set(selectedPayouts)
-    if (next.has(id)) {
-      next.delete(id)
-    } else {
-      next.add(id)
-    }
-    setSelectedPayouts(next)
-  }
-
-  const toggleAll = () => {
-    if (selectedPayouts.size === claimablePayouts.length) {
-      setSelectedPayouts(new Set())
-    } else {
-      setSelectedPayouts(new Set(claimablePayouts.map(p => p.id)))
-    }
-  }
-
-  const handleClaimSelected = async () => {
-    if (selectedPayouts.size === 0) return
-
-    try {
-      // Claim each selected payout
-      await Promise.all(
-        Array.from(selectedPayouts).map(id => claimPayout(id))
-      )
-
-      // Update local state
-      setPayouts(payouts.map(p =>
-        selectedPayouts.has(p.id) ? { ...p, status: 'claimed', paidAt: Date.now() } : p
-      ))
-
-      // Clear selection
-      setSelectedPayouts(new Set())
-
-      alert(`Successfully claimed ${selectedPayouts.size} payout(s)!`)
-    } catch (error) {
-      console.error('Failed to claim payouts:', error)
-      alert('Failed to claim payouts. Please try again.')
-    }
-  }
-
-  const getMintBadge = (mint: 'USDC' | 'SOL') => (
-    <span className={cn(
-      'inline-flex items-center px-2 py-0.5 rounded text-xs font-bold',
-      mint === 'USDC' ? 'bg-green-500/20 text-green-300' : 'bg-purple-500/20 text-purple-300'
-    )}>
-      {mint}
-    </span>
-  )
+  }, [userId])
 
   if (loading) {
     return (
-      <div className="text-center py-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto mb-4"></div>
-        <p className="text-white/60">Loading earnings data...</p>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-design-purple-500 mx-auto mb-4"></div>
+          <p className="text-design-zinc-400">Loading earnings...</p>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-8">
-      {/* Wallet Panel */}
-      <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center">
-              <Wallet className="w-5 h-5 text-purple-300" />
-            </div>
-            <div>
-              <div className="text-sm text-white/50">Connected Wallet (Solana)</div>
-              <div className="flex items-center gap-2 mt-1">
-                <span className="font-mono text-white">{walletAddress}</span>
-                <CopyButton text="FRENwABC123XYZ789x7gH2" />
-              </div>
-            </div>
+    <div className="space-y-6">
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-gradient-to-br from-design-purple-600/20 via-design-pink-600/20 to-design-purple-800/20 rounded-2xl border border-design-zinc-800 p-8"
+      >
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-white mb-2">Earnings</h1>
+            <p className="text-design-zinc-400">Track your payments and claim rewards</p>
           </div>
-          <button className="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-white text-sm font-medium transition-all flex items-center gap-2">
-            <ExternalLink className="w-4 h-4" />
-            View on Solscan
-          </button>
+          <PremiumButton variant="primary">
+            <Wallet size={16} />
+            Connect Wallet
+          </PremiumButton>
         </div>
+      </motion.div>
+
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="bg-design-zinc-900/50 rounded-xl border border-design-zinc-800 p-6"
+        >
+          <div className="flex items-center gap-3 mb-3">
+            <div className="p-2 rounded-lg bg-green-500/10 border border-green-500/20">
+              <DollarSign className="w-5 h-5 text-green-400" />
+            </div>
+            <h3 className="font-semibold text-white">Total Earnings</h3>
+          </div>
+          <div className="text-3xl font-bold text-white mb-1">${totalEarnings.toLocaleString()}</div>
+          <div className="flex items-center gap-1 text-sm text-green-400">
+            <ArrowUpRight className="w-4 h-4" />
+            <span>All-time</span>
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="bg-design-zinc-900/50 rounded-xl border border-design-zinc-800 p-6"
+        >
+          <div className="flex items-center gap-3 mb-3">
+            <div className="p-2 rounded-lg bg-design-purple-500/10 border border-design-purple-500/20">
+              <TrendingUp className="w-5 h-5 text-design-purple-400" />
+            </div>
+            <h3 className="font-semibold text-white">Claimable</h3>
+          </div>
+          <div className="text-3xl font-bold text-white mb-1">${claimable.toLocaleString()}</div>
+          <PremiumButton variant="ghost" className="mt-2" size="sm">
+            Claim Now
+          </PremiumButton>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="bg-design-zinc-900/50 rounded-xl border border-design-zinc-800 p-6"
+        >
+          <div className="flex items-center gap-3 mb-3">
+            <div className="p-2 rounded-lg bg-orange-500/10 border border-orange-500/20">
+              <Wallet className="w-5 h-5 text-orange-400" />
+            </div>
+            <h3 className="font-semibold text-white">Pending</h3>
+          </div>
+          <div className="text-3xl font-bold text-white mb-1">${pending.toLocaleString()}</div>
+          <p className="text-sm text-design-zinc-500">Under review</p>
+        </motion.div>
       </div>
 
-      {/* Total Earnings Summary */}
-      <div className="bg-gradient-to-r from-purple-500/10 via-fuchsia-500/10 to-cyan-500/10 backdrop-blur-sm border border-white/10 rounded-xl p-6">
-        <h3 className="text-lg font-bold text-white mb-4">Total Earnings</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-white/5 rounded-lg p-4">
-            <div className="text-sm text-white/50 mb-1">Total Earned</div>
-            <div className="text-3xl font-bold bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
-              ${totalEarnings.toFixed(2)}
-            </div>
-          </div>
-          <div className="bg-white/5 rounded-lg p-4">
-            <div className="text-sm text-white/50 mb-1">Claimable</div>
-            <div className="text-3xl font-bold text-cyan-400">
-              ${totalClaimable.toFixed(2)}
-            </div>
-          </div>
-          <div className="bg-white/5 rounded-lg p-4">
-            <div className="text-sm text-white/50 mb-1">Total Claimed</div>
-            <div className="text-3xl font-bold text-white">
-              ${paidPayouts.reduce((sum, p) => sum + (p.net || p.amount), 0).toFixed(2)}
-            </div>
-          </div>
+      {/* Payouts Table */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+        className="bg-design-zinc-900/50 rounded-xl border border-design-zinc-800 overflow-hidden"
+      >
+        <div className="p-6 border-b border-design-zinc-800 flex items-center justify-between">
+          <h2 className="text-xl font-bold text-white">Recent Payouts</h2>
+          <PremiumButton variant="ghost" size="sm">
+            <Download size={16} />
+            Export
+          </PremiumButton>
         </div>
 
-        {/* Earnings Breakdown */}
-        {Object.keys(earningsBySource).length > 0 && (
-          <div className="mt-6">
-            <h4 className="text-sm font-semibold text-white/70 mb-3">Earnings by Source</h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-              {Object.entries(earningsBySource).map(([source, amount]) => (
-                <div key={source} className="bg-white/5 rounded-lg p-3 flex items-center justify-between">
-                  <span className="text-sm text-white/70 truncate flex-1">{source}</span>
-                  <span className="text-sm font-bold text-green-400 ml-2">${amount.toFixed(2)}</span>
-                </div>
-              ))}
+        {payouts.length === 0 ? (
+          <div className="p-12 text-center">
+            <div className="w-16 h-16 bg-design-zinc-800 rounded-full flex items-center justify-center mx-auto mb-4">
+              <DollarSign className="w-8 h-8 text-design-zinc-600" />
             </div>
+            <p className="text-design-zinc-400 mb-2">No payouts yet</p>
+            <p className="text-sm text-design-zinc-600">Complete tasks to earn rewards</p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-design-zinc-800">
+                  <th className="text-left p-4 text-sm font-medium text-design-zinc-400">Date</th>
+                  <th className="text-left p-4 text-sm font-medium text-design-zinc-400">Source</th>
+                  <th className="text-right p-4 text-sm font-medium text-design-zinc-400">Amount</th>
+                  <th className="text-right p-4 text-sm font-medium text-design-zinc-400">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {payouts.map((payout, i) => (
+                  <motion.tr
+                    key={payout.id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.05 }}
+                    className="border-b border-design-zinc-800/50 hover:bg-design-zinc-800/30 transition-colors"
+                  >
+                    <td className="p-4 text-sm text-design-zinc-300">
+                      {new Date(payout.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="p-4 text-sm text-white font-medium">{payout.source}</td>
+                    <td className="p-4 text-right text-sm font-bold text-green-400">
+                      ${payout.amount.toLocaleString()}
+                    </td>
+                    <td className="p-4 text-right">
+                      <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
+                        payout.status === 'paid' || payout.status === 'claimed'
+                          ? 'bg-green-500/20 text-green-400'
+                          : payout.status === 'claimable'
+                          ? 'bg-design-purple-500/20 text-design-purple-400'
+                          : 'bg-orange-500/20 text-orange-400'
+                      }`}>
+                        {(payout.status === 'paid' || payout.status === 'claimed') && <Check className="w-3 h-3" />}
+                        {payout.status}
+                      </span>
+                    </td>
+                  </motion.tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
-      </div>
-
-      {/* Escrow Summary */}
-      <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6">
-        <h3 className="text-lg font-bold text-white mb-4">Campaign Escrow Summary</h3>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-white/10">
-                <th className="text-left text-xs font-medium text-white/50 pb-3">Campaign</th>
-                <th className="text-right text-xs font-medium text-white/50 pb-3">Locked</th>
-                <th className="text-right text-xs font-medium text-white/50 pb-3">Available</th>
-                <th className="text-right text-xs font-medium text-white/50 pb-3">Spent</th>
-              </tr>
-            </thead>
-            <tbody>
-              {escrowSummary.map((row, i) => (
-                <tr key={i} className="border-b border-white/5">
-                  <td className="py-3 text-sm text-white">{row.campaignName}</td>
-                  <td className="py-3 text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      <span className="text-sm text-white">${row.locked.toFixed(2)}</span>
-                      {getMintBadge(row.mint)}
-                    </div>
-                  </td>
-                  <td className="py-3 text-right">
-                    <span className="text-sm text-green-300">${row.available.toFixed(2)}</span>
-                  </td>
-                  <td className="py-3 text-right">
-                    <span className="text-sm text-white/50">${row.spent.toFixed(2)}</span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* Claimable Payouts */}
-      <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-bold text-white">Claimable Payouts</h3>
-          <div className="flex items-center gap-3">
-            <span className="text-sm text-white/50">
-              Total: <span className="text-green-300 font-bold">${totalClaimable.toFixed(2)}</span>
-            </span>
-            <button
-              onClick={handleClaimSelected}
-              disabled={selectedPayouts.size === 0}
-              className={cn(
-                'px-4 py-2 rounded-lg font-medium text-sm transition-all',
-                selectedPayouts.size > 0
-                  ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:opacity-90'
-                  : 'bg-white/5 text-white/30 cursor-not-allowed'
-              )}
-            >
-              Claim Selected ({selectedPayouts.size})
-            </button>
-          </div>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-white/10">
-                <th className="w-8 pb-3">
-                  <input
-                    type="checkbox"
-                    checked={selectedPayouts.size === claimablePayouts.length && claimablePayouts.length > 0}
-                    onChange={toggleAll}
-                    className="rounded border-white/20 bg-white/5"
-                  />
-                </th>
-                <th className="text-left text-xs font-medium text-white/50 pb-3">Source</th>
-                <th className="text-right text-xs font-medium text-white/50 pb-3">Amount</th>
-                <th className="text-right text-xs font-medium text-white/50 pb-3">Fee</th>
-                <th className="text-right text-xs font-medium text-white/50 pb-3">Net</th>
-                <th className="text-center text-xs font-medium text-white/50 pb-3">Status</th>
-                <th className="text-right text-xs font-medium text-white/50 pb-3">Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {claimablePayouts.map((payout) => (
-                <tr key={payout.id} className="border-b border-white/5 hover:bg-white/5">
-                  <td className="py-3">
-                    <input
-                      type="checkbox"
-                      checked={selectedPayouts.has(payout.id)}
-                      onChange={() => togglePayout(payout.id)}
-                      className="rounded border-white/20 bg-white/5"
-                    />
-                  </td>
-                  <td className="py-3 text-sm text-white capitalize">{payout.source}</td>
-                  <td className="py-3 text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      <span className="text-sm text-white">${payout.amount.toFixed(2)}</span>
-                      {getMintBadge(payout.mint)}
-                    </div>
-                  </td>
-                  <td className="py-3 text-right text-sm text-white/50">
-                    ${payout.fee?.toFixed(2) || '0.00'}
-                  </td>
-                  <td className="py-3 text-right text-sm text-green-300 font-medium">
-                    ${payout.net?.toFixed(2) || payout.amount.toFixed(2)}
-                  </td>
-                  <td className="py-3 text-center">
-                    <StatusBadge status={payout.status as any} />
-                  </td>
-                  <td className="py-3 text-right text-sm text-white/50">
-                    {new Date(payout.createdAt).toLocaleDateString()}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* Payment History */}
-      <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6">
-        <h3 className="text-lg font-bold text-white mb-4">Payment History</h3>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-white/10">
-                <th className="text-left text-xs font-medium text-white/50 pb-3">Source</th>
-                <th className="text-right text-xs font-medium text-white/50 pb-3">Amount</th>
-                <th className="text-right text-xs font-medium text-white/50 pb-3">Net</th>
-                <th className="text-center text-xs font-medium text-white/50 pb-3">Status</th>
-                <th className="text-left text-xs font-medium text-white/50 pb-3">Transaction</th>
-                <th className="text-right text-xs font-medium text-white/50 pb-3">Paid Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {paidPayouts.map((payout) => (
-                <tr key={payout.id} className="border-b border-white/5">
-                  <td className="py-3 text-sm text-white capitalize">{payout.source}</td>
-                  <td className="py-3 text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      <span className="text-sm text-white">${payout.amount.toFixed(2)}</span>
-                      {getMintBadge(payout.mint)}
-                    </div>
-                  </td>
-                  <td className="py-3 text-right text-sm text-white">
-                    ${payout.net?.toFixed(2) || payout.amount.toFixed(2)}
-                  </td>
-                  <td className="py-3 text-center">
-                    <StatusBadge status={payout.status as any} />
-                  </td>
-                  <td className="py-3">
-                    {payout.txHash && (
-                      <div className="flex items-center gap-2">
-                        <span className="font-mono text-xs text-white/50">{payout.txHash.slice(0, 8)}...</span>
-                        <CopyButton text={payout.txHash} />
-                      </div>
-                    )}
-                  </td>
-                  <td className="py-3 text-right text-sm text-white/50">
-                    {payout.paidAt ? new Date(payout.paidAt).toLocaleDateString() : '—'}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      </motion.div>
     </div>
   )
 }

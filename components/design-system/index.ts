@@ -7,6 +7,8 @@
 export {
   GlassCard,
   PremiumButton,
+  Input,
+  Label,
   FloatingTabBar,
   default as DesignSystemShowcase
 } from './DesignSystemShowcase'

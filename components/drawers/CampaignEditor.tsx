@@ -76,15 +76,15 @@ export function CampaignEditor({ isOpen, onClose, campaign, onSave }: CampaignEd
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
 
       {/* Drawer */}
-      <div className="relative w-full max-w-2xl h-full bg-neutral-900 shadow-2xl overflow-y-auto">
+      <div className="relative w-full max-w-2xl h-full bg-design-zinc-950/95 backdrop-blur-xl shadow-2xl overflow-y-auto border-l border-design-zinc-800">
         {/* Header */}
-        <div className="sticky top-0 z-10 bg-neutral-900 border-b border-white/10 px-6 py-4 flex items-center justify-between">
+        <div className="sticky top-0 z-10 bg-design-zinc-950/95 backdrop-blur-xl border-b border-design-zinc-800 px-6 py-4 flex items-center justify-between">
           <h2 className="text-2xl font-bold text-white">
             {campaign ? 'Edit Campaign' : 'Create Campaign'}
           </h2>
           <button
             onClick={onClose}
-            className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition-all"
+            className="p-2 rounded-lg hover:bg-design-zinc-800/50 text-design-zinc-400 hover:text-white transition-all"
           >
             <X className="w-5 h-5" />
           </button>

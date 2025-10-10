@@ -1,26 +1,8 @@
 'use client'
 
-import { useState } from 'react'
-import { Rocket } from 'lucide-react'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+import { useState, useEffect } from 'react'
+import { Rocket, X, ChevronDown } from 'lucide-react'
+import { PremiumButton, Input, Label } from '@/components/design-system'
 import type { Project, ProjectType, Status } from '@/types'
 
 interface SubmitLaunchModalProps {
@@ -41,6 +23,12 @@ const PROJECT_TYPES: { value: ProjectType; label: string }[] = [
 
 const PLATFORMS = ['twitter', 'discord', 'telegram', 'youtube', 'twitch', 'tiktok', 'obs']
 
+const STATUSES: { value: Status; label: string }[] = [
+  { value: 'live', label: '🟢 Live' },
+  { value: 'upcoming', label: '🟡 Upcoming' },
+  { value: 'ended', label: '⚫ Ended' },
+]
+
 export function SubmitLaunchModal({ open, onOpenChange, onSubmit }: SubmitLaunchModalProps) {
   const [formData, setFormData] = useState({
     title: '',
@@ -55,6 +43,23 @@ export function SubmitLaunchModal({ open, onOpenChange, onSubmit }: SubmitLaunch
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
+
+  // Close on ESC key
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && open) {
+        handleClose()
+      }
+    }
+    if (open) {
+      window.addEventListener('keydown', handleEsc)
+      document.body.style.overflow = 'hidden'
+    }
+    return () => {
+      window.removeEventListener('keydown', handleEsc)
+      document.body.style.overflow = 'unset'
+    }
+  }, [open])
 
   const handleInputChange = (field: string, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }))
@@ -109,7 +114,7 @@ export function SubmitLaunchModal({ open, onOpenChange, onSubmit }: SubmitLaunch
 
     // Generate new project
     const newProject: Project = {
-      id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      id: `${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
       type: formData.type,
       title: formData.title,
       subtitle: formData.subtitle,
@@ -159,208 +164,234 @@ export function SubmitLaunchModal({ open, onOpenChange, onSubmit }: SubmitLaunch
     onOpenChange(false)
   }
 
+  if (!open) return null
+
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Rocket className="w-6 h-6 text-purple-400" />
-            Submit Your Project
-          </DialogTitle>
-          <DialogDescription>
-            Share your launch, campaign, raid, or any project with the $LAUNCH community
-          </DialogDescription>
-        </DialogHeader>
+    <>
+      {/* Backdrop */}
+      <div
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 animate-in fade-in duration-200"
+        onClick={handleClose}
+      />
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Title */}
-          <div className="space-y-2">
-            <Label htmlFor="title" className="text-white">
-              Title <span className="text-red-400">*</span>
-            </Label>
-            <Input
-              id="title"
-              value={formData.title}
-              onChange={(e) => handleInputChange('title', e.target.value)}
-              placeholder="e.g., $MEME Token Launch"
-              maxLength={80}
-              className={errors.title ? 'border-red-500' : ''}
-            />
-            <div className="flex justify-between text-xs">
-              {errors.title && <span className="text-red-400">{errors.title}</span>}
-              <span className="text-white/40 ml-auto">{formData.title.length}/80</span>
-            </div>
-          </div>
-
-          {/* Subtitle */}
-          <div className="space-y-2">
-            <Label htmlFor="subtitle" className="text-white">
-              Subtitle <span className="text-red-400">*</span>
-            </Label>
-            <Input
-              id="subtitle"
-              value={formData.subtitle}
-              onChange={(e) => handleInputChange('subtitle', e.target.value)}
-              placeholder="e.g., Community-driven meme coin with revolutionary tokenomics"
-              maxLength={120}
-              className={errors.subtitle ? 'border-red-500' : ''}
-            />
-            <div className="flex justify-between text-xs">
-              {errors.subtitle && <span className="text-red-400">{errors.subtitle}</span>}
-              <span className="text-white/40 ml-auto">{formData.subtitle.length}/120</span>
-            </div>
-          </div>
-
-          {/* Type & Status Row */}
-          <div className="grid grid-cols-2 gap-4">
-            {/* Type */}
-            <div className="space-y-2">
-              <Label htmlFor="type" className="text-white">
-                Type <span className="text-red-400">*</span>
-              </Label>
-              <Select
-                value={formData.type}
-                onValueChange={(value) => handleInputChange('type', value as ProjectType)}
+      {/* Modal */}
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
+        <div className="w-full max-w-lg max-h-[90vh] overflow-y-auto bg-design-zinc-950/95 backdrop-blur-xl rounded-2xl border border-design-zinc-800 shadow-2xl pointer-events-auto animate-in zoom-in-95 duration-200">
+          {/* Header */}
+          <div className="sticky top-0 bg-design-zinc-950/95 backdrop-blur-xl border-b border-design-zinc-800 p-4 z-10">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Rocket className="w-5 h-5 text-design-purple-400" />
+                <h2 className="text-lg font-bold text-white">Submit Your Project</h2>
+              </div>
+              <button
+                onClick={handleClose}
+                className="p-2 hover:bg-design-zinc-800/50 rounded-lg transition-colors"
               >
-                <SelectTrigger id="type">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {PROJECT_TYPES.map((type) => (
-                    <SelectItem key={type.value} value={type.value}>
-                      {type.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                <X className="w-4 h-4 text-design-zinc-400" />
+              </button>
+            </div>
+          </div>
+
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="p-4 space-y-4">
+            {/* Title */}
+            <div className="space-y-2">
+              <Label htmlFor="title">
+                Title <span className="text-red-400">*</span>
+              </Label>
+              <Input
+                id="title"
+                value={formData.title}
+                onChange={(e) => handleInputChange('title', e.target.value)}
+                placeholder="e.g., $MEME Token Launch"
+                maxLength={80}
+                className={errors.title ? 'border-red-500' : ''}
+              />
+              <div className="flex justify-between text-xs">
+                {errors.title && <span className="text-red-400">{errors.title}</span>}
+                <span className="text-design-zinc-500 ml-auto">{formData.title.length}/80</span>
+              </div>
             </div>
 
-            {/* Status */}
+            {/* Subtitle */}
             <div className="space-y-2">
-              <Label htmlFor="status" className="text-white">
-                Status <span className="text-red-400">*</span>
+              <Label htmlFor="subtitle">
+                Subtitle <span className="text-red-400">*</span>
               </Label>
-              <Select
-                value={formData.status}
-                onValueChange={(value) => handleInputChange('status', value as Status)}
+              <Input
+                id="subtitle"
+                value={formData.subtitle}
+                onChange={(e) => handleInputChange('subtitle', e.target.value)}
+                placeholder="e.g., Community-driven meme coin with revolutionary tokenomics"
+                maxLength={120}
+                className={errors.subtitle ? 'border-red-500' : ''}
+              />
+              <div className="flex justify-between text-xs">
+                {errors.subtitle && <span className="text-red-400">{errors.subtitle}</span>}
+                <span className="text-design-zinc-500 ml-auto">{formData.subtitle.length}/120</span>
+              </div>
+            </div>
+
+            {/* Type & Status Row */}
+            <div className="grid grid-cols-2 gap-4">
+              {/* Type */}
+              <div className="space-y-2">
+                <Label htmlFor="type">
+                  Type <span className="text-red-400">*</span>
+                </Label>
+                <div className="relative">
+                  <select
+                    id="type"
+                    value={formData.type}
+                    onChange={(e) => handleInputChange('type', e.target.value as ProjectType)}
+                    className="w-full px-3 py-2 rounded-lg bg-design-zinc-900/50 border border-design-zinc-800 text-white appearance-none focus:outline-none focus:ring-2 focus:ring-design-purple-500/50 transition-all duration-200"
+                  >
+                    {PROJECT_TYPES.map((type) => (
+                      <option key={type.value} value={type.value}>
+                        {type.label}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-design-zinc-400 pointer-events-none" />
+                </div>
+              </div>
+
+              {/* Status */}
+              <div className="space-y-2">
+                <Label htmlFor="status">
+                  Status <span className="text-red-400">*</span>
+                </Label>
+                <div className="relative">
+                  <select
+                    id="status"
+                    value={formData.status}
+                    onChange={(e) => handleInputChange('status', e.target.value as Status)}
+                    className="w-full px-3 py-2 rounded-lg bg-design-zinc-900/50 border border-design-zinc-800 text-white appearance-none focus:outline-none focus:ring-2 focus:ring-design-purple-500/50 transition-all duration-200"
+                  >
+                    {STATUSES.map((status) => (
+                      <option key={status.value} value={status.value}>
+                        {status.label}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-design-zinc-400 pointer-events-none" />
+                </div>
+              </div>
+            </div>
+
+            {/* Description */}
+            <div className="space-y-2">
+              <Label htmlFor="description">
+                Description <span className="text-red-400">*</span>
+              </Label>
+              <textarea
+                id="description"
+                value={formData.description}
+                onChange={(e) => handleInputChange('description', e.target.value)}
+                placeholder="Tell the community about your project..."
+                maxLength={500}
+                rows={4}
+                className={`w-full px-3 py-2 rounded-lg bg-design-zinc-900/50 border border-design-zinc-800 text-white placeholder:text-design-zinc-500 focus:outline-none focus:ring-2 focus:ring-design-purple-500/50 transition-all duration-200 ${errors.description ? 'border-red-500' : ''}`}
+              />
+              <div className="flex justify-between text-xs">
+                {errors.description && <span className="text-red-400">{errors.description}</span>}
+                <span className="text-design-zinc-500 ml-auto">{formData.description.length}/500</span>
+              </div>
+            </div>
+
+            {/* Platforms */}
+            <div className="space-y-2">
+              <Label>
+                Platforms <span className="text-red-400">*</span>
+              </Label>
+              <div className="grid grid-cols-3 gap-2">
+                {PLATFORMS.map((platform) => (
+                  <button
+                    key={platform}
+                    type="button"
+                    onClick={() => togglePlatform(platform)}
+                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-all capitalize ${
+                      formData.platforms.includes(platform)
+                        ? 'bg-gradient-to-r from-design-pink-500 to-design-purple-600 text-white'
+                        : 'bg-design-zinc-900/50 text-design-zinc-400 hover:bg-design-zinc-800 border border-design-zinc-800'
+                    }`}
+                  >
+                    {platform}
+                  </button>
+                ))}
+              </div>
+              {errors.platforms && <span className="text-red-400 text-xs">{errors.platforms}</span>}
+            </div>
+
+            {/* Optional Fields Row */}
+            <div className="grid grid-cols-3 gap-4">
+              {/* Creator */}
+              <div className="space-y-2">
+                <Label htmlFor="creator" className="text-xs">
+                  Creator (optional)
+                </Label>
+                <Input
+                  id="creator"
+                  value={formData.creator}
+                  onChange={(e) => handleInputChange('creator', e.target.value)}
+                  placeholder="Your name"
+                  className="text-sm"
+                />
+              </div>
+
+              {/* Pool/Budget */}
+              <div className="space-y-2">
+                <Label htmlFor="pool" className="text-xs">
+                  Pool $ (optional)
+                </Label>
+                <Input
+                  id="pool"
+                  type="number"
+                  value={formData.pool}
+                  onChange={(e) => handleInputChange('pool', e.target.value)}
+                  placeholder="5000"
+                  className="text-sm"
+                />
+              </div>
+
+              {/* End Time */}
+              <div className="space-y-2">
+                <Label htmlFor="endTime" className="text-xs">
+                  End Time (optional)
+                </Label>
+                <Input
+                  id="endTime"
+                  value={formData.endTime}
+                  onChange={(e) => handleInputChange('endTime', e.target.value)}
+                  placeholder="2h 30m"
+                  className="text-sm"
+                />
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="flex gap-3 pt-4">
+              <PremiumButton
+                type="button"
+                variant="ghost"
+                onClick={handleClose}
+                className="flex-1"
               >
-                <SelectTrigger id="status">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="live">🟢 Live</SelectItem>
-                  <SelectItem value="upcoming">🟡 Upcoming</SelectItem>
-                  <SelectItem value="ended">⚫ Ended</SelectItem>
-                </SelectContent>
-              </Select>
+                Cancel
+              </PremiumButton>
+              <PremiumButton
+                type="submit"
+                variant="primary"
+                className="flex-1"
+              >
+                <Rocket size={16} />
+                Submit Project
+              </PremiumButton>
             </div>
-          </div>
-
-          {/* Description */}
-          <div className="space-y-2">
-            <Label htmlFor="description" className="text-white">
-              Description <span className="text-red-400">*</span>
-            </Label>
-            <Textarea
-              id="description"
-              value={formData.description}
-              onChange={(e) => handleInputChange('description', e.target.value)}
-              placeholder="Tell the community about your project..."
-              maxLength={500}
-              rows={4}
-              className={errors.description ? 'border-red-500' : ''}
-            />
-            <div className="flex justify-between text-xs">
-              {errors.description && <span className="text-red-400">{errors.description}</span>}
-              <span className="text-white/40 ml-auto">{formData.description.length}/500</span>
-            </div>
-          </div>
-
-          {/* Platforms */}
-          <div className="space-y-2">
-            <Label className="text-white">
-              Platforms <span className="text-red-400">*</span>
-            </Label>
-            <div className="grid grid-cols-3 gap-2">
-              {PLATFORMS.map((platform) => (
-                <button
-                  key={platform}
-                  type="button"
-                  onClick={() => togglePlatform(platform)}
-                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all capitalize ${
-                    formData.platforms.includes(platform)
-                      ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white'
-                      : 'bg-white/5 text-white/70 hover:bg-white/10 border border-white/10'
-                  }`}
-                >
-                  {platform}
-                </button>
-              ))}
-            </div>
-            {errors.platforms && <span className="text-red-400 text-xs">{errors.platforms}</span>}
-          </div>
-
-          {/* Optional Fields Row */}
-          <div className="grid grid-cols-3 gap-4">
-            {/* Creator */}
-            <div className="space-y-2">
-              <Label htmlFor="creator" className="text-white text-xs">
-                Creator (optional)
-              </Label>
-              <Input
-                id="creator"
-                value={formData.creator}
-                onChange={(e) => handleInputChange('creator', e.target.value)}
-                placeholder="Your name"
-                className="text-sm"
-              />
-            </div>
-
-            {/* Pool/Budget */}
-            <div className="space-y-2">
-              <Label htmlFor="pool" className="text-white text-xs">
-                Pool $ (optional)
-              </Label>
-              <Input
-                id="pool"
-                type="number"
-                value={formData.pool}
-                onChange={(e) => handleInputChange('pool', e.target.value)}
-                placeholder="5000"
-                className="text-sm"
-              />
-            </div>
-
-            {/* End Time */}
-            <div className="space-y-2">
-              <Label htmlFor="endTime" className="text-white text-xs">
-                End Time (optional)
-              </Label>
-              <Input
-                id="endTime"
-                value={formData.endTime}
-                onChange={(e) => handleInputChange('endTime', e.target.value)}
-                placeholder="2h 30m"
-                className="text-sm"
-              />
-            </div>
-          </div>
-
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleClose}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" className="gap-2">
-              <Rocket size={16} />
-              Submit Project
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+          </form>
+        </div>
+      </div>
+    </>
   )
 }

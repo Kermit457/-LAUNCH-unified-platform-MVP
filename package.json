@@ -18,7 +18,9 @@
     "fix-quests": "tsx scripts/fix-quests-schema.ts",
     "migrate-campaigns": "tsx scripts/migrate-existing-campaigns.ts",
     "fix-users": "tsx scripts/fix-users-schema.ts",
-    "seed-network": "tsx scripts/seed-network-users.ts"
+    "seed-network": "tsx scripts/seed-network-users.ts",
+    "setup-referrals": "node scripts/setup-referral-collections.js",
+    "test-referrals": "tsx scripts/test-referral-system.ts"
   },
   "dependencies": {
     "@privy-io/react-auth": "^1.27.0",

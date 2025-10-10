@@ -10,10 +10,8 @@ import {
   ChevronDown, BarChart3, Eye, Trophy,
   ChevronUp
 } from 'lucide-react'
-import { GlassCard, PremiumButton } from '@/components/design-system/DesignSystemShowcase'
-import { SheetModal } from '@/components/design-system/MobileComponents'
-import { ProductHuntCard } from '@/components/design-system/ProductHuntCard'
-import { CleanLaunchCard } from '@/components/design-system/CleanLaunchCard'
+import { GlassCard, PremiumButton, SheetModal, ProductHuntCard, CleanLaunchCard } from '@/components/design-system'
+import { ReferralCard, ReferralLeaderboard, RewardsPanel } from '@/components/referral'
 
 // Import existing functionality
 import { LiveLaunchCard } from '@/components/launch/cards/LiveLaunchCard'
@@ -22,6 +20,7 @@ import { CommentsModal } from '@/components/comments/CommentsModal'
 import { SubmitLaunchDrawer } from '@/components/launch/SubmitLaunchDrawer'
 import { CollaborateModal } from '@/components/launch/CollaborateModal'
 import { EntitySelectorModal, EntityOption } from '@/components/launch/EntitySelectorModal'
+import { ProjectDetailsModal } from '@/components/modals/ProjectDetailsModal'
 import { LaunchCardData } from '@/types/launch'
 import { getLaunches, createLaunchDocument, getUserProjects } from '@/lib/appwrite/services/launches'
 import { addVote, getVoteCount, getUserVotes } from '@/lib/appwrite/services/votes'
@@ -218,6 +217,8 @@ export default function DiscoverPage() {
   const [userProfile, setUserProfile] = useState<any>(null)
   const [userProjects, setUserProjects] = useState<any[]>([])
   const [showSortOptions, setShowSortOptions] = useState(false)
+  const [detailsModalOpen, setDetailsModalOpen] = useState(false)
+  const [selectedLaunchForDetails, setSelectedLaunchForDetails] = useState<any>(null)
 
   // Fetch user profile and projects
   useEffect(() => {
@@ -329,6 +330,33 @@ export default function DiscoverPage() {
       createdBy: launch.createdBy
     })
     setCollaborateOpen(true)
+  }
+
+  const handleDetails = (launch: any) => {
+    setSelectedLaunchForDetails(launch)
+    setDetailsModalOpen(true)
+  }
+
+  const handleBoost = (launch: any) => {
+    // TODO: Implement boost/burn functionality
+    console.log('Boost clicked for:', launch.title)
+    alert('🔥 Boost & Burn feature coming soon!')
+  }
+
+  const handleNotify = (launch: any) => {
+    // TODO: Implement notification subscription
+    console.log('Notify clicked for:', launch.title)
+    alert('🔔 Notifications feature coming soon!')
+  }
+
+  const handleShare = (launch: any) => {
+    // Copy launch URL to clipboard
+    const url = `${window.location.origin}/launch/${launch.id}`
+    navigator.clipboard.writeText(url).then(() => {
+      alert('🔗 Link copied to clipboard!')
+    }).catch(() => {
+      alert('Failed to copy link')
+    })
   }
 
   // Filter and sort launches
@@ -781,8 +809,8 @@ export default function DiscoverPage() {
           </div>
         </div>
 
-        {/* Main Content Layout - Two Equal Columns */}
-        <div className="grid md:grid-cols-2 gap-5">
+        {/* Main Content Layout - Three Columns */}
+        <div className="grid md:grid-cols-3 gap-5">
           {/* Left Column: Top Launches (LIVE) */}
           <div>
             <div className="flex items-center gap-2 mb-3">
@@ -836,6 +864,10 @@ export default function DiscoverPage() {
                       setCommentsOpen(true)
                     }}
                     onCollaborate={() => handleCollaborate(launch)}
+                    onDetails={() => handleDetails(launch)}
+                    onBoost={() => handleBoost(launch)}
+                    onNotify={() => handleNotify(launch)}
+                    onShare={() => handleShare(launch)}
                   />
                 ))}
               </div>
@@ -892,10 +924,21 @@ export default function DiscoverPage() {
                         setCommentsOpen(true)
                       }}
                       onCollaborate={() => handleCollaborate(launch)}
+                      onDetails={() => handleDetails(launch)}
+                      onBoost={() => handleBoost(launch)}
+                      onNotify={() => handleNotify(launch)}
+                      onShare={() => handleShare(launch)}
                     />
                   ))}
               </div>
             )}
+          </div>
+
+          {/* Right Column: Referral Components */}
+          <div className="space-y-5">
+            <RewardsPanel variant="compact" />
+            <ReferralCard variant="compact" />
+            <ReferralLeaderboard variant="compact" limit={5} showUserRank={false} />
           </div>
         </div>
 
@@ -954,6 +997,36 @@ export default function DiscoverPage() {
         userProfile={userProfile}
         projects={userProjects}
       />
+
+      {selectedLaunchForDetails && (
+        <ProjectDetailsModal
+          open={detailsModalOpen}
+          onClose={() => setDetailsModalOpen(false)}
+          project={{
+            id: selectedLaunchForDetails.id,
+            title: selectedLaunchForDetails.title,
+            subtitle: selectedLaunchForDetails.subtitle || '',
+            description: selectedLaunchForDetails.description || selectedLaunchForDetails.subtitle || '',
+            logoUrl: selectedLaunchForDetails.logoUrl,
+            scope: selectedLaunchForDetails.scope,
+            status: selectedLaunchForDetails.status,
+            upvotes: selectedLaunchForDetails.upvotes || 0,
+            commentsCount: selectedLaunchForDetails.commentsCount || 0,
+            viewCount: selectedLaunchForDetails.viewCount,
+            convictionPct: selectedLaunchForDetails.convictionPct,
+            boostCount: selectedLaunchForDetails.boostCount,
+            contributionPoolPct: selectedLaunchForDetails.contributionPoolPct,
+            feesSharePct: selectedLaunchForDetails.feesSharePct,
+            contributors: selectedLaunchForDetails.contributors,
+            creator: selectedLaunchForDetails.creatorName,
+            createdAt: selectedLaunchForDetails.createdAt,
+            platforms: selectedLaunchForDetails.platforms,
+            budget: selectedLaunchForDetails.budget,
+            endTime: selectedLaunchForDetails.endTime,
+            url: selectedLaunchForDetails.url
+          }}
+        />
+      )}
     </div>
   )
 }

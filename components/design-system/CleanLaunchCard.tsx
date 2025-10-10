@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import {
-  ChevronUp, MessageSquare, Users, Share2, Eye, Zap, Flame, Bell
+  ChevronUp, MessageSquare, Users, Share2, Eye, Zap, Bell
 } from 'lucide-react'
 
 interface CleanLaunchCardProps {
@@ -26,6 +26,10 @@ interface CleanLaunchCardProps {
   onVote: () => void
   onComment: () => void
   onCollaborate: () => void
+  onDetails: () => void
+  onBoost?: () => void
+  onNotify?: () => void
+  onShare?: () => void
 }
 
 export const CleanLaunchCard = ({
@@ -33,7 +37,11 @@ export const CleanLaunchCard = ({
   hasVoted,
   onVote,
   onComment,
-  onCollaborate
+  onCollaborate,
+  onDetails,
+  onBoost,
+  onNotify,
+  onShare
 }: CleanLaunchCardProps) => {
   return (
     <motion.div
@@ -205,6 +213,7 @@ export const CleanLaunchCard = ({
             {/* Boost ⚡ Burn Button (with text) */}
             <motion.button
               whileTap={{ scale: 0.95 }}
+              onClick={onBoost}
               className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-zinc-900 text-zinc-400 hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-500 hover:text-white border border-zinc-800 hover:border-orange-500 transition-all text-xs"
               title="Boost & Burn"
             >
@@ -226,6 +235,7 @@ export const CleanLaunchCard = ({
             {/* Details Button */}
             <motion.button
               whileTap={{ scale: 0.95 }}
+              onClick={onDetails}
               className="px-2.5 py-1.5 rounded-lg bg-zinc-900 text-zinc-400 hover:bg-zinc-800 hover:text-white border border-zinc-800 transition-all text-xs"
               title="Details"
             >
@@ -235,6 +245,7 @@ export const CleanLaunchCard = ({
             {/* Notification Bell Button */}
             <motion.button
               whileTap={{ scale: 0.95 }}
+              onClick={onNotify}
               className="p-1.5 rounded-lg bg-zinc-900 text-zinc-400 hover:bg-blue-500 hover:text-white border border-zinc-800 hover:border-blue-500 transition-all"
               title="Notify"
             >
@@ -244,6 +255,7 @@ export const CleanLaunchCard = ({
             {/* Share Button */}
             <motion.button
               whileTap={{ scale: 0.95 }}
+              onClick={onShare}
               className="p-1.5 rounded-lg bg-zinc-900 text-zinc-400 hover:bg-zinc-800 hover:text-white border border-zinc-800 transition-all"
               title="Share"
             >

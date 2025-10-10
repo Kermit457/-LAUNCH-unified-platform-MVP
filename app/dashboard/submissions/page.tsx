@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Filter } from 'lucide-react'
-import { SubmissionTable } from '@/components/dashboard/Tables'
+import { motion } from 'framer-motion'
+import { Filter, CheckCircle2, XCircle, Clock, FileText } from 'lucide-react'
 import { SubmissionViewer } from '@/components/drawers/SubmissionViewer'
 import type { Submission } from '@/lib/types'
 import { cn } from '@/lib/utils'
@@ -28,6 +28,41 @@ function appwriteToDashboard(s: AppwriteSubmission): Submission {
     feedback: s.notes
   }
 }
+
+interface StatCardProps {
+  icon: any
+  label: string
+  value: string | number
+  change?: string
+  trend?: 'up' | 'down'
+  color: string
+}
+
+const StatCard = ({ icon: Icon, label, value, change, trend, color }: StatCardProps) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    className={`relative overflow-hidden bg-design-zinc-900/50 rounded-xl border border-design-zinc-800 p-6 transition-all hover:border-${color}-500/50`}
+  >
+    <div className="flex items-start justify-between mb-4">
+      <div className={`p-2 rounded-lg bg-${color}-500/10`}>
+        <Icon className={`w-5 h-5 text-${color}-400`} />
+      </div>
+      {change && (
+        <span className={cn(
+          'text-sm font-medium',
+          trend === 'up' ? 'text-green-400' : 'text-red-400'
+        )}>
+          {change}
+        </span>
+      )}
+    </div>
+    <div>
+      <p className="text-3xl font-bold text-white mb-1">{value}</p>
+      <p className="text-sm text-design-zinc-400">{label}</p>
+    </div>
+  </motion.div>
+)
 
 export default function SubmissionsPage() {
   const { user } = useUser()
@@ -140,6 +175,16 @@ export default function SubmissionsPage() {
     }
   }
 
+  const toggleSubmission = (id: string) => {
+    const newSelected = new Set(selectedSubmissions)
+    if (newSelected.has(id)) {
+      newSelected.delete(id)
+    } else {
+      newSelected.add(id)
+    }
+    setSelectedSubmissions(newSelected)
+  }
+
   const filteredSubmissions = statusFilter === 'all'
     ? submissions
     : submissions.filter(s => s.status === statusFilter)
@@ -154,8 +199,8 @@ export default function SubmissionsPage() {
   if (loading) {
     return (
       <div className="text-center py-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto mb-4"></div>
-        <p className="text-white/60">Loading submissions...</p>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-design-purple-500 mx-auto mb-4"></div>
+        <p className="text-design-zinc-400">Loading submissions...</p>
       </div>
     )
   }
@@ -164,16 +209,40 @@ export default function SubmissionsPage() {
     <>
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-white">Submissions</h1>
-            <p className="text-sm text-white/50 mt-1">Review and manage campaign submissions</p>
+        <div className="relative overflow-hidden bg-gradient-to-br from-design-purple-600/20 via-design-pink-600/20 to-design-purple-800/20 rounded-2xl border border-design-zinc-800 p-8">
+          <div className="relative z-10">
+            <h1 className="text-3xl font-bold text-white mb-2">Submissions</h1>
+            <p className="text-design-zinc-300">Review and manage campaign submissions</p>
           </div>
+        </div>
+
+        {/* Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <StatCard
+            icon={Clock}
+            label="Pending Review"
+            value={statusCounts.pending}
+            color="design-purple"
+          />
+          <StatCard
+            icon={CheckCircle2}
+            label="Approved"
+            value={statusCounts.approved}
+            change="+12%"
+            trend="up"
+            color="green"
+          />
+          <StatCard
+            icon={XCircle}
+            label="Rejected"
+            value={statusCounts.rejected}
+            color="red"
+          />
         </div>
 
         {/* Filters */}
         <div className="flex items-center gap-2">
-          <Filter className="w-4 h-4 text-white/50" />
+          <Filter className="w-4 h-4 text-design-zinc-400" />
           {Object.entries(statusCounts).map(([status, count]) => (
             <button
               key={status}
@@ -181,58 +250,141 @@ export default function SubmissionsPage() {
               className={cn(
                 'px-3 py-1.5 rounded-lg text-sm font-medium transition-all',
                 statusFilter === status
-                  ? 'bg-purple-500 text-white'
-                  : 'bg-white/5 text-white/70 hover:bg-white/10'
+                  ? 'bg-design-purple-500 text-white'
+                  : 'bg-design-zinc-900/50 text-design-zinc-400 hover:bg-design-zinc-800 border border-design-zinc-800'
               )}
             >
-              {status === 'all' ? 'All' : status.replace('_', ' ')} ({count})
+              {status.charAt(0).toUpperCase() + status.slice(1)} ({count})
             </button>
           ))}
         </div>
 
         {/* Bulk Actions Toolbar */}
         {selectedSubmissions.size > 0 && (
-          <div className="bg-purple-500/20 border border-purple-500/30 rounded-xl p-4 flex items-center justify-between">
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-design-purple-500/20 border border-design-purple-500/30 rounded-xl p-4 flex items-center justify-between"
+          >
             <span className="text-sm text-white">
               {selectedSubmissions.size} submission{selectedSubmissions.size > 1 ? 's' : ''} selected
             </span>
             <div className="flex items-center gap-2">
               <button
                 onClick={handleBulkReject}
-                className="px-4 py-2 rounded-lg bg-red-500/20 text-red-300 hover:bg-red-500/30 font-medium text-sm transition-all"
+                className="px-4 py-2 rounded-lg bg-red-500/20 text-red-300 hover:bg-red-500/30 font-medium text-sm transition-all border border-red-500/30"
               >
                 Reject Selected
               </button>
               <button
                 onClick={handleBulkApprove}
-                className="px-4 py-2 rounded-lg bg-green-500/20 text-green-300 hover:bg-green-500/30 font-medium text-sm transition-all"
+                className="px-4 py-2 rounded-lg bg-green-500/20 text-green-300 hover:bg-green-500/30 font-medium text-sm transition-all border border-green-500/30"
               >
                 Approve Selected
               </button>
             </div>
-          </div>
+          </motion.div>
         )}
 
         {/* Submissions Table */}
-        <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6">
-          <SubmissionTable
-            submissions={filteredSubmissions}
-            selectedIds={Array.from(selectedSubmissions)}
-            onSelectChange={(ids) => setSelectedSubmissions(new Set(ids))}
-            onRowClick={(id) => {
-              const submission = submissions.find(s => s.id === id)
-              if (submission) setViewingSubmission(submission)
-            }}
-            onApprove={handleApprove}
-            onReject={(id) => {
-              const reason = prompt('Reason for rejection:')
-              if (reason) handleReject(id, reason)
-            }}
-            onNeedsFix={(id) => {
-              const note = prompt('What needs to be fixed?')
-              if (note) handleNeedsFix(id, note)
-            }}
-          />
+        <div className="bg-design-zinc-900/50 backdrop-blur-sm border border-design-zinc-800 rounded-xl overflow-hidden">
+          {filteredSubmissions.length === 0 ? (
+            <div className="text-center py-16">
+              <FileText className="w-16 h-16 text-design-zinc-700 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-white mb-2">No submissions yet</h3>
+              <p className="text-design-zinc-400">Submissions from campaigns will appear here</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-design-zinc-900/80 border-b border-design-zinc-800">
+                  <tr>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-design-zinc-400 uppercase tracking-wider">
+                      <input
+                        type="checkbox"
+                        checked={selectedSubmissions.size === filteredSubmissions.length && filteredSubmissions.length > 0}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setSelectedSubmissions(new Set(filteredSubmissions.map(s => s.id)))
+                          } else {
+                            setSelectedSubmissions(new Set())
+                          }
+                        }}
+                        className="rounded border-design-zinc-700 bg-design-zinc-900 text-design-purple-500 focus:ring-design-purple-500 focus:ring-offset-design-zinc-900"
+                      />
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-design-zinc-400 uppercase tracking-wider">Campaign</th>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-design-zinc-400 uppercase tracking-wider">Submitted</th>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-design-zinc-400 uppercase tracking-wider">Status</th>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-design-zinc-400 uppercase tracking-wider">Earnings</th>
+                    <th className="px-6 py-4 text-right text-xs font-medium text-design-zinc-400 uppercase tracking-wider">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-design-zinc-800">
+                  {filteredSubmissions.map((submission, idx) => (
+                    <motion.tr
+                      key={submission.id}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: idx * 0.05 }}
+                      className="hover:bg-design-zinc-800/50 transition-colors cursor-pointer"
+                      onClick={() => setViewingSubmission(submission)}
+                    >
+                      <td className="px-6 py-4" onClick={(e) => e.stopPropagation()}>
+                        <input
+                          type="checkbox"
+                          checked={selectedSubmissions.has(submission.id)}
+                          onChange={() => toggleSubmission(submission.id)}
+                          className="rounded border-design-zinc-700 bg-design-zinc-900 text-design-purple-500 focus:ring-design-purple-500 focus:ring-offset-design-zinc-900"
+                        />
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="text-sm font-medium text-white">{submission.campaignName || 'Unknown Campaign'}</div>
+                        <div className="text-xs text-design-zinc-500">ID: {submission.campaignId.substring(0, 8)}...</div>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-design-zinc-300">
+                        {new Date(submission.submittedAt).toLocaleDateString()}
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={cn(
+                          'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
+                          submission.status === 'approved' && 'bg-green-500/20 text-green-400 border border-green-500/30',
+                          submission.status === 'rejected' && 'bg-red-500/20 text-red-400 border border-red-500/30',
+                          submission.status === 'pending' && 'bg-design-purple-500/20 text-design-purple-400 border border-design-purple-500/30'
+                        )}>
+                          {submission.status.charAt(0).toUpperCase() + submission.status.slice(1)}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-sm font-medium text-white">
+                        {submission.earnings ? `$${submission.earnings}` : '-'}
+                      </td>
+                      <td className="px-6 py-4 text-right" onClick={(e) => e.stopPropagation()}>
+                        {submission.status === 'pending' && (
+                          <div className="flex items-center justify-end gap-2">
+                            <button
+                              onClick={() => {
+                                const reason = prompt('Reason for rejection:')
+                                if (reason) handleReject(submission.id, reason)
+                              }}
+                              className="px-3 py-1 rounded-lg bg-red-500/20 text-red-300 hover:bg-red-500/30 text-sm font-medium transition-all border border-red-500/30"
+                            >
+                              Reject
+                            </button>
+                            <button
+                              onClick={() => handleApprove(submission.id)}
+                              className="px-3 py-1 rounded-lg bg-green-500/20 text-green-300 hover:bg-green-500/30 text-sm font-medium transition-all border border-green-500/30"
+                            >
+                              Approve
+                            </button>
+                          </div>
+                        )}
+                      </td>
+                    </motion.tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       </div>
 

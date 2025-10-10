@@ -1,12 +1,41 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { TrendingUp, Users, Eye, DollarSign } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { TrendingUp, Users, Eye, DollarSign, Download } from 'lucide-react'
+import { PremiumButton } from '@/components/design-system'
 import { useUser } from '@/hooks/useUser'
 import { getCampaigns } from '@/lib/appwrite/services/campaigns'
 import { getPayouts } from '@/lib/appwrite/services/payouts'
 import { getSubmissions } from '@/lib/appwrite/services/submissions'
 import { getQuests } from '@/lib/appwrite/services/quests'
+
+interface StatCardProps {
+  icon: any
+  label: string
+  value: string | number
+  subtitle?: string
+  gradient: string
+}
+
+const StatCard = ({ icon: Icon, label, value, subtitle, gradient }: StatCardProps) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    className={`relative overflow-hidden bg-gradient-to-br ${gradient} rounded-xl border border-design-zinc-800 p-6`}
+  >
+    <div className="flex items-center gap-3">
+      <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
+        <Icon className="w-5 h-5 text-white" />
+      </div>
+      <div>
+        <div className="text-2xl font-bold text-white">{value}</div>
+        <div className="text-xs text-white/70">{label}</div>
+        {subtitle && <div className="text-xs text-white/50 mt-1">{subtitle}</div>}
+      </div>
+    </div>
+  </motion.div>
+)
 
 export default function AnalyticsPage() {
   const { user, userId } = useUser()
@@ -132,171 +161,197 @@ export default function AnalyticsPage() {
   if (loading) {
     return (
       <div className="text-center py-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto mb-4"></div>
-        <p className="text-white/60">Loading analytics...</p>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-design-purple-500 mx-auto mb-4"></div>
+        <p className="text-design-zinc-400">Loading analytics...</p>
       </div>
     )
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-white">Analytics</h1>
-        <p className="text-sm text-white/50 mt-1">Track your performance and growth metrics</p>
+      <div className="relative overflow-hidden bg-gradient-to-br from-design-purple-600/20 via-design-pink-600/20 to-design-purple-800/20 rounded-2xl border border-design-zinc-800 p-8">
+        <div className="relative z-10 flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-white mb-2">Analytics</h1>
+            <p className="text-design-zinc-300">Track your performance and growth metrics</p>
+          </div>
+          <PremiumButton
+            onClick={() => console.log('Export analytics')}
+            size="sm"
+          >
+            <Download className="w-4 h-4 mr-2" />
+            Export Report
+          </PremiumButton>
+        </div>
       </div>
 
       {/* KPI Summary */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-gradient-to-br from-purple-500/10 to-fuchsia-500/10 border border-white/10 rounded-xl p-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center">
-              <Eye className="w-5 h-5 text-purple-300" />
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-white">{totalViews.toLocaleString()}</div>
-              <div className="text-xs text-white/50">Total Views</div>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-br from-cyan-500/10 to-blue-500/10 border border-white/10 rounded-xl p-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-cyan-500/20 flex items-center justify-center">
-              <TrendingUp className="w-5 h-5 text-cyan-300" />
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-white">{avgEngagementRate.toFixed(0)}</div>
-              <div className="text-xs text-white/50">Avg Views/Sub</div>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-white/10 rounded-xl p-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center">
-              <DollarSign className="w-5 h-5 text-green-300" />
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-white">${questMetrics.totalEarned.toFixed(2)}</div>
-              <div className="text-xs text-white/50">Quest Earnings</div>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-br from-orange-500/10 to-red-500/10 border border-white/10 rounded-xl p-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-orange-500/20 flex items-center justify-center">
-              <Users className="w-5 h-5 text-orange-300" />
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-white">{questMetrics.raids + questMetrics.bounties}</div>
-              <div className="text-xs text-white/50">Quest Submissions</div>
-            </div>
-          </div>
-        </div>
+        <StatCard
+          icon={Eye}
+          label="Total Views"
+          value={totalViews.toLocaleString()}
+          gradient="from-design-purple-600/20 to-design-purple-800/20"
+        />
+        <StatCard
+          icon={TrendingUp}
+          label="Avg Views/Sub"
+          value={avgEngagementRate.toFixed(0)}
+          gradient="from-cyan-600/20 to-blue-800/20"
+        />
+        <StatCard
+          icon={DollarSign}
+          label="Quest Earnings"
+          value={`$${questMetrics.totalEarned.toFixed(2)}`}
+          gradient="from-green-600/20 to-emerald-800/20"
+        />
+        <StatCard
+          icon={Users}
+          label="Quest Submissions"
+          value={questMetrics.raids + questMetrics.bounties}
+          subtitle={`${questMetrics.raids} raids, ${questMetrics.bounties} bounties`}
+          gradient="from-orange-600/20 to-red-800/20"
+        />
       </div>
 
       {/* 30-day Earnings Chart */}
-      <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-design-zinc-900/50 backdrop-blur-sm border border-design-zinc-800 rounded-xl p-6"
+      >
         <div className="flex items-center justify-between mb-6">
           <div>
             <h3 className="text-lg font-bold text-white">30-Day Earnings</h3>
-            <p className="text-sm text-white/50 mt-1">Daily earnings over the last month</p>
+            <p className="text-sm text-design-zinc-400 mt-1">Daily earnings over the last month</p>
           </div>
           <div className="text-right">
-            <div className="text-2xl font-bold text-green-300">
+            <div className="text-2xl font-bold text-green-400">
               ${earningsData.reduce((sum, d) => sum + d.amount, 0).toFixed(2)}
             </div>
-            <div className="text-xs text-white/50 mt-1">Total earnings</div>
+            <div className="text-xs text-design-zinc-500 mt-1">Total earnings</div>
           </div>
         </div>
         <div className="h-64 flex items-end gap-1">
           {earningsData.map((day, i) => (
             <div key={i} className="flex-1 group relative">
               <div
-                className="bg-gradient-to-t from-green-500 to-emerald-500 rounded-t hover:opacity-80 transition-opacity"
+                className="bg-gradient-to-t from-green-500 to-emerald-400 rounded-t hover:opacity-80 transition-opacity"
                 style={{ height: `${(day.amount / maxEarnings) * 100}%` }}
               />
-              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block">
-                <div className="bg-black/90 text-white text-xs rounded px-2 py-1 whitespace-nowrap">
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-10">
+                <div className="bg-design-zinc-950/90 text-white text-xs rounded px-2 py-1 whitespace-nowrap border border-design-zinc-800">
                   {day.date}: ${day.amount}
                 </div>
               </div>
             </div>
           ))}
         </div>
-        <div className="flex justify-between mt-2 text-xs text-white/50">
-          <span>{earningsData[0].date}</span>
-          <span>{earningsData[earningsData.length - 1].date}</span>
+        <div className="flex justify-between mt-2 text-xs text-design-zinc-500">
+          <span>{earningsData[0]?.date}</span>
+          <span>{earningsData[earningsData.length - 1]?.date}</span>
         </div>
-      </div>
+      </motion.div>
 
       {/* Submissions per Day */}
-      <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="bg-design-zinc-900/50 backdrop-blur-sm border border-design-zinc-800 rounded-xl p-6"
+      >
         <h3 className="text-lg font-bold text-white mb-6">Submissions (Last 7 Days)</h3>
         <div className="h-48 flex items-end gap-4">
           {submissionsPerDay.map((day, i) => (
             <div key={i} className="flex-1 flex flex-col items-center gap-2">
               <div className="w-full relative group">
                 <div
-                  className="bg-gradient-to-t from-purple-500 to-pink-500 rounded-t hover:opacity-80 transition-opacity"
+                  className="bg-gradient-to-t from-design-purple-500 to-design-pink-500 rounded-t hover:opacity-80 transition-opacity"
                   style={{ height: `${(day.count / maxSubmissions) * 150}px` }}
                 />
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block">
-                  <div className="bg-black/90 text-white text-xs rounded px-2 py-1">
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-10">
+                  <div className="bg-design-zinc-950/90 text-white text-xs rounded px-2 py-1 border border-design-zinc-800">
                     {day.count} submissions
                   </div>
                 </div>
               </div>
-              <span className="text-xs text-white/50">{day.date}</span>
+              <span className="text-xs text-design-zinc-500">{day.date}</span>
             </div>
           ))}
         </div>
-      </div>
+      </motion.div>
 
       {/* Social Growth */}
-      <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="bg-design-zinc-900/50 backdrop-blur-sm border border-design-zinc-800 rounded-xl p-6"
+      >
         <h3 className="text-lg font-bold text-white mb-6">Social Growth</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {socialMetrics.map((metric, i) => (
-            <div key={i} className={`bg-gradient-to-br ${metric.color} bg-opacity-10 rounded-xl p-4 border border-white/10`}>
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.3 + i * 0.05 }}
+              className={`bg-gradient-to-br ${metric.color} bg-opacity-10 rounded-xl p-4 border border-design-zinc-800`}
+            >
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="text-sm text-white/70">{metric.platform}</div>
+                  <div className="text-sm text-design-zinc-400">{metric.platform}</div>
                   <div className="text-2xl font-bold text-white mt-1">
                     {metric.followers.toLocaleString()}
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-lg font-bold text-green-300">{metric.growth}</div>
-                  <div className="text-xs text-white/50">30d growth</div>
+                  <div className="text-lg font-bold text-green-400">{metric.growth}</div>
+                  <div className="text-xs text-design-zinc-500">30d growth</div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
-      </div>
+      </motion.div>
 
       {/* Top Campaigns by ROI */}
-      <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="bg-design-zinc-900/50 backdrop-blur-sm border border-design-zinc-800 rounded-xl p-6"
+      >
         <h3 className="text-lg font-bold text-white mb-6">Top Campaigns by ROI</h3>
-        <div className="space-y-3">
-          {topCampaigns.map((campaign, i) => (
-            <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
-              <div className="flex-1">
-                <div className="font-medium text-white">{campaign.name}</div>
-                <div className="text-xs text-white/50 mt-1">
-                  Spent: ${campaign.spent.toFixed(2)} • Revenue: ${campaign.revenue.toFixed(2)}
+        {topCampaigns.length === 0 ? (
+          <div className="text-center py-8 text-design-zinc-500">
+            No campaign data available
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {topCampaigns.map((campaign, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.4 + i * 0.05 }}
+                className="flex items-center justify-between p-3 rounded-lg bg-design-zinc-800/50 hover:bg-design-zinc-800 transition-colors border border-design-zinc-700"
+              >
+                <div className="flex-1">
+                  <div className="font-medium text-white">{campaign.name}</div>
+                  <div className="text-xs text-design-zinc-400 mt-1">
+                    Spent: ${campaign.spent.toFixed(2)} • Revenue: ${campaign.revenue.toFixed(2)}
+                  </div>
                 </div>
-              </div>
-              <div className={`text-lg font-bold ${campaign.roi > 0 ? 'text-green-300' : 'text-red-300'}`}>
-                {campaign.roi > 0 ? '+' : ''}{campaign.roi}%
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+                <div className={`text-lg font-bold ${campaign.roi > 0 ? 'text-green-400' : 'text-red-400'}`}>
+                  {campaign.roi > 0 ? '+' : ''}{campaign.roi.toFixed(1)}%
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        )}
+      </motion.div>
     </div>
   )
 }

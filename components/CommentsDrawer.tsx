@@ -4,10 +4,7 @@ import { useState, useEffect } from 'react'
 import { X, MessageCircle, Send } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import type { Comment, Project } from '@/types'
-import { Button } from './ui/button'
-import { Textarea } from './ui/textarea'
-import { Input } from './ui/input'
-import { Label } from './ui/label'
+import { GlassCard, PremiumButton, Input, Label } from '@/components/design-system'
 import { useToast } from '@/hooks/useToast'
 
 interface CommentsDrawerProps {
@@ -86,26 +83,26 @@ export function CommentsDrawer({ project, open, onClose, onAddComment }: Comment
       {/* Drawer */}
       <div
         className={cn(
-          'fixed right-0 top-0 h-full w-full sm:w-[400px] bg-black/95 backdrop-blur-xl border-l border-white/10 shadow-2xl z-50 flex flex-col',
+          'fixed right-0 top-0 h-full w-full sm:w-[400px] bg-design-zinc-950/95 backdrop-blur-xl border-l border-design-zinc-800 shadow-2xl z-50 flex flex-col',
           'animate-in slide-in-from-right duration-300'
         )}
       >
         {/* Header */}
-        <div className="border-b border-white/10 p-4">
+        <div className="border-b border-design-zinc-800 p-4">
           <div className="flex items-center justify-between mb-2">
             <h2 className="text-xl font-bold text-white flex items-center gap-2">
-              <MessageCircle className="w-5 h-5 text-purple-400" />
+              <MessageCircle className="w-5 h-5 text-design-purple-400" />
               Comments
             </h2>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+              className="p-2 hover:bg-design-zinc-800/50 rounded-lg transition-colors"
             >
-              <X className="w-5 h-5 text-white/70" />
+              <X className="w-5 h-5 text-design-zinc-400" />
             </button>
           </div>
-          <p className="text-sm text-white/60 line-clamp-1">{project.title}</p>
-          <div className="mt-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full text-xs text-white/70 inline-block">
+          <p className="text-sm text-design-zinc-400 line-clamp-1">{project.title}</p>
+          <div className="mt-2 px-3 py-1 bg-design-zinc-900/50 border border-design-zinc-800 rounded-full text-xs text-design-zinc-400 inline-block">
             💬 {project.comments?.length || 0} {project.comments?.length === 1 ? 'comment' : 'comments'}
           </div>
         </div>
@@ -114,38 +111,38 @@ export function CommentsDrawer({ project, open, onClose, onAddComment }: Comment
         <div id="comments-list" className="flex-1 overflow-y-auto p-4 space-y-4">
           {project.comments && project.comments.length > 0 ? (
             project.comments.map((comment) => (
-              <div key={comment.id} className="glass-card p-4 space-y-2">
+              <GlassCard key={comment.id} className="p-4 space-y-2">
                 {/* Author & Time */}
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-design-pink-500 to-design-purple-600 flex items-center justify-center text-white font-bold text-sm">
                     {comment.author[0]?.toUpperCase() || '?'}
                   </div>
                   <div>
                     <p className="font-bold text-white text-sm">{comment.author}</p>
-                    <p className="text-xs text-white/50">{formatTime(comment.timestamp)}</p>
+                    <p className="text-xs text-design-zinc-500">{formatTime(comment.timestamp)}</p>
                   </div>
                 </div>
 
                 {/* Comment Text */}
-                <p className="text-white/80 text-sm whitespace-pre-wrap">{comment.text}</p>
-              </div>
+                <p className="text-design-zinc-300 text-sm whitespace-pre-wrap">{comment.text}</p>
+              </GlassCard>
             ))
           ) : (
             <div className="flex flex-col items-center justify-center py-16 text-center">
-              <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-4">
-                <MessageCircle className="w-8 h-8 text-white/30" />
+              <div className="w-16 h-16 bg-design-zinc-900/50 rounded-full flex items-center justify-center mb-4">
+                <MessageCircle className="w-8 h-8 text-design-zinc-600" />
               </div>
-              <p className="text-white/60 font-medium mb-1">No comments yet</p>
-              <p className="text-sm text-white/40">Be the first to comment!</p>
+              <p className="text-design-zinc-400 font-medium mb-1">No comments yet</p>
+              <p className="text-sm text-design-zinc-500">Be the first to comment!</p>
             </div>
           )}
         </div>
 
         {/* Add Comment Form */}
-        <div className="border-t border-white/10 p-4 bg-black/50">
+        <div className="border-t border-design-zinc-800 p-4 bg-design-zinc-950/50">
           <form onSubmit={handleSubmit} className="space-y-3">
             <div className="space-y-1.5">
-              <Label htmlFor="comment-author" className="text-white text-xs">
+              <Label htmlFor="comment-author">
                 Your Name
               </Label>
               <Input
@@ -159,10 +156,10 @@ export function CommentsDrawer({ project, open, onClose, onAddComment }: Comment
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="comment-text" className="text-white text-xs">
+              <Label htmlFor="comment-text">
                 Comment
               </Label>
-              <Textarea
+              <textarea
                 id="comment-text"
                 value={text}
                 onChange={(e) => setText(e.target.value)}
@@ -170,20 +167,22 @@ export function CommentsDrawer({ project, open, onClose, onAddComment }: Comment
                 maxLength={500}
                 rows={3}
                 required
+                className="w-full px-3 py-2 rounded-lg bg-design-zinc-900/50 border border-design-zinc-800 text-white placeholder:text-design-zinc-500 focus:outline-none focus:ring-2 focus:ring-design-purple-500/50"
               />
-              <div className="flex justify-end text-xs text-white/40">
+              <div className="flex justify-end text-xs text-design-zinc-500">
                 {text.length}/500
               </div>
             </div>
 
-            <Button
+            <PremiumButton
               type="submit"
-              className="w-full gap-2"
+              variant="primary"
+              className="w-full"
               disabled={!text.trim() || !author.trim()}
             >
               <Send size={16} />
               Post Comment
-            </Button>
+            </PremiumButton>
           </form>
         </div>
       </div>

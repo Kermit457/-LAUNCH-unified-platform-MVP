@@ -149,13 +149,13 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit }: SubmitLaunchDr
       }}
     >
       {/* Modal Container */}
-      <div className="w-full max-w-2xl max-h-[92vh] bg-[#0D1220] rounded-2xl border border-white/10 shadow-2xl flex flex-col my-4">
+      <div className="w-full max-w-2xl max-h-[92vh] bg-design-zinc-950/95 backdrop-blur-xl rounded-2xl border border-design-zinc-800 shadow-2xl flex flex-col my-4">
         {/* Header */}
-        <div className="flex-shrink-0 px-6 py-3 border-b border-white/10 flex items-center justify-between">
+        <div className="flex-shrink-0 px-6 py-3 border-b border-design-zinc-800 flex items-center justify-between">
           <h2 className="text-lg font-bold text-white">Submit Your Project</h2>
           <button
             onClick={onClose}
-            className="p-2 rounded-lg hover:bg-white/5 transition-colors text-white/70 hover:text-white"
+            className="p-2 rounded-lg hover:bg-design-zinc-800/50 transition-colors text-design-zinc-400 hover:text-white"
             aria-label="Close"
           >
             <X className="w-5 h-5" />

@@ -4,9 +4,11 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Zap, Eye, Radio, Send, Sparkles, Play } from 'lucide-react'
 import { useLive, type LiveLaunch } from '@/hooks/useLive'
+import { useRealtimeViewers } from '@/hooks/useRealtimeViewers'
 import { PaginationControls } from '@/components/PaginationControls'
 import { StreamModal } from '@/components/StreamModal'
 import { GlassCard } from '@/components/design-system'
+import { ShareButton } from '@/components/ShareButton'
 
 // Chat message type for live chat feature
 interface ChatMessage {
@@ -14,6 +16,20 @@ interface ChatMessage {
   user: string
   message: string
   timestamp: string
+}
+
+// Component to display real-time viewer count
+function LiveViewerCount({ mint }: { mint: string }) {
+  const { viewerCount, loading } = useRealtimeViewers({ mint, enabled: true, joinStream: false })
+
+  if (loading) return <span className="text-xs text-zinc-500">...</span>
+
+  return (
+    <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-black/60 backdrop-blur-md rounded-lg border border-white/10">
+      <Eye className="w-3 h-3 text-violet-400" />
+      <span className="text-xs font-bold text-white">{viewerCount.toLocaleString()}</span>
+    </div>
+  )
 }
 
 export default function LivePage() {
@@ -244,8 +260,16 @@ export default function LivePage() {
 
                   {/* Launch Info */}
                   <div className="flex items-start gap-6 mt-12">
-                    <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center text-3xl font-bold text-white">
-                      {featuredLaunch.symbol?.charAt(0) || 'T'}
+                    <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center text-3xl font-bold text-white overflow-hidden">
+                      {featuredLaunch.image_uri ? (
+                        <img
+                          src={featuredLaunch.image_uri}
+                          alt={featuredLaunch.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        featuredLaunch.symbol?.charAt(0) || 'T'
+                      )}
                     </div>
                     <div className="flex-1">
                       <h2 className="text-3xl font-bold text-white mb-2">{featuredLaunch.name}</h2>
@@ -278,15 +302,22 @@ export default function LivePage() {
                         </div>
                       </div>
 
-                      {/* View Button */}
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => setSelectedCoin(featuredLaunch)}
-                        className="mt-6 px-6 py-3 rounded-xl bg-gradient-to-r from-red-500 to-orange-500 text-white font-semibold hover:shadow-lg hover:shadow-red-500/25 transition-all"
-                      >
-                        View Details
-                      </motion.button>
+                      {/* Action Buttons */}
+                      <div className="flex gap-3 mt-6">
+                        <motion.button
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          onClick={() => setSelectedCoin(featuredLaunch)}
+                          className="flex-1 px-6 py-3 rounded-xl bg-gradient-to-r from-red-500 to-orange-500 text-white font-semibold hover:shadow-lg hover:shadow-red-500/25 transition-all"
+                        >
+                          View Details
+                        </motion.button>
+                        <ShareButton
+                          url={`${typeof window !== 'undefined' ? window.location.origin : ''}/live?stream=${featuredLaunch.mint}`}
+                          title={`🔴 LIVE: ${featuredLaunch.name}`}
+                          description={featuredLaunch.description}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -415,37 +446,64 @@ export default function LivePage() {
                   <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-red-500/20 to-orange-500/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
 
                   <GlassCard className="relative h-full p-0 overflow-hidden border-zinc-800 group-hover:border-red-500/30 transition-all">
-                    {/* Header with Live Badge */}
-                    <div className="relative p-4 bg-gradient-to-br from-red-900/20 via-zinc-900/50 to-orange-900/20">
+                    {/* Stream Preview Thumbnail */}
+                    <div className="relative h-48 bg-gradient-to-br from-zinc-800 to-zinc-900 overflow-hidden">
+                      {launch.image_uri ? (
+                        <>
+                          <img
+                            src={launch.image_uri}
+                            alt={launch.name}
+                            className="w-full h-full object-cover"
+                          />
+                          {/* Dark overlay for readability */}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                        </>
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-6xl font-bold text-white/20">
+                          {launch.symbol?.charAt(0) || 'T'}
+                        </div>
+                      )}
+
                       {/* LIVE Badge */}
-                      <div className="absolute top-2 left-2 z-10">
-                        <div className="flex items-center gap-1.5 px-2 py-1 bg-red-500 rounded-md">
+                      <div className="absolute top-3 left-3 z-10">
+                        <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-red-500 rounded-lg shadow-lg">
                           <motion.div
                             animate={{ opacity: [1, 0.3, 1] }}
                             transition={{ duration: 2, repeat: Infinity }}
-                            className="w-1.5 h-1.5 bg-white rounded-full"
+                            className="w-2 h-2 bg-white rounded-full"
                           />
-                          <span className="text-[10px] font-bold text-white">LIVE</span>
+                          <span className="text-xs font-bold text-white uppercase tracking-wide">LIVE</span>
                         </div>
                       </div>
 
-                      {/* Market Cap Badge */}
-                      <div className="absolute top-2 right-2 px-2 py-1 bg-zinc-900/80 backdrop-blur-sm rounded-md">
-                        <span className="text-xs font-bold text-green-400">
-                          {formatMarketCap(launch.market_cap)}
-                        </span>
+                      {/* Market Cap & Viewer Count Badges */}
+                      <div className="absolute top-3 right-3 flex gap-2">
+                        <div className="px-2.5 py-1.5 bg-black/60 backdrop-blur-md rounded-lg border border-white/10">
+                          <span className="text-xs font-bold text-green-400">
+                            {formatMarketCap(launch.market_cap)}
+                          </span>
+                        </div>
+                        <LiveViewerCount mint={launch.mint} />
                       </div>
 
-                      {/* Logo/Symbol */}
-                      <div className="flex items-center gap-3 mt-8">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center text-lg font-bold text-white">
-                          {launch.symbol?.charAt(0) || 'T'}
+                      {/* Logo/Title Overlay */}
+                      <div className="absolute bottom-3 left-3 right-3 flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center text-lg font-bold text-white overflow-hidden border-2 border-white/20 shadow-lg flex-shrink-0">
+                          {launch.image_uri ? (
+                            <img
+                              src={launch.image_uri}
+                              alt={launch.name}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            launch.symbol?.charAt(0) || 'T'
+                          )}
                         </div>
-                        <div>
-                          <h3 className="font-semibold text-white text-sm group-hover:text-red-300 transition-colors">
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-bold text-white text-sm drop-shadow-lg truncate group-hover:text-red-300 transition-colors">
                             {launch.name}
                           </h3>
-                          <p className="text-xs text-zinc-500">${launch.symbol}</p>
+                          <p className="text-xs text-white/80 drop-shadow">${launch.symbol}</p>
                         </div>
                       </div>
                     </div>

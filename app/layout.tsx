@@ -9,6 +9,7 @@ import { AuthProvider } from '@/contexts/AuthContext'
 import { WalletProvider } from '@/contexts/WalletContext'
 import { PrivyProviderWrapper } from '@/contexts/PrivyProviderWrapper'
 import { PrivySyncWrapper } from '@/components/PrivySyncWrapper'
+import { ReferralTracker } from '@/components/ReferralTracker'
 
 export const metadata: Metadata = {
   title: 'LaunchOS - The Engine of the Internet Capital Market',
@@ -38,11 +39,11 @@ export default function RootLayout({
                 <NotificationProvider>
                   <NetworkProvider>
                     <ToastProvider>
+                      <ReferralTracker />
                       <NavBar />
                       <main className="relative">
                         {children}
                       </main>
-                      {/* <GlobalNavigation /> */}
                     </ToastProvider>
                   </NetworkProvider>
                 </NotificationProvider>

@@ -195,7 +195,10 @@ export const PremiumButton = ({
   size = 'md',
   icon: Icon,
   onClick,
-  className = ''
+  className = '',
+  type = 'button',
+  disabled = false,
+  ...props
 }: {
   children: React.ReactNode;
   variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
@@ -203,7 +206,9 @@ export const PremiumButton = ({
   icon?: React.ElementType;
   onClick?: () => void;
   className?: string;
-}) => {
+  type?: 'button' | 'submit' | 'reset';
+  disabled?: boolean;
+} & React.ButtonHTMLAttributes<HTMLButtonElement>) => {
   const { triggerHaptic } = useHaptic();
   const [isPressed, setIsPressed] = useState(false);
 
@@ -238,10 +243,13 @@ export const PremiumButton = ({
 
   return (
     <motion.button
+      type={type}
+      disabled={disabled}
       className={`
         relative overflow-hidden font-semibold
         flex items-center justify-center gap-2
         ${sizes[size]}
+        ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
         ${className}
       `}
       style={{
@@ -250,16 +258,19 @@ export const PremiumButton = ({
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)'
       }}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-      onMouseDown={() => setIsPressed(true)}
-      onMouseUp={() => setIsPressed(false)}
-      onMouseLeave={() => setIsPressed(false)}
+      whileHover={!disabled ? { scale: 1.05 } : {}}
+      whileTap={!disabled ? { scale: 0.95 } : {}}
+      onMouseDown={() => !disabled && setIsPressed(true)}
+      onMouseUp={() => !disabled && setIsPressed(false)}
+      onMouseLeave={() => !disabled && setIsPressed(false)}
       onClick={() => {
-        triggerHaptic('medium');
-        onClick?.();
+        if (!disabled) {
+          triggerHaptic('medium');
+          onClick?.();
+        }
       }}
       transition={tokens.animation.spring}
+      {...props}
     >
       {/* Shine Effect */}
       <motion.div
@@ -277,6 +288,47 @@ export const PremiumButton = ({
     </motion.button>
   );
 };
+
+// ============= INPUT =============
+export const Input = React.forwardRef<
+  HTMLInputElement,
+  React.InputHTMLAttributes<HTMLInputElement>
+>(({ className = '', type = 'text', ...props }, ref) => {
+  return (
+    <input
+      type={type}
+      className={`
+        w-full px-3 py-2 rounded-lg
+        bg-design-zinc-900/50 border border-design-zinc-800
+        text-white placeholder:text-design-zinc-500
+        focus:outline-none focus:ring-2 focus:ring-design-purple-500/50
+        transition-all duration-200
+        ${className}
+      `}
+      ref={ref}
+      {...props}
+    />
+  );
+});
+Input.displayName = 'Input';
+
+// ============= LABEL =============
+export const Label = React.forwardRef<
+  HTMLLabelElement,
+  React.LabelHTMLAttributes<HTMLLabelElement>
+>(({ className = '', ...props }, ref) => {
+  return (
+    <label
+      className={`
+        text-sm font-medium text-design-zinc-300
+        ${className}
+      `}
+      ref={ref}
+      {...props}
+    />
+  );
+});
+Label.displayName = 'Label';
 
 // ============= APP ICON =============
 export const AppIcon = ({
