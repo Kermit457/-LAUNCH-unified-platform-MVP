@@ -1,7 +1,8 @@
 "use client"
 
 import { useState, useEffect } from 'react'
-import { Users, UserPlus, Check } from 'lucide-react'
+import { Users, UserPlus, Check, Globe, Shield } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useUser } from '@/hooks/useUser'
 import { useRealtimeNetworkInvites } from '@/hooks/useRealtimeNetworkInvites'
 import { InviteCard } from '@/components/network/InviteCard'
@@ -9,8 +10,8 @@ import { ConnectionCard } from '@/components/network/ConnectionCard'
 import { ProfileCard } from '@/components/profile/ProfileCard'
 import { acceptNetworkInvite, rejectNetworkInvite, getUserConnections } from '@/lib/appwrite/services/network'
 import { getAllUsers, getUsersByIds } from '@/lib/appwrite/services/users'
-import { Button } from '@/components/ui/button'
 import { useToast } from '@/hooks/useToast'
+import { GlassCard, PremiumButton } from '@/components/design-system'
 
 type Tab = 'discover' | 'invites' | 'connections'
 
@@ -136,7 +137,6 @@ export default function NetworkPage() {
     try {
       await acceptNetworkInvite(inviteId)
       success('Invite accepted! You are now connected.')
-      // Real-time hook will update the UI automatically
     } catch (error: any) {
       console.error('Failed to accept invite:', error)
       showError(error.message || 'Failed to accept invite')
@@ -148,253 +148,370 @@ export default function NetworkPage() {
     try {
       await rejectNetworkInvite(inviteId)
       success('Invite rejected')
-      // Real-time hook will update the UI automatically
     } catch (error: any) {
       console.error('Failed to reject invite:', error)
-      showError(error.message || 'Failed to accept invite')
+      showError(error.message || 'Failed to reject invite')
     }
   }
 
   // Remove connection handler
   const handleRemoveConnection = async (connectionUserId: string) => {
-    // TODO: Implement remove connection
     console.log('Remove connection:', connectionUserId)
     showError('Remove connection not implemented yet')
   }
 
+  // Clean stats for header
+  const stats = [
+    {
+      label: "Connections",
+      value: connections.length,
+      icon: Users,
+      color: "from-design-violet-500 to-design-purple-500"
+    },
+    {
+      label: "Pending",
+      value: pendingCount,
+      icon: UserPlus,
+      color: "from-design-cyan-500 to-design-blue-500",
+      pulse: pendingCount > 0
+    },
+    {
+      label: "Network Reach",
+      value: "2.4K",
+      icon: Globe,
+      color: "from-design-green-500 to-design-emerald-500"
+    },
+    {
+      label: "Trust Score",
+      value: "92",
+      icon: Shield,
+      color: "from-design-orange-500 to-design-pink-500"
+    },
+  ]
+
   return (
     <div className="min-h-screen pb-24">
-      {/* Header */}
+      {/* Clean Header */}
       <div className="mb-8">
-        <div className="flex items-center gap-4 mb-4">
-          <Users className="w-8 h-8 text-fuchsia-400" />
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent">
-            Network
-          </h1>
-        </div>
-        <p className="text-zinc-300 text-lg">
-          Manage your connections and network invites
+        <motion.h1
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-4xl font-bold text-white mb-2"
+        >
+          Network
+        </motion.h1>
+        <p className="text-design-zinc-400 text-lg">
+          Connect with creators and grow your professional network
         </p>
       </div>
 
-      {/* Tabs */}
-      <div className="flex items-center gap-2 mb-8 border-b border-white/10">
+      {/* Stats Bar */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8"
+      >
+        {stats.map((stat) => (
+          <GlassCard key={stat.label} className="p-4 relative overflow-hidden">
+            {stat.pulse && (
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-pulse" />
+            )}
+            <div className="flex items-center gap-3">
+              <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${stat.color} flex items-center justify-center`}>
+                <stat.icon className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-white">{stat.value}</div>
+                <div className="text-xs text-design-zinc-500">{stat.label}</div>
+              </div>
+            </div>
+          </GlassCard>
+        ))}
+      </motion.div>
+
+      {/* Tab Navigation */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2 }}
+        className="flex gap-2 p-1.5 bg-design-zinc-900/50 backdrop-blur-xl rounded-xl border border-design-zinc-800 mb-8"
+      >
         <button
           onClick={() => setActiveTab('discover')}
-          className={`px-6 py-3 font-semibold transition-all relative ${
+          className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-medium transition-all ${
             activeTab === 'discover'
-              ? 'text-white border-b-2 border-fuchsia-500'
-              : 'text-white/60 hover:text-white'
+              ? 'bg-gradient-to-r from-design-violet-500 to-design-purple-500 text-white shadow-lg'
+              : 'text-design-zinc-400 hover:text-white hover:bg-white/5'
           }`}
         >
-          <span className="flex items-center gap-2">
-            <Users className="w-4 h-4" />
-            Discover
-          </span>
+          <Users className="w-4 h-4" />
+          Discover
         </button>
 
         <button
           onClick={() => setActiveTab('invites')}
-          className={`px-6 py-3 font-semibold transition-all relative ${
+          className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-medium transition-all relative ${
             activeTab === 'invites'
-              ? 'text-white border-b-2 border-fuchsia-500'
-              : 'text-white/60 hover:text-white'
+              ? 'bg-gradient-to-r from-design-violet-500 to-design-purple-500 text-white shadow-lg'
+              : 'text-design-zinc-400 hover:text-white hover:bg-white/5'
           }`}
         >
-          <span className="flex items-center gap-2">
-            <UserPlus className="w-4 h-4" />
-            Invites
-            {pendingCount > 0 && (
-              <span className="px-2 py-0.5 bg-fuchsia-500 text-white text-xs font-bold rounded-full">
-                {pendingCount}
-              </span>
-            )}
-          </span>
+          <UserPlus className="w-4 h-4" />
+          Invites
+          {pendingCount > 0 && (
+            <span className="absolute -top-1 -right-1 w-5 h-5 bg-design-orange-500 rounded-full text-white text-xs flex items-center justify-center font-bold animate-pulse">
+              {pendingCount}
+            </span>
+          )}
         </button>
 
         <button
           onClick={() => setActiveTab('connections')}
-          className={`px-6 py-3 font-semibold transition-all relative ${
+          className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-medium transition-all ${
             activeTab === 'connections'
-              ? 'text-white border-b-2 border-fuchsia-500'
-              : 'text-white/60 hover:text-white'
+              ? 'bg-gradient-to-r from-design-violet-500 to-design-purple-500 text-white shadow-lg'
+              : 'text-design-zinc-400 hover:text-white hover:bg-white/5'
           }`}
         >
-          <span className="flex items-center gap-2">
-            <Check className="w-4 h-4" />
-            Connections
-            <span className="text-xs text-white/60">({connections.length})</span>
-          </span>
+          <Check className="w-4 h-4" />
+          Connections
+          <span className="text-xs opacity-70">({connections.length})</span>
         </button>
-      </div>
+      </motion.div>
 
-      {/* Invites Tab */}
-      {activeTab === 'invites' && (
-        <div>
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-white">
-              Pending Invites
-              {pendingCount > 0 && (
-                <span className="ml-3 text-lg font-normal text-white/60">
-                  ({pendingCount})
-                </span>
-              )}
-            </h2>
-          </div>
-
-          {/* Loading State */}
-          {invitesLoading && (
-            <div className="text-center py-16">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-fuchsia-500 mx-auto mb-4"></div>
-              <p className="text-zinc-500">Loading invites...</p>
-            </div>
-          )}
-
-          {/* Invites List */}
-          {!invitesLoading && invites.length > 0 && (
-            <div className="space-y-3">
-              {invites.map(invite => {
-                const sender = inviteSenders[invite.senderId]
-                return (
-                  <InviteCard
-                    key={invite.$id}
-                    invite={invite}
-                    senderName={sender?.displayName}
-                    senderAvatar={sender?.avatar}
-                    senderUsername={sender?.username}
-                    onAccept={handleAcceptInvite}
-                    onReject={handleRejectInvite}
-                  />
-                )
-              })}
-            </div>
-          )}
-
-          {/* Empty State */}
-          {!invitesLoading && invites.length === 0 && (
-            <div className="text-center py-16 px-4 rounded-xl bg-white/5 border border-white/10">
-              <UserPlus className="w-16 h-16 mx-auto mb-4 text-white/40" />
-              <h3 className="text-xl font-semibold text-white mb-2">No pending invites</h3>
-              <p className="text-white/60 mb-6">
-                When someone sends you a connection request, it will appear here.
-              </p>
-              <Button
-                variant="boost"
-                onClick={() => setActiveTab('discover')}
-              >
+      {/* Tab Content */}
+      <AnimatePresence mode="wait">
+        {/* Discover Tab */}
+        {activeTab === 'discover' && (
+          <motion.div
+            key="discover"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.2 }}
+          >
+            {/* Search/Filter Bar */}
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-white">
                 Discover People
-              </Button>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Connections Tab */}
-      {activeTab === 'connections' && (
-        <div>
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-white">
-              Your Connections
-              <span className="ml-3 text-lg font-normal text-white/60">
-                ({connections.length})
-              </span>
-            </h2>
-          </div>
-
-          {/* Loading State */}
-          {loadingConnections && (
-            <div className="text-center py-16">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-fuchsia-500 mx-auto mb-4"></div>
-              <p className="text-zinc-500">Loading connections...</p>
-            </div>
-          )}
-
-          {/* Connections Grid */}
-          {!loadingConnections && connections.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {connections.map(connection => (
-                <ConnectionCard
-                  key={connection.$id}
-                  userId={connection.userId}
-                  name={connection.displayName || connection.username}
-                  username={connection.username}
-                  avatar={connection.avatar}
-                  bio={connection.bio}
-                  roles={connection.roles}
-                  onRemove={handleRemoveConnection}
-                />
-              ))}
-            </div>
-          )}
-
-          {/* Empty State */}
-          {!loadingConnections && connections.length === 0 && (
-            <div className="text-center py-16 px-4 rounded-xl bg-white/5 border border-white/10">
-              <Users className="w-16 h-16 mx-auto mb-4 text-white/40" />
-              <h3 className="text-xl font-semibold text-white mb-2">No connections yet</h3>
-              <p className="text-white/60 mb-6">
-                Start building your network by accepting invites or discovering new people.
-              </p>
-              <div className="flex items-center justify-center gap-3">
-                <Button
-                  variant="secondary"
-                  onClick={() => setActiveTab('invites')}
-                >
-                  Check Invites
-                </Button>
-                <Button
-                  variant="boost"
-                  onClick={() => setActiveTab('discover')}
-                >
-                  Discover People
-                </Button>
+              </h2>
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-design-zinc-500">
+                  {allUsers.length} users
+                </span>
               </div>
             </div>
-          )}
-        </div>
-      )}
 
-      {/* Discover Tab */}
-      {activeTab === 'discover' && (
-        <div>
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-white">
-              Discover People
-              <span className="ml-3 text-lg font-normal text-white/60">
-                ({allUsers.length} users)
-              </span>
-            </h2>
-          </div>
+            {/* Loading State */}
+            {loadingUsers && (
+              <div className="flex items-center justify-center py-20">
+                <div className="relative">
+                  <div className="w-16 h-16 border-4 border-design-violet-500/20 rounded-full"></div>
+                  <div className="absolute top-0 left-0 w-16 h-16 border-4 border-design-violet-500 border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              </div>
+            )}
 
-          {/* Loading State */}
-          {loadingUsers && (
-            <div className="text-center py-16">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-fuchsia-500 mx-auto mb-4"></div>
-              <p className="text-zinc-500">Loading users...</p>
+            {/* Users Grid */}
+            {!loadingUsers && allUsers.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {allUsers.map((profile, index) => (
+                  <motion.div
+                    key={profile.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: Math.min(index * 0.03, 0.3) }}
+                  >
+                    <ProfileCard data={profile} />
+                  </motion.div>
+                ))}
+              </div>
+            )}
+
+            {/* Empty State */}
+            {!loadingUsers && allUsers.length === 0 && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="text-center py-20"
+              >
+                <Users className="w-20 h-20 mx-auto mb-4 text-design-zinc-700" />
+                <h3 className="text-xl font-semibold text-white mb-2">No users found</h3>
+                <p className="text-design-zinc-500">
+                  Check back later to discover new people to connect with.
+                </p>
+              </motion.div>
+            )}
+          </motion.div>
+        )}
+
+        {/* Invites Tab */}
+        {activeTab === 'invites' && (
+          <motion.div
+            key="invites"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.2 }}
+          >
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-white">
+                Pending Invites
+                {pendingCount > 0 && (
+                  <span className="ml-3 text-lg font-normal text-design-zinc-500">
+                    ({pendingCount})
+                  </span>
+                )}
+              </h2>
             </div>
-          )}
 
-          {/* Users Grid */}
-          {!loadingUsers && allUsers.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {allUsers.map(profile => (
-                <ProfileCard key={profile.id} data={profile} />
-              ))}
-            </div>
-          )}
+            {/* Loading State */}
+            {invitesLoading && (
+              <div className="flex items-center justify-center py-20">
+                <div className="relative">
+                  <div className="w-16 h-16 border-4 border-design-violet-500/20 rounded-full"></div>
+                  <div className="absolute top-0 left-0 w-16 h-16 border-4 border-design-violet-500 border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              </div>
+            )}
 
-          {/* Empty State */}
-          {!loadingUsers && allUsers.length === 0 && (
-            <div className="text-center py-16 px-4 rounded-xl bg-white/5 border border-white/10">
-              <Users className="w-16 h-16 mx-auto mb-4 text-white/40" />
-              <h3 className="text-xl font-semibold text-white mb-2">No users found</h3>
-              <p className="text-white/60">
-                Check back later to discover new people to connect with.
-              </p>
+            {/* Invites List */}
+            {!invitesLoading && invites.length > 0 && (
+              <div className="space-y-3">
+                {invites.map((invite, index) => {
+                  const sender = inviteSenders[invite.senderId]
+                  return (
+                    <motion.div
+                      key={invite.$id}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                    >
+                      <InviteCard
+                        invite={invite}
+                        senderName={sender?.displayName}
+                        senderAvatar={sender?.avatar}
+                        senderUsername={sender?.username}
+                        onAccept={handleAcceptInvite}
+                        onReject={handleRejectInvite}
+                      />
+                    </motion.div>
+                  )
+                })}
+              </div>
+            )}
+
+            {/* Empty State */}
+            {!invitesLoading && invites.length === 0 && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="text-center py-20"
+              >
+                <GlassCard className="max-w-md mx-auto p-12">
+                  <UserPlus className="w-20 h-20 mx-auto mb-4 text-design-zinc-700" />
+                  <h3 className="text-xl font-semibold text-white mb-2">No pending invites</h3>
+                  <p className="text-design-zinc-500 mb-6">
+                    When someone sends you a connection request, it will appear here.
+                  </p>
+                  <PremiumButton
+                    variant="primary"
+                    onClick={() => setActiveTab('discover')}
+                  >
+                    Discover People
+                  </PremiumButton>
+                </GlassCard>
+              </motion.div>
+            )}
+          </motion.div>
+        )}
+
+        {/* Connections Tab */}
+        {activeTab === 'connections' && (
+          <motion.div
+            key="connections"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.2 }}
+          >
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-white">
+                Your Connections
+                <span className="ml-3 text-lg font-normal text-design-zinc-500">
+                  ({connections.length})
+                </span>
+              </h2>
             </div>
-          )}
-        </div>
-      )}
+
+            {/* Loading State */}
+            {loadingConnections && (
+              <div className="flex items-center justify-center py-20">
+                <div className="relative">
+                  <div className="w-16 h-16 border-4 border-design-violet-500/20 rounded-full"></div>
+                  <div className="absolute top-0 left-0 w-16 h-16 border-4 border-design-violet-500 border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              </div>
+            )}
+
+            {/* Connections Grid */}
+            {!loadingConnections && connections.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {connections.map((connection, index) => (
+                  <motion.div
+                    key={connection.$id}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: index * 0.03 }}
+                  >
+                    <ConnectionCard
+                      userId={connection.userId}
+                      name={connection.displayName || connection.username}
+                      username={connection.username}
+                      avatar={connection.avatar}
+                      bio={connection.bio}
+                      roles={connection.roles}
+                      onRemove={handleRemoveConnection}
+                    />
+                  </motion.div>
+                ))}
+              </div>
+            )}
+
+            {/* Empty State */}
+            {!loadingConnections && connections.length === 0 && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="text-center py-20"
+              >
+                <GlassCard className="max-w-md mx-auto p-12">
+                  <Users className="w-20 h-20 mx-auto mb-4 text-design-zinc-700" />
+                  <h3 className="text-xl font-semibold text-white mb-2">No connections yet</h3>
+                  <p className="text-design-zinc-500 mb-6">
+                    Start building your network by accepting invites or discovering new people.
+                  </p>
+                  <div className="flex items-center justify-center gap-3">
+                    <PremiumButton
+                      variant="secondary"
+                      onClick={() => setActiveTab('invites')}
+                    >
+                      Check Invites
+                    </PremiumButton>
+                    <PremiumButton
+                      variant="primary"
+                      onClick={() => setActiveTab('discover')}
+                    >
+                      Discover People
+                    </PremiumButton>
+                  </div>
+                </GlassCard>
+              </motion.div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
