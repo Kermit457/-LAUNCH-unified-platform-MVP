@@ -10,8 +10,7 @@ import {
   ChevronDown, BarChart3, Eye, Trophy,
   ChevronUp
 } from 'lucide-react'
-import { GlassCard, PremiumButton, SheetModal, ProductHuntCard, CleanLaunchCard } from '@/components/design-system'
-import { ReferralCard, ReferralLeaderboard, RewardsPanel } from '@/components/referral'
+import { GlassCard, PremiumButton, CleanLaunchCard } from '@/components/design-system'
 
 // Import existing functionality
 import { LiveLaunchCard } from '@/components/launch/cards/LiveLaunchCard'
@@ -809,8 +808,8 @@ export default function DiscoverPage() {
           </div>
         </div>
 
-        {/* Main Content Layout - Three Columns */}
-        <div className="grid md:grid-cols-3 gap-5">
+        {/* Main Content Layout - Two Columns */}
+        <div className="grid md:grid-cols-2 gap-5">
           {/* Left Column: Top Launches (LIVE) */}
           <div>
             <div className="flex items-center gap-2 mb-3">
@@ -934,12 +933,6 @@ export default function DiscoverPage() {
             )}
           </div>
 
-          {/* Right Column: Referral Components */}
-          <div className="space-y-5">
-            <RewardsPanel variant="compact" />
-            <ReferralCard variant="compact" />
-            <ReferralLeaderboard variant="compact" limit={5} showUserRank={false} />
-          </div>
         </div>
 
         {/* Floating Create Button (Mobile) */}

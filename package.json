@@ -20,7 +20,12 @@
     "fix-users": "tsx scripts/fix-users-schema.ts",
     "seed-network": "tsx scripts/seed-network-users.ts",
     "setup-referrals": "node scripts/setup-referral-collections.js",
-    "test-referrals": "tsx scripts/test-referral-system.ts"
+    "test-referrals": "tsx scripts/test-referral-system.ts",
+    "setup-curves": "node scripts/setup-curve-collections.js",
+    "add-curve-attrs": "node scripts/add-curve-attributes.js",
+    "add-snapshot-attrs": "node scripts/add-snapshot-attributes.js",
+    "verify-curves": "node scripts/verify-curve-setup.js",
+    "seed-curves": "node scripts/seed-curve-data.js"
   },
   "dependencies": {
     "@privy-io/react-auth": "^1.27.0",

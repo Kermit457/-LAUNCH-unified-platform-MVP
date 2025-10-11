@@ -21,13 +21,16 @@ interface CleanLaunchCardProps {
     contributionPoolPct?: number
     feesSharePct?: number
     contributors?: Array<{ id: string; name: string; avatar?: string }>
+    // Curve/Keys data
+    keyPrice?: number
+    keyHolders?: number
   }
   hasVoted: boolean
   onVote: () => void
   onComment: () => void
   onCollaborate: () => void
   onDetails: () => void
-  onBoost?: () => void
+  onBuyKeys?: () => void
   onNotify?: () => void
   onShare?: () => void
 }
@@ -39,7 +42,7 @@ export const CleanLaunchCard = ({
   onComment,
   onCollaborate,
   onDetails,
-  onBoost,
+  onBuyKeys,
   onNotify,
   onShare
 }: CleanLaunchCardProps) => {
@@ -49,10 +52,75 @@ export const CleanLaunchCard = ({
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -2 }}
       transition={{ duration: 0.2 }}
-      className="bg-zinc-950 rounded-2xl border border-zinc-800 overflow-hidden hover:border-zinc-700 transition-colors"
+      className="relative group"
     >
-      {/* Card Content */}
-      <div className="p-5 flex gap-4">
+      {/* Animated Glow Effect */}
+      <motion.div
+        className="absolute -inset-0.5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+        style={{
+          background: `linear-gradient(135deg, ${
+            launch.scope === 'ICM'
+              ? 'rgba(139, 92, 246, 0.15), rgba(217, 70, 239, 0.15)'
+              : 'rgba(6, 182, 212, 0.15), rgba(59, 130, 246, 0.15)'
+          })`,
+          filter: 'blur(8px)'
+        }}
+        animate={{
+          opacity: [0.3, 0.5, 0.3],
+        }}
+        transition={{
+          duration: 3,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+      />
+
+      {/* Faint Pulse Animation */}
+      <motion.div
+        className="absolute inset-0 rounded-2xl"
+        style={{
+          background: `radial-gradient(circle at 50% 0%, ${
+            launch.scope === 'ICM'
+              ? 'rgba(139, 92, 246, 0.03)'
+              : 'rgba(6, 182, 212, 0.03)'
+          }, transparent 70%)`
+        }}
+        animate={{
+          opacity: [0.5, 1, 0.5],
+        }}
+        transition={{
+          duration: 4,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+      />
+
+      <div className="relative bg-zinc-950 rounded-2xl border border-zinc-800 overflow-hidden hover:border-zinc-700 transition-colors">
+        {/* Top Right Actions: Notification Bell & Share */}
+        <div className="absolute top-3 right-3 flex items-center gap-1 z-10">
+          {/* Notification Bell Button */}
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            onClick={onNotify}
+            className="p-1.5 rounded-lg bg-zinc-900/80 backdrop-blur-sm text-zinc-400 hover:bg-blue-500 hover:text-white border border-zinc-800 hover:border-blue-500 transition-all"
+            title="Notify"
+          >
+            <Bell className="w-3.5 h-3.5" />
+          </motion.button>
+
+          {/* Share Button */}
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            onClick={onShare}
+            className="p-1.5 rounded-lg bg-zinc-900/80 backdrop-blur-sm text-zinc-400 hover:bg-zinc-800 hover:text-white border border-zinc-800 transition-all"
+            title="Share"
+          >
+            <Share2 className="w-3.5 h-3.5" />
+          </motion.button>
+        </div>
+
+        {/* Card Content */}
+        <div className="p-5 flex gap-4">
         {/* Left: Vote and Comment Buttons */}
         <div className="flex flex-col items-center gap-1">
           {/* Vote Button */}
@@ -165,11 +233,11 @@ export const CleanLaunchCard = ({
               </div>
             )}
 
-            {/* Boost Count */}
-            {launch.boostCount && launch.boostCount > 0 && (
+            {/* Key Holders Count */}
+            {launch.keyHolders !== undefined && launch.keyHolders > 0 && (
               <div className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-orange-500/10 border border-orange-500/20">
                 <Zap className="w-3 h-3 text-orange-400" />
-                <span className="text-orange-400 font-medium">{launch.boostCount}</span>
+                <span className="text-orange-400 font-medium">{launch.keyHolders}</span>
               </div>
             )}
 
@@ -210,17 +278,18 @@ export const CleanLaunchCard = ({
 
           {/* Action Buttons */}
           <div className="flex items-center gap-2">
-            {/* Boost ⚡ Burn Button (with text) */}
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              onClick={onBoost}
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-zinc-900 text-zinc-400 hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-500 hover:text-white border border-zinc-800 hover:border-orange-500 transition-all text-xs"
-              title="Boost & Burn"
-            >
-              <span>Boost</span>
-              <Zap className="w-3 h-3" />
-              <span>Burn</span>
-            </motion.button>
+            {/* Buy Keys Button - Shows price with SOL symbol */}
+            {launch.keyPrice !== undefined && onBuyKeys && (
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                onClick={onBuyKeys}
+                className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-zinc-900 text-zinc-400 hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-500 hover:text-white border border-zinc-800 hover:border-orange-500 transition-all text-xs"
+                title="Buy Alpha Keys"
+              >
+                <span>Buy Keys</span>
+                <span className="text-[10px] opacity-70">◎{launch.keyPrice.toFixed(3)}</span>
+              </motion.button>
+            )}
 
             {/* Collaborate Button */}
             <motion.button
@@ -241,28 +310,9 @@ export const CleanLaunchCard = ({
             >
               Details
             </motion.button>
-
-            {/* Notification Bell Button */}
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              onClick={onNotify}
-              className="p-1.5 rounded-lg bg-zinc-900 text-zinc-400 hover:bg-blue-500 hover:text-white border border-zinc-800 hover:border-blue-500 transition-all"
-              title="Notify"
-            >
-              <Bell className="w-4 h-4" />
-            </motion.button>
-
-            {/* Share Button */}
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              onClick={onShare}
-              className="p-1.5 rounded-lg bg-zinc-900 text-zinc-400 hover:bg-zinc-800 hover:text-white border border-zinc-800 transition-all"
-              title="Share"
-            >
-              <Share2 className="w-4 h-4" />
-            </motion.button>
           </div>
         </div>
+      </div>
       </div>
     </motion.div>
   )
