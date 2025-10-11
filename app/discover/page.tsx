@@ -10,7 +10,7 @@ import {
   ChevronDown, BarChart3, Eye, Trophy,
   ChevronUp
 } from 'lucide-react'
-import { GlassCard, PremiumButton, CleanLaunchCard } from '@/components/design-system'
+import { GlassCard, PremiumButton, CleanLaunchCard, SimpleBuySellModal } from '@/components/design-system'
 
 // Import existing functionality
 import { LiveLaunchCard } from '@/components/launch/cards/LiveLaunchCard'
@@ -27,7 +27,9 @@ import { getComments } from '@/lib/appwrite/services/comments'
 import { addProjectMember } from '@/lib/appwrite/services/project-members'
 import { getUserProfile } from '@/lib/appwrite/services/users'
 import { useUser } from '@/hooks/useUser'
+import { useCurvesByOwners } from '@/hooks/useCurvesByOwners'
 import { uploadLogo } from '@/lib/storage'
+import type { Curve } from '@/types/curve'
 
 type FilterType = 'ALL' | 'ICM' | 'CCM'
 type StatusFilterType = 'ALL' | 'LIVE' | 'UPCOMING'
@@ -219,6 +221,21 @@ export default function DiscoverPage() {
   const [detailsModalOpen, setDetailsModalOpen] = useState(false)
   const [selectedLaunchForDetails, setSelectedLaunchForDetails] = useState<any>(null)
 
+  // Curve/Buy Keys state
+  const [buySellModalOpen, setBuySellModalOpen] = useState(false)
+  const [selectedCurveData, setSelectedCurveData] = useState<{
+    curve: Curve | null
+    projectName: string
+    projectLogo?: string
+  } | null>(null)
+
+  // Fetch curves for all projects
+  const projectOwners = launches.map(launch => ({
+    id: launch.id,
+    type: 'project' as const
+  }))
+  const { curves: projectCurves } = useCurvesByOwners(projectOwners)
+
   // Fetch user profile and projects
   useEffect(() => {
     async function fetchUserData() {
@@ -337,9 +354,14 @@ export default function DiscoverPage() {
   }
 
   const handleBoost = (launch: any) => {
-    // TODO: Implement boost/burn functionality
-    console.log('Boost clicked for:', launch.title)
-    alert('🔥 Boost & Burn feature coming soon!')
+    // Open Buy Keys modal with curve data
+    const curve = projectCurves.get(launch.id)
+    setSelectedCurveData({
+      curve: curve || null,
+      projectName: launch.title,
+      projectLogo: launch.logoUrl
+    })
+    setBuySellModalOpen(true)
   }
 
   const handleNotify = (launch: any) => {
@@ -837,7 +859,9 @@ export default function DiscoverPage() {
               </GlassCard>
             ) : (
               <div className="space-y-3">
-                {filteredLaunches.filter(l => l.status === 'LIVE').slice(0, 5).map((launch) => (
+                {filteredLaunches.filter(l => l.status === 'LIVE').slice(0, 5).map((launch) => {
+                  const curve = projectCurves.get(launch.id)
+                  return (
                   <CleanLaunchCard
                     key={launch.id}
                     launch={{
@@ -851,9 +875,10 @@ export default function DiscoverPage() {
                       commentsCount: launch.commentsCount || 0,
                       viewCount: launch.viewCount,
                       convictionPct: launch.convictionPct,
-                      boostCount: launch.boostCount,
+                      keyHolders: curve?.holders || 0,
                       contributionPoolPct: launch.contributionPoolPct,
                       feesSharePct: launch.feesSharePct,
+                      keyPrice: curve?.price || 0.01,
                       contributors: launch.contributors
                     }}
                     hasVoted={userVotedLaunches.has(launch.id)}
@@ -864,11 +889,12 @@ export default function DiscoverPage() {
                     }}
                     onCollaborate={() => handleCollaborate(launch)}
                     onDetails={() => handleDetails(launch)}
-                    onBoost={() => handleBoost(launch)}
+                    onBuyKeys={() => handleBoost(launch)}
                     onNotify={() => handleNotify(launch)}
                     onShare={() => handleShare(launch)}
                   />
-                ))}
+                  )
+                })}
               </div>
             )}
           </div>
@@ -897,38 +923,42 @@ export default function DiscoverPage() {
                 {filteredLaunches
                   .filter(l => l.status === 'UPCOMING')
                   .slice(0, 5)
-                  .map((launch) => (
-                    <CleanLaunchCard
-                      key={launch.id}
-                      launch={{
-                        id: launch.id,
-                        title: launch.title,
-                        subtitle: launch.subtitle || '',
-                        logoUrl: launch.logoUrl,
-                        scope: launch.scope,
-                        status: launch.status,
-                        upvotes: launch.upvotes || 0,
-                        commentsCount: launch.commentsCount || 0,
-                        viewCount: launch.viewCount,
-                        convictionPct: launch.convictionPct,
-                        boostCount: launch.boostCount,
-                        contributionPoolPct: launch.contributionPoolPct,
-                        feesSharePct: launch.feesSharePct,
-                        contributors: launch.contributors
-                      }}
-                      hasVoted={userVotedLaunches.has(launch.id)}
-                      onVote={() => handleVote(launch.id)}
-                      onComment={() => {
-                        setSelectedLaunch({ id: launch.id, title: launch.title })
-                        setCommentsOpen(true)
-                      }}
-                      onCollaborate={() => handleCollaborate(launch)}
-                      onDetails={() => handleDetails(launch)}
-                      onBoost={() => handleBoost(launch)}
-                      onNotify={() => handleNotify(launch)}
-                      onShare={() => handleShare(launch)}
-                    />
-                  ))}
+                  .map((launch) => {
+                    const curve = projectCurves.get(launch.id)
+                    return (
+                      <CleanLaunchCard
+                        key={launch.id}
+                        launch={{
+                          id: launch.id,
+                          title: launch.title,
+                          subtitle: launch.subtitle || '',
+                          logoUrl: launch.logoUrl,
+                          scope: launch.scope,
+                          status: launch.status,
+                          upvotes: launch.upvotes || 0,
+                          commentsCount: launch.commentsCount || 0,
+                          viewCount: launch.viewCount,
+                          convictionPct: launch.convictionPct,
+                          keyHolders: curve?.holders || 0,
+                          contributionPoolPct: launch.contributionPoolPct,
+                          feesSharePct: launch.feesSharePct,
+                          keyPrice: curve?.price || 0.01,
+                          contributors: launch.contributors
+                        }}
+                        hasVoted={userVotedLaunches.has(launch.id)}
+                        onVote={() => handleVote(launch.id)}
+                        onComment={() => {
+                          setSelectedLaunch({ id: launch.id, title: launch.title })
+                          setCommentsOpen(true)
+                        }}
+                        onCollaborate={() => handleCollaborate(launch)}
+                        onDetails={() => handleDetails(launch)}
+                        onBuyKeys={() => handleBoost(launch)}
+                        onNotify={() => handleNotify(launch)}
+                        onShare={() => handleShare(launch)}
+                      />
+                    )
+                  })}
               </div>
             )}
           </div>
@@ -1017,6 +1047,40 @@ export default function DiscoverPage() {
             budget: selectedLaunchForDetails.budget,
             endTime: selectedLaunchForDetails.endTime,
             url: selectedLaunchForDetails.url
+          }}
+        />
+      )}
+
+      {/* Buy/Sell Keys Modal */}
+      {selectedCurveData && selectedCurveData.curve && (
+        <SimpleBuySellModal
+          isOpen={buySellModalOpen}
+          onClose={() => {
+            setBuySellModalOpen(false)
+            setSelectedCurveData(null)
+          }}
+          curve={selectedCurveData.curve}
+          ownerName={selectedCurveData.projectName}
+          ownerAvatar={selectedCurveData.projectLogo}
+          userBalance={10} // TODO: Get from wallet
+          userKeys={0} // TODO: Get from curve holders
+          onTrade={async (type, keys) => {
+            if (!userId || !selectedCurveData.curve) return
+
+            const endpoint = `/api/curve/${selectedCurveData.curve.id}/${type}`
+            const response = await fetch(endpoint, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ keys, userId })
+            })
+
+            if (!response.ok) {
+              const error = await response.json()
+              throw new Error(error.error || 'Transaction failed')
+            }
+
+            // Refresh launches to get updated curve data
+            // TODO: Implement optimistic update or refetch
           }}
         />
       )}

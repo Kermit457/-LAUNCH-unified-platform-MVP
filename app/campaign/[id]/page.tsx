@@ -1,11 +1,14 @@
 "use client"
 
 import { useParams, useRouter } from 'next/navigation'
-import { ArrowLeft, Share2, Video, Clock, Users, DollarSign, Upload, Eye, Link2, Package } from 'lucide-react'
+import { ArrowLeft, Share2, Video, Clock, Users, DollarSign, Upload, Eye, Link2, Package, FileCheck } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { getCampaignById } from '@/lib/appwrite/services/campaigns'
-import { createSubmission } from '@/lib/appwrite/services/submissions'
+import { createSubmission, getSubmissions, approveSubmission, rejectSubmission, type Submission } from '@/lib/appwrite/services/submissions'
 import { useUser } from '@/hooks/useUser'
+import { EscrowStatusCard, type EscrowStatus } from '@/components/payments/EscrowStatusCard'
+import { SubmissionReviewCard } from '@/components/campaigns/SubmissionReviewCard'
+import type { Campaign } from '@/lib/appwrite/services/campaigns'
 
 export default function CampaignDetailPage() {
   const params = useParams()
@@ -22,6 +25,89 @@ export default function CampaignDetailPage() {
   const [submitting, setSubmitting] = useState(false)
   const [submitSuccess, setSubmitSuccess] = useState(false)
   const [submitError, setSubmitError] = useState('')
+
+  // Escrow state
+  const [escrowData, setEscrowData] = useState<{
+    escrowId?: string
+    status?: EscrowStatus
+    totalAmount?: number
+    releasedAmount?: number
+    participantsTotal?: number
+    participantsPaid?: number
+    deadline?: string
+  } | null>(null)
+
+  // Submissions state
+  const [submissions, setSubmissions] = useState<Submission[]>([])
+  const [loadingSubmissions, setLoadingSubmissions] = useState(false)
+  const [submissionsTab, setSubmissionsTab] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all')
+
+  // Fetch submissions for this campaign
+  const fetchSubmissions = async () => {
+    if (!params?.id) return
+    try {
+      setLoadingSubmissions(true)
+      const data = await getSubmissions({ campaignId: params.id as string })
+      setSubmissions(data)
+    } catch (error) {
+      console.error('Failed to fetch submissions:', error)
+    } finally {
+      setLoadingSubmissions(false)
+    }
+  }
+
+  // Escrow action handlers
+  const handleReleasePayment = async () => {
+    console.log('Release payment clicked - mock action')
+    // TODO: Connect to Solana service to release payment
+    alert('Payment release functionality will be connected to Solana smart contract')
+  }
+
+  const handleCancelEscrow = async () => {
+    console.log('Cancel escrow clicked - mock action')
+    // TODO: Connect to Solana service to cancel escrow
+    alert('Escrow cancellation will be connected to Solana smart contract')
+  }
+
+  // Submission review handlers with escrow integration
+  const handleApproveSubmission = async (submissionId: string, earnings: number) => {
+    try {
+      // 1. Approve submission in database
+      await approveSubmission(submissionId, earnings)
+
+      // 2. TODO: Release payment from escrow (Solana smart contract)
+      console.log(`Release ${earnings} SOL from escrow to participant`)
+
+      // 3. Refresh submissions and escrow data
+      await fetchSubmissions()
+
+      // 4. Update escrow status (mock - in real app, this comes from blockchain)
+      if (escrowData) {
+        const newPaidCount = (escrowData.participantsPaid || 0) + 1
+        const newReleasedAmount = (escrowData.releasedAmount || 0) + earnings
+
+        setEscrowData({
+          ...escrowData,
+          participantsPaid: newPaidCount,
+          releasedAmount: newReleasedAmount,
+          status: newPaidCount >= (escrowData.participantsTotal || 0) ? 'released' : 'partial'
+        })
+      }
+    } catch (error) {
+      console.error('Failed to approve submission:', error)
+      throw error
+    }
+  }
+
+  const handleRejectSubmission = async (submissionId: string, reason?: string) => {
+    try {
+      await rejectSubmission(submissionId, reason)
+      await fetchSubmissions()
+    } catch (error) {
+      console.error('Failed to reject submission:', error)
+      throw error
+    }
+  }
 
   const handleSubmit = async () => {
     if (!isAuthenticated || !userId) {
@@ -68,6 +154,9 @@ export default function CampaignDetailPage() {
       try {
         setLoading(true)
         const data = await getCampaignById(params.id as string)
+
+        // Fetch submissions for this campaign
+        await fetchSubmissions()
 
         if (!data) {
           // Campaign not found - use mock data
@@ -127,6 +216,20 @@ export default function CampaignDetailPage() {
           },
           examples: (data as any).topSubmissions || []
         })
+
+        // Set mock escrow data if campaign has escrow fields
+        const campaignData = data as Campaign
+        if (campaignData.escrowId && campaignData.escrowStatus && campaignData.escrowAmount) {
+          setEscrowData({
+            escrowId: campaignData.escrowId,
+            status: campaignData.escrowStatus,
+            totalAmount: campaignData.escrowAmount,
+            releasedAmount: (campaignData.paidParticipants || 0) * (campaignData.escrowAmount / (campaignData.expectedParticipants || 1)),
+            participantsTotal: campaignData.expectedParticipants || 10,
+            participantsPaid: campaignData.paidParticipants || 0,
+            deadline: data.deadline
+          })
+        }
       } catch (error) {
         console.error('Failed to fetch campaign:', error)
         // Fallback to mock data
@@ -267,6 +370,23 @@ export default function CampaignDetailPage() {
         )}
       </div>
 
+      {/* Escrow Status Card - Full version for dashboard/detail view */}
+      {escrowData && escrowData.escrowId && escrowData.status && escrowData.totalAmount !== undefined && (
+        <div className="mb-6">
+          <EscrowStatusCard
+            escrowId={escrowData.escrowId}
+            status={escrowData.status}
+            totalAmount={escrowData.totalAmount}
+            releasedAmount={escrowData.releasedAmount}
+            participantsTotal={escrowData.participantsTotal || 0}
+            participantsPaid={escrowData.participantsPaid || 0}
+            deadline={escrowData.deadline}
+            onRelease={handleReleasePayment}
+            onCancel={handleCancelEscrow}
+          />
+        </div>
+      )}
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
@@ -395,6 +515,66 @@ export default function CampaignDetailPage() {
               ))}
             </div>
           </div>
+
+          {/* Submissions Review Section */}
+          {submissions.length > 0 && (
+            <div className="rounded-2xl bg-white/5 border border-white/10 p-6 backdrop-blur-xl">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-bold bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent flex items-center gap-2">
+                  <FileCheck className="w-5 h-5 text-fuchsia-400" />
+                  Submissions ({submissions.length})
+                </h2>
+              </div>
+
+              {/* Tabs */}
+              <div className="flex items-center gap-2 mb-4">
+                {(['all', 'pending', 'approved', 'rejected'] as const).map((tab) => (
+                  <button
+                    key={tab}
+                    onClick={() => setSubmissionsTab(tab)}
+                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                      submissionsTab === tab
+                        ? 'bg-fuchsia-500/20 text-fuchsia-300 border border-fuchsia-500/40'
+                        : 'bg-white/5 text-zinc-400 hover:text-white border border-white/10'
+                    }`}
+                  >
+                    {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                    {tab !== 'all' && (
+                      <span className="ml-1.5 text-xs opacity-70">
+                        ({submissions.filter(s => s.status === tab).length})
+                      </span>
+                    )}
+                  </button>
+                ))}
+              </div>
+
+              {/* Submissions List */}
+              <div className="space-y-3">
+                {loadingSubmissions ? (
+                  <div className="text-center py-8 text-zinc-400">Loading submissions...</div>
+                ) : (
+                  submissions
+                    .filter(s => submissionsTab === 'all' || s.status === submissionsTab)
+                    .map((submission) => (
+                      <SubmissionReviewCard
+                        key={submission.$id}
+                        submission={submission}
+                        campaignRatePerThousand={campaign.ratePerThousand}
+                        onApprove={handleApproveSubmission}
+                        onReject={handleRejectSubmission}
+                        compact={false}
+                      />
+                    ))
+                )}
+
+                {submissions.filter(s => submissionsTab === 'all' || s.status === submissionsTab).length === 0 && !loadingSubmissions && (
+                  <div className="text-center py-8 text-zinc-500">
+                    No {submissionsTab !== 'all' ? submissionsTab : ''} submissions yet
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Sidebar */}

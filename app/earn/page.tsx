@@ -10,10 +10,9 @@ import {
 import { GlassCard, PremiumButton } from '@/components/design-system'
 
 // Import existing functionality - PRESERVE ALL APPWRITE CONNECTIONS
-import { CreateQuestDrawer } from '@/components/quests/CreateQuestDrawer'
 import { CreateCampaignModal } from '@/components/campaigns/CreateCampaignModal'
 import { EntitySelectorModal, EntityOption } from '@/components/launch/EntitySelectorModal'
-import { CampaignType } from '@/types/quest'
+import { EscrowStatusCard, type EscrowStatus } from '@/components/payments/EscrowStatusCard'
 import { getCampaigns } from '@/lib/appwrite/services/campaigns'
 import { getQuests } from '@/lib/appwrite/services/quests'
 import { getUserProfile } from '@/lib/appwrite/services/users'
@@ -38,9 +37,15 @@ interface ExtendedEarnCard {
   status: 'live' | 'upcoming' | 'ended' | 'active' | 'completed' | 'cancelled'
   createdBy?: string
   createdAt?: string
+  // Escrow fields
+  escrowId?: string
+  escrowStatus?: EscrowStatus
+  escrowAmount?: number
+  paidParticipants?: number
+  expectedParticipants?: number
 }
 
-const TABS = ['All', 'Campaign', 'Raid', 'Bounty', 'Clips'] as const
+const TABS = ['All', 'Campaign', 'Clips'] as const
 type Tab = typeof TABS[number]
 
 // Enhanced KPI Card Component
@@ -152,6 +157,20 @@ const OpportunityCard = ({
             </div>
           </div>
 
+          {/* Escrow Badge */}
+          {card.escrowId && card.escrowStatus && card.escrowAmount && (
+            <div className="mb-4">
+              <EscrowStatusCard
+                escrowId={card.escrowId}
+                status={card.escrowStatus}
+                totalAmount={card.escrowAmount}
+                participantsTotal={card.expectedParticipants || 0}
+                participantsPaid={card.paidParticipants || 0}
+                compact={true}
+              />
+            </div>
+          )}
+
           {/* Stats */}
           <div className="space-y-3 mb-4">
             {/* Reward */}
@@ -233,8 +252,6 @@ export default function EarnPage() {
   const { userId } = useUser()
   const [activeTab, setActiveTab] = useState<Tab>('All')
   const [sortBy, setSortBy] = useState<'trending' | 'payout' | 'closing'>('trending')
-  const [isCreateQuestOpen, setIsCreateQuestOpen] = useState(false)
-  const [initialQuestType, setInitialQuestType] = useState<CampaignType>('raid')
   const [isCreateCampaignOpen, setIsCreateCampaignOpen] = useState(false)
   const [allCards, setAllCards] = useState<ExtendedEarnCard[]>([])
   const [loading, setLoading] = useState(true)
@@ -274,8 +291,6 @@ export default function EarnPage() {
 
     if (entitySelectorAction === 'campaign') {
       setIsCreateCampaignOpen(true)
-    } else if (entitySelectorAction === 'quest') {
-      setIsCreateQuestOpen(true)
     }
   }
 
@@ -291,23 +306,40 @@ export default function EarnPage() {
         ])
 
         // Convert campaigns to ExtendedEarnCard format
-        const campaignCards: ExtendedEarnCard[] = campaignsData.map(campaign => ({
-          id: campaign.$id,
-          title: campaign.title || 'Untitled Campaign',
-          description: campaign.description || '',
-          type: 'campaign' as EarnType,
-          platform: campaign.platforms || [],
-          reward: {
-            value: campaign.budgetTotal || campaign.prizePool || 0,
-            currency: 'USDC'
-          },
-          status: campaign.status || 'active',
-          participantsCount: campaign.participants || 0,
-          endsAt: campaign.deadline,
-          progress: 0,
-          createdBy: campaign.createdBy,
-          createdAt: campaign.$createdAt,
-        }))
+        const campaignCards: ExtendedEarnCard[] = campaignsData.map((campaign, index) => {
+          // Mock escrow data for campaigns (alternating statuses for demo)
+          const escrowStatuses: EscrowStatus[] = ['funded', 'pending', 'partial', 'released']
+          const hasEscrow = index % 2 === 0 // Every other campaign has escrow
+          const escrowStatus = escrowStatuses[index % escrowStatuses.length]
+          const budgetInUSD = campaign.budgetTotal || campaign.prizePool || 0
+          const budgetInSOL = budgetInUSD / 140 // Mock conversion rate: 140 USD/SOL
+          const expectedParticipants = 10
+          const paidParticipants = escrowStatus === 'partial' ? 5 : escrowStatus === 'released' ? 10 : 0
+
+          return {
+            id: campaign.$id,
+            title: campaign.title || 'Untitled Campaign',
+            description: campaign.description || '',
+            type: 'campaign' as EarnType,
+            platform: campaign.platforms || [],
+            reward: {
+              value: campaign.budgetTotal || campaign.prizePool || 0,
+              currency: 'USDC'
+            },
+            status: campaign.status || 'active',
+            participantsCount: campaign.participants || 0,
+            endsAt: campaign.deadline,
+            progress: 0,
+            createdBy: campaign.createdBy,
+            createdAt: campaign.$createdAt,
+            // Mock escrow data
+            escrowId: hasEscrow ? `escrow_${campaign.$id.slice(0, 8)}` : undefined,
+            escrowStatus: hasEscrow ? escrowStatus : undefined,
+            escrowAmount: hasEscrow ? budgetInSOL : undefined,
+            expectedParticipants: hasEscrow ? expectedParticipants : undefined,
+            paidParticipants: hasEscrow ? paidParticipants : undefined,
+          }
+        })
 
         // Convert quests to ExtendedEarnCard format
         const questCards: ExtendedEarnCard[] = questsData.map(quest => {
@@ -413,18 +445,6 @@ export default function EarnPage() {
 
   const handleCreateCampaign = () => {
     setEntitySelectorAction('campaign')
-    setShowEntitySelector(true)
-  }
-
-  const handleCreateBounty = () => {
-    setInitialQuestType('bounty')
-    setEntitySelectorAction('quest')
-    setShowEntitySelector(true)
-  }
-
-  const handleCreateRaid = () => {
-    setInitialQuestType('raid')
-    setEntitySelectorAction('quest')
     setShowEntitySelector(true)
   }
 
@@ -535,25 +555,7 @@ export default function EarnPage() {
                 className="px-4 py-2 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-white text-sm font-medium transition-all shadow-lg hover:shadow-green-500/25"
               >
                 <Plus className="w-4 h-4 inline mr-1" />
-                Campaign
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={handleCreateBounty}
-                className="px-4 py-2 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white text-sm font-medium transition-all shadow-lg hover:shadow-cyan-500/25"
-              >
-                <Plus className="w-4 h-4 inline mr-1" />
-                Bounty
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={handleCreateRaid}
-                className="px-4 py-2 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-500 hover:from-violet-400 hover:to-fuchsia-400 text-white text-sm font-medium transition-all shadow-lg hover:shadow-violet-500/25"
-              >
-                <Plus className="w-4 h-4 inline mr-1" />
-                Raid
+                Create Campaign
               </motion.button>
             </div>
           </div>
@@ -689,17 +691,6 @@ export default function EarnPage() {
         }}
       />
 
-      <CreateQuestDrawer
-        isOpen={isCreateQuestOpen}
-        onClose={() => setIsCreateQuestOpen(false)}
-        initialType={initialQuestType}
-        onSubmit={(quest) => {
-          console.log('Quest created:', quest)
-          setIsCreateQuestOpen(false)
-          // Refresh data
-          window.location.reload()
-        }}
-      />
     </div>
   )
 }

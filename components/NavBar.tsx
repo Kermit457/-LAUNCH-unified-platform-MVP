@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { cn } from '@/lib/cn'
-import { LayoutGrid, Wrench, Users, Wallet, Menu, X, Trophy, Network, Zap, Bell, LogOut, User, Rocket } from 'lucide-react'
+import { Wrench, Users, Wallet, Menu, X, Zap, Bell, LogOut, User, Rocket, Target, UserPlus, Video } from 'lucide-react'
 import { useNotifications } from '@/lib/contexts/NotificationContext'
 import { NotificationDropdown } from '@/components/notifications/NotificationDropdown'
 import { useWallet } from '@/contexts/WalletContext'
@@ -33,11 +33,11 @@ export default function NavBar() {
 
   const links = [
     { href: '/', label: 'Home', icon: null },
-    { href: '/discover', label: 'Discover', icon: LayoutGrid },
+    { href: '/discover', label: 'ICM Hunt', icon: Target },
+    { href: '/network', label: 'Creators', icon: UserPlus },
+    { href: '/earn', label: 'Clip', icon: Video },
     { href: '/live', label: 'Live', icon: Zap },
-    { href: '/earn', label: 'Earn', icon: Trophy },
     { href: '/tools', label: 'Tools', icon: Wrench },
-    { href: '/network', label: 'Network', icon: Network },
     { href: '/community', label: 'Community', icon: Users },
   ]
 

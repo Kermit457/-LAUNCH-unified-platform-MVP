@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Zap, Eye, Radio, Send, Sparkles, Play } from 'lucide-react'
+import { Zap, Eye, Radio, Send, Sparkles, Play, Users2, TrendingUp, Target } from 'lucide-react'
 import { useLive, type LiveLaunch } from '@/hooks/useLive'
 import { useRealtimeViewers } from '@/hooks/useRealtimeViewers'
 import { PaginationControls } from '@/components/PaginationControls'
@@ -147,6 +147,191 @@ export default function LivePage() {
           <p className="text-zinc-400">
             Real-time token launches on pump.fun • {totals.liveCount} launches streaming now
           </p>
+        </motion.div>
+
+        {/* OBS Widgets Section - Outstanding Design */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="mb-12"
+        >
+          <div className="text-center mb-6">
+            <h2 className="text-2xl font-bold bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text text-transparent mb-2">
+              OBS Streaming Widgets
+            </h2>
+            <p className="text-sm text-zinc-500">Professional overlay widgets for your live streams</p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {/* Prediction Widget */}
+            <motion.div
+              whileHover={{ y: -8, scale: 1.02 }}
+              className="relative group"
+            >
+              {/* Glow Effect */}
+              <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-500 rounded-3xl blur-lg opacity-0 group-hover:opacity-75 transition-all duration-500" />
+
+              <div className="relative h-full p-8 rounded-3xl bg-gradient-to-br from-zinc-900 via-zinc-900 to-blue-950 border border-zinc-800 group-hover:border-blue-500/50 transition-all overflow-hidden">
+                {/* Animated background pattern */}
+                <motion.div
+                  animate={{
+                    backgroundPosition: ['0% 0%', '100% 100%'],
+                  }}
+                  transition={{ duration: 20, repeat: Infinity, repeatType: 'reverse' }}
+                  className="absolute inset-0 opacity-5"
+                  style={{
+                    backgroundImage: 'radial-gradient(circle, rgba(59, 130, 246, 0.3) 1px, transparent 1px)',
+                    backgroundSize: '40px 40px'
+                  }}
+                />
+
+                <div className="relative z-10">
+                  {/* Icon */}
+                  <div className="w-16 h-16 mb-4 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-blue-500/50">
+                    <Target className="w-8 h-8 text-white" />
+                  </div>
+
+                  {/* Title */}
+                  <h3 className="text-xl font-bold text-white mb-2">Prediction Widget</h3>
+                  <p className="text-sm text-zinc-400 mb-6 leading-relaxed">
+                    Live voting, outcomes, and winner tracking with real-time updates
+                  </p>
+
+                  {/* Feature Pills */}
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    <span className="px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-medium">
+                      Live Polls
+                    </span>
+                    <span className="px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-medium">
+                      Results
+                    </span>
+                  </div>
+
+                  {/* Configure Button */}
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full py-3 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold shadow-lg hover:shadow-blue-500/50 transition-all"
+                  >
+                    Configure →
+                  </motion.button>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Social Goals Widget */}
+            <motion.div
+              whileHover={{ y: -8, scale: 1.02 }}
+              className="relative group"
+            >
+              {/* Glow Effect */}
+              <div className="absolute -inset-1 bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 rounded-3xl blur-lg opacity-0 group-hover:opacity-75 transition-all duration-500" />
+
+              <div className="relative h-full p-8 rounded-3xl bg-gradient-to-br from-zinc-900 via-zinc-900 to-purple-950 border border-zinc-800 group-hover:border-purple-500/50 transition-all overflow-hidden">
+                {/* Animated background pattern */}
+                <motion.div
+                  animate={{
+                    backgroundPosition: ['0% 0%', '100% 100%'],
+                  }}
+                  transition={{ duration: 20, repeat: Infinity, repeatType: 'reverse' }}
+                  className="absolute inset-0 opacity-5"
+                  style={{
+                    backgroundImage: 'radial-gradient(circle, rgba(168, 85, 247, 0.3) 1px, transparent 1px)',
+                    backgroundSize: '40px 40px'
+                  }}
+                />
+
+                <div className="relative z-10">
+                  {/* Icon */}
+                  <div className="w-16 h-16 mb-4 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-lg shadow-purple-500/50">
+                    <Users2 className="w-8 h-8 text-white" />
+                  </div>
+
+                  {/* Title */}
+                  <h3 className="text-xl font-bold text-white mb-2">Social Goals Widget</h3>
+                  <p className="text-sm text-zinc-400 mb-6 leading-relaxed">
+                    Follow/subscribe goals for X, YouTube, Twitch, and Discord
+                  </p>
+
+                  {/* Feature Pills */}
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    <span className="px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-400 text-xs font-medium">
+                      Multi-Platform
+                    </span>
+                    <span className="px-3 py-1 rounded-full bg-pink-500/10 border border-pink-500/30 text-pink-400 text-xs font-medium">
+                      Auto-Update
+                    </span>
+                  </div>
+
+                  {/* Configure Button */}
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold shadow-lg hover:shadow-purple-500/50 transition-all"
+                  >
+                    Configure →
+                  </motion.button>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Ads Widget */}
+            <motion.div
+              whileHover={{ y: -8, scale: 1.02 }}
+              className="relative group"
+            >
+              {/* Glow Effect */}
+              <div className="absolute -inset-1 bg-gradient-to-r from-orange-500 via-red-500 to-orange-500 rounded-3xl blur-lg opacity-0 group-hover:opacity-75 transition-all duration-500" />
+
+              <div className="relative h-full p-8 rounded-3xl bg-gradient-to-br from-zinc-900 via-zinc-900 to-orange-950 border border-zinc-800 group-hover:border-orange-500/50 transition-all overflow-hidden">
+                {/* Animated background pattern */}
+                <motion.div
+                  animate={{
+                    backgroundPosition: ['0% 0%', '100% 100%'],
+                  }}
+                  transition={{ duration: 20, repeat: Infinity, repeatType: 'reverse' }}
+                  className="absolute inset-0 opacity-5"
+                  style={{
+                    backgroundImage: 'radial-gradient(circle, rgba(249, 115, 22, 0.3) 1px, transparent 1px)',
+                    backgroundSize: '40px 40px'
+                  }}
+                />
+
+                <div className="relative z-10">
+                  {/* Icon */}
+                  <div className="w-16 h-16 mb-4 rounded-2xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center shadow-lg shadow-orange-500/50">
+                    <Zap className="w-8 h-8 text-white" />
+                  </div>
+
+                  {/* Title */}
+                  <h3 className="text-xl font-bold text-white mb-2">Ads Widget</h3>
+                  <p className="text-sm text-zinc-400 mb-6 leading-relaxed">
+                    Sponsored banners with payouts and real-time tracking
+                  </p>
+
+                  {/* Feature Pills */}
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    <span className="px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/30 text-orange-400 text-xs font-medium">
+                      Monetize
+                    </span>
+                    <span className="px-3 py-1 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-medium">
+                      Analytics
+                    </span>
+                  </div>
+
+                  {/* Configure Button */}
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full py-3 rounded-xl bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold shadow-lg hover:shadow-orange-500/50 transition-all"
+                  >
+                    Configure →
+                  </motion.button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
         </motion.div>
 
         {/* KPI Cards */}
@@ -562,6 +747,3 @@ export default function LivePage() {
     </div>
   )
 }
-
-// Add missing import
-import { TrendingUp } from 'lucide-react'
