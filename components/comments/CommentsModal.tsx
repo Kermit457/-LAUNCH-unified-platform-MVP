@@ -81,11 +81,11 @@ export function CommentsModal({ open, onClose, launchId, launchTitle }: Comments
           role="dialog"
           aria-modal="true"
           aria-labelledby="comments-title"
-          className="w-full max-w-2xl md:max-w-3xl max-h-[80vh] rounded-2xl bg-neutral-900 border border-white/10 shadow-2xl overflow-hidden flex flex-col pointer-events-auto animate-in zoom-in-95 duration-200"
+          className="w-full max-w-2xl md:max-w-3xl max-h-[80vh] rounded-2xl bg-design-zinc-950/95 backdrop-blur-xl border border-design-zinc-800 shadow-2xl overflow-hidden flex flex-col pointer-events-auto animate-in zoom-in-95 duration-200"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header - Sticky */}
-          <div className="sticky top-0 bg-neutral-900/95 backdrop-blur px-5 py-4 border-b border-white/10 flex items-center justify-between flex-shrink-0">
+          <div className="sticky top-0 bg-design-zinc-950/95 backdrop-blur px-5 py-4 border-b border-design-zinc-800 flex items-center justify-between flex-shrink-0">
             <div className="flex-1 min-w-0 mr-4">
               <h2
                 id="comments-title"
@@ -95,7 +95,7 @@ export function CommentsModal({ open, onClose, launchId, launchTitle }: Comments
                 Comments
               </h2>
               <p className="text-sm text-white/60 truncate">{launchTitle}</p>
-              <div className="mt-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full text-xs text-white/70 inline-block">
+              <div className="mt-2 px-3 py-1 bg-design-zinc-900/50 border border-design-zinc-800 rounded-full text-xs text-design-zinc-400 inline-block">
                 💬 {comments.length} {comments.length === 1 ? 'comment' : 'comments'}
               </div>
             </div>
@@ -103,7 +103,7 @@ export function CommentsModal({ open, onClose, launchId, launchTitle }: Comments
             {/* Close Button */}
             <button
               onClick={onClose}
-              className="p-2 hover:bg-white/10 rounded-lg transition-colors flex-shrink-0"
+              className="p-2 hover:bg-design-zinc-800/50 rounded-lg transition-colors flex-shrink-0"
               aria-label="Close comments"
               data-cta="modal-close-comments"
             >
@@ -128,17 +128,17 @@ export function CommentsModal({ open, onClose, launchId, launchTitle }: Comments
               ))
             ) : (
               <div className="flex flex-col items-center justify-center py-16 text-center">
-                <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-4">
-                  <MessageCircle className="w-8 h-8 text-white/30" />
+                <div className="w-16 h-16 bg-design-zinc-900/50 rounded-full flex items-center justify-center mb-4">
+                  <MessageCircle className="w-8 h-8 text-design-zinc-600" />
                 </div>
-                <p className="text-white/60 font-medium mb-1">No comments yet</p>
-                <p className="text-sm text-white/40">Be the first to comment!</p>
+                <p className="text-design-zinc-400 font-medium mb-1">No comments yet</p>
+                <p className="text-sm text-design-zinc-500">Be the first to comment!</p>
               </div>
             )}
           </div>
 
           {/* Footer - Sticky, Conditional */}
-          <div className="sticky bottom-0 bg-neutral-900/95 backdrop-blur p-4 border-t border-white/10 flex-shrink-0">
+          <div className="sticky bottom-0 bg-design-zinc-950/95 backdrop-blur p-4 border-t border-design-zinc-800 flex-shrink-0">
             {!isSignedIn ? (
               // Not signed in - Show connect button
               <button
@@ -170,10 +170,10 @@ export function CommentsModal({ open, onClose, launchId, launchTitle }: Comments
                   onChange={(e) => setText(e.target.value)}
                   placeholder="Share your thoughts..."
                   maxLength={400}
-                  className="w-full resize-none h-24 rounded-xl bg-white/5 border border-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:border-fuchsia-500/50 focus:ring-2 focus:ring-fuchsia-500/20 outline-none transition-all"
+                  className="w-full resize-none h-24 rounded-xl bg-design-zinc-900/50 border border-design-zinc-800 px-3 py-2 text-white placeholder:text-design-zinc-500 focus:border-design-purple-500/50 focus:ring-2 focus:ring-design-purple-500/20 outline-none transition-all"
                 />
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-white/40">
+                  <span className="text-xs text-design-zinc-500">
                     {text.length}/400
                   </span>
                   <button

@@ -9,6 +9,7 @@ import { AuthProvider } from '@/contexts/AuthContext'
 import { WalletProvider } from '@/contexts/WalletContext'
 import { PrivyProviderWrapper } from '@/contexts/PrivyProviderWrapper'
 import { PrivySyncWrapper } from '@/components/PrivySyncWrapper'
+import { ReferralTracker } from '@/components/ReferralTracker'
 
 export const metadata: Metadata = {
   title: 'LaunchOS - The Engine of the Internet Capital Market',
@@ -21,8 +22,16 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className="min-h-screen">
+    <html lang="en" className="smooth-scroll">
+      <body className="min-h-screen bg-black text-white antialiased">
+        {/* Premium background gradient */}
+        <div className="fixed inset-0 -z-10 overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-violet-900/20 via-black to-black"></div>
+          <div className="absolute top-0 -left-4 w-96 h-96 bg-violet-500/10 rounded-full blur-3xl animate-blob"></div>
+          <div className="absolute top-0 -right-4 w-96 h-96 bg-fuchsia-500/10 rounded-full blur-3xl animate-blob animation-delay-2000"></div>
+          <div className="absolute -bottom-8 left-20 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-blob animation-delay-4000"></div>
+        </div>
+
         <PrivyProviderWrapper>
           <PrivySyncWrapper>
             <AuthProvider>
@@ -30,8 +39,9 @@ export default function RootLayout({
                 <NotificationProvider>
                   <NetworkProvider>
                     <ToastProvider>
+                      <ReferralTracker />
                       <NavBar />
-                      <main className="container mx-auto px-4 py-8">
+                      <main className="relative">
                         {children}
                       </main>
                     </ToastProvider>

@@ -22,6 +22,29 @@ const config: Config = {
         'launchos-fuchsia': '#E700FF',
         'launchos-violet': '#5A00FF',
         'launchos-cyan': '#00F0FF',
+        // New Design System Colors
+        'design': {
+          violet: {
+            400: '#a78bfa',
+            500: '#8b5cf6',
+            600: '#7c3aed',
+          },
+          fuchsia: {
+            400: '#e879f9',
+            500: '#d946ef',
+            600: '#c026d3',
+          },
+          cyan: {
+            400: '#22d3ee',
+            500: '#06b6d4',
+            600: '#0891b2',
+          },
+          zinc: {
+            700: '#3f3f46',
+            800: '#27272a',
+            900: '#18181b',
+          }
+        }
       },
       fontFamily: {
         display: ['Inter', 'sans-serif'], // Using Inter as display until Clash Display is added

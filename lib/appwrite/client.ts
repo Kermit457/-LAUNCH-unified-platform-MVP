@@ -38,6 +38,13 @@ export const COLLECTIONS = {
   THREADS: process.env.NEXT_PUBLIC_APPWRITE_THREADS_COLLECTION_ID || 'threads',
   VOTES: process.env.NEXT_PUBLIC_APPWRITE_VOTES_COLLECTION_ID || 'votes',
   PROJECT_MEMBERS: process.env.NEXT_PUBLIC_APPWRITE_PROJECT_MEMBERS_COLLECTION_ID || 'project_members',
+  REFERRALS: process.env.NEXT_PUBLIC_APPWRITE_REFERRALS_COLLECTION_ID || 'referrals',
+  REFERRAL_REWARDS: process.env.NEXT_PUBLIC_APPWRITE_REFERRAL_REWARDS_COLLECTION_ID || 'referral_rewards',
+  REWARDS_POOLS: process.env.NEXT_PUBLIC_APPWRITE_REWARDS_POOLS_COLLECTION_ID || 'rewards_pools',
+  CURVES: process.env.NEXT_PUBLIC_APPWRITE_CURVES_COLLECTION_ID || 'curves',
+  CURVE_EVENTS: process.env.NEXT_PUBLIC_APPWRITE_CURVE_EVENTS_COLLECTION_ID || 'curve_events',
+  CURVE_HOLDERS: process.env.NEXT_PUBLIC_APPWRITE_CURVE_HOLDERS_COLLECTION_ID || 'curve_holders',
+  SNAPSHOTS: process.env.NEXT_PUBLIC_APPWRITE_SNAPSHOTS_COLLECTION_ID || 'snapshots',
 } as const
 
 // Storage Bucket IDs
@@ -47,3 +54,12 @@ export const BUCKETS = {
   CAMPAIGN_MEDIA: process.env.NEXT_PUBLIC_APPWRITE_CAMPAIGN_MEDIA_BUCKET_ID || 'campaign_media',
   SUBMISSIONS: process.env.NEXT_PUBLIC_APPWRITE_SUBMISSIONS_BUCKET_ID || 'submissions',
 } as const
+
+// Export appwriteClient object for referral services
+export const appwriteClient = {
+  database: databases,
+  databaseId: DB_ID,
+  referralsCollectionId: COLLECTIONS.REFERRALS,
+  referralRewardsCollectionId: COLLECTIONS.REFERRAL_REWARDS,
+  rewardsPoolsCollectionId: COLLECTIONS.REWARDS_POOLS,
+}

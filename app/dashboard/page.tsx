@@ -1,496 +1,311 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { OverviewHeader, DashboardMode, LinkedProject } from '@/components/dashboard/OverviewHeader'
-import { KpiTile } from '@/components/dashboard/KpiTile'
-import { QuickActions } from '@/components/dashboard/QuickActions'
-import { ProjectKpiTiles } from '@/components/dashboard/ProjectKpiTiles'
-import { ActivityList, Activity } from '@/components/dashboard/ActivityList'
-import { AlertCircle, TrendingUp, DollarSign, Zap, Target, Award } from 'lucide-react'
-import { CreateQuestDrawer } from '@/components/quests/CreateQuestDrawer'
-import { CreateCampaignModal } from '@/components/campaigns/CreateCampaignModal'
-import { EntitySelectorModal, EntityOption } from '@/components/launch/EntitySelectorModal'
-import { CampaignType } from '@/types/quest'
-import { NetworkActivityWidget } from '@/components/dashboard/NetworkActivityWidget'
-import { NetworkInvitesWidget } from '@/components/dashboard/NetworkInvitesWidget'
+import { motion } from 'framer-motion'
+import {
+  TrendingUp, DollarSign, Zap, Target, Award, Users, Rocket, Video,
+  Trophy, LayoutGrid, Activity, ArrowUpRight, ChevronRight,
+  MessageSquare, Star, Eye, TrendingDown
+} from 'lucide-react'
+import { PremiumButton } from '@/components/design-system'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
-import { useUser } from '@/hooks/useUser'
-import { ActivitiesFeed } from '@/components/ActivitiesFeed'
-import { getUserProfile } from '@/lib/appwrite/services/users'
-import type { UserProfile } from '@/lib/appwrite/services/users'
-import { getSubmissions } from '@/lib/appwrite/services/submissions'
-import { getCampaigns } from '@/lib/appwrite/services/campaigns'
-import { getPayouts } from '@/lib/appwrite/services/payouts'
-import { getActivities } from '@/lib/appwrite/services/activities'
-import type { Activity as AppwriteActivity } from '@/lib/appwrite/services/activities'
-import { getUserProjects, getLaunch } from '@/lib/appwrite/services/launches'
-import type { Launch } from '@/lib/appwrite/services/launches'
-import { createQuest } from '@/lib/appwrite/services/quests'
-import { createCampaign } from '@/lib/appwrite/services/campaigns'
 
-export default function DashboardOverview() {
+interface StatCardProps {
+  icon: any
+  label: string
+  value: string
+  change?: string
+  trend?: 'up' | 'down'
+  color: string
+  onClick?: () => void
+}
+
+const StatCard = ({ icon: Icon, label, value, change, trend, color, onClick }: StatCardProps) => (
+  <motion.div
+    whileHover={{ y: -2 }}
+    onClick={onClick}
+    className={`relative overflow-hidden bg-design-zinc-900/50 rounded-xl border border-design-zinc-800 p-4 ${onClick ? 'cursor-pointer' : ''} transition-all hover:border-${color}-500/50`}
+  >
+    <div className="flex items-start justify-between mb-3">
+      <div className={`p-2 rounded-lg bg-${color}-500/10 border border-${color}-500/20`}>
+        <Icon className={`w-5 h-5 text-${color}-400`} />
+      </div>
+      {change && (
+        <div className={`flex items-center gap-1 text-xs font-medium ${trend === 'up' ? 'text-green-400' : 'text-red-400'}`}>
+          {trend === 'up' ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+          {change}
+        </div>
+      )}
+    </div>
+    <div className="text-2xl font-bold text-white mb-1">{value}</div>
+    <div className="text-xs text-design-zinc-400">{label}</div>
+  </motion.div>
+)
+
+interface QuickLinkProps {
+  icon: any
+  label: string
+  href: string
+  count?: number
+  gradient: string
+}
+
+const QuickLink = ({ icon: Icon, label, href, count, gradient }: QuickLinkProps) => {
   const router = useRouter()
-  const { userId } = useUser()
-  const [profile, setProfile] = useState<UserProfile | null>(null)
-  const [kpiData, setKpiData] = useState({
-    pendingReviews: 0,
-    activeCampaigns: 0,
-    pendingAmount: 0,
-    claimableAmount: 0,
-    thirtyDayEarnings: 0
+
+  return (
+    <motion.button
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      onClick={() => router.push(href)}
+      className={`relative overflow-hidden rounded-xl p-4 text-left group border border-design-zinc-800 hover:border-design-purple-500/50 transition-all`}
+    >
+      <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-10 group-hover:opacity-20 transition-opacity`} />
+      <div className="relative flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <Icon className="w-5 h-5 text-white" />
+          <span className="text-white font-medium">{label}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          {count !== undefined && (
+            <span className="text-sm text-design-zinc-400">{count}</span>
+          )}
+          <ChevronRight className="w-4 h-4 text-design-zinc-600 group-hover:text-design-purple-400 transition-colors" />
+        </div>
+      </div>
+    </motion.button>
+  )
+}
+
+export default function UnifiedDashboard() {
+  const router = useRouter()
+  const [stats] = useState({
+    totalEarnings: 5432.50,
+    activeProjects: 12,
+    networkSize: 248,
+    conviction: 87,
+    pendingReviews: 7,
+    liveStreams: 3,
+    activeCampaigns: 8,
+    completedBounties: 15,
+    totalViews: 125400,
+    engagement: 89
   })
-  const [activities, setActivities] = useState<Activity[]>([])
-  const [loading, setLoading] = useState(true)
-
-  // Dashboard mode state
-  const [mode, setMode] = useState<DashboardMode>('user')
-  const [linkedProjects, setLinkedProjects] = useState<LinkedProject[]>([])
-  const [selectedProject, setSelectedProject] = useState<LinkedProject | null>(null)
-  const [currentProjectData, setCurrentProjectData] = useState<Launch | null>(null)
-
-  // Modal states
-  const [isCreateQuestOpen, setIsCreateQuestOpen] = useState(false)
-  const [initialQuestType, setInitialQuestType] = useState<CampaignType>('raid')
-  const [isCreateCampaignOpen, setIsCreateCampaignOpen] = useState(false)
-
-  // Entity selector state
-  const [showEntitySelector, setShowEntitySelector] = useState(false)
-  const [entitySelectorAction, setEntitySelectorAction] = useState<'campaign' | 'quest'>('campaign')
-  const [selectedEntity, setSelectedEntity] = useState<EntityOption | null>(null)
-
-  // Fetch user profile from Appwrite
-  useEffect(() => {
-    async function fetchProfile() {
-      if (!userId) return
-
-      console.log('📊 Dashboard fetching profile for userId:', userId)
-
-      try {
-        const data = await getUserProfile(userId)
-        console.log('📊 Profile data from Appwrite:', data)
-        if (data) {
-          setProfile(data)
-        } else {
-          console.warn('📊 No profile found in Appwrite for userId:', userId)
-        }
-      } catch (error) {
-        console.error('Failed to fetch profile:', error)
-      }
-    }
-
-    fetchProfile()
-  }, [userId])
-
-  // Fetch user's projects for mode switcher
-  useEffect(() => {
-    async function fetchProjects() {
-      if (!userId) return
-
-      try {
-        const projects = await getUserProjects(userId)
-        const projectList: LinkedProject[] = projects.map(p => ({
-          id: p.$id,
-          title: p.title || p.tokenName || 'Unnamed Project',
-          logoUrl: p.logoUrl || p.tokenImage,
-          scope: p.scope || 'ICM'
-        }))
-        setLinkedProjects(projectList)
-      } catch (error) {
-        console.error('Failed to fetch projects:', error)
-      }
-    }
-
-    fetchProjects()
-  }, [userId])
-
-  // Fetch current project data when in project mode
-  useEffect(() => {
-    async function fetchProjectData() {
-      if (mode === 'project' && selectedProject) {
-        try {
-          const projectData = await getLaunch(selectedProject.id)
-          setCurrentProjectData(projectData)
-        } catch (error) {
-          console.error('Failed to fetch project data:', error)
-        }
-      }
-    }
-
-    fetchProjectData()
-  }, [mode, selectedProject])
-
-  // Handle mode change
-  const handleModeChange = (newMode: DashboardMode, project?: LinkedProject) => {
-    setMode(newMode)
-    if (newMode === 'project' && project) {
-      setSelectedProject(project)
-    } else {
-      setSelectedProject(null)
-      setCurrentProjectData(null)
-    }
-  }
-
-  // Fetch dashboard data from Appwrite - ENTITY SCOPED
-  useEffect(() => {
-    async function fetchDashboardData() {
-      if (!userId) return
-
-      try {
-        setLoading(true)
-
-        // Determine entity scope based on mode
-        const ownerType = mode === 'project' ? 'project' : 'user'
-        const ownerId = mode === 'project' && selectedProject ? selectedProject.id : userId
-
-        console.log(`📊 Fetching dashboard data for ${ownerType}:`, ownerId)
-
-        // Fetch all data in parallel - ENTITY SCOPED
-        const [submissions, campaigns, payouts, userActivities] = await Promise.all([
-          getSubmissions({
-            ownerType,
-            ownerId,
-            userId: mode === 'user' ? userId : undefined // Only filter by userId in user mode
-          }),
-          getCampaigns({
-            ownerType,
-            ownerId
-          }),
-          getPayouts({
-            ownerType,
-            ownerId,
-            userId: mode === 'user' ? userId : undefined
-          }),
-          getActivities(userId, 10, {
-            contextType: ownerType,
-            contextId: ownerId
-          })
-        ])
-
-        console.log(`📊 Found: ${campaigns.length} campaigns, ${submissions.length} submissions, ${payouts.length} payouts`)
-
-        // Calculate KPIs
-        const pendingReviews = submissions.filter(s => s.status === 'pending').length
-        const activeCampaigns = campaigns.filter(c => c.status === 'active').length
-
-        const pendingAmount = submissions
-          .filter(s => s.status === 'approved')
-          .reduce((sum, s) => sum + (s.earnings || 0), 0)
-
-        const claimableAmount = payouts
-          .filter(p => p.status === 'claimable')
-          .reduce((sum, p) => sum + (p.net || p.amount), 0)
-
-        const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000
-        const thirtyDayEarnings = payouts
-          .filter(p => p.status === 'paid' && new Date(p.$createdAt).getTime() > thirtyDaysAgo)
-          .reduce((sum, p) => sum + (p.net || p.amount), 0)
-
-        setKpiData({
-          pendingReviews,
-          activeCampaigns,
-          pendingAmount,
-          claimableAmount,
-          thirtyDayEarnings
-        })
-
-        // Convert Appwrite activities to Activity format
-        const convertedActivities: Activity[] = userActivities.map(activity => ({
-          id: activity.$id,
-          kind: activity.type as any,
-          title: activity.title,
-          source: activity.message,
-          ts: new Date(activity.$createdAt).getTime()
-        }))
-
-        setActivities(convertedActivities)
-      } catch (error) {
-        console.error('Failed to fetch dashboard data:', error)
-        // Keep default values on error
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchDashboardData()
-  }, [userId, mode, selectedProject])
-
-  const conviction = profile?.conviction || 0
-
-  // Format currency with Intl
-  const formatUSDC = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }).format(amount)
-  }
 
   return (
     <ProtectedRoute>
-      <div className="space-y-6">
-        {/* Header band with mode switcher */}
-        <OverviewHeader
-          handle={`@${profile?.username || 'user'}`}
-          name={profile?.displayName || 'User'}
-          roles={profile?.roles || ['Member']}
-          verified={profile?.verified || false}
-          walletAddress={userId || ''}
-          avatar={profile?.avatar}
-          mode={mode}
-          selectedProject={selectedProject}
-          linkedProjects={linkedProjects}
-          onModeChange={handleModeChange}
-        />
+      <div className="min-h-screen space-y-6">
+        {/* Hero Header */}
+        <div className="relative overflow-hidden bg-gradient-to-br from-design-purple-600/20 via-design-pink-600/20 to-design-purple-800/20 rounded-2xl border border-design-zinc-800 p-8">
+          <div className="relative z-10">
+            <h1 className="text-3xl font-bold text-white mb-2">Welcome back! 👋</h1>
+            <p className="text-design-zinc-400 mb-6">Here's what's happening across your LaunchOS ecosystem</p>
 
-        {/* Conditional KPI Tiles based on mode */}
-        {mode === 'user' ? (
-          /* User Mode KPIs */
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
-            <KpiTile
-              icon={AlertCircle}
-              label="Pending Reviews"
-              value={kpiData.pendingReviews.toString()}
-              tooltip="Number of submissions awaiting review"
+            <div className="flex flex-wrap gap-3">
+              <PremiumButton variant="primary" onClick={() => router.push('/launches/new')}>
+                <Rocket size={16} />
+                Create Launch
+              </PremiumButton>
+              <PremiumButton variant="secondary" onClick={() => router.push('/campaigns/new')}>
+                <Video size={16} />
+                New Campaign
+              </PremiumButton>
+              <PremiumButton variant="ghost" onClick={() => router.push('/profile')}>
+                View Profile
+              </PremiumButton>
+            </div>
+          </div>
+        </div>
+
+        {/* Key Stats Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          <StatCard
+            icon={DollarSign}
+            label="Total Earnings"
+            value={`$${stats.totalEarnings.toLocaleString()}`}
+            change="+12.5%"
+            trend="up"
+            color="green"
+            onClick={() => router.push('/earnings')}
+          />
+          <StatCard
+            icon={Rocket}
+            label="Active Projects"
+            value={stats.activeProjects.toString()}
+            change="+3"
+            trend="up"
+            color="purple"
+            onClick={() => router.push('/discover')}
+          />
+          <StatCard
+            icon={Users}
+            label="Network Size"
+            value={stats.networkSize.toString()}
+            change="+24"
+            trend="up"
+            color="pink"
+            onClick={() => router.push('/network')}
+          />
+          <StatCard
+            icon={Award}
+            label="Conviction"
+            value={`${stats.conviction}%`}
+            color="violet"
+          />
+          <StatCard
+            icon={Zap}
+            label="Pending Reviews"
+            value={stats.pendingReviews.toString()}
+            color="orange"
+          />
+        </div>
+
+        {/* Activity Overview */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <StatCard
+            icon={Activity}
+            label="Live Streams"
+            value={stats.liveStreams.toString()}
+            color="red"
+            onClick={() => router.push('/live')}
+          />
+          <StatCard
+            icon={Video}
+            label="Active Campaigns"
+            value={stats.activeCampaigns.toString()}
+            color="blue"
+            onClick={() => router.push('/earn')}
+          />
+          <StatCard
+            icon={Trophy}
+            label="Completed Bounties"
+            value={stats.completedBounties.toString()}
+            change="+5"
+            trend="up"
+            color="yellow"
+          />
+        </div>
+
+        {/* Engagement Metrics */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="bg-design-zinc-900/50 rounded-xl border border-design-zinc-800 p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+                <Eye className="w-5 h-5 text-design-purple-400" />
+                Engagement
+              </h3>
+              <span className="text-2xl font-bold text-white">{stats.engagement}%</span>
+            </div>
+            <div className="h-2 bg-design-zinc-800 rounded-full overflow-hidden">
+              <motion.div
+                className="h-full bg-gradient-to-r from-design-purple-500 to-design-pink-500"
+                initial={{ width: 0 }}
+                animate={{ width: `${stats.engagement}%` }}
+                transition={{ duration: 1, ease: "easeOut" }}
+              />
+            </div>
+            <p className="text-sm text-design-zinc-400 mt-2">Average across all platforms</p>
+          </div>
+
+          <div className="bg-design-zinc-900/50 rounded-xl border border-design-zinc-800 p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-green-400" />
+                Total Views
+              </h3>
+              <span className="text-2xl font-bold text-white">{stats.totalViews.toLocaleString()}</span>
+            </div>
+            <div className="flex items-center gap-2 text-sm text-green-400">
+              <ArrowUpRight className="w-4 h-4" />
+              <span>+15.8% from last month</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Quick Access Grid */}
+        <div className="bg-design-zinc-900/50 rounded-xl border border-design-zinc-800 p-6">
+          <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+            <LayoutGrid className="w-5 h-5" />
+            Quick Access
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            <QuickLink
+              icon={LayoutGrid}
+              label="Discover"
+              href="/discover"
+              count={142}
+              gradient="from-purple-500 to-pink-500"
             />
-            <KpiTile
-              icon={TrendingUp}
-              label="Active Campaigns"
-              value={kpiData.activeCampaigns.toString()}
-              tooltip="Campaigns currently live"
-            />
-            <KpiTile
-              icon={DollarSign}
-              label="Pending $"
-              value={formatUSDC(kpiData.pendingAmount)}
-            />
-            <KpiTile
+            <QuickLink
               icon={Zap}
-              label="Claimable $"
-              value={formatUSDC(kpiData.claimableAmount)}
+              label="Live Streams"
+              href="/live"
+              count={stats.liveStreams}
+              gradient="from-red-500 to-orange-500"
             />
-            <KpiTile
+            <QuickLink
+              icon={Trophy}
+              label="Earn"
+              href="/earn"
+              count={stats.activeCampaigns}
+              gradient="from-yellow-500 to-orange-500"
+            />
+            <QuickLink
+              icon={Users}
+              label="Network"
+              href="/network"
+              count={stats.networkSize}
+              gradient="from-cyan-500 to-blue-500"
+            />
+            <QuickLink
+              icon={MessageSquare}
+              label="Community"
+              href="/community"
+              gradient="from-green-500 to-emerald-500"
+            />
+            <QuickLink
               icon={Target}
-              label="30d Earnings"
-              value={formatUSDC(kpiData.thirtyDayEarnings)}
-            />
-            <KpiTile
-              icon={Award}
-              label="Conviction"
-              value={`${conviction}%`}
-              progressPct={conviction}
-              tooltip="Overall platform trust score"
+              label="Tools"
+              href="/tools"
+              gradient="from-violet-500 to-purple-500"
             />
           </div>
-        ) : (
-          /* Project Mode KPIs */
-          currentProjectData && <ProjectKpiTiles project={currentProjectData} />
-        )}
-
-        {/* Unified Quick Actions - Same for User & Project */}
-        <QuickActions
-          onCreateCampaign={() => {
-            setEntitySelectorAction('campaign')
-            setShowEntitySelector(true)
-          }}
-          onCreateRaid={() => {
-            setEntitySelectorAction('quest')
-            setInitialQuestType('raid')
-            setShowEntitySelector(true)
-          }}
-          onCreateBounty={() => {
-            setEntitySelectorAction('quest')
-            setInitialQuestType('bounty')
-            setShowEntitySelector(true)
-          }}
-          onViewAnalytics={() => router.push('/dashboard/analytics')}
-          onOpenSettings={() => router.push('/dashboard/settings')}
-        />
-
-      {/* Network Invites (if any) */}
-      <NetworkInvitesWidget />
-
-      {/* Network Summary + Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Network Activity Widget */}
-        <NetworkActivityWidget />
-
-        {/* Recent Activity */}
-        <div className="lg:col-span-3">
-          <ActivityList activities={activities} />
         </div>
-      </div>
 
-      {/* Real-time Activities Feed */}
-      <div className="glass-card p-6">
-        <ActivitiesFeed />
-      </div>
-
-      {/* Entity Selector Modal */}
-      {profile && (
-        <EntitySelectorModal
-          isOpen={showEntitySelector}
-          onClose={() => setShowEntitySelector(false)}
-          onSelect={(entity) => {
-            setSelectedEntity(entity)
-            setShowEntitySelector(false)
-
-            // Open appropriate creation modal based on action
-            if (entitySelectorAction === 'campaign') {
-              setIsCreateCampaignOpen(true)
-            } else {
-              setIsCreateQuestOpen(true)
-            }
-          }}
-          onCreateNewProject={() => {
-            // TODO: Implement create new project flow
-            alert('Create new project flow coming soon!')
-          }}
-          userProfile={{
-            id: userId || '',
-            name: profile.displayName || 'User',
-            username: profile.username,
-            avatar: profile.avatar
-          }}
-          projects={linkedProjects}
-        />
-      )}
-
-      {/* Create Quest Drawer */}
-      <CreateQuestDrawer
-        isOpen={isCreateQuestOpen}
-        initialType={initialQuestType}
-        onClose={() => setIsCreateQuestOpen(false)}
-        onSubmit={async (data) => {
-          if (!userId) {
-            alert('Please sign in to create a quest')
-            return
-          }
-
-          if (!selectedEntity) {
-            alert('Please select an entity first')
-            return
-          }
-
-          try {
-            console.log('🎯 Creating quest with entity:', selectedEntity, data)
-
-            // Upload logo if provided
-            let logoUrl = ''
-            if (data.logoFile) {
-              console.log('📤 Uploading quest logo...')
-              const { uploadLogo } = await import('@/lib/storage')
-              try {
-                logoUrl = await uploadLogo(data.logoFile)
-                console.log('✅ Logo uploaded:', logoUrl)
-              } catch (uploadError: any) {
-                console.error('❌ Logo upload failed:', uploadError)
-                alert(`Logo upload failed: ${uploadError.message}. Quest will be created without logo.`)
-              }
-            }
-
-            // Create quest document
-            const budgetAmount = data.funding?.kind === 'paid' && data.funding.model?.amount ? Number(data.funding.model.amount) : 0
-
-            console.log('💰 Budget amount calculated:', budgetAmount)
-
-            // @ts-ignore - Bypass type check for budgetTotal field
-            const newQuest = await createQuest({
-              questId: data.id || crypto.randomUUID(),
-              type: data.type,
-              title: data.title,
-              description: data.targetUrl || data.title,
-              createdBy: userId,
-              status: 'active' as const,
-              poolAmount: budgetAmount,
-              budgetTotal: budgetAmount,
-              budgetPaid: 0,
-              payPerTask: 0,
-              platforms: data.rules.platforms.map(p => p.toString())
-            })
-
-            console.log('✅ Quest created:', newQuest)
-
-            alert('🎉 Quest created successfully!')
-            setIsCreateQuestOpen(false)
-            setSelectedEntity(null)
-          } catch (error: any) {
-            console.error('Failed to create quest:', error)
-            alert(`Failed to create quest: ${error.message || 'Unknown error'}`)
-          }
-        }}
-      />
-
-      {/* Create Campaign Modal */}
-      <CreateCampaignModal
-        isOpen={isCreateCampaignOpen}
-        onClose={() => setIsCreateCampaignOpen(false)}
-        onSubmit={async (data) => {
-          if (!userId) {
-            alert('Please sign in to create a campaign')
-            return
-          }
-
-          if (!selectedEntity) {
-            alert('Please select an entity first')
-            return
-          }
-
-          try {
-            console.log('🎬 Creating campaign with entity:', selectedEntity, data)
-
-            // Upload campaign image if provided
-            let imageUrl = ''
-            if (data.image) {
-              console.log('📤 Uploading campaign image...')
-              const { uploadLogo } = await import('@/lib/storage')
-              try {
-                imageUrl = await uploadLogo(data.image)
-                console.log('✅ Image uploaded:', imageUrl)
-              } catch (uploadError: any) {
-                console.error('❌ Image upload failed:', uploadError)
-                alert(`Image upload failed: ${uploadError.message}. Campaign will be created without image.`)
-              }
-            }
-
-            // Determine entity context from selectedEntity
-            const ownerType = selectedEntity.type === 'user' ? 'user' : 'project'
-            const ownerId = selectedEntity.type === 'user' ? userId : selectedEntity.id
-
-            // Create campaign document with entity scoping
-            const newCampaign = await createCampaign({
-              campaignId: crypto.randomUUID(),
-              type: 'clipping',
-              title: data.title,
-              description: data.description || '',
-              createdBy: userId,
-              status: 'active',
-              prizePool: data.prizePoolUsd,
-              budgetTotal: data.prizePoolUsd,
-              ratePerThousand: data.payoutPerKUsd,
-              minViews: data.minViewsRequired || 0,
-              minDuration: data.videoLen?.minSec || 0,
-              maxDuration: data.videoLen?.maxSec || 0,
-              platforms: data.platforms,
-              socialLinks: data.socialLinks,
-              gdocUrl: data.driveLink || '',
-              imageUrl: imageUrl,
-              ownerType: ownerType,
-              ownerId: ownerId
-            })
-
-            console.log('✅ Campaign created:', newCampaign)
-
-            alert('🎉 Campaign created successfully!')
-            setIsCreateCampaignOpen(false)
-            setSelectedEntity(null)
-          } catch (error: any) {
-            console.error('Failed to create campaign:', error)
-            alert(`Failed to create campaign: ${error.message || 'Unknown error'}`)
-          }
-        }}
-      />
+        {/* Recent Activity Feed */}
+        <div className="bg-design-zinc-900/50 rounded-xl border border-design-zinc-800 p-6">
+          <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+            <Activity className="w-5 h-5" />
+            Recent Activity
+          </h2>
+          <div className="space-y-3">
+            {[
+              { icon: Rocket, text: 'New launch: $MEME Token', time: '2h ago', color: 'purple' },
+              { icon: Video, text: 'Campaign completed: Clip Contest', time: '5h ago', color: 'pink' },
+              { icon: Trophy, text: 'Bounty claimed: $500 USDC', time: '8h ago', color: 'green' },
+              { icon: Users, text: '3 new network connections', time: '12h ago', color: 'blue' },
+              { icon: Star, text: 'Achievement unlocked: Early Adopter', time: '1d ago', color: 'yellow' }
+            ].map((activity, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.1 }}
+                className="flex items-center gap-3 p-3 rounded-lg bg-design-zinc-800/50 hover:bg-design-zinc-800 transition-colors"
+              >
+                <div className={`p-2 rounded-lg bg-${activity.color}-500/10`}>
+                  <activity.icon className={`w-4 h-4 text-${activity.color}-400`} />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm text-white">{activity.text}</p>
+                  <p className="text-xs text-design-zinc-500">{activity.time}</p>
+                </div>
+                <ChevronRight className="w-4 h-4 text-design-zinc-600" />
+              </motion.div>
+            ))}
+          </div>
+        </div>
       </div>
     </ProtectedRoute>
   )

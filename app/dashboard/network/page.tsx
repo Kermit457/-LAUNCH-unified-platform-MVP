@@ -1,350 +1,231 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useSearchParams } from 'next/navigation'
-import { InvitesPanel } from '@/components/network/InvitesPanel'
-import { ConnectionsPanel } from '@/components/network/ConnectionsPanel'
-import { RoomsList } from '@/components/chat/RoomsList'
-import { CreateRoomDrawer } from '@/components/chat/CreateRoomDrawer'
-import { ChatDrawer } from '@/components/chat/ChatDrawer'
-import { useNetworkStore } from '@/lib/stores/useNetworkStore'
-import type { Thread, Invite, Connection } from '@/lib/types'
+import { Users, UserPlus, MessageCircle, Search, Filter } from 'lucide-react'
+import { PremiumButton } from '@/components/design-system'
 import { useUser } from '@/hooks/useUser'
-import {
-  getNetworkInvites,
-  acceptNetworkInvite,
-  rejectNetworkInvite,
-  getUserConnections
-} from '@/lib/appwrite/services/network'
-import { getUserThreads, createDMThread, createGroupThread } from '@/lib/appwrite/services/messages'
+import { getUserConnections } from '@/lib/appwrite/services/network'
+import { motion } from 'framer-motion'
+
+type Connection = {
+  id: string
+  name: string
+  username: string
+  avatar?: string
+  status: 'online' | 'offline'
+  mutualConnections: number
+}
 
 export default function NetworkPage() {
-  const { user, userId } = useUser()
-  const searchParams = useSearchParams()
-  const [selectedConnections, setSelectedConnections] = useState<string[]>([])
-  const [isCreateRoomOpen, setIsCreateRoomOpen] = useState(false)
-  const [isChatOpen, setIsChatOpen] = useState(false)
-  const [toast, setToast] = useState<{ message: string; show: boolean }>({ message: '', show: false })
+  const { userId } = useUser()
   const [loading, setLoading] = useState(true)
+  const [connections, setConnections] = useState<Connection[]>([])
+  const [searchQuery, setSearchQuery] = useState('')
 
-  const invites = useNetworkStore(state => state.invites)
-  const connections = useNetworkStore(state => state.connections)
-  const threads = useNetworkStore(state => state.threads)
-  const setInvites = useNetworkStore(state => state.setInvites)
-  const setConnections = useNetworkStore(state => state.setConnections)
-  const setThreads = useNetworkStore(state => state.setThreads)
-  const pinConnection = useNetworkStore(state => state.pinConnection)
-  const muteConnection = useNetworkStore(state => state.muteConnection)
-  const removeConnection = useNetworkStore(state => state.removeConnection)
-  const addThread = useNetworkStore(state => state.addThread)
-  const setActiveThread = useNetworkStore(state => state.setActiveThread)
-
-  // Fetch network data from Appwrite on mount
   useEffect(() => {
-    async function fetchNetworkData() {
-      if (!user) return
+    async function fetchNetwork() {
+      if (!userId) return
 
       try {
         setLoading(true)
-        const userId = (user as any).$id || (user as any).id
-        const [receivedInvites, sentInvites, connectionIds, appwriteThreads] = await Promise.all([
-          getNetworkInvites({ userId, type: 'received', status: 'pending' }),
-          getNetworkInvites({ userId, type: 'sent', status: 'pending' }),
-          getUserConnections(userId),
-          getUserThreads(userId).catch(() => []) // Threads collection may not exist yet
-        ])
+        const connectionIds = await getUserConnections(userId)
 
-        // Convert received invites to dashboard format
-        const dashboardReceivedInvites: Invite[] = receivedInvites.map(inv => ({
-          id: inv.$id,
-          fromUserId: inv.senderId,
-          fromHandle: '@user', // Would need to fetch user details
-          mutuals: 0,
-          sentAt: new Date(inv.$createdAt).getTime(),
-          status: 'pending',
-          priority: 1
+        // Mock connections for now - replace with actual user data fetch
+        const mockConnections: Connection[] = connectionIds.slice(0, 10).map((id, i) => ({
+          id,
+          name: `User ${i + 1}`,
+          username: `user${i + 1}`,
+          status: i % 2 === 0 ? 'online' : 'offline',
+          mutualConnections: Math.floor(Math.random() * 20)
         }))
 
-        // Convert sent invites to dashboard format (mark them differently)
-        const dashboardSentInvites: Invite[] = sentInvites.map(inv => ({
-          id: inv.$id,
-          fromUserId: inv.receiverId,
-          fromHandle: '@user', // Would need to fetch user details
-          mutuals: 0,
-          sentAt: new Date(inv.$createdAt).getTime(),
-          status: 'sent' as any, // Mark as 'sent' to differentiate
-          priority: 0.5
-        }))
-
-        // Combine all invites (received first, then sent)
-        const dashboardInvites = [...dashboardReceivedInvites, ...dashboardSentInvites]
-
-        // Convert connection IDs to Connection objects (simplified)
-        const dashboardConnections: Connection[] = connectionIds.map(id => ({
-          userId: id,
-          handle: '@user',
-          name: 'User',
-          roles: [],
-          mutuals: 0,
-          lastActive: Date.now(),
-          unread: 0
-        }))
-
-        // Convert Appwrite threads to dashboard format
-        const dashboardThreads: Thread[] = appwriteThreads.map(t => ({
-          id: t.$id,
-          type: t.type,
-          name: t.name,
-          projectId: t.projectId,
-          campaignId: t.campaignId,
-          participantUserIds: t.participantIds,
-          createdAt: new Date(t.$createdAt).getTime(),
-          lastMsgAt: t.lastMessageAt ? new Date(t.lastMessageAt).getTime() : Date.now(),
-          unread: 0
-        }))
-
-        setInvites(dashboardInvites)
-        setConnections(dashboardConnections)
-        setThreads(dashboardThreads)
+        setConnections(mockConnections)
       } catch (error) {
-        console.error('Failed to fetch network data:', error)
+        console.error('Failed to fetch network:', error)
       } finally {
         setLoading(false)
       }
     }
 
-    fetchNetworkData()
-  }, [user, setInvites, setConnections, setThreads])
+    fetchNetwork()
+  }, [userId])
 
-  const showToast = (message: string) => {
-    setToast({ message, show: true })
-    setTimeout(() => setToast({ message: '', show: false }), 3000)
-  }
+  const filteredConnections = connections.filter(c =>
+    c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    c.username.toLowerCase().includes(searchQuery.toLowerCase())
+  )
 
-  const handleAcceptInvite = async (id: string) => {
-    try {
-      const invite = invites.find(inv => inv.id === id)
-      if (!invite) return
-
-      // Call Appwrite API to accept invite
-      await acceptNetworkInvite(id)
-
-      // Update local state
-      setInvites(invites.filter(inv => inv.id !== id))
-
-      // Create a thread for the new connection
-      const newThread: Thread = {
-        id: `thread_${Date.now()}`,
-        type: 'dm',
-        participantUserIds: [invite.fromUserId],
-        createdAt: Date.now(),
-        lastMsgAt: Date.now(),
-        unread: 0,
-        pinned: false,
-      }
-      addThread(newThread)
-
-      showToast(`Connected with ${invite.fromHandle}`)
-    } catch (error) {
-      console.error('Failed to accept invite:', error)
-      showToast('Failed to accept invite')
-    }
-  }
-
-  const handleDeclineInvite = async (id: string) => {
-    try {
-      // Call Appwrite API to reject invite
-      await rejectNetworkInvite(id)
-
-      // Update local state
-      setInvites(invites.filter(inv => inv.id !== id))
-
-      showToast('Invite declined')
-    } catch (error) {
-      console.error('Failed to decline invite:', error)
-      showToast('Failed to decline invite')
-    }
-  }
-
-  const handleChat = (inviteId: string) => {
-    console.log('Opening chat for invite:', inviteId)
-    showToast('Chat feature coming soon')
-  }
-
-  const handleBulkAccept = (ids: string[]) => {
-    ids.forEach(id => handleAcceptInvite(id))
-  }
-
-  const handleBulkDecline = (ids: string[]) => {
-    ids.forEach(id => handleDeclineInvite(id))
-  }
-
-  const handleDM = async (otherUserId: string) => {
-    if (!userId) return
-
-    try {
-      let threadId: string
-      const existingThread = threads.find(
-        t => t.type === 'dm' && t.participantUserIds.includes(otherUserId)
-      )
-
-      if (existingThread) {
-        threadId = existingThread.id
-      } else {
-        // Create DM thread in Appwrite
-        const appwriteThread = await createDMThread(userId, otherUserId)
-
-        const newThread: Thread = {
-          id: appwriteThread.$id,
-          type: 'dm',
-          participantUserIds: [otherUserId],
-          createdAt: new Date(appwriteThread.$createdAt).getTime(),
-          lastMsgAt: Date.now(),
-          unread: 0,
-          pinned: false,
-        }
-        addThread(newThread)
-        threadId = newThread.id
-      }
-
-      setActiveThread(threadId)
-      setIsChatOpen(true)
-    } catch (error) {
-      console.error('Failed to create DM thread:', error)
-      showToast('Failed to open chat')
-    }
-  }
-
-  const handleInviteToCampaign = (userId: string) => {
-    console.log('Inviting to campaign:', userId)
-    showToast('Invite sent')
-  }
-
-  const handlePin = (userId: string) => {
-    pinConnection(userId)
-  }
-
-  const handleMute = (userId: string) => {
-    muteConnection(userId)
-  }
-
-  const handleRemove = (userId: string) => {
-    removeConnection(userId)
-    showToast('Connection removed')
-  }
-
-  const handleStartGroup = (userIds: string[]) => {
-    setSelectedConnections(userIds)
-    setIsCreateRoomOpen(true)
-  }
-
-  const handleCreateRoom = async (data: { name: string; projectId?: string; campaignId?: string }) => {
-    if (!userId) return
-
-    try {
-      // Create group thread in Appwrite
-      const appwriteThread = await createGroupThread({
-        name: data.name,
-        participantIds: [...selectedConnections, userId],
-        projectId: data.projectId,
-        campaignId: data.campaignId
-      })
-
-      const newRoom: Thread = {
-        id: appwriteThread.$id,
-        type: 'group',
-        name: data.name,
-        projectId: data.projectId,
-        campaignId: data.campaignId,
-        participantUserIds: selectedConnections,
-        createdAt: new Date(appwriteThread.$createdAt).getTime(),
-        lastMsgAt: Date.now(),
-        unread: 0,
-        pinned: false,
-      }
-      addThread(newRoom)
-      setIsCreateRoomOpen(false)
-      setSelectedConnections([])
-      showToast(`Group "${data.name}" created`)
-    } catch (error) {
-      console.error('Failed to create group:', error)
-      showToast('Failed to create group')
-    }
-  }
-
-  const handleSelectRoom = (roomId: string) => {
-    setActiveThread(roomId)
-    setIsChatOpen(true)
-  }
-
-  const handleCloseChat = () => {
-    setIsChatOpen(false)
-    setActiveThread(null)
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-design-purple-500 mx-auto mb-4"></div>
+          <p className="text-design-zinc-400">Loading network...</p>
+        </div>
+      </div>
+    )
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">Network</h1>
-        <p className="text-white/60">Manage invites, connections, and group chats</p>
-      </div>
-
-      {/* 2-Column Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column: Invites + Connections */}
-        <div className="lg:col-span-2 space-y-6">
-          <InvitesPanel
-            invites={invites}
-            myRoles={['contributor', 'admin']}
-            onAccept={handleAcceptInvite}
-            onDecline={handleDeclineInvite}
-            onChat={handleChat}
-            onBulkAccept={handleBulkAccept}
-            onBulkDecline={handleBulkDecline}
-          />
-          <ConnectionsPanel
-            connections={connections}
-            onDM={handleDM}
-            onInviteToCampaign={handleInviteToCampaign}
-            onPin={handlePin}
-            onMute={handleMute}
-            onRemove={handleRemove}
-            onStartGroup={handleStartGroup}
-          />
-        </div>
-
-        {/* Right Column: Rooms */}
-        <div className="lg:col-span-1">
-          <RoomsList
-            rooms={threads}
-            onSelectRoom={handleSelectRoom}
-          />
-        </div>
-      </div>
-
-      {/* Create Room Drawer */}
-      <CreateRoomDrawer
-        isOpen={isCreateRoomOpen}
-        onClose={() => setIsCreateRoomOpen(false)}
-        selectedConnections={connections.filter(c => selectedConnections.includes(c.userId))}
-        onCreateRoom={handleCreateRoom}
-      />
-
-      {/* Chat Drawer */}
-      <ChatDrawer
-        isOpen={isChatOpen}
-        onClose={handleCloseChat}
-      />
-
-      {/* Toast Notification */}
-      {toast.show && (
-        <div className="fixed bottom-6 right-6 z-50 animate-in slide-in-from-bottom-2 fade-in">
-          <div className="rounded-xl bg-white/10 backdrop-blur-md border border-white/20 px-4 py-3 text-sm text-white shadow-lg">
-            {toast.message}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-gradient-to-br from-design-purple-600/20 via-design-pink-600/20 to-design-purple-800/20 rounded-2xl border border-design-zinc-800 p-8"
+      >
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-white mb-2">Network</h1>
+            <p className="text-design-zinc-400">Manage your connections and collaborations</p>
           </div>
+          <PremiumButton variant="primary">
+            <UserPlus size={16} />
+            Invite People
+          </PremiumButton>
         </div>
-      )}
+      </motion.div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="bg-design-zinc-900/50 rounded-xl border border-design-zinc-800 p-6"
+        >
+          <div className="flex items-center gap-3 mb-2">
+            <div className="p-2 rounded-lg bg-design-purple-500/10 border border-design-purple-500/20">
+              <Users className="w-5 h-5 text-design-purple-400" />
+            </div>
+            <h3 className="font-semibold text-white">Total Connections</h3>
+          </div>
+          <div className="text-3xl font-bold text-white">{connections.length}</div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="bg-design-zinc-900/50 rounded-xl border border-design-zinc-800 p-6"
+        >
+          <div className="flex items-center gap-3 mb-2">
+            <div className="p-2 rounded-lg bg-green-500/10 border border-green-500/20">
+              <Users className="w-5 h-5 text-green-400" />
+            </div>
+            <h3 className="font-semibold text-white">Online Now</h3>
+          </div>
+          <div className="text-3xl font-bold text-white">
+            {connections.filter(c => c.status === 'online').length}
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="bg-design-zinc-900/50 rounded-xl border border-design-zinc-800 p-6"
+        >
+          <div className="flex items-center gap-3 mb-2">
+            <div className="p-2 rounded-lg bg-design-pink-500/10 border border-design-pink-500/20">
+              <MessageCircle className="w-5 h-5 text-design-pink-400" />
+            </div>
+            <h3 className="font-semibold text-white">Active Chats</h3>
+          </div>
+          <div className="text-3xl font-bold text-white">8</div>
+        </motion.div>
+      </div>
+
+      {/* Search & Filter */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+        className="bg-design-zinc-900/50 rounded-xl border border-design-zinc-800 p-4"
+      >
+        <div className="flex gap-3">
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-design-zinc-500" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search connections..."
+              className="w-full pl-10 pr-4 py-2 rounded-lg bg-design-zinc-900 border border-design-zinc-800 text-white placeholder:text-design-zinc-500 focus:outline-none focus:ring-2 focus:ring-design-purple-500/50"
+            />
+          </div>
+          <PremiumButton variant="ghost">
+            <Filter size={16} />
+            Filter
+          </PremiumButton>
+        </div>
+      </motion.div>
+
+      {/* Connections Grid */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+        className="bg-design-zinc-900/50 rounded-xl border border-design-zinc-800 p-6"
+      >
+        <h2 className="text-xl font-bold text-white mb-4">Your Connections</h2>
+
+        {filteredConnections.length === 0 ? (
+          <div className="text-center py-12">
+            <Users className="w-12 h-12 text-design-zinc-600 mx-auto mb-4" />
+            <p className="text-design-zinc-400">No connections found</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {filteredConnections.map((connection, i) => (
+              <motion.div
+                key={connection.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.05 }}
+                className="bg-design-zinc-800/50 rounded-xl p-4 border border-design-zinc-700 hover:border-design-purple-500/50 transition-all"
+              >
+                <div className="flex items-start gap-3">
+                  {/* Avatar */}
+                  <div className="relative">
+                    {connection.avatar ? (
+                      <img
+                        src={connection.avatar}
+                        alt={connection.name}
+                        className="w-12 h-12 rounded-full"
+                      />
+                    ) : (
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-design-purple-500 to-design-pink-500 flex items-center justify-center text-white font-bold">
+                        {connection.name.charAt(0)}
+                      </div>
+                    )}
+                    <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-design-zinc-800 ${
+                      connection.status === 'online' ? 'bg-green-500' : 'bg-design-zinc-600'
+                    }`} />
+                  </div>
+
+                  {/* Info */}
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-white truncate">{connection.name}</h3>
+                    <p className="text-sm text-design-zinc-400">@{connection.username}</p>
+                    <p className="text-xs text-design-zinc-500 mt-1">
+                      {connection.mutualConnections} mutual connections
+                    </p>
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="mt-3 flex gap-2">
+                  <PremiumButton variant="ghost" className="flex-1" size="sm">
+                    <MessageCircle size={14} />
+                    Message
+                  </PremiumButton>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        )}
+      </motion.div>
     </div>
   )
 }

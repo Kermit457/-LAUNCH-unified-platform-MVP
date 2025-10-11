@@ -28,6 +28,13 @@ export interface Campaign {
   deadline?: string
   tags?: string[]
   requirements?: string[]
+  // Escrow fields
+  escrowId?: string
+  escrowStatus?: 'pending' | 'funded' | 'released' | 'cancelled' | 'partial'
+  escrowAmount?: number
+  escrowFundedAt?: string
+  paidParticipants?: number
+  expectedParticipants?: number
 }
 
 /**

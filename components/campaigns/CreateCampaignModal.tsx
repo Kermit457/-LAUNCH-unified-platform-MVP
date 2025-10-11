@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { X, Image as ImageIcon, DollarSign, Calendar, Link2, FileText, Eye } from 'lucide-react'
 import { CreateClipCampaignInput } from '@/types/campaign'
 import { FileDropzone } from '@/components/common/FileDropzone'
+import { EscrowPaymentModal } from '@/components/payments'
 
 interface CreateCampaignModalProps {
   isOpen: boolean
@@ -28,6 +29,11 @@ export function CreateCampaignModal({ isOpen, onClose, onSubmit }: CreateCampaig
   const [conditions, setConditions] = useState('')
   const [minViewsRequired, setMinViewsRequired] = useState('')
   const [autoApprove, setAutoApprove] = useState(false)
+
+  // Escrow state
+  const [showEscrowModal, setShowEscrowModal] = useState(false)
+  const [campaignCreated, setCampaignCreated] = useState(false)
+  const [imagePreview, setImagePreview] = useState<string>()
 
   // ESC key to close
   useEffect(() => {
@@ -110,6 +116,19 @@ export function CreateCampaignModal({ isOpen, onClose, onSubmit }: CreateCampaig
     )
   }
 
+  // Create image preview when image changes
+  useEffect(() => {
+    if (image) {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string)
+      }
+      reader.readAsDataURL(image)
+    } else {
+      setImagePreview(undefined)
+    }
+  }, [image])
+
   const handleSubmit = () => {
     if (!isFormValid) return
 
@@ -137,6 +156,26 @@ export function CreateCampaignModal({ isOpen, onClose, onSubmit }: CreateCampaig
     }
 
     onSubmit(output)
+
+    // Show escrow modal after campaign created
+    setCampaignCreated(true)
+    setShowEscrowModal(true)
+  }
+
+  const handleEscrowFund = async (amount: number) => {
+    // Mock escrow creation
+    await new Promise(resolve => setTimeout(resolve, 2000))
+
+    return {
+      success: true,
+      escrowId: `escrow_${Date.now()}`
+    }
+  }
+
+  const handleEscrowClose = () => {
+    setShowEscrowModal(false)
+    setCampaignCreated(false)
+    onClose() // Close main modal too
   }
 
   if (!isOpen) return null
@@ -504,6 +543,19 @@ export function CreateCampaignModal({ isOpen, onClose, onSubmit }: CreateCampaig
           </button>
         </div>
       </div>
+
+      {/* Escrow Payment Modal - Shows after campaign created */}
+      {campaignCreated && (
+        <EscrowPaymentModal
+          isOpen={showEscrowModal}
+          onClose={handleEscrowClose}
+          campaignTitle={title}
+          campaignImage={imagePreview}
+          totalBudget={Number(prizePoolUsd) / 140} // Convert USD to SOL (mock rate)
+          expectedParticipants={10} // Mock for now
+          onFundEscrow={handleEscrowFund}
+        />
+      )}
     </div>
   )
 }
