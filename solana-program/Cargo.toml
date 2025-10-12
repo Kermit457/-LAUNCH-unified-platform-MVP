@@ -1,7 +1,9 @@
 [workspace]
 members = [
-    "programs/*"
+    "programs/launchos-escrow",
+    "programs/launchos-curve"
 ]
+resolver = "2"
 
 [profile.release]
 overflow-checks = true
