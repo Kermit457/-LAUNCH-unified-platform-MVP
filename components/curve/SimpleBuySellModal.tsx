@@ -1,9 +1,12 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { X, Minus, Plus } from 'lucide-react'
+import { X, Minus, Plus, TrendingUp, TrendingDown } from 'lucide-react'
 import { Curve } from '@/types/curve'
-import { calculateTrade } from '@/lib/curve/bonding-math'
+import { calculateBuyCost, calculateSellProceeds, calculatePrice } from '@/lib/curve/bonding-math'
+import { BuyKeysButton } from '@/components/BuyKeysButton'
+import { SellKeysButton } from '@/components/SellKeysButton'
+import { usePrivy } from '@privy-io/react-auth'
 
 interface SimpleBuySellModalProps {
   isOpen: boolean
@@ -26,45 +29,50 @@ export function SimpleBuySellModal({
   userKeys,
   onTrade
 }: SimpleBuySellModalProps) {
-  const [activeTab, setActiveTab] = useState<'buy' | 'sell'>('buy')
+  const { user } = usePrivy()
   const [keys, setKeys] = useState(1)
-  const [isProcessing, setIsProcessing] = useState(false)
+  const [priceChange24h, setPriceChange24h] = useState<number | null>(null)
+  const [loadingPriceChange, setLoadingPriceChange] = useState(false)
 
-  // Calculate trade cost
-  const tradeCalc = calculateTrade(
-    activeTab,
-    keys,
-    curve.supply,
-    curve.price,
-    false // keys input
-  )
+  // Calculate current price at current supply
+  const currentPrice = calculatePrice(curve.supply)
 
-  const totalFee = (tradeCalc.totalCost * 0.10).toFixed(4) // 10% total fees
+  // Calculate SOL cost for buying keys
+  const solCost = calculateBuyCost(curve.supply, keys)
 
+  // Calculate SOL received for selling keys
+  const solReceived = calculateSellProceeds(curve.supply, keys)
+
+  // V4 Fee structure: 6% total (4% instant, 1% platform, 1% buyback)
+  const totalFee = (solCost * 0.06).toFixed(4)
+
+  // Fetch 24h price change when modal opens
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && curve.id) {
       setKeys(1)
-      setActiveTab('buy')
-    }
-  }, [isOpen])
 
-  const handleTrade = async () => {
-    setIsProcessing(true)
-    try {
-      await onTrade(activeTab, keys)
-      onClose()
-    } catch (error) {
-      console.error('Trade failed:', error)
-    } finally {
-      setIsProcessing(false)
+      // Fetch price change
+      setLoadingPriceChange(true)
+      fetch(`/api/curve/${curve.id}/price-change`)
+        .then(res => res.json())
+        .then(data => {
+          setPriceChange24h(data.priceChange24h)
+        })
+        .catch(error => {
+          console.error('Failed to fetch price change:', error)
+          setPriceChange24h(null)
+        })
+        .finally(() => {
+          setLoadingPriceChange(false)
+        })
     }
-  }
+  }, [isOpen, curve.id])
 
   const incrementKeys = () => setKeys(prev => prev + 1)
   const decrementKeys = () => setKeys(prev => Math.max(1, prev - 1))
 
-  const canBuy = activeTab === 'buy' && userBalance >= tradeCalc.totalCost
-  const canSell = activeTab === 'sell' && userKeys >= keys
+  const canBuy = userBalance >= solCost
+  const canSell = userKeys >= keys
 
   if (!isOpen) return null
 
@@ -95,15 +103,33 @@ export function SimpleBuySellModal({
               )}
               <div>
                 <div className="text-white font-semibold">{ownerName}</div>
-                <div className="text-sm text-gray-400">{curve.holders} Holders</div>
+                <div className="text-sm text-gray-400">{curve.holders || 0} Holders</div>
               </div>
             </div>
             <div className="text-right">
-              <div className="flex items-center gap-1 text-white font-bold">
+              <div className="flex items-center justify-end gap-1 text-white font-bold mb-1">
                 <span className="text-orange-500">◎</span>
-                {curve.price.toFixed(4)}
+                {currentPrice.toFixed(4)}
               </div>
-              <div className="text-sm text-green-400">+{curve.change24h?.toFixed(1) || 0}%</div>
+
+              {/* 24h Price Change - Always show below price */}
+              {loadingPriceChange ? (
+                <div className="text-xs text-gray-400">Loading...</div>
+              ) : priceChange24h !== null && priceChange24h !== undefined && typeof priceChange24h === 'number' ? (
+                <div className={`flex items-center justify-end gap-1 text-xs font-semibold ${
+                  priceChange24h >= 0 ? 'text-green-400' : 'text-red-400'
+                }`}>
+                  {priceChange24h >= 0 ? (
+                    <TrendingUp className="w-3 h-3" />
+                  ) : (
+                    <TrendingDown className="w-3 h-3" />
+                  )}
+                  <span>{priceChange24h >= 0 ? '+' : ''}{priceChange24h.toFixed(2)}%</span>
+                  <span className="text-gray-500 ml-0.5">24h</span>
+                </div>
+              ) : (
+                <div className="text-xs text-gray-400">{curve.supply || 0} keys sold</div>
+              )}
             </div>
           </div>
 
@@ -120,7 +146,7 @@ export function SimpleBuySellModal({
               <span className="text-orange-500">◎</span>
               <span className="text-white font-bold">{userBalance.toFixed(4)}</span>
             </div>
-            <div className="text-gray-400">TOTAL FEE: 10%</div>
+            <div className="text-gray-400">TOTAL FEE: 6%</div>
           </div>
 
           {/* Keys Input */}
@@ -147,85 +173,86 @@ export function SimpleBuySellModal({
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
               <span className="text-gray-400">Keys Cost:</span>
-              <span className="text-white">◎ {tradeCalc.totalCost.toFixed(4)}</span>
+              <span className="text-white">◎ {solCost.toFixed(4)}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-400">Platform Fee (10%):</span>
+              <span className="text-gray-400">Total Fee (6%):</span>
               <span className="text-white">◎ {totalFee}</span>
+            </div>
+            <div className="text-xs text-gray-500 pl-4">
+              • 4% Instant (referrer/creator)
+            </div>
+            <div className="text-xs text-gray-500 pl-4">
+              • 1% Platform
+            </div>
+            <div className="text-xs text-gray-500 pl-4">
+              • 1% Buyback & Burn
             </div>
             <div className="h-px bg-white/10 my-2" />
             <div className="flex justify-between font-bold">
               <span className="text-white">Total Cost:</span>
-              <span className="text-white">◎ {(tradeCalc.totalCost + parseFloat(totalFee)).toFixed(4)}</span>
+              <span className="text-white">◎ {(solCost + parseFloat(totalFee)).toFixed(4)}</span>
             </div>
           </div>
 
           {/* Buy/Sell Buttons */}
           <div className="grid grid-cols-2 gap-3">
-            <button
-              onClick={() => {
-                setActiveTab('buy')
-                handleTrade()
+            <BuyKeysButton
+              curveId={curve.id}
+              twitterHandle={ownerName}
+              keys={keys}
+              solCost={solCost}
+              userId={user?.id || ''}
+              onSuccess={() => {
+                onClose()
               }}
-              disabled={!canBuy || isProcessing}
+              onError={(error) => {
+                console.error('Buy failed:', error)
+              }}
               className={`
                 py-4 rounded-2xl font-bold text-white text-lg transition-all
-                ${canBuy && !isProcessing
+                ${canBuy
                   ? 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 shadow-lg shadow-orange-500/25'
                   : 'bg-gray-700 cursor-not-allowed opacity-50'
                 }
               `}
+              disabled={!canBuy}
+              hideExtras={true}
             >
-              {isProcessing && activeTab === 'buy' ? (
-                <div className="flex items-center justify-center gap-2">
-                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  Processing...
-                </div>
-              ) : (
-                <div className="flex items-center justify-center gap-2">
-                  Buy <span className="text-orange-200">◎ {tradeCalc.totalCost.toFixed(4)}</span>
-                </div>
-              )}
-            </button>
+              <div className="flex items-center justify-center gap-2">
+                Buy <span className="text-orange-200">◎ {solCost.toFixed(4)}</span>
+              </div>
+            </BuyKeysButton>
 
-            <button
-              onClick={() => {
-                setActiveTab('sell')
-                handleTrade()
+            <SellKeysButton
+              curveId={curve.id}
+              twitterHandle={ownerName}
+              keys={keys}
+              solReceived={solReceived}
+              userId={user?.id || ''}
+              onSuccess={() => {
+                onClose()
               }}
-              disabled={!canSell || isProcessing}
+              onError={(error) => {
+                console.error('Sell failed:', error)
+              }}
               className={`
                 py-4 rounded-2xl font-bold text-white text-lg transition-all
-                ${canSell && !isProcessing
+                ${canSell
                   ? 'bg-white/10 hover:bg-white/20 border border-white/20'
                   : 'bg-gray-700 cursor-not-allowed opacity-50'
                 }
               `}
+              disabled={!canSell}
+              hideExtras={true}
             >
-              {isProcessing && activeTab === 'sell' ? (
-                <div className="flex items-center justify-center gap-2">
-                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  Processing...
-                </div>
-              ) : (
-                <div className="flex items-center justify-center gap-2">
-                  Sell <span className="text-gray-300">◎ {tradeCalc.totalCost.toFixed(4)}</span>
-                </div>
-              )}
-            </button>
+              <div className="flex items-center justify-center gap-2">
+                Sell <span className="text-gray-300">◎ {solReceived.toFixed(4)}</span>
+              </div>
+            </SellKeysButton>
           </div>
 
-          {/* Warnings */}
-          {!canBuy && activeTab === 'buy' && (
-            <div className="text-sm text-red-400 text-center">
-              Insufficient balance to buy {keys} keys
-            </div>
-          )}
-          {!canSell && activeTab === 'sell' && (
-            <div className="text-sm text-red-400 text-center">
-              You don't own enough keys to sell
-            </div>
-          )}
+          {/* Warnings - removed as buttons show their own states */}
         </div>
       </div>
     </div>

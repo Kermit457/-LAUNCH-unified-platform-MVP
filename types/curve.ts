@@ -26,6 +26,7 @@ export interface Curve {
   volume24h: number       // 24h trading volume
   volumeTotal: number     // All-time volume
   marketCap: number       // supply * price
+  priceChange24h?: number | null // 24h price change percentage
 
   // Fee configuration (immutable)
   feeSplit: {
@@ -154,12 +155,12 @@ export interface TradeCalculation {
   totalCost: number       // Total cost including fees
   slippage: number        // Slippage %
 
-  // Fee breakdown (buy only)
+  // Fee breakdown V4 (buy only)
   fees?: {
     reserve: number
-    project: number
-    platform: number
-    referral: number
+    instant: number      // 4% to referrer OR creator
+    platform: number     // 1% to platform
+    buyback: number      // 1% to buyback & burn
     total: number
   }
 

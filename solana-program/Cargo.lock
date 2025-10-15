@@ -1174,6 +1174,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "launchos-curve"
+version = "0.1.0"
+dependencies = [
+ "anchor-lang",
+ "anchor-spl",
+]
+
+[[package]]
 name = "launchos-escrow"
 version = "0.1.0"
 dependencies = [

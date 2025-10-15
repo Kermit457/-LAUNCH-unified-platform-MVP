@@ -45,6 +45,7 @@ export const COLLECTIONS = {
   CURVE_EVENTS: process.env.NEXT_PUBLIC_APPWRITE_CURVE_EVENTS_COLLECTION_ID || 'curve_events',
   CURVE_HOLDERS: process.env.NEXT_PUBLIC_APPWRITE_CURVE_HOLDERS_COLLECTION_ID || 'curve_holders',
   SNAPSHOTS: process.env.NEXT_PUBLIC_APPWRITE_SNAPSHOTS_COLLECTION_ID || 'snapshots',
+  PRICE_HISTORY: process.env.NEXT_PUBLIC_APPWRITE_PRICE_HISTORY_COLLECTION_ID || 'price_history',
 } as const
 
 // Storage Bucket IDs

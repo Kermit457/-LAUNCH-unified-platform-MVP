@@ -3,6 +3,7 @@ import { ServerCurveService } from '@/lib/appwrite/services/curves-server'
 import { ServerCurveEventService } from '@/lib/appwrite/services/curve-events-server'
 import { ServerCurveHolderService } from '@/lib/appwrite/services/curve-holders-server'
 import { calculateTrade } from '@/lib/curve/bonding-math'
+import { recordPriceSnapshot } from '@/lib/appwrite/services/price-history'
 
 export async function POST(
   request: NextRequest,
@@ -108,6 +109,14 @@ export async function POST(
       await ServerCurveService.updateCurve(params.id, {
         holders: Math.max(0, curve.holders - 1)
       })
+    }
+
+    // Record price snapshot for 24h tracking
+    try {
+      await recordPriceSnapshot(params.id, newSupply, newPrice)
+    } catch (snapshotError) {
+      console.error('Failed to record price snapshot:', snapshotError)
+      // Don't fail the transaction if snapshot recording fails
     }
 
     // Return updated curve and holder data

@@ -1,7 +1,11 @@
 "use client"
 
 import { PrivyProvider } from '@privy-io/react-auth'
+import { toSolanaWalletConnectors } from '@privy-io/react-auth/solana'
 import { ReactNode, useEffect, useState } from 'react'
+import { SolanaWalletManager } from '@/components/SolanaWalletManager'
+import { createSolanaRpc } from '@solana/rpc'
+import { createSolanaRpcSubscriptions } from '@solana/rpc-subscriptions'
 
 export function PrivyProviderWrapper({ children }: { children: ReactNode }) {
   const [mounted, setMounted] = useState(false)
@@ -39,12 +43,43 @@ export function PrivyProviderWrapper({ children }: { children: ReactNode }) {
           accentColor: '#8B5CF6',
         },
         loginMethods: ['email', 'twitter', 'wallet'],
+        // Solana and Ethereum embedded wallets
         embeddedWallets: {
-          createOnLogin: 'users-without-wallets',
+          createOnLogin: 'all-users',
+          chains: ['solana', 'ethereum'],
+        },
+        // External wallet connectors
+        externalWallets: {
+          solana: {
+            connectors: toSolanaWalletConnectors({
+              // Only enable Phantom for external wallet detection
+              shouldAutoConnect: false,
+            }),
+          },
+        },
+        // Solana RPC configuration using @solana/rpc and @solana/rpc-subscriptions
+        solana: {
+          defaultChain: 'solana:devnet',
+          rpcs: {
+            'solana:devnet': {
+              rpc: createSolanaRpc('https://api.devnet.solana.com'),
+              rpcSubscriptions: createSolanaRpcSubscriptions('wss://api.devnet.solana.com'),
+            },
+            'solana:testnet': {
+              rpc: createSolanaRpc('https://api.testnet.solana.com'),
+              rpcSubscriptions: createSolanaRpcSubscriptions('wss://api.testnet.solana.com'),
+            },
+            'solana:mainnet': {
+              rpc: createSolanaRpc('https://api.mainnet-beta.solana.com'),
+              rpcSubscriptions: createSolanaRpcSubscriptions('wss://api.mainnet-beta.solana.com'),
+            },
+          },
         },
       }}
     >
-      {children}
+      <SolanaWalletManager>
+        {children}
+      </SolanaWalletManager>
     </PrivyProvider>
   )
 }

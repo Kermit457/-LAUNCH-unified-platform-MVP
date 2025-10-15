@@ -1,0 +1,8 @@
+C:\Users\mirko\OneDrive\Desktop\WIDGETS FOR LAUNCH\solana-program\target\debug\deps\spl_token_group_interface-55c9d371840b7eb8.d: C:\Users\mirko\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\spl-token-group-interface-0.2.5\src\lib.rs C:\Users\mirko\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\spl-token-group-interface-0.2.5\src\error.rs C:\Users\mirko\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\spl-token-group-interface-0.2.5\src\instruction.rs C:\Users\mirko\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\spl-token-group-interface-0.2.5\src\state.rs
+
+C:\Users\mirko\OneDrive\Desktop\WIDGETS FOR LAUNCH\solana-program\target\debug\deps\libspl_token_group_interface-55c9d371840b7eb8.rmeta: C:\Users\mirko\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\spl-token-group-interface-0.2.5\src\lib.rs C:\Users\mirko\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\spl-token-group-interface-0.2.5\src\error.rs C:\Users\mirko\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\spl-token-group-interface-0.2.5\src\instruction.rs C:\Users\mirko\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\spl-token-group-interface-0.2.5\src\state.rs
+
+C:\Users\mirko\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\spl-token-group-interface-0.2.5\src\lib.rs:
+C:\Users\mirko\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\spl-token-group-interface-0.2.5\src\error.rs:
+C:\Users\mirko\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\spl-token-group-interface-0.2.5\src\instruction.rs:
+C:\Users\mirko\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\spl-token-group-interface-0.2.5\src\state.rs:

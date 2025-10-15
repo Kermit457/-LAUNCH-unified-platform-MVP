@@ -3,6 +3,7 @@ import { ServerCurveService } from '@/lib/appwrite/services/curves-server'
 import { ServerCurveEventService } from '@/lib/appwrite/services/curve-events-server'
 import { ServerCurveHolderService } from '@/lib/appwrite/services/curve-holders-server'
 import { calculateBuyCost, calculatePrice } from '@/lib/curve/bonding-math'
+import { recordPriceSnapshot } from '@/lib/appwrite/services/price-history'
 
 export async function POST(
   request: NextRequest,
@@ -11,8 +12,8 @@ export async function POST(
   try {
     const params = await context.params
     console.log('Buy request - curveId:', params.id)
-    const { keys, userId, referrerId } = await request.json()
-    console.log('Buy request - body:', { keys, userId, referrerId })
+    const { keys, userId, referrerId, txSignature, solCost: clientSolCost } = await request.json()
+    console.log('Buy request - body:', { keys, userId, referrerId, txSignature, clientSolCost })
 
     // Validation
     if (!keys || !userId) {
@@ -67,7 +68,48 @@ export async function POST(
       referral: solCost * 0.01
     }
 
-    // TODO: In production, verify payment transaction here
+    // Verify Solana transaction if provided
+    if (txSignature) {
+      console.log('Verifying Solana transaction:', txSignature)
+      try {
+        // Import connection from Solana config
+        const { Connection } = await import('@solana/web3.js')
+        const connection = new Connection(
+          process.env.NEXT_PUBLIC_SOLANA_RPC || 'https://api.devnet.solana.com'
+        )
+
+        // Fetch transaction details
+        const tx = await connection.getTransaction(txSignature, {
+          commitment: 'confirmed',
+          maxSupportedTransactionVersion: 0
+        })
+
+        if (!tx) {
+          return NextResponse.json(
+            { error: 'Transaction not found on blockchain' },
+            { status: 400 }
+          )
+        }
+
+        // Verify transaction succeeded
+        if (tx.meta?.err) {
+          return NextResponse.json(
+            { error: 'Transaction failed on blockchain', details: tx.meta.err },
+            { status: 400 }
+          )
+        }
+
+        console.log('✅ Solana transaction verified:', txSignature)
+      } catch (verifyError) {
+        console.error('Transaction verification failed:', verifyError)
+        return NextResponse.json(
+          { error: 'Failed to verify Solana transaction', details: String(verifyError) },
+          { status: 400 }
+        )
+      }
+    } else {
+      console.log('⚠️ No Solana transaction provided - proceeding without blockchain verification')
+    }
 
     // Update curve state
     const newReserve = curve.reserve + fees.reserve
@@ -115,6 +157,14 @@ export async function POST(
       await ServerCurveService.updateCurve(params.id, {
         holders: curve.holders + 1
       })
+    }
+
+    // Record price snapshot for 24h tracking
+    try {
+      await recordPriceSnapshot(params.id, newSupply, newPrice)
+    } catch (snapshotError) {
+      console.error('Failed to record price snapshot:', snapshotError)
+      // Don't fail the transaction if snapshot recording fails
     }
 
     // Award referral credit if applicable

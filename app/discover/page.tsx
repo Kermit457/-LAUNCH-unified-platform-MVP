@@ -28,6 +28,7 @@ import { addProjectMember } from '@/lib/appwrite/services/project-members'
 import { getUserProfile } from '@/lib/appwrite/services/users'
 import { useUser } from '@/hooks/useUser'
 import { useCurvesByOwners } from '@/hooks/useCurvesByOwners'
+import { useSolanaBalance } from '@/hooks/useSolanaBalance'
 import { uploadLogo } from '@/lib/storage'
 import type { Curve } from '@/types/curve'
 
@@ -200,6 +201,7 @@ const StatsCard = ({
 export default function DiscoverPage() {
   const router = useRouter()
   const { userId, isAuthenticated } = useUser()
+  const { balance: solBalance } = useSolanaBalance()
 
   // All existing state
   const [commentsOpen, setCommentsOpen] = useState(false)
@@ -228,6 +230,7 @@ export default function DiscoverPage() {
     projectName: string
     projectLogo?: string
   } | null>(null)
+  const [userKeyBalance, setUserKeyBalance] = useState<number>(0)
 
   // Fetch curves for all projects
   const projectOwners = launches.map(launch => ({
@@ -235,6 +238,31 @@ export default function DiscoverPage() {
     type: 'project' as const
   }))
   const { curves: projectCurves } = useCurvesByOwners(projectOwners)
+
+  // Fetch user holdings when modal opens
+  useEffect(() => {
+    async function fetchUserHoldings() {
+      if (!userId || !selectedCurveData?.curve?.id || !buySellModalOpen) {
+        setUserKeyBalance(0)
+        return
+      }
+
+      try {
+        const response = await fetch(
+          `/api/curve/${selectedCurveData.curve.id}/holdings?userId=${userId}`
+        )
+        if (response.ok) {
+          const data = await response.json()
+          setUserKeyBalance(data.balance || 0)
+        }
+      } catch (error) {
+        console.error('Failed to fetch user holdings:', error)
+        setUserKeyBalance(0)
+      }
+    }
+
+    fetchUserHoldings()
+  }, [userId, selectedCurveData?.curve?.id, buySellModalOpen])
 
   // Fetch user profile and projects
   useEffect(() => {
@@ -876,9 +904,11 @@ export default function DiscoverPage() {
                       viewCount: launch.viewCount,
                       convictionPct: launch.convictionPct,
                       keyHolders: curve?.holders || 0,
+                      keysSold: curve?.supply || 0,
                       contributionPoolPct: launch.contributionPoolPct,
                       feesSharePct: launch.feesSharePct,
                       keyPrice: curve?.price || 0.01,
+                      priceChange24h: curve?.priceChange24h || null,
                       contributors: launch.contributors
                     }}
                     hasVoted={userVotedLaunches.has(launch.id)}
@@ -940,9 +970,11 @@ export default function DiscoverPage() {
                           viewCount: launch.viewCount,
                           convictionPct: launch.convictionPct,
                           keyHolders: curve?.holders || 0,
+                          keysSold: curve?.supply || 0,
                           contributionPoolPct: launch.contributionPoolPct,
                           feesSharePct: launch.feesSharePct,
                           keyPrice: curve?.price || 0.01,
+                          priceChange24h: curve?.priceChange24h || null,
                           contributors: launch.contributors
                         }}
                         hasVoted={userVotedLaunches.has(launch.id)}
@@ -1062,8 +1094,8 @@ export default function DiscoverPage() {
           curve={selectedCurveData.curve}
           ownerName={selectedCurveData.projectName}
           ownerAvatar={selectedCurveData.projectLogo}
-          userBalance={10} // TODO: Get from wallet
-          userKeys={0} // TODO: Get from curve holders
+          userBalance={solBalance}
+          userKeys={userKeyBalance}
           onTrade={async (type, keys) => {
             if (!userId || !selectedCurveData.curve) return
 

@@ -2,9 +2,6 @@ use anchor_lang::prelude::*;
 
 #[error_code]
 pub enum CurveError {
-    #[msg("The curve is currently paused")]
-    CurvePaused,
-
     #[msg("The curve is not yet active (pending creator buy)")]
     CurveNotActive,
 
@@ -43,4 +40,47 @@ pub enum CurveError {
 
     #[msg("Cannot sell during lock period")]
     SellLockActive,
+
+    // Freeze & Launch Errors
+    #[msg("Curve is already frozen")]
+    AlreadyFrozen,
+
+    #[msg("Curve is not frozen yet")]
+    CurveNotFrozen,
+
+    #[msg("Reserve threshold not met for auto-freeze")]
+    ReserveThresholdNotMet,
+
+    #[msg("Launch time not set for time-based freeze")]
+    LaunchTimeNotSet,
+
+    #[msg("Launch time not reached yet")]
+    LaunchTimeNotReached,
+
+    #[msg("Snapshot not created yet")]
+    SnapshotNotCreated,
+
+    #[msg("Snapshot already exists")]
+    SnapshotAlreadyExists,
+
+    #[msg("Curve already launched")]
+    AlreadyLaunched,
+
+    #[msg("Invalid Merkle proof")]
+    InvalidMerkleProof,
+
+    #[msg("Tokens already claimed")]
+    AlreadyClaimed,
+
+    #[msg("Invalid referrer address")]
+    InvalidReferrer,
+
+    #[msg("Cannot self-refer")]
+    SelfReferral,
+
+    #[msg("Exceeds maximum keys per wallet")]
+    ExceedsMaxKeysPerWallet,
+
+    #[msg("Trading is disabled in this state")]
+    TradingDisabled,
 }

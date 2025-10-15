@@ -100,19 +100,20 @@ pub mod launchos_escrow {
         require!(!ctx.accounts.escrow.paused, EscrowError::SystemPaused);
         require!(amount > 0, EscrowError::InvalidAmount);
 
-        let pool = &mut ctx.accounts.pool;
+        // Check pool status and balance before mutable borrow
         require!(
-            pool.status == PoolStatus::Active,
+            ctx.accounts.pool.status == PoolStatus::Active,
             EscrowError::PoolNotActive
         );
         require!(
-            pool.balance >= amount,
+            ctx.accounts.pool.balance >= amount,
             EscrowError::InsufficientBalance
         );
 
-        // Get pool info before transfer
-        let pool_id = pool.pool_id.clone();
-        let pool_bump = pool.bump;
+        // Get pool info BEFORE mutable borrow
+        let pool_id = ctx.accounts.pool.pool_id.clone();
+        let pool_bump = ctx.accounts.pool.bump;
+        let pool_account_info = ctx.accounts.pool.to_account_info();
 
         // Transfer USDC from pool to recipient
         let pool_seeds = &[
@@ -125,13 +126,14 @@ pub mod launchos_escrow {
         let cpi_accounts = Transfer {
             from: ctx.accounts.pool_token_account.to_account_info(),
             to: ctx.accounts.recipient_token_account.to_account_info(),
-            authority: ctx.accounts.pool.to_account_info(),
+            authority: pool_account_info,
         };
         let cpi_program = ctx.accounts.token_program.to_account_info();
         let cpi_ctx = CpiContext::new_with_signer(cpi_program, cpi_accounts, signer);
         token::transfer(cpi_ctx, amount)?;
 
-        // Update pool balances
+        // Now create mutable borrow to update pool balances
+        let pool = &mut ctx.accounts.pool;
         pool.balance = pool.balance.checked_sub(amount).unwrap();
         pool.total_withdrawn = pool.total_withdrawn.checked_add(amount).unwrap();
 
@@ -139,7 +141,7 @@ pub mod launchos_escrow {
         let escrow = &mut ctx.accounts.escrow;
         escrow.total_value_locked = escrow.total_value_locked.checked_sub(amount).unwrap();
 
-        msg!("Withdrew {} from pool: {}", amount, pool.pool_id);
+        msg!("Withdrew {} from pool: {}", amount, pool_id);
         Ok(())
     }
 

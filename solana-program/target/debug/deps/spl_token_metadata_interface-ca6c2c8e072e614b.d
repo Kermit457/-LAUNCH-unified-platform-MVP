@@ -1,0 +1,8 @@
+C:\Users\mirko\OneDrive\Desktop\WIDGETS FOR LAUNCH\solana-program\target\debug\deps\spl_token_metadata_interface-ca6c2c8e072e614b.d: C:\Users\mirko\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\spl-token-metadata-interface-0.3.5\src\lib.rs C:\Users\mirko\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\spl-token-metadata-interface-0.3.5\src\error.rs C:\Users\mirko\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\spl-token-metadata-interface-0.3.5\src\instruction.rs C:\Users\mirko\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\spl-token-metadata-interface-0.3.5\src\state.rs
+
+C:\Users\mirko\OneDrive\Desktop\WIDGETS FOR LAUNCH\solana-program\target\debug\deps\libspl_token_metadata_interface-ca6c2c8e072e614b.rmeta: C:\Users\mirko\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\spl-token-metadata-interface-0.3.5\src\lib.rs C:\Users\mirko\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\spl-token-metadata-interface-0.3.5\src\error.rs C:\Users\mirko\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\spl-token-metadata-interface-0.3.5\src\instruction.rs C:\Users\mirko\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\spl-token-metadata-interface-0.3.5\src\state.rs
+
+C:\Users\mirko\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\spl-token-metadata-interface-0.3.5\src\lib.rs:
+C:\Users\mirko\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\spl-token-metadata-interface-0.3.5\src\error.rs:
+C:\Users\mirko\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\spl-token-metadata-interface-0.3.5\src\instruction.rs:
+C:\Users\mirko\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\spl-token-metadata-interface-0.3.5\src\state.rs:

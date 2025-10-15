@@ -1,7 +1,8 @@
 "use client"
 
-import { createContext, useContext, ReactNode } from 'react'
-import { usePrivy, useWallets } from '@privy-io/react-auth'
+import { createContext, useContext, ReactNode, useState, useEffect } from 'react'
+import { usePrivy } from '@privy-io/react-auth'
+import { useSolanaWalletsContext } from '@/components/SolanaWalletManager'
 
 interface WalletContextType {
   connected: boolean
@@ -13,17 +14,32 @@ interface WalletContextType {
 const WalletContext = createContext<WalletContextType | undefined>(undefined)
 
 export function WalletProvider({ children }: { children: ReactNode }) {
-  const { ready, authenticated, login, logout, user } = usePrivy()
-  const { wallets } = useWallets()
+  const { ready, authenticated, login, logout } = usePrivy()
+  const { wallets, ready: walletsReady } = useSolanaWalletsContext()
+  const [address, setAddress] = useState<string | null>(null)
 
-  // Prioritize Solana wallet address over Ethereum
-  const solanaWallet = wallets.find(w => w.walletClientType === 'solana')
-  const address = solanaWallet?.address || wallets[0]?.address || user?.wallet?.address || null
-  const connected = ready && authenticated && !!address
+  // Get Solana wallet address using exportPublicKey()
+  useEffect(() => {
+    async function fetchAddress() {
+      if (!walletsReady || wallets.length === 0) {
+        setAddress(null)
+        return
+      }
+      try {
+        const addr = await wallets[0].exportPublicKey()
+        setAddress(addr || null)
+      } catch {
+        setAddress(null)
+      }
+    }
+    fetchAddress()
+  }, [wallets, walletsReady])
+
+  const connected = ready && authenticated && walletsReady && !!address
 
   async function connect() {
     try {
-      await login()
+      login()
     } catch (error) {
       console.error('Failed to connect wallet:', error)
       throw error
@@ -32,7 +48,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
 
   async function disconnect() {
     try {
-      await logout()
+      logout()
     } catch (error) {
       console.error('Failed to disconnect wallet:', error)
       throw error

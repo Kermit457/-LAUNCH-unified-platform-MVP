@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import {
-  ChevronUp, MessageSquare, Users, Share2, Eye, Zap, Bell
+  ChevronUp, MessageSquare, Users, Share2, Eye, Zap, Bell, TrendingUp, TrendingDown
 } from 'lucide-react'
 
 interface CleanLaunchCardProps {
@@ -24,6 +24,8 @@ interface CleanLaunchCardProps {
     // Curve/Keys data
     keyPrice?: number
     keyHolders?: number
+    keysSold?: number  // Total supply of keys sold
+    priceChange24h?: number | null  // 24h price change percentage
   }
   hasVoted: boolean
   onVote: () => void
@@ -96,27 +98,45 @@ export const CleanLaunchCard = ({
       />
 
       <div className="relative bg-zinc-950 rounded-2xl border border-zinc-800 overflow-hidden hover:border-zinc-700 transition-colors">
-        {/* Top Right Actions: Notification Bell & Share */}
-        <div className="absolute top-3 right-3 flex items-center gap-1 z-10">
-          {/* Notification Bell Button */}
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            onClick={onNotify}
-            className="p-1.5 rounded-lg bg-zinc-900/80 backdrop-blur-sm text-zinc-400 hover:bg-blue-500 hover:text-white border border-zinc-800 hover:border-blue-500 transition-all"
-            title="Notify"
-          >
-            <Bell className="w-3.5 h-3.5" />
-          </motion.button>
+        {/* Top Right Actions: Notification Bell, Share & 24h Price Change */}
+        <div className="absolute top-3 right-3 flex flex-col items-end gap-1.5 z-10">
+          <div className="flex items-center gap-1">
+            {/* Notification Bell Button */}
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              onClick={onNotify}
+              className="p-1.5 rounded-lg bg-zinc-900/80 backdrop-blur-sm text-zinc-400 hover:bg-blue-500 hover:text-white border border-zinc-800 hover:border-blue-500 transition-all"
+              title="Notify"
+            >
+              <Bell className="w-3.5 h-3.5" />
+            </motion.button>
 
-          {/* Share Button */}
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            onClick={onShare}
-            className="p-1.5 rounded-lg bg-zinc-900/80 backdrop-blur-sm text-zinc-400 hover:bg-zinc-800 hover:text-white border border-zinc-800 transition-all"
-            title="Share"
-          >
-            <Share2 className="w-3.5 h-3.5" />
-          </motion.button>
+            {/* Share Button */}
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              onClick={onShare}
+              className="p-1.5 rounded-lg bg-zinc-900/80 backdrop-blur-sm text-zinc-400 hover:bg-zinc-800 hover:text-white border border-zinc-800 transition-all"
+              title="Share"
+            >
+              <Share2 className="w-3.5 h-3.5" />
+            </motion.button>
+          </div>
+
+          {/* 24h Price Change */}
+          {launch.priceChange24h !== undefined && launch.priceChange24h !== null && typeof launch.priceChange24h === 'number' && (
+            <div className={`flex items-center gap-0.5 px-1.5 py-0.5 rounded-lg backdrop-blur-sm text-[10px] font-semibold border ${
+              launch.priceChange24h >= 0
+                ? 'bg-green-500/10 text-green-400 border-green-500/20'
+                : 'bg-red-500/10 text-red-400 border-red-500/20'
+            }`}>
+              {launch.priceChange24h >= 0 ? (
+                <TrendingUp className="w-2.5 h-2.5" />
+              ) : (
+                <TrendingDown className="w-2.5 h-2.5" />
+              )}
+              <span>{launch.priceChange24h >= 0 ? '+' : ''}{launch.priceChange24h.toFixed(1)}%</span>
+            </div>
+          )}
         </div>
 
         {/* Card Content */}
@@ -233,11 +253,11 @@ export const CleanLaunchCard = ({
               </div>
             )}
 
-            {/* Key Holders Count */}
-            {launch.keyHolders !== undefined && launch.keyHolders > 0 && (
+            {/* Total Keys Sold (Supply) */}
+            {launch.keysSold !== undefined && launch.keysSold > 0 && (
               <div className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-orange-500/10 border border-orange-500/20">
                 <Zap className="w-3 h-3 text-orange-400" />
-                <span className="text-orange-400 font-medium">{launch.keyHolders}</span>
+                <span className="text-orange-400 font-medium">{launch.keysSold}</span>
               </div>
             )}
 
@@ -278,16 +298,16 @@ export const CleanLaunchCard = ({
 
           {/* Action Buttons */}
           <div className="flex items-center gap-2">
-            {/* Buy Keys Button - Shows price with SOL symbol */}
+            {/* Buy Keys Button - Permanently Orange */}
             {launch.keyPrice !== undefined && onBuyKeys && (
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 onClick={onBuyKeys}
-                className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-zinc-900 text-zinc-400 hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-500 hover:text-white border border-zinc-800 hover:border-orange-500 transition-all text-xs"
+                className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-gradient-to-r from-orange-500 to-red-500 text-white border border-orange-500 hover:from-orange-600 hover:to-red-600 transition-all text-xs font-medium"
                 title="Buy Alpha Keys"
               >
                 <span>Buy Keys</span>
-                <span className="text-[10px] opacity-70">◎{launch.keyPrice.toFixed(3)}</span>
+                <span className="text-[10px] opacity-80">◎{launch.keyPrice.toFixed(3)}</span>
               </motion.button>
             )}
 
