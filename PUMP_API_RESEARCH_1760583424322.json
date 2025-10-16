@@ -1,0 +1,344 @@
+[
+  {
+    "section": "ENDPOINTS",
+    "message": "Testing all known PumpPortal endpoints...",
+    "data": null,
+    "timestamp": "2025-10-16T02:57:02.334Z"
+  },
+  {
+    "section": "ENDPOINT TEST",
+    "message": "Testing: trade-local",
+    "data": {
+      "url": "https://pumpportal.fun/api/trade-local"
+    },
+    "timestamp": "2025-10-16T02:57:02.335Z"
+  },
+  {
+    "section": "ENDPOINT TEST",
+    "message": "Testing: trade",
+    "data": {
+      "url": "https://pumpportal.fun/api/trade"
+    },
+    "timestamp": "2025-10-16T02:57:02.335Z"
+  },
+  {
+    "section": "ENDPOINT TEST",
+    "message": "Testing: ipfs-upload",
+    "data": {
+      "url": "https://pumpportal.fun/api/ipfs"
+    },
+    "timestamp": "2025-10-16T02:57:02.335Z"
+  },
+  {
+    "section": "ENDPOINT TEST",
+    "message": "Testing: data",
+    "data": {
+      "url": "https://pumpportal.fun/api/data"
+    },
+    "timestamp": "2025-10-16T02:57:02.336Z"
+  },
+  {
+    "section": "RESPONSE",
+    "message": "data status: 404",
+    "data": null,
+    "timestamp": "2025-10-16T02:57:03.247Z"
+  },
+  {
+    "section": "ANALYSIS",
+    "message": "Analyzing working Pump.fun tokens from the blockchain...",
+    "data": null,
+    "timestamp": "2025-10-16T02:57:03.247Z"
+  },
+  {
+    "section": "PUMP.FUN API",
+    "message": "Fetching recent tokens from Pump.fun...",
+    "data": null,
+    "timestamp": "2025-10-16T02:57:03.248Z"
+  },
+  {
+    "section": "ERROR",
+    "message": "Could not fetch from Pump.fun API",
+    "data": {
+      "status": 530
+    },
+    "timestamp": "2025-10-16T02:57:03.358Z"
+  },
+  {
+    "section": "PARAMETERS",
+    "message": "Testing different parameter combinations...",
+    "data": null,
+    "timestamp": "2025-10-16T02:57:03.358Z"
+  },
+  {
+    "section": "TEST CASE",
+    "message": "Standard Parameters",
+    "data": {
+      "publicKey": "HVwuLVu7nmqoBr9R9RPDTer8X7oQTp6kDTcBWy32evW7",
+      "action": "create",
+      "tokenMetadata": {
+        "name": "Test Token",
+        "symbol": "TEST",
+        "uri": "https://pump.fun/test"
+      },
+      "mint": "GENERATE_NEW",
+      "denominatedInSol": "true",
+      "amount": 0.01,
+      "slippage": 10,
+      "priorityFee": 0.0005,
+      "pool": "pump"
+    },
+    "timestamp": "2025-10-16T02:57:03.359Z"
+  },
+  {
+    "section": "TEST CASE",
+    "message": "With Image in Metadata",
+    "data": {
+      "publicKey": "HVwuLVu7nmqoBr9R9RPDTer8X7oQTp6kDTcBWy32evW7",
+      "action": "create",
+      "tokenMetadata": {
+        "name": "Test Token",
+        "symbol": "TEST",
+        "uri": "https://pump.fun/test",
+        "image": "https://via.placeholder.com/400"
+      },
+      "mint": "GENERATE_NEW",
+      "denominatedInSol": "true",
+      "amount": 0.01,
+      "slippage": 10,
+      "priorityFee": 0.0005,
+      "pool": "pump"
+    },
+    "timestamp": "2025-10-16T02:57:03.359Z"
+  },
+  {
+    "section": "TEST CASE",
+    "message": "With Full Social Links",
+    "data": {
+      "publicKey": "HVwuLVu7nmqoBr9R9RPDTer8X7oQTp6kDTcBWy32evW7",
+      "action": "create",
+      "tokenMetadata": {
+        "name": "Test Token",
+        "symbol": "TEST",
+        "uri": "https://pump.fun/test",
+        "description": "Test description",
+        "twitter": "https://twitter.com/test",
+        "telegram": "https://t.me/test",
+        "website": "https://test.com"
+      },
+      "mint": "GENERATE_NEW",
+      "denominatedInSol": "true",
+      "amount": 0.01,
+      "slippage": 10,
+      "priorityFee": 0.0005,
+      "pool": "pump"
+    },
+    "timestamp": "2025-10-16T02:57:03.359Z"
+  },
+  {
+    "section": "PROGRAM",
+    "message": "Analyzing Pump.fun program structure...",
+    "data": null,
+    "timestamp": "2025-10-16T02:57:03.359Z"
+  },
+  {
+    "section": "PUMP PROGRAM",
+    "message": "Program found on-chain",
+    "data": {
+      "owner": "BPFLoaderUpgradeab1e11111111111111111111111",
+      "executable": true,
+      "dataLength": 36
+    },
+    "timestamp": "2025-10-16T02:57:03.813Z"
+  },
+  {
+    "section": "PROGRAM ACCOUNTS",
+    "message": "Searching for Pump.fun program accounts...",
+    "data": null,
+    "timestamp": "2025-10-16T02:57:03.814Z"
+  },
+  {
+    "section": "ERROR",
+    "message": "Failed to analyze program",
+    "data": {
+      "error": "failed to get accounts owned by program 6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P: 6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P excluded from account secondary indexes; this RPC method unavailable for key"
+    },
+    "timestamp": "2025-10-16T02:57:03.932Z"
+  },
+  {
+    "section": "TRANSACTIONS",
+    "message": "Analyzing recent Pump.fun token creation transactions...",
+    "data": null,
+    "timestamp": "2025-10-16T02:57:03.933Z"
+  },
+  {
+    "section": "RECENT TXs",
+    "message": "Found 5 recent transactions",
+    "data": null,
+    "timestamp": "2025-10-16T02:57:04.055Z"
+  },
+  {
+    "section": "TRANSACTION ANALYSIS",
+    "message": "Signature: bSFN7fksmj9Kbn1E1A9DfJEvCxCnCnANhpaomLrbRUYwY1Ds6rgoZsXFNuoaUCRwm7weyxBez3VdhMi2zZ4F7qk",
+    "data": {
+      "slot": 373662365,
+      "fee": 55000,
+      "success": true,
+      "accountKeys": [
+        "371A6KMqExSCCnpSTzGocGWdwLfibp6ZSxNMtGoAx8i6",
+        "9Z1rtpbCevmt4we2C7EBxa7JzwFnPVxM8sR5Nfb79GPh",
+        "5SnRjYDmwRcFzdyjRuAquGMqFdwmvrkBzwXL512CeKoC",
+        "8R8Mx9dnvTYJLmakbunfHqip3RcUt45R9weW2T4QXQpv",
+        "4q7MY2DeTwN5UWzBtW1aMoh5356KfVtXbdunrfGeJyam",
+        "ASTRa2mTtzDFyjDHdSTMGa5sGg7bdVZNqDCPWH6ZZXax",
+        "ComputeBudget111111111111111111111111111111",
+        "BLUR9cL8HqZzu5bSaC7VRX25RCG93Hv3T6NPyKxQhWUT",
+        "11111111111111111111111111111111",
+        "BwnaoSgWgRinq2wbxWrVnhMrznZULoTeSqNN5Wrupump",
+        "8Wf5TiAheLUqBrKXeYg2JtAFFMWtKdG2BSFgqUcPVwTt",
+        "pfeeUxB6jkeY1Hxd7CsFCAjcbHA9rWtchMGdZ6VojVZ"
+      ],
+      "instructions": 4
+    },
+    "timestamp": "2025-10-16T02:57:04.188Z"
+  },
+  {
+    "section": "TRANSACTION ANALYSIS",
+    "message": "Signature: 3Qj4qEdFQT5p6kt2vNtei1tmuuwHLsgNv1xRya4AQ5H9vBSRRcr1teEn36ZV49TsV8gQxjM6sfqguCootLhvKypY",
+    "data": {
+      "slot": 373662364,
+      "fee": 6000,
+      "success": true,
+      "accountKeys": [
+        "8yQ2WKjxMNPtUQX2Ee8WJYf3jjoeZxKcE5hgKdqxKm7B",
+        "B16Cg8xEZc1cr3nQJiV1dd2HooU9B5tMQBHP3cdyiBTr",
+        "BxqX9HPkAEWjdcimyJ7RGdqwpcMzKFaNqzMz3FvMngzi",
+        "7R476NKWjuXyr8ukjZyRJgcpMzSN1ZMtnpDEfh2ocLkt",
+        "D2g7gGfREfaJu7cxzWpQVP5MMPDgvf1EY8tDMkeZrnPW",
+        "Hq2wp8uJ9jCPsYgNHex8RtqdvMPfVGoYwjvF1ATiwn2Y",
+        "7dde1vPgNxKfXbbGFvyAmD3r7Etmk3gn4S1nw7pviE1D",
+        "ComputeBudget111111111111111111111111111111",
+        "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL",
+        "Ccc6NBJD375D8FvbaY7mjAZ2Dd1FfGoWbdY3odAkpump",
+        "11111111111111111111111111111111",
+        "BSfD6SHZigAfDWSjzD5Q41jw8LmKwtmjskPH9XW1mrRW",
+        "8Wf5TiAheLUqBrKXeYg2JtAFFMWtKdG2BSFgqUcPVwTt",
+        "pfeeUxB6jkeY1Hxd7CsFCAjcbHA9rWtchMGdZ6VojVZ"
+      ],
+      "instructions": 5
+    },
+    "timestamp": "2025-10-16T02:57:04.320Z"
+  },
+  {
+    "section": "COMMON MISTAKES",
+    "message": "Documenting common issues...",
+    "data": null,
+    "timestamp": "2025-10-16T02:57:04.320Z"
+  },
+  {
+    "section": "MISTAKE",
+    "message": "No metadata URI",
+    "data": {
+      "fix": "Must provide proper URI in tokenMetadata.uri field",
+      "impact": "Token won't show on pump.fun website"
+    },
+    "timestamp": "2025-10-16T02:57:04.320Z"
+  },
+  {
+    "section": "MISTAKE",
+    "message": "Invalid image URL",
+    "data": {
+      "fix": "Image must be publicly accessible HTTPS URL",
+      "impact": "Token image won't display"
+    },
+    "timestamp": "2025-10-16T02:57:04.320Z"
+  },
+  {
+    "section": "MISTAKE",
+    "message": "Wrong RPC for confirmation",
+    "data": {
+      "fix": "Use polling instead of WebSocket subscriptions for free RPCs",
+      "impact": "Timeout errors but token may still be created"
+    },
+    "timestamp": "2025-10-16T02:57:04.321Z"
+  },
+  {
+    "section": "MISTAKE",
+    "message": "Missing priority fee",
+    "data": {
+      "fix": "Include priorityFee parameter (0.0001 to 0.001 SOL)",
+      "impact": "Transaction may fail or be dropped"
+    },
+    "timestamp": "2025-10-16T02:57:04.321Z"
+  },
+  {
+    "section": "MISTAKE",
+    "message": "Not signing with mint keypair",
+    "data": {
+      "fix": "Must sign transaction with both creator and mint keypairs",
+      "impact": "Transaction will fail"
+    },
+    "timestamp": "2025-10-16T02:57:04.321Z"
+  },
+  {
+    "section": "MISTAKE",
+    "message": "Using old Transaction instead of VersionedTransaction",
+    "data": {
+      "fix": "Use VersionedTransaction.deserialize() for modern Solana transactions",
+      "impact": "Deserialization errors"
+    },
+    "timestamp": "2025-10-16T02:57:04.321Z"
+  },
+  {
+    "section": "BEST PRACTICES",
+    "message": "Documenting recommended approach...",
+    "data": null,
+    "timestamp": "2025-10-16T02:57:04.321Z"
+  },
+  {
+    "section": "BEST PRACTICES",
+    "message": "Complete recommendations",
+    "data": {
+      "metadata": {
+        "recommendation": "Upload metadata to IPFS first, then use IPFS URI",
+        "format": {
+          "name": "Token Name",
+          "symbol": "SYMBOL",
+          "description": "Description text",
+          "image": "https://ipfs.io/ipfs/YOUR_IMAGE_HASH",
+          "showName": true,
+          "createdOn": "https://pump.fun"
+        }
+      },
+      "apiCall": {
+        "endpoint": "https://pumpportal.fun/api/trade-local",
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "requiredFields": [
+          "publicKey",
+          "action",
+          "tokenMetadata",
+          "mint",
+          "amount"
+        ],
+        "optionalFields": [
+          "slippage",
+          "priorityFee",
+          "pool"
+        ]
+      },
+      "transaction": {
+        "signing": "Must sign with [creatorKeypair, mintKeypair] in that order",
+        "sending": "Use skipPreflight: false for better error messages",
+        "confirmation": "Use polling with getSignatureStatus, not confirmTransaction"
+      },
+      "debugging": {
+        "checkSolscan": "Always verify token exists on solscan.io",
+        "checkPumpAPI": "Query https://frontend-api.pump.fun/coins/{mint}",
+        "checkMetadata": "Fetch the URI to verify metadata is accessible"
+      }
+    },
+    "timestamp": "2025-10-16T02:57:04.321Z"
+  }
+]

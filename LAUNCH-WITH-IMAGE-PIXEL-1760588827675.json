@@ -1,0 +1,58 @@
+{
+  "success": true,
+  "tokenMint": "xrA8U5hPnnybd7kTj9Y4EDX8ZgE36NvyrbrtZxLEMKh",
+  "createSignature": "3gbKayYvhDsNoCiCdu3L5hRhr3ubAQYYKiYoi91rxgKksYoxH5BTBXhxhScyozA2J85RDhC6i7kajbm8nePTKqwU",
+  "name": "Pixel Warriors",
+  "symbol": "PIXEL",
+  "description": "Legendary pixel warriors on Solana - Auto-distributed to key holders",
+  "initialBuySOL": 0.01,
+  "imagePath": "token-image.png",
+  "metadataUri": "https://ipfs.io/ipfs/QmXAcVXGu1RVS4VMEHZXBj4Gyvro956Cjk41veQovC7iSN",
+  "totalDistributed": 357547.484167,
+  "successfulDistributions": 7,
+  "distributions": [
+    {
+      "name": "Whale Alpha",
+      "address": "Ch4b5EMkFPpahJ9gruYMJAJdwK5w2Gh61FxrsDWU4PmP",
+      "percentage": "35.0",
+      "amount": 125141.619459
+    },
+    {
+      "name": "Whale Beta",
+      "address": "Eyn53CztGH3vgYRTEwPQfWzfcXgm1A5kkgRnnVBACGYT",
+      "percentage": "25.0",
+      "amount": 89386.871042
+    },
+    {
+      "name": "Diamond Hands",
+      "address": "8mHiMYDcu5f27SQy4ReE2wc9t5PmksPjSnaDG5w7J8FL",
+      "percentage": "15.0",
+      "amount": 53632.122625
+    },
+    {
+      "name": "Early Investor",
+      "address": "2d9dKoLqXpzgEwSUFd4hYMMYk1kjXSHn2L9Z88WbKyL5",
+      "percentage": "10.0",
+      "amount": 35754.748417
+    },
+    {
+      "name": "Steady Holder",
+      "address": "HgdQ726vLkMspD81SWGJhoaUJYraydeTnqT373apidEe",
+      "percentage": "7.5",
+      "amount": 26816.061312
+    },
+    {
+      "name": "Community Member",
+      "address": "BrFWPnjDw6pTqW3NGo38bRKEqfYXE62KkMfCgLqJzpxJ",
+      "percentage": "5.0",
+      "amount": 17877.374208
+    },
+    {
+      "name": "Supporter",
+      "address": "6t3m2A8R7yysvbanHV2hRWRuf6EK9uDJWHSzyQGp4Zbp",
+      "percentage": "2.5",
+      "amount": 8938.687104
+    }
+  ],
+  "timestamp": "2025-10-16T04:27:07.675Z"
+}

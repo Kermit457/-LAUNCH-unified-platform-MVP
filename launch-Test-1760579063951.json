@@ -1,0 +1,7 @@
+{
+  "success": false,
+  "error": "File must be a Blob or File object",
+  "attemptedMint": "BQGA37ZL3HEkgAXXXxUkpXdgMWXdG5Z2ajWdgHLTr2Qz",
+  "name": "TEST123",
+  "symbol": "Test"
+}

@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { PublicKey, Transaction, SystemProgram } from '@solana/web3.js';
 import bs58 from 'bs58';
 import { BN } from '@coral-xyz/anchor';
-import { useSolanaWalletsContext } from '@/components/SolanaWalletManager';
+import { usePrivy } from '@privy-io/react-auth';
+import { useWallets, useSignTransaction } from '@privy-io/react-auth/solana';
 import {
   getCurvePDA,
   getReserveVaultPDA,
@@ -14,10 +15,12 @@ import { connection, getExplorerUrl } from '@/lib/solana/config';
 
 /**
  * Hook to buy keys on Solana blockchain
- * Handles the complete flow: build tx -> sign with Privy -> send to blockchain -> return signature
+ * Uses official Privy Solana SDK for embedded wallet transactions
  */
 export function useSolanaBuyKeys() {
-  const { ready, wallets, createWallet } = useSolanaWalletsContext();
+  const { ready, authenticated } = usePrivy();
+  const { wallets } = useWallets();
+  const { signTransaction } = useSignTransaction();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [txSignature, setTxSignature] = useState<string | null>(null);
@@ -27,23 +30,25 @@ export function useSolanaBuyKeys() {
     amountSol: number,
     referrerAddress?: string
   ): Promise<string> => {
-    if (!ready) {
-      throw new Error('Privy not ready');
+    if (!ready || !authenticated) {
+      throw new Error('Please connect your wallet first');
     }
 
-    // Ensure wallet exists
-    const wallet = wallets[0] ?? (await createWallet());
-    if (!wallet) {
-      throw new Error('No Solana wallet available');
+    // Get the Solana wallet from useWallets hook (from @privy-io/react-auth/solana)
+    // This returns ConnectedStandardSolanaWallet[] which includes embedded wallets
+    console.log('🔍 Available Solana wallets:', wallets);
+    console.log('🔍 Number of Solana wallets:', wallets.length);
+
+    // Get the first wallet (embedded wallet)
+    const wallet = wallets[0];
+
+    console.log('🎯 Selected Solana wallet:', wallet);
+
+    if (!wallet || !wallet.address) {
+      throw new Error('No Solana wallet found. Please connect your wallet.');
     }
 
-    // Get address from wallet
-    const address = (wallet as any).address;
-    if (!address) {
-      throw new Error('Cannot get address from wallet');
-    }
-
-    const publicKey = new PublicKey(address);
+    const publicKey = new PublicKey(wallet.address);
 
     setLoading(true);
     setError(null);
@@ -82,7 +87,7 @@ export function useSolanaBuyKeys() {
       });
 
       // Build transaction
-      const { blockhash } = await connection.getLatestBlockhash('confirmed');
+      const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash('confirmed');
       const transaction = new Transaction({
         recentBlockhash: blockhash,
         feePayer: publicKey,
@@ -90,49 +95,40 @@ export function useSolanaBuyKeys() {
 
       console.log('✍️ Signing and sending buy transaction with Privy...');
 
-      // Use Privy's signAndSendTransaction - handles signing and broadcasting
-      const result = await (wallet as any).signAndSendTransaction({
-        chain: 'solana:devnet', // Use devnet for testing
-        transaction: new Uint8Array(
-          transaction.serialize({
-            requireAllSignatures: false,
-            verifySignatures: false,
-          })
-        ),
+      // Serialize the transaction for Privy
+      const serializedTx = transaction.serialize({
+        requireAllSignatures: false,
+        verifySignatures: false,
       });
 
-      console.log('📤 Transaction result:', result);
-      console.log('📤 Transaction result type:', typeof result);
-      console.log('📤 Has signature property:', 'signature' in result);
+      // Use signTransaction to just sign (avoid RPC config issue)
+      // Then we send it ourselves via our connection
+      const signResult = await signTransaction({
+        transaction: serializedTx,
+        wallet: wallet,
+      });
 
-      // Extract and convert signature to base58 string
-      let signature: string;
+      console.log('✍️ Transaction signed by Privy');
 
-      if (typeof result === 'string') {
-        // Already a string
-        signature = result;
-      } else if (result.signature) {
-        // Has signature property
-        if (typeof result.signature === 'string') {
-          signature = result.signature;
-        } else if (result.signature instanceof Uint8Array) {
-          signature = bs58.encode(result.signature);
-        } else {
-          // Object with numeric keys (serialized Uint8Array)
-          const bytes = new Uint8Array(Object.values(result.signature));
-          signature = bs58.encode(bytes);
-        }
-      } else if (result instanceof Uint8Array) {
-        // Result is directly a Uint8Array
-        signature = bs58.encode(result);
-      } else {
-        // Object with numeric keys (serialized Uint8Array)
-        const bytes = new Uint8Array(Object.values(result));
-        signature = bs58.encode(bytes);
-      }
+      // Send the signed transaction via our own RPC connection
+      const signature = await connection.sendRawTransaction(signResult.signedTransaction);
 
-      if (!signature) {
-        throw new Error('No signature returned from transaction');
+      console.log('📤 Transaction sent:', signature);
+
+      console.log('⏳ Waiting for confirmation...');
+
+      // Wait for confirmation
+      const confirmation = await connection.confirmTransaction(
+        {
+          signature,
+          blockhash,
+          lastValidBlockHeight,
+        },
+        'confirmed'
+      );
+
+      if (confirmation.value.err) {
+        throw new Error(`Transaction failed: ${JSON.stringify(confirmation.value.err)}`);
       }
 
       console.log('✅ Keys purchased, signature:', signature);

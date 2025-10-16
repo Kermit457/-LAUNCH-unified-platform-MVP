@@ -1,0 +1,39 @@
+INSTRUCTIONS TO DEPLOY V6 CONTRACT:
+
+1. Open PowerShell or Command Prompt
+
+2. Navigate to the project:
+   cd "c:\Users\mirko\OneDrive\Desktop\WIDGETS FOR LAUNCH\solana-program"
+
+3. Build the contract:
+   anchor build
+
+4. Deploy to devnet:
+   anchor deploy --provider.cluster devnet
+
+5. The program should deploy to the same address:
+   Ej8XrDazXPSRFebCYhycbV1LZGdLHCFddRufRMqZUXQF
+
+========================================
+V6 CHANGES DEPLOYED:
+========================================
+✅ Fee Structure:
+   - 94% reserve
+   - 3% referral (flexible routing)
+   - 1% project (guaranteed minimum)
+   - 1% buyback
+   - 1% community
+
+✅ Fee Routing:
+   - User referral: 3% user, 1% project
+   - Project self-ref: 4% project
+   - No referral: 2% project, 2% community
+
+✅ Manual Freeze Only:
+   - No auto-freeze
+   - Creator must manually freeze at 32+ SOL
+   - Removed freeze_if_reserve and freeze_if_time
+
+✅ Direct Transfers:
+   - Fees go directly to wallets
+   - No PDAs for fee distribution

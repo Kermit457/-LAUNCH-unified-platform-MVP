@@ -2,11 +2,12 @@
 
 import { createContext, useContext, ReactNode, useState, useEffect } from 'react'
 import { usePrivy } from '@privy-io/react-auth'
-import { useSolanaWalletsContext } from '@/components/SolanaWalletManager'
 
 interface WalletContextType {
   connected: boolean
   address: string | null
+  userId: string | null
+  userInfo: any
   connect: () => Promise<void>
   disconnect: () => void
 }
@@ -14,35 +15,42 @@ interface WalletContextType {
 const WalletContext = createContext<WalletContextType | undefined>(undefined)
 
 export function WalletProvider({ children }: { children: ReactNode }) {
-  const { ready, authenticated, login, logout } = usePrivy()
-  const { wallets, ready: walletsReady } = useSolanaWalletsContext()
+  const { ready, authenticated, login, logout, user } = usePrivy()
   const [address, setAddress] = useState<string | null>(null)
 
-  // Get Solana wallet address using exportPublicKey()
+  // Get embedded wallet address from user object
   useEffect(() => {
-    async function fetchAddress() {
-      if (!walletsReady || wallets.length === 0) {
-        setAddress(null)
-        return
+    if (authenticated && user) {
+      // Privy provides wallet info in the user object for embedded wallets
+      const embeddedWallet = user.wallet
+      if (embeddedWallet) {
+        setAddress(embeddedWallet.address || null)
+        console.log('Embedded wallet address:', embeddedWallet.address)
       }
-      try {
-        const addr = await wallets[0].exportPublicKey()
-        setAddress(addr || null)
-      } catch {
-        setAddress(null)
-      }
+    } else {
+      setAddress(null)
     }
-    fetchAddress()
-  }, [wallets, walletsReady])
+  }, [authenticated, user])
 
-  const connected = ready && authenticated && walletsReady && !!address
+  const connected = ready && authenticated
+
+  // Extract user ID and info
+  const userId = user?.id || null
+  const userInfo = user ? {
+    twitter: user.twitter,
+    email: user.email,
+    google: user.google,
+    discord: user.discord,
+    linkedAccounts: user.linkedAccounts,
+    wallet: user.wallet
+  } : null
 
   async function connect() {
     try {
       login()
     } catch (error) {
       console.error('Failed to connect wallet:', error)
-      throw error
+      // Don't throw, just log the error
     }
   }
 
@@ -51,12 +59,12 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       logout()
     } catch (error) {
       console.error('Failed to disconnect wallet:', error)
-      throw error
+      // Don't throw, just log the error
     }
   }
 
   return (
-    <WalletContext.Provider value={{ connected, address, connect, disconnect }}>
+    <WalletContext.Provider value={{ connected, address, userId, userInfo, connect, disconnect }}>
       {children}
     </WalletContext.Provider>
   )

@@ -60,13 +60,19 @@ export async function getPriceSnapshot24hAgo(
     )
 
     if (snapshots.documents.length === 0) {
+      console.log(`No price snapshots found for curve ${curveId} from 24h ago`)
       return null
     }
 
     return snapshots.documents[0] as unknown as PriceSnapshot
-  } catch (error) {
-    console.error('Failed to get 24h ago price snapshot:', error)
-    return null
+  } catch (error: any) {
+    // Provide more detailed error information
+    if (error?.code === 404) {
+      console.error(`Price history collection not found. Please ensure NEXT_PUBLIC_APPWRITE_PRICE_HISTORY_COLLECTION_ID is set and the collection exists in Appwrite.`)
+    } else {
+      console.error('Failed to get 24h ago price snapshot:', error)
+    }
+    throw error // Re-throw to let caller handle it
   }
 }
 
@@ -86,9 +92,18 @@ export async function calculate24hPriceChange(
 
     const priceChange = ((currentPrice - oldSnapshot.price) / oldSnapshot.price) * 100
     return priceChange
-  } catch (error) {
-    console.error('Failed to calculate 24h price change:', error)
-    return null
+  } catch (error: any) {
+    // If it's a collection not found error, provide helpful guidance
+    if (error?.code === 404) {
+      console.error('Price history collection error:', {
+        message: 'Collection not found',
+        collectionId: COLLECTIONS.PRICE_HISTORY,
+        hint: 'Run the setup script at scripts/create-price-history-collection.md'
+      })
+    } else {
+      console.error('Failed to calculate 24h price change:', error)
+    }
+    return null // Return null to allow graceful degradation
   }
 }
 
@@ -111,8 +126,12 @@ export async function getRecentPriceHistory(
     )
 
     return snapshots.documents as unknown as PriceSnapshot[]
-  } catch (error) {
-    console.error('Failed to get price history:', error)
+  } catch (error: any) {
+    if (error?.code === 404) {
+      console.error('Price history collection not found. Please ensure the collection is created in Appwrite.')
+    } else {
+      console.error('Failed to get price history:', error)
+    }
     return []
   }
 }

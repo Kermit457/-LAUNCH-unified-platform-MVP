@@ -18,7 +18,7 @@ export default function NavBar() {
   const [walletDropdownOpen, setWalletDropdownOpen] = useState(false)
   const walletDropdownRef = useRef<HTMLDivElement>(null)
   const { unreadCount } = useNotifications()
-  const { connected, address, connect, disconnect } = useWallet()
+  const { connected, address, userId, userInfo, connect, disconnect } = useWallet()
 
   // Close wallet dropdown when clicking outside
   useEffect(() => {
@@ -116,7 +116,19 @@ export default function NavBar() {
                   data-cta="nav-wallet"
                 >
                   <Wallet size={16} />
-                  {address?.slice(0, 6)}...{address?.slice(-4)}
+                  <div className="flex flex-col items-start">
+                    <span className="text-xs">
+                      {userInfo?.twitter?.username ? `@${userInfo.twitter.username}` :
+                       userInfo?.email?.address ||
+                       userId?.slice(0, 8) ||
+                       'Embedded Wallet'}
+                    </span>
+                    {address && (
+                      <span className="text-xs opacity-70">
+                        {address.slice(0, 6)}...{address.slice(-4)}
+                      </span>
+                    )}
+                  </div>
                 </button>
 
                 {/* Wallet Dropdown */}
@@ -126,9 +138,20 @@ export default function NavBar() {
                     onMouseLeave={() => setWalletDropdownOpen(false)}
                   >
                     <div className="p-2">
-                      {/* Account Mode Header */}
-                      <div className="px-4 py-2 border-b border-white/10 mb-2">
-                        <div className="text-xs font-medium text-white/50 mb-2">Dashboard Mode</div>
+                      {/* Account Info Header */}
+                      <div className="px-4 py-3 border-b border-white/10 mb-2">
+                        <div className="text-xs font-medium text-white/50 mb-1">Connected as</div>
+                        <div className="text-sm font-medium text-white">
+                          {userInfo?.twitter?.username ? `@${userInfo.twitter.username}` :
+                           userInfo?.email?.address ||
+                           'Embedded Wallet'}
+                        </div>
+                        {userId && (
+                          <div className="text-xs text-white/50 mt-1">ID: {userId.slice(0, 12)}...</div>
+                        )}
+                        {address && (
+                          <div className="text-xs text-white/50 mt-1">Wallet: {address.slice(0, 10)}...</div>
+                        )}
                       </div>
 
                       {/* Personal Account Option */}
@@ -223,14 +246,30 @@ export default function NavBar() {
               )
             })}
             {connected ? (
-              <button
-                onClick={disconnect}
-                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-white/10 border border-white/20 text-white rounded-lg text-sm font-medium transition-all mt-2"
-                data-cta="nav-disconnect-wallet-mobile"
-              >
-                <Wallet size={16} />
-                {address?.slice(0, 6)}...{address?.slice(-4)}
-              </button>
+              <div className="space-y-2 mt-2">
+                <div className="px-4 py-3 bg-white/5 rounded-lg">
+                  <div className="text-xs text-white/50 mb-1">Connected as</div>
+                  <div className="text-sm font-medium text-white">
+                    {userInfo?.twitter?.username ? `@${userInfo.twitter.username}` :
+                     userInfo?.email?.address ||
+                     userId?.slice(0, 8) ||
+                     'Embedded Wallet'}
+                  </div>
+                  {address && (
+                    <div className="text-xs text-white/50 mt-1">
+                      {address.slice(0, 6)}...{address.slice(-4)}
+                    </div>
+                  )}
+                </div>
+                <button
+                  onClick={disconnect}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-white/10 border border-white/20 text-white rounded-lg text-sm font-medium transition-all"
+                  data-cta="nav-disconnect-wallet-mobile"
+                >
+                  <LogOut size={16} />
+                  Disconnect
+                </button>
+              </div>
             ) : (
               <button
                 onClick={connect}

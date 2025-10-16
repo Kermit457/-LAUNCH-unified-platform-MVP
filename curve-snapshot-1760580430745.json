@@ -1,0 +1,63 @@
+{
+  "curveId": "curve_launch_test_1760580430744",
+  "timestamp": "2025-10-16T02:07:10.744Z",
+  "totalSupply": 1000000,
+  "holders": [
+    {
+      "userId": "holder_1",
+      "walletAddress": "Ch4b5EMkFPpahJ9gruYMJAJdwK5w2Gh61FxrsDWU4PmP",
+      "name": "Whale Alpha",
+      "balance": 350000,
+      "percentage": 35,
+      "estimatedTokens": 277550000
+    },
+    {
+      "userId": "holder_2",
+      "walletAddress": "Eyn53CztGH3vgYRTEwPQfWzfcXgm1A5kkgRnnVBACGYT",
+      "name": "Whale Beta",
+      "balance": 250000,
+      "percentage": 25,
+      "estimatedTokens": 198250000
+    },
+    {
+      "userId": "holder_3",
+      "walletAddress": "8mHiMYDcu5f27SQy4ReE2wc9t5PmksPjSnaDG5w7J8FL",
+      "name": "Diamond Hands",
+      "balance": 150000,
+      "percentage": 15,
+      "estimatedTokens": 118950000
+    },
+    {
+      "userId": "holder_4",
+      "walletAddress": "2d9dKoLqXpzgEwSUFd4hYMMYk1kjXSHn2L9Z88WbKyL5",
+      "name": "Early Investor",
+      "balance": 100000,
+      "percentage": 10,
+      "estimatedTokens": 79300000
+    },
+    {
+      "userId": "holder_5",
+      "walletAddress": "HgdQ726vLkMspD81SWGJhoaUJYraydeTnqT373apidEe",
+      "name": "Steady Holder",
+      "balance": 75000,
+      "percentage": 7.5,
+      "estimatedTokens": 59475000
+    },
+    {
+      "userId": "holder_6",
+      "walletAddress": "BrFWPnjDw6pTqW3NGo38bRKEqfYXE62KkMfCgLqJzpxJ",
+      "name": "Community Member",
+      "balance": 50000,
+      "percentage": 5,
+      "estimatedTokens": 39650000
+    },
+    {
+      "userId": "holder_7",
+      "walletAddress": "6t3m2A8R7yysvbanHV2hRWRuf6EK9uDJWHSzyQGp4Zbp",
+      "name": "Supporter",
+      "balance": 25000,
+      "percentage": 2.5,
+      "estimatedTokens": 19825000
+    }
+  ]
+}

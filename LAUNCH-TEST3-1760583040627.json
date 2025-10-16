@@ -1,0 +1,54 @@
+{
+  "success": true,
+  "tokenMint": "5TZdvDkd61MQiqyoJkdim519qH9zz64cp2HhLVK5Fpne",
+  "signature": "6AunTTkdgBh9PBGKQESDggQmGiCNPRvXXpKQZbdz4CpWVNdzvvyB19K1HRwKGGjqFVac2ZjTb4LBnpUhPCts9eg",
+  "tokenName": "Test Launch 3",
+  "tokenSymbol": "TEST3",
+  "description": "Third test with proper metadata upload for Pump.fun visibility",
+  "imageUrl": "https://via.placeholder.com/400x400.png?text=TEST3",
+  "metadataUri": "data:application/json;base64,eyJuYW1lIjoiVGVzdCBMYXVuY2ggMyIsInN5bWJvbCI6IlRFU1QzIiwiZGVzY3JpcHRpb24iOiJUaGlyZCB0ZXN0IHdpdGggcHJvcGVyIG1ldGFkYXRhIHVwbG9hZCBmb3IgUHVtcC5mdW4gdmlzaWJpbGl0eSIsImltYWdlIjoiaHR0cHM6Ly92aWEucGxhY2Vob2xkZXIuY29tLzQwMHg0MDAucG5nP3RleHQ9VEVTVDMiLCJzaG93TmFtZSI6dHJ1ZSwiY3JlYXRlZE9uIjoiaHR0cHM6Ly9wdW1wLmZ1biJ9",
+  "buyAmount": 0.01,
+  "network": "mainnet-beta",
+  "rpcUsed": "https://solana.drpc.org",
+  "creator": "HVwuLVu7nmqoBr9R9RPDTer8X7oQTp6kDTcBWy32evW7",
+  "keyHolders": [
+    {
+      "address": "Ch4b5EMkFPpahJ9gruYMJAJdwK5w2Gh61FxrsDWU4PmP",
+      "name": "Whale Alpha",
+      "keys": 350
+    },
+    {
+      "address": "Eyn53CztGH3vgYRTEwPQfWzfcXgm1A5kkgRnnVBACGYT",
+      "name": "Whale Beta",
+      "keys": 250
+    },
+    {
+      "address": "8mHiMYDcu5f27SQy4ReE2wc9t5PmksPjSnaDG5w7J8FL",
+      "name": "Diamond Hands",
+      "keys": 150
+    },
+    {
+      "address": "2d9dKoLqXpzgEwSUFd4hYMMYk1kjXSHn2L9Z88WbKyL5",
+      "name": "Early Investor",
+      "keys": 100
+    },
+    {
+      "address": "HgdQ726vLkMspD81SWGJhoaUJYraydeTnqT373apidEe",
+      "name": "Steady Holder",
+      "keys": 75
+    },
+    {
+      "address": "BrFWPnjDw6pTqW3NGo38bRKEqfYXE62KkMfCgLqJzpxJ",
+      "name": "Community Member",
+      "keys": 50
+    },
+    {
+      "address": "6t3m2A8R7yysvbanHV2hRWRuf6EK9uDJWHSzyQGp4Zbp",
+      "name": "Supporter",
+      "keys": 25
+    }
+  ],
+  "timestamp": "2025-10-16T02:50:40.626Z",
+  "pumpFunUrl": "https://pump.fun/coin/5TZdvDkd61MQiqyoJkdim519qH9zz64cp2HhLVK5Fpne",
+  "solscanUrl": "https://solscan.io/token/5TZdvDkd61MQiqyoJkdim519qH9zz64cp2HhLVK5Fpne"
+}

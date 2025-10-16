@@ -9,14 +9,14 @@ use errors::*;
 use events::*;
 use state::*;
 
-declare_id!("CuRvE11111111111111111111111111111111111111");
+declare_id!("Ej8XrDazXPSRFebCYhycbV1LZGdLHCFddRufRMqZUXQF");
 
-/// Constants for the new V4 fee structure
+/// Constants for the V6 fee structure
 pub const RESERVE_BPS: u128 = 9400;      // 94% to reserve
-pub const INSTANT_BPS: u128 = 200;       // 2% instant (referrer OR creator)
+pub const REFERRAL_BPS: u128 = 300;      // 3% referral (flexible routing)
+pub const PROJECT_BPS: u128 = 100;       // 1% project (guaranteed minimum)
 pub const BUYBACK_BPS: u128 = 100;       // 1% buyback/burn
 pub const COMMUNITY_BPS: u128 = 100;     // 1% community rewards
-pub const PLATFORM_BPS: u128 = 200;      // 2% platform
 pub const BPS_DENOMINATOR: u128 = 10000;
 
 pub const LOCK_PERIOD_SECONDS: i64 = 604800; // 7 days
@@ -783,18 +783,31 @@ pub mod launchos_curve {
     }
 
     // ============================================================================
-    // V4 FREEZE SYSTEM
+    // V6 FREEZE SYSTEM - MANUAL ONLY
     // ============================================================================
 
-    /// Manually freeze the curve (creator only)
-    pub fn freeze_manual(ctx: Context<FreezeCurve>) -> Result<()> {
+    /// V6: Manually freeze the curve (creator only)
+    /// No auto-freeze in V6 - requires explicit creator action at 32+ SOL reserve
+    pub fn freeze_curve(ctx: Context<FreezeCurve>) -> Result<()> {
         let curve = &mut ctx.accounts.curve;
         let clock = Clock::get()?;
 
-        // SECURITY: Only creator can manually freeze
+        // SECURITY: Only creator can freeze
         require!(
             curve.creator == ctx.accounts.creator.key(),
             CurveError::Unauthorized
+        );
+
+        // SECURITY: Check minimum reserve threshold (32 SOL)
+        require!(
+            curve.reserve_balance >= TARGET_RESERVE_DEFAULT as u128,
+            CurveError::ReserveThresholdNotMet
+        );
+
+        // SECURITY: Must be in Active status
+        require!(
+            curve.status == CurveStatus::Active,
+            CurveError::InvalidStatusTransition
         );
 
         // Execute freeze
@@ -809,68 +822,9 @@ pub mod launchos_curve {
             timestamp: clock.unix_timestamp,
         });
 
-        Ok(())
-    }
-
-    /// Auto-freeze if reserve threshold is met (32 SOL)
-    /// Anyone can call this once threshold is reached
-    pub fn freeze_if_reserve(ctx: Context<FreezeCurve>) -> Result<()> {
-        let curve = &mut ctx.accounts.curve;
-        let clock = Clock::get()?;
-
-        // Check if reserve threshold is met
-        require!(
-            curve.is_reserve_threshold_met(),
-            CurveError::ReserveThresholdNotMet
-        );
-
-        // Execute freeze
-        curve.execute_freeze("reserve_threshold", clock.unix_timestamp)?;
-
-        // Emit event
-        emit!(CurveFrozenEvent {
-            curve_id: curve.key(),
-            trigger: "reserve_threshold".to_string(),
-            supply: curve.supply_at_freeze,
-            reserve: curve.reserve_at_freeze,
-            timestamp: clock.unix_timestamp,
-        });
-
-        msg!("🎯 Reserve threshold reached: {} SOL", curve.target_reserve / 1_000_000_000);
-        Ok(())
-    }
-
-    /// Auto-freeze if launch time is reached
-    /// Anyone can call this once time threshold is met
-    pub fn freeze_if_time(ctx: Context<FreezeCurve>) -> Result<()> {
-        let curve = &mut ctx.accounts.curve;
-        let clock = Clock::get()?;
-
-        // Check if launch time is set
-        require!(
-            curve.launch_ts.is_some(),
-            CurveError::LaunchTimeNotSet
-        );
-
-        // Check if time threshold is met
-        require!(
-            curve.is_time_threshold_met(clock.unix_timestamp),
-            CurveError::LaunchTimeNotReached
-        );
-
-        // Execute freeze
-        curve.execute_freeze("time_based", clock.unix_timestamp)?;
-
-        // Emit event
-        emit!(CurveFrozenEvent {
-            curve_id: curve.key(),
-            trigger: "time_based".to_string(),
-            supply: curve.supply_at_freeze,
-            reserve: curve.reserve_at_freeze,
-            timestamp: clock.unix_timestamp,
-        });
-
-        msg!("⏰ Launch time reached");
+        msg!("❄️ Curve FROZEN manually by creator");
+        msg!("Supply at freeze: {}", curve.supply_at_freeze);
+        msg!("Reserve at freeze: {} SOL", curve.reserve_at_freeze / 1_000_000_000);
         Ok(())
     }
 

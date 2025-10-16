@@ -31,10 +31,23 @@ export async function GET(
       priceChange24h,
       supply: curve.supply,
     })
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to get price change:', error)
+
+    // Provide more specific error messages
+    if (error?.code === 404) {
+      return NextResponse.json(
+        {
+          error: 'Price history collection not configured',
+          details: 'Please ensure NEXT_PUBLIC_APPWRITE_PRICE_HISTORY_COLLECTION_ID is set and the collection exists in Appwrite',
+          priceChange24h: null
+        },
+        { status: 503 }
+      )
+    }
+
     return NextResponse.json(
-      { error: 'Failed to calculate price change' },
+      { error: 'Failed to calculate price change', details: error?.message },
       { status: 500 }
     )
   }

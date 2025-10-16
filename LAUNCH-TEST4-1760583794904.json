@@ -1,0 +1,56 @@
+{
+  "success": true,
+  "tokenMint": "BPvPDT46ctw5UYNwu4fDBc9Uvr273JAW2RMjqA1Bm3F1",
+  "signature": "giSinJnS9SXt68hyPSSSNse4AjvJA566xXD4iitZWNp2aByhKGJDQmZygqkRWMYRro5RK5X9JMW6Bp5AubpyAFm",
+  "tokenName": "Test Launch 4",
+  "tokenSymbol": "TEST4",
+  "description": "Final test - verifying complete pump.fun automation",
+  "buyAmount": 0.01,
+  "network": "mainnet-beta",
+  "rpcUsed": "https://solana.drpc.org",
+  "creator": "HVwuLVu7nmqoBr9R9RPDTer8X7oQTp6kDTcBWy32evW7",
+  "keyHolders": [
+    {
+      "address": "Ch4b5EMkFPpahJ9gruYMJAJdwK5w2Gh61FxrsDWU4PmP",
+      "name": "Whale Alpha",
+      "keys": 350
+    },
+    {
+      "address": "Eyn53CztGH3vgYRTEwPQfWzfcXgm1A5kkgRnnVBACGYT",
+      "name": "Whale Beta",
+      "keys": 250
+    },
+    {
+      "address": "8mHiMYDcu5f27SQy4ReE2wc9t5PmksPjSnaDG5w7J8FL",
+      "name": "Diamond Hands",
+      "keys": 150
+    },
+    {
+      "address": "2d9dKoLqXpzgEwSUFd4hYMMYk1kjXSHn2L9Z88WbKyL5",
+      "name": "Early Investor",
+      "keys": 100
+    },
+    {
+      "address": "HgdQ726vLkMspD81SWGJhoaUJYraydeTnqT373apidEe",
+      "name": "Steady Holder",
+      "keys": 75
+    },
+    {
+      "address": "BrFWPnjDw6pTqW3NGo38bRKEqfYXE62KkMfCgLqJzpxJ",
+      "name": "Community Member",
+      "keys": 50
+    },
+    {
+      "address": "6t3m2A8R7yysvbanHV2hRWRuf6EK9uDJWHSzyQGp4Zbp",
+      "name": "Supporter",
+      "keys": 25
+    }
+  ],
+  "timestamp": "2025-10-16T03:03:14.904Z",
+  "pumpFunUrl": "https://pump.fun/coin/BPvPDT46ctw5UYNwu4fDBc9Uvr273JAW2RMjqA1Bm3F1",
+  "bondingCurvePDA": "4ETiMGo99a8B7wHZUMrV6Hctq34bXW9xpJ8C9GtFqs6o",
+  "verified": {
+    "mintExists": true,
+    "bondingCurveExists": true
+  }
+}

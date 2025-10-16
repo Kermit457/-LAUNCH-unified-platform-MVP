@@ -2,8 +2,18 @@
  * Pump.fun Service
  * Handles token creation, LP seeding, and airdrop orchestration
  *
+ * UPDATED 2025: Uses official Pump.fun/PumpPortal APIs
+ * - Token creation: PumpPortal Creation API (https://pumpportal.fun/creation/)
+ * - Trading: @pump-fun/pump-swap-sdk or pumpdotfun-sdk
+ * - No additional fees for token creation
+ * - Standard trading fee applies to initial dev buy
+ *
  * NOTE: This is a MOCK implementation for development.
- * In production, replace with actual Solana/Pump.fun SDK calls.
+ * In production, replace with actual API calls.
+ *
+ * Installation (for production):
+ *   npm install pumpdotfun-sdk @pump-fun/pump-swap-sdk
+ *   npm install @solana/web3.js @solana/spl-token
  */
 
 import { Connection, Keypair, PublicKey } from '@solana/web3.js'
@@ -73,8 +83,44 @@ export class PumpFunService {
   }
 
   /**
-   * Create SPL token with metadata
-   * In production: Use @solana/spl-token and @metaplex-foundation/js
+   * Create SPL token with metadata on Pump.fun
+   *
+   * PRODUCTION IMPLEMENTATION (2025):
+   *
+   * Option 1: PumpPortal Creation API (Recommended)
+   * --------------------------------------------------
+   * import { PumpFunSDK } from 'pumpdotfun-sdk'
+   *
+   * 1. Upload metadata to IPFS:
+   *    POST https://pump.fun/api/ipfs
+   *    FormData: { file, name, symbol, description, twitter, telegram, website }
+   *
+   * 2. Create token via PumpPortal:
+   *    const sdk = new PumpFunSDK(connection)
+   *    const mint = Keypair.generate()
+   *    const result = await sdk.createAndBuy(
+   *      creatorKeypair,
+   *      mint,
+   *      { name, symbol, uri: ipfsUri },
+   *      BigInt(params.supply * LAMPORTS_PER_SOL),  // Initial buy in lamports
+   *      500n  // 5% slippage
+   *    )
+   *
+   * Option 2: PumpPortal API (Alternative)
+   * --------------------------------------------------
+   * POST https://pumpportal.fun/api/trade-local
+   * Body: {
+   *   action: "create",
+   *   tokenMetadata: { name, symbol, uri },
+   *   mint: mint.publicKey.toString(),
+   *   denominatedInSol: "true",
+   *   amount: initialBuySOL,
+   *   slippage: 10,
+   *   priorityFee: 0.0005,
+   *   pool: "pump"
+   * }
+   *
+   * No additional fees! Standard trading fee applies to initial dev buy.
    */
   async createToken(params: TokenCreateParams): Promise<string> {
     console.log('Creating token:', params)
@@ -82,23 +128,58 @@ export class PumpFunService {
     // MOCK: Generate fake token mint
     const mockTokenMint = this.generateMockTokenMint(params.name)
 
-    // TODO: Production implementation
-    // 1. Create mint account
-    // 2. Upload metadata to Arweave/IPFS
-    // 3. Create token metadata account (Metaplex)
-    // 4. Mint initial supply
-    // 5. Return mint address
-
     // Simulate delay
     await this.delay(500)
 
     console.log('Token created:', mockTokenMint)
+    console.log('💡 In production: Use pumpdotfun-sdk or PumpPortal API')
+    console.log('   No additional fees for creation!')
     return mockTokenMint
   }
 
   /**
    * Seed liquidity pool with SOL and tokens
-   * In production: Use Raydium or Orca SDK
+   *
+   * PRODUCTION IMPLEMENTATION (March 2025 Update):
+   *
+   * CRITICAL: Pump.fun now graduates to PUMPSWAP, NOT Raydium!
+   * --------------------------------------------------
+   * As of March 20, 2025, Pump.fun launched PumpSwap, their own native DEX.
+   * Tokens NO LONGER migrate to Raydium automatically!
+   *
+   * How it works:
+   * 1. Token created with 1B supply (800M on bonding curve)
+   * 2. Trading on bonding curve until 800M tokens sold
+   * 3. At ~$69k market cap: INSTANT FREE migration to PumpSwap
+   * 4. Bonding curve SOL → PumpSwap LP (200M tokens released)
+   * 5. Continues trading on PumpSwap AMM
+   *
+   * PumpSwap Benefits (vs old Raydium):
+   * - ✅ Zero migration fees (was 6 SOL on Raydium)
+   * - ✅ Instant migration (no delays)
+   * - ✅ 0.30% total trading fee breakdown:
+   *   • 0.20% → Liquidity Providers
+   *   • 0.05% → Protocol
+   *   • 0.05% → Token Creator (YOU!) 🎉
+   * - ✅ Creator revenue sharing: LIVE since May 13, 2025!
+   *   • $10M volume = $5,000 SOL earned
+   *   • Instant on-chain payouts
+   *   • Claim anytime via creator dashboard
+   * - ✅ Constant Product AMM (similar to Raydium V4/Uniswap V2)
+   *
+   * Example with PumpSwap SDK:
+   * --------------------------------------------------
+   * import { PumpAmmSdk } from '@pump-fun/pump-swap-sdk'
+   *
+   * const sdk = new PumpAmmSdk(connection)
+   * const poolInfo = await sdk.getPoolInfo(tokenMint)
+   *
+   * if (poolInfo.graduated) {
+   *   console.log('Graduated to PumpSwap!')
+   *   console.log('Pool:', poolInfo.poolAddress)
+   * }
+   *
+   * No manual LP seeding needed! Graduation is automatic and FREE!
    */
   async addLiquidity(params: LiquidityParams): Promise<string> {
     console.log('Adding liquidity:', params)
@@ -111,17 +192,13 @@ export class PumpFunService {
     // MOCK: Generate fake LP transaction hash
     const mockLpTxHash = this.generateMockTxHash()
 
-    // TODO: Production implementation
-    // 1. Create AMM pool (Raydium/Orca)
-    // 2. Deposit SOL from reserve
-    // 3. Deposit tokens at initialPrice
-    // 4. Lock LP tokens (optional)
-    // 5. Return LP creation tx hash
-
     // Simulate delay
     await this.delay(1000)
 
-    console.log('LP created:', mockLpTxHash)
+    console.log('LP created (simulated):', mockLpTxHash)
+    console.log('💡 Pump.fun uses bonding curves that auto-graduate to PumpSwap!')
+    console.log('   Graduation: FREE & instant at ~$69k market cap (March 2025)')
+    console.log('   NO MORE Raydium migration! PumpSwap is the new DEX!')
     return mockLpTxHash
   }
 

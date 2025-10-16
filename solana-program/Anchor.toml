@@ -6,7 +6,7 @@ skip-lint = false
 
 [programs.devnet]
 launchos_escrow = "5BQeJxss39ftLC9guf5oyde6x6hkCgAwTB3wk6DF1qRc"
-launchos_curve = "CuRvE11111111111111111111111111111111111111"
+launchos_curve = "Ej8XrDazXPSRFebCYhycbV1LZGdLHCFddRufRMqZUXQF"
 
 [registry]
 url = "https://api.apr.dev"
