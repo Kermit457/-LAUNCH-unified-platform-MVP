@@ -89,9 +89,10 @@ export function calculateSellProceeds(
   currentSupply: number,
   keysToSell: number
 ): number {
-  if (currentSupply <= keysToSell) {
-    // Can't sell more than exists
-    keysToSell = Math.max(currentSupply - 1, 0)
+  // Can't sell ALL keys - must leave at least 0.01
+  // But allow selling if it won't zero out the supply completely
+  if (keysToSell >= currentSupply) {
+    keysToSell = Math.max(currentSupply - 0.01, 0)
   }
 
   if (keysToSell <= 0) return 0

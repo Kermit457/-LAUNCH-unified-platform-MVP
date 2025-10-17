@@ -1,25 +1,21 @@
 "use client"
 
 import { PrivyProvider } from '@privy-io/react-auth'
-import { ReactNode, useEffect, useState } from 'react'
+import { toSolanaWalletConnectors } from '@privy-io/react-auth/solana'
+import { ReactNode } from 'react'
+
+// Import RPC creation functions from @solana/kit (web3.js 2.0)
+import { createSolanaRpc } from '@solana/rpc'
 
 export function PrivyProviderWrapper({ children }: { children: ReactNode }) {
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
   const appId = process.env.NEXT_PUBLIC_PRIVY_APP_ID || ''
+  const solanaRpcUrl = process.env.NEXT_PUBLIC_SOLANA_RPC || 'https://api.devnet.solana.com'
+  const solanaNetwork = process.env.NEXT_PUBLIC_SOLANA_NETWORK || 'devnet'
 
-  if (!mounted) {
-    return <>{children}</>
-  }
+  // Construct the chain identifier (e.g., 'solana:devnet' or 'solana:mainnet')
+  const chainId = `solana:${solanaNetwork}` as const
 
-  if (!appId || appId.trim() === '') {
-    console.warn('⚠️ NEXT_PUBLIC_PRIVY_APP_ID not found - running without auth')
-    return <>{children}</>
-  }
+  console.log('🔧 Initializing Privy with app ID:', appId)
 
   return (
     <PrivyProvider
@@ -31,8 +27,20 @@ export function PrivyProviderWrapper({ children }: { children: ReactNode }) {
         },
         loginMethods: ['email', 'twitter', 'wallet'],
         embeddedWallets: {
+          createOnLogin: 'all-users',
+        },
+        // Configure Solana RPC endpoints
+        solana: {
+          rpcs: {
+            [chainId]: {
+              rpc: createSolanaRpc(solanaRpcUrl),
+            },
+          },
+        },
+        // Enable external Solana wallet connectors (Phantom, Backpack, etc.)
+        externalWallets: {
           solana: {
-            createOnLogin: 'all-users',
+            connectors: toSolanaWalletConnectors(),
           },
         },
       }}

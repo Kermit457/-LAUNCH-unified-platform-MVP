@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { ServerCurveService } from '@/lib/appwrite/services/curves-server'
 import { ServerCurveEventService } from '@/lib/appwrite/services/curve-events-server'
 import { ServerCurveHolderService } from '@/lib/appwrite/services/curve-holders-server'
-import { calculateTrade } from '@/lib/curve/bonding-math'
+import { calculateSellProceeds, calculatePrice } from '@/lib/curve/bonding-math'
 import { recordPriceSnapshot } from '@/lib/appwrite/services/price-history'
 
 export async function POST(
@@ -46,17 +46,13 @@ export async function POST(
       )
     }
 
-    // Calculate trade (sell uses keys as input, not SOL)
-    const tradeCalc = calculateTrade(
-      'sell',
-      keys,
-      curve.supply,
-      curve.price,
-      false
-    )
+    // Calculate sell proceeds using bonding curve math
+    const solProceeds = calculateSellProceeds(curve.supply, keys)
+    const newSupply = curve.supply - keys
+    const newPrice = calculatePrice(newSupply)
 
     // Check reserve has enough funds
-    if (curve.reserve < tradeCalc.totalCost) {
+    if (curve.reserve < solProceeds) {
       return NextResponse.json(
         { error: 'Insufficient reserve liquidity' },
         { status: 400 }
@@ -67,11 +63,9 @@ export async function POST(
     // For now, we're mocking the payout
 
     // Update curve state
-    const newSupply = curve.supply - keys
-    const newPrice = tradeCalc.priceAfter
-    const newReserve = curve.reserve - tradeCalc.totalCost
-    const volume24h = curve.volume24h + tradeCalc.totalCost
-    const volumeTotal = curve.volumeTotal + tradeCalc.totalCost
+    const newReserve = curve.reserve - solProceeds
+    const volume24h = curve.volume24h + solProceeds
+    const volumeTotal = curve.volumeTotal + solProceeds
     const marketCap = newSupply * newPrice
 
     await ServerCurveService.updateCurve(params.id, {
@@ -87,7 +81,7 @@ export async function POST(
     const event = await ServerCurveEventService.createEvent({
       curveId: params.id,
       type: 'sell',
-      amount: tradeCalc.totalCost,
+      amount: solProceeds,
       price: newPrice,
       keys,
       userId,
@@ -100,7 +94,7 @@ export async function POST(
       userId,
       keys,
       newPrice,
-      tradeCalc.totalCost
+      solProceeds
     )
 
     // Check if holder sold all keys
@@ -127,7 +121,7 @@ export async function POST(
       curve: updatedCurve,
       holder: updatedHolder,
       event,
-      tradeCalc
+      solProceeds
     })
 
   } catch (error) {

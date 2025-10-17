@@ -10,9 +10,10 @@ import {
   ChevronDown, BarChart3, Eye, Trophy,
   ChevronUp
 } from 'lucide-react'
-import { GlassCard, PremiumButton, CleanLaunchCard, SimpleBuySellModal } from '@/components/design-system'
+import { GlassCard, PremiumButton, SimpleBuySellModal } from '@/components/design-system'
 
 // Import existing functionality
+import { EnhancedLaunchCard, LaunchCardData as EnhancedLaunchCardData } from '@/components/launch/EnhancedLaunchCard'
 import { LiveLaunchCard } from '@/components/launch/cards/LiveLaunchCard'
 import { UpcomingLaunchCard } from '@/components/launch/cards/UpcomingLaunchCard'
 import { CommentsModal } from '@/components/comments/CommentsModal'
@@ -27,10 +28,18 @@ import { getComments } from '@/lib/appwrite/services/comments'
 import { addProjectMember } from '@/lib/appwrite/services/project-members'
 import { getUserProfile } from '@/lib/appwrite/services/users'
 import { useUser } from '@/hooks/useUser'
-import { useCurvesByOwners } from '@/hooks/useCurvesByOwners'
+import { useV6Curves } from '@/hooks/useV6Curves'
 import { useSolanaBalance } from '@/hooks/useSolanaBalance'
+import { useWallets } from '@privy-io/react-auth/solana'
+import { PublicKey } from '@solana/web3.js'
 import { uploadLogo } from '@/lib/storage'
 import type { Curve } from '@/types/curve'
+import {
+  fetchEnhancedCardData,
+  toggleNotifications,
+  trackShare,
+  trackTwitterClick,
+} from '@/lib/appwrite-card-integration'
 
 type FilterType = 'ALL' | 'ICM' | 'CCM'
 type StatusFilterType = 'ALL' | 'LIVE' | 'UPCOMING'
@@ -197,6 +206,53 @@ const StatsCard = ({
   </motion.div>
 )
 
+// Adapter: Convert discover launch data to EnhancedLaunchCard format
+const adaptLaunchToEnhancedCard = (
+  launch: LaunchCardData,
+  curve: Curve | undefined,
+  userHoldings: { balance: number; sharePercent: number } | null,
+  hasVoted: boolean,
+  handlers: {
+    onVote: () => void
+    onComment: () => void
+    onCollaborate: () => void
+    onDetails: () => void
+    onBuyKeys: () => void
+    onShare: () => void
+  }
+): EnhancedLaunchCardData => {
+  return {
+    id: launch.id,
+    title: launch.title,
+    subtitle: launch.subtitle || '',
+    logoUrl: launch.logoUrl,
+    ticker: launch.title.substring(0, 6).toUpperCase(),
+    status: launch.status?.toLowerCase() as 'live' | 'upcoming' | 'ended',
+    marketType: launch.scope?.toLowerCase() as 'ccm' | 'icm',
+    beliefScore: launch.convictionPct || 0,
+    upvotes: launch.upvotes || 0,
+    commentsCount: launch.commentsCount || 0,
+    viewCount: launch.viewCount,
+    holders: curve?.holders, // Real holder count from curve
+    keysSupply: curve?.supply, // Real key supply from curve
+    priceChange24h: curve?.priceChange24h || undefined,
+    contributors: launch.contributors?.map(c => ({
+      name: c.name,
+      avatar: c.avatar || ''
+    })),
+    myKeys: userHoldings?.balance || 0,
+    mySharePct: userHoldings?.sharePercent || 0,
+    estLaunchTokens: null, // TODO: Calculate from curve data
+    currentPrice: curve?.price || 0.01,
+    hasVoted,
+    isVoting: false,
+    onVote: handlers.onVote,
+    onComment: handlers.onComment,
+    onCollaborate: handlers.onCollaborate,
+    onDetails: handlers.onDetails,
+    onBuyKeys: handlers.onBuyKeys,
+  }
+}
 
 export default function DiscoverPage() {
   const router = useRouter()
@@ -229,40 +285,40 @@ export default function DiscoverPage() {
     curve: Curve | null
     projectName: string
     projectLogo?: string
+    twitterHandle: string
   } | null>(null)
   const [userKeyBalance, setUserKeyBalance] = useState<number>(0)
 
-  // Fetch curves for all projects
-  const projectOwners = launches.map(launch => ({
-    id: launch.id,
-    type: 'project' as const
-  }))
-  const { curves: projectCurves } = useCurvesByOwners(projectOwners)
+  // Enhanced card data state
+  const [cardDataMap, setCardDataMap] = useState<Map<string, any>>(new Map())
 
-  // Fetch user holdings when modal opens
+  // Get user's Solana wallet for fetching their key balances from V6 on-chain
+  const { wallets } = useWallets()
+  const userWalletPubkey = wallets?.[0]?.address
+    ? new PublicKey(wallets[0].address)
+    : null
+
+  // Fetch curves from V6 Anchor program on-chain (replaces Appwrite)
+  const { curves: projectCurves, loading: curvesLoading } = useV6Curves(launches, userWalletPubkey)
+
+  // Update user key balance from on-chain V6 data when modal opens
   useEffect(() => {
-    async function fetchUserHoldings() {
-      if (!userId || !selectedCurveData?.curve?.id || !buySellModalOpen) {
-        setUserKeyBalance(0)
-        return
-      }
-
-      try {
-        const response = await fetch(
-          `/api/curve/${selectedCurveData.curve.id}/holdings?userId=${userId}`
-        )
-        if (response.ok) {
-          const data = await response.json()
-          setUserKeyBalance(data.balance || 0)
-        }
-      } catch (error) {
-        console.error('Failed to fetch user holdings:', error)
-        setUserKeyBalance(0)
-      }
+    if (!selectedCurveData?.curve?.id || !buySellModalOpen) {
+      setUserKeyBalance(0)
+      return
     }
 
-    fetchUserHoldings()
-  }, [userId, selectedCurveData?.curve?.id, buySellModalOpen])
+    // Get user's keys from on-chain V6 curve data (not from Appwrite)
+    const curve = projectCurves.get(selectedCurveData.curve.id)
+    setUserKeyBalance(curve?.userKeys || 0)
+
+    console.log('📊 User key balance from V6 chain:', {
+      curveId: selectedCurveData.curve.id,
+      userKeys: curve?.userKeys || 0,
+      sharePercent: curve?.userSharePercent || 0,
+    })
+
+  }, [selectedCurveData?.curve?.id, buySellModalOpen, projectCurves])
 
   // Fetch user profile and projects
   useEffect(() => {
@@ -326,6 +382,7 @@ export default function DiscoverPage() {
               tgeAt: launch.status === 'upcoming' ? new Date(launch.$createdAt || Date.now()).getTime() : undefined,
               boostCount: launch.boostCount || 0,
               viewCount: launch.viewCount || 0,
+              twitterUrl: launch.twitterUrl || launch.socials?.twitter,
             }
           })
         )
@@ -341,6 +398,27 @@ export default function DiscoverPage() {
 
     fetchLaunches()
   }, [userId])
+
+  // Fetch enhanced card data for all launches
+  useEffect(() => {
+    if (!userId || launches.length === 0) return
+
+    async function loadCardData() {
+      try {
+        const dataPromises = launches.map(async (launch) => {
+          const data = await fetchEnhancedCardData(userId, launch.id)
+          return [launch.id, data] as const
+        })
+
+        const results = await Promise.all(dataPromises)
+        setCardDataMap(new Map(results))
+      } catch (error) {
+        console.error('Failed to fetch enhanced card data:', error)
+      }
+    }
+
+    loadCardData()
+  }, [launches, userId])
 
   // Handle vote
   const handleVote = async (launchId: string) => {
@@ -382,30 +460,124 @@ export default function DiscoverPage() {
   }
 
   const handleBoost = (launch: any) => {
+    console.log('🚀 handleBoost called for launch:', launch.id, launch.title)
+
     // Open Buy Keys modal with curve data
     const curve = projectCurves.get(launch.id)
+    console.log('📊 Curve data:', curve)
+
+    // Extract twitter handle from launch or use curve's handle
+    let twitterHandle = curve?.twitterHandle || ''
+    if (!twitterHandle && launch.twitterUrl) {
+      twitterHandle = launch.twitterUrl.split('/').pop() || ''
+    }
+
+    console.log('🔗 Twitter handle:', twitterHandle)
+
     setSelectedCurveData({
       curve: curve || null,
       projectName: launch.title,
-      projectLogo: launch.logoUrl
+      projectLogo: launch.logoUrl,
+      twitterHandle: twitterHandle || launch.id // Fallback to launch ID
     })
     setBuySellModalOpen(true)
+    console.log('✅ Modal should now open')
   }
 
-  const handleNotify = (launch: any) => {
-    // TODO: Implement notification subscription
-    console.log('Notify clicked for:', launch.title)
-    alert('🔔 Notifications feature coming soon!')
+  // NEW: Notification toggle handler
+  const handleNotificationToggle = async (launchId: string) => {
+    if (!userId) {
+      router.push('/login')
+      return
+    }
+
+    try {
+      const currentState = cardDataMap.get(launchId)?.notificationEnabled || false
+      await toggleNotifications(userId, launchId, !currentState)
+
+      // Refresh card data
+      const newData = await fetchEnhancedCardData(userId, launchId)
+      setCardDataMap(prev => new Map(prev).set(launchId, newData))
+
+      alert(currentState ? '🔕 Notifications disabled' : '🔔 Notifications enabled!')
+    } catch (error: any) {
+      console.error('Failed to toggle notifications:', error)
+      const errorMsg = error?.message || error?.toString() || 'Unknown error'
+      alert(`Failed to update notification settings: ${errorMsg}`)
+    }
   }
 
-  const handleShare = (launch: any) => {
-    // Copy launch URL to clipboard
-    const url = `${window.location.origin}/launch/${launch.id}`
-    navigator.clipboard.writeText(url).then(() => {
+  // NEW: Enhanced share handler with analytics
+  const handleShare = async (launch: any) => {
+    try {
+      const url = `${window.location.origin}/launch/${launch.id}`
+      await navigator.clipboard.writeText(url)
+
+      // Track share analytics
+      if (userId) {
+        await trackShare(userId, launch.id, 'copy_link')
+      }
+
       alert('🔗 Link copied to clipboard!')
-    }).catch(() => {
+    } catch (error) {
+      console.error('Failed to share:', error)
       alert('Failed to copy link')
-    })
+    }
+  }
+
+  // NEW: Twitter click analytics
+  const handleTwitterClick = async (launch: any) => {
+    if (!userId || !launch.twitterUrl) return
+    await trackTwitterClick(userId, launch.id, launch.twitterUrl)
+  }
+
+  // Helper: Build full card data with enhanced features
+  const buildEnhancedCardData = (launch: LaunchCardData) => {
+    const curve = projectCurves.get(launch.id)
+    const enhancedData = cardDataMap.get(launch.id)
+
+    const baseCardData = adaptLaunchToEnhancedCard(
+      launch,
+      curve,
+      enhancedData?.holdings,
+      userVotedLaunches.has(launch.id),
+      {
+        onVote: () => handleVote(launch.id),
+        onComment: () => {
+          setSelectedLaunch({ id: launch.id, title: launch.title })
+          setCommentsOpen(true)
+        },
+        onCollaborate: () => handleCollaborate(launch),
+        onDetails: () => handleDetails(launch),
+        onBuyKeys: () => handleBoost(launch),
+        onShare: () => handleShare(launch),
+      }
+    )
+
+    // Add enhanced features
+    return {
+      ...baseCardData,
+      // Airdrop data
+      airdropAmount: enhancedData?.airdrop?.amount,
+      hasClaimedAirdrop: enhancedData?.airdrop?.claimed,
+      onClaimAirdrop: async () => {
+        // TODO: Implement claim logic
+        console.log('Claiming airdrop for', launch.id)
+        alert('Airdrop claim coming soon!')
+      },
+      // Contributors
+      contributors: enhancedData?.contributors || [],
+      // Price change
+      priceChange24h: enhancedData?.priceChange24h || curve?.priceChange24h,
+      // Notification state
+      notificationEnabled: enhancedData?.notificationEnabled || false,
+      onNotificationToggle: () => handleNotificationToggle(launch.id),
+      // Share with analytics
+      onShare: () => handleShare(launch),
+      // Twitter with analytics
+      twitterUrl: launch.twitterUrl,
+      onTwitterClick: launch.twitterUrl ? () => handleTwitterClick(launch) : undefined,
+    }
   }
 
   // Filter and sort launches
@@ -888,42 +1060,8 @@ export default function DiscoverPage() {
             ) : (
               <div className="space-y-3">
                 {filteredLaunches.filter(l => l.status === 'LIVE').slice(0, 5).map((launch) => {
-                  const curve = projectCurves.get(launch.id)
-                  return (
-                  <CleanLaunchCard
-                    key={launch.id}
-                    launch={{
-                      id: launch.id,
-                      title: launch.title,
-                      subtitle: launch.subtitle || '',
-                      logoUrl: launch.logoUrl,
-                      scope: launch.scope,
-                      status: launch.status,
-                      upvotes: launch.upvotes || 0,
-                      commentsCount: launch.commentsCount || 0,
-                      viewCount: launch.viewCount,
-                      convictionPct: launch.convictionPct,
-                      keyHolders: curve?.holders || 0,
-                      keysSold: curve?.supply || 0,
-                      contributionPoolPct: launch.contributionPoolPct,
-                      feesSharePct: launch.feesSharePct,
-                      keyPrice: curve?.price || 0.01,
-                      priceChange24h: curve?.priceChange24h || null,
-                      contributors: launch.contributors
-                    }}
-                    hasVoted={userVotedLaunches.has(launch.id)}
-                    onVote={() => handleVote(launch.id)}
-                    onComment={() => {
-                      setSelectedLaunch({ id: launch.id, title: launch.title })
-                      setCommentsOpen(true)
-                    }}
-                    onCollaborate={() => handleCollaborate(launch)}
-                    onDetails={() => handleDetails(launch)}
-                    onBuyKeys={() => handleBoost(launch)}
-                    onNotify={() => handleNotify(launch)}
-                    onShare={() => handleShare(launch)}
-                  />
-                  )
+                  const cardData = buildEnhancedCardData(launch)
+                  return <EnhancedLaunchCard key={launch.id} data={cardData} />
                 })}
               </div>
             )}
@@ -954,42 +1092,8 @@ export default function DiscoverPage() {
                   .filter(l => l.status === 'UPCOMING')
                   .slice(0, 5)
                   .map((launch) => {
-                    const curve = projectCurves.get(launch.id)
-                    return (
-                      <CleanLaunchCard
-                        key={launch.id}
-                        launch={{
-                          id: launch.id,
-                          title: launch.title,
-                          subtitle: launch.subtitle || '',
-                          logoUrl: launch.logoUrl,
-                          scope: launch.scope,
-                          status: launch.status,
-                          upvotes: launch.upvotes || 0,
-                          commentsCount: launch.commentsCount || 0,
-                          viewCount: launch.viewCount,
-                          convictionPct: launch.convictionPct,
-                          keyHolders: curve?.holders || 0,
-                          keysSold: curve?.supply || 0,
-                          contributionPoolPct: launch.contributionPoolPct,
-                          feesSharePct: launch.feesSharePct,
-                          keyPrice: curve?.price || 0.01,
-                          priceChange24h: curve?.priceChange24h || null,
-                          contributors: launch.contributors
-                        }}
-                        hasVoted={userVotedLaunches.has(launch.id)}
-                        onVote={() => handleVote(launch.id)}
-                        onComment={() => {
-                          setSelectedLaunch({ id: launch.id, title: launch.title })
-                          setCommentsOpen(true)
-                        }}
-                        onCollaborate={() => handleCollaborate(launch)}
-                        onDetails={() => handleDetails(launch)}
-                        onBuyKeys={() => handleBoost(launch)}
-                        onNotify={() => handleNotify(launch)}
-                        onShare={() => handleShare(launch)}
-                      />
-                    )
+                    const cardData = buildEnhancedCardData(launch)
+                    return <EnhancedLaunchCard key={launch.id} data={cardData} />
                   })}
               </div>
             )}
@@ -1094,6 +1198,7 @@ export default function DiscoverPage() {
           curve={selectedCurveData.curve}
           ownerName={selectedCurveData.projectName}
           ownerAvatar={selectedCurveData.projectLogo}
+          twitterHandle={selectedCurveData.twitterHandle}
           userBalance={solBalance}
           userKeys={userKeyBalance}
           onTrade={async (type, keys) => {

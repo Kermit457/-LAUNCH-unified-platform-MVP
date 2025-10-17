@@ -1,0 +1,301 @@
+/**
+ * V6 Anchor Curve Service
+ *
+ * Reads data directly from the deployed V6 Anchor program on Solana devnet
+ * Program ID: Ej8XrDazXPSRFebCYhycbV1LZGdLHCFddRufRMqZUXQF
+ *
+ * This replaces all Appwrite database curve queries with on-chain data.
+ */
+
+import { Program, AnchorProvider, BN } from '@coral-xyz/anchor';
+import { Connection, PublicKey } from '@solana/web3.js';
+import { connection, CURVE_PROGRAM_ID } from './config';
+import {
+  getCurvePDA,
+  getKeyHolderPDA,
+  getReserveVaultPDA,
+} from './program';
+import IDL from '../idl/launchos_curve.json';
+
+/**
+ * On-chain BondingCurve account structure (from V6 program)
+ */
+export interface BondingCurveAccount {
+  owner: PublicKey;
+  twitterHandle: string;
+  supply: BN;
+  price: number;
+  reserve: BN;
+  status: { active: {} } | { frozen: {} } | { launched: {} };
+  createdAt: BN;
+  holders: number;
+  volume24h: BN;
+  volumeTotal: BN;
+  marketCap: BN;
+  keysLocked: boolean;
+  keyLockEndTime: BN;
+  reentrancyLock: boolean;
+  bump: number;
+}
+
+/**
+ * On-chain KeyHolder account structure (from V6 program)
+ */
+export interface KeyHolderAccount {
+  curve: PublicKey;
+  owner: PublicKey;
+  amount: BN;
+  totalInvested: BN;
+  totalRealized: BN;
+  isCreator: boolean;
+  bump: number;
+}
+
+/**
+ * Processed curve data with calculated fields
+ */
+export interface CurveData {
+  address: string;
+  owner: string;
+  twitterHandle: string;
+  supply: number;
+  price: number;
+  reserve: number;
+  status: 'active' | 'frozen' | 'launched';
+  createdAt: number;
+  holders: number;
+  volume24h: number;
+  volumeTotal: number;
+  marketCap: number;
+  keysLocked: boolean;
+  keyLockEndTime: number;
+  exists: boolean;
+}
+
+/**
+ * User's key holdings data
+ */
+export interface KeyHolderData {
+  address: string;
+  curve: string;
+  owner: string;
+  amount: number;
+  totalInvested: number;
+  totalRealized: number;
+  isCreator: boolean;
+  sharePercent: number; // Calculated: (amount / curve.supply) * 100
+  exists: boolean;
+}
+
+/**
+ * Get read-only program instance (no wallet needed for reads)
+ */
+function getProgram(): Program {
+  // Create a dummy provider with read-only connection
+  const provider = new AnchorProvider(
+    connection,
+    {} as any, // No wallet needed for reads
+    { commitment: 'confirmed' }
+  );
+
+  return new Program(IDL as any, CURVE_PROGRAM_ID, provider);
+}
+
+/**
+ * Fetch on-chain curve data by twitter handle
+ * Returns null if curve doesn't exist on-chain
+ */
+export async function fetchCurveByTwitter(twitterHandle: string): Promise<CurveData | null> {
+  try {
+    const program = getProgram();
+    const curvePDA = getCurvePDA(twitterHandle);
+
+    console.log('📖 Fetching on-chain curve:', {
+      twitter: twitterHandle,
+      pda: curvePDA.toString(),
+    });
+
+    // Fetch the account from chain
+    const curveAccount = await program.account.bondingCurve.fetch(curvePDA);
+
+    if (!curveAccount) {
+      console.log('❌ Curve does not exist on-chain');
+      return null;
+    }
+
+    // Parse status enum
+    let status: 'active' | 'frozen' | 'launched' = 'active';
+    if ('frozen' in curveAccount.status) status = 'frozen';
+    if ('launched' in curveAccount.status) status = 'launched';
+
+    const curveData: CurveData = {
+      address: curvePDA.toString(),
+      owner: curveAccount.owner.toString(),
+      twitterHandle: curveAccount.twitterHandle,
+      supply: curveAccount.supply.toNumber(),
+      price: curveAccount.price / 1_000_000_000, // Convert lamports to SOL
+      reserve: curveAccount.reserve.toNumber() / 1_000_000_000, // Convert lamports to SOL
+      status,
+      createdAt: curveAccount.createdAt.toNumber(),
+      holders: curveAccount.holders,
+      volume24h: curveAccount.volume24h.toNumber() / 1_000_000_000,
+      volumeTotal: curveAccount.volumeTotal.toNumber() / 1_000_000_000,
+      marketCap: curveAccount.marketCap.toNumber() / 1_000_000_000,
+      keysLocked: curveAccount.keysLocked,
+      keyLockEndTime: curveAccount.keyLockEndTime.toNumber(),
+      exists: true,
+    };
+
+    console.log('✅ Fetched curve data:', curveData);
+    return curveData;
+
+  } catch (error: any) {
+    // Account doesn't exist is expected for new curves
+    if (error.message?.includes('Account does not exist')) {
+      console.log('ℹ️ Curve not yet initialized on-chain');
+      return null;
+    }
+    console.error('Error fetching curve:', error);
+    throw error;
+  }
+}
+
+/**
+ * Fetch user's key holdings for a specific curve
+ * Returns null if user has never bought keys
+ */
+export async function fetchKeyHoldings(
+  twitterHandle: string,
+  userWallet: PublicKey
+): Promise<KeyHolderData | null> {
+  try {
+    const program = getProgram();
+    const curvePDA = getCurvePDA(twitterHandle);
+    const keyHolderPDA = getKeyHolderPDA(curvePDA, userWallet);
+
+    console.log('📖 Fetching key holdings:', {
+      twitter: twitterHandle,
+      user: userWallet.toString(),
+      pda: keyHolderPDA.toString(),
+    });
+
+    // Fetch the key holder account
+    const keyHolderAccount = await program.account.keyHolder.fetch(keyHolderPDA);
+
+    if (!keyHolderAccount) {
+      return null;
+    }
+
+    // Also fetch curve to calculate share percentage
+    const curve = await fetchCurveByTwitter(twitterHandle);
+    const sharePercent = curve && curve.supply > 0
+      ? (keyHolderAccount.amount.toNumber() / curve.supply) * 100
+      : 0;
+
+    const holderData: KeyHolderData = {
+      address: keyHolderPDA.toString(),
+      curve: keyHolderAccount.curve.toString(),
+      owner: keyHolderAccount.owner.toString(),
+      amount: keyHolderAccount.amount.toNumber(),
+      totalInvested: keyHolderAccount.totalInvested.toNumber() / 1_000_000_000,
+      totalRealized: keyHolderAccount.totalRealized.toNumber() / 1_000_000_000,
+      isCreator: keyHolderAccount.isCreator,
+      sharePercent,
+      exists: true,
+    };
+
+    console.log('✅ Fetched key holdings:', holderData);
+    return holderData;
+
+  } catch (error: any) {
+    // Account doesn't exist means user has never bought keys
+    if (error.message?.includes('Account does not exist')) {
+      console.log('ℹ️ User has no keys for this curve');
+      return null;
+    }
+    console.error('Error fetching key holdings:', error);
+    throw error;
+  }
+}
+
+/**
+ * Fetch multiple curves at once (for discover page)
+ */
+export async function fetchMultipleCurves(
+  twitterHandles: string[]
+): Promise<Map<string, CurveData | null>> {
+  const results = new Map<string, CurveData | null>();
+
+  // Fetch all curves in parallel
+  const promises = twitterHandles.map(async (handle) => {
+    const curve = await fetchCurveByTwitter(handle);
+    results.set(handle, curve);
+  });
+
+  await Promise.all(promises);
+  return results;
+}
+
+/**
+ * Fetch reserve vault balance (actual SOL in the vault)
+ */
+export async function fetchReserveBalance(twitterHandle: string): Promise<number> {
+  try {
+    const curvePDA = getCurvePDA(twitterHandle);
+    const reserveVault = getReserveVaultPDA(curvePDA);
+
+    const balance = await connection.getBalance(reserveVault);
+    return balance / 1_000_000_000; // Convert to SOL
+  } catch (error) {
+    console.error('Error fetching reserve balance:', error);
+    return 0;
+  }
+}
+
+/**
+ * Check if a curve exists on-chain
+ */
+export async function curveExists(twitterHandle: string): Promise<boolean> {
+  const curve = await fetchCurveByTwitter(twitterHandle);
+  return curve !== null;
+}
+
+/**
+ * Get all key holders for a curve (requires RPC with getProgramAccounts)
+ * Note: This can be expensive on mainnet, use sparingly
+ */
+export async function fetchAllHolders(twitterHandle: string): Promise<KeyHolderData[]> {
+  try {
+    const program = getProgram();
+    const curvePDA = getCurvePDA(twitterHandle);
+
+    // Fetch all key holder accounts for this curve
+    const holders = await program.account.keyHolder.all([
+      {
+        memcmp: {
+          offset: 8, // Skip discriminator
+          bytes: curvePDA.toBase58(),
+        },
+      },
+    ]);
+
+    const curve = await fetchCurveByTwitter(twitterHandle);
+
+    return holders.map((holder) => ({
+      address: holder.publicKey.toString(),
+      curve: holder.account.curve.toString(),
+      owner: holder.account.owner.toString(),
+      amount: holder.account.amount.toNumber(),
+      totalInvested: holder.account.totalInvested.toNumber() / 1_000_000_000,
+      totalRealized: holder.account.totalRealized.toNumber() / 1_000_000_000,
+      isCreator: holder.account.isCreator,
+      sharePercent: curve && curve.supply > 0
+        ? (holder.account.amount.toNumber() / curve.supply) * 100
+        : 0,
+      exists: true,
+    }));
+  } catch (error) {
+    console.error('Error fetching all holders:', error);
+    return [];
+  }
+}

@@ -43,9 +43,10 @@ export function BuyKeysButton({
     try {
       setShowSuccess(false);
 
-      // Step 1: Execute Solana transaction
-      const signature = await buyKeys(twitterHandle, solCost, referrerId);
-      console.log('✅ Solana tx confirmed:', signature);
+      // Step 1: Execute Solana transaction with V6 contract
+      // NOTE: V6 contract buy_keys takes amount as number of KEYS, not SOL
+      const signature = await buyKeys(twitterHandle, keys, referrerId);
+      console.log('✅ Solana tx confirmed via V6 contract:', signature);
 
       // Step 2: Update database with transaction proof
       const response = await fetch(`/api/curve/${curveId}/buy`, {

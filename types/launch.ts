@@ -29,6 +29,7 @@ export type LaunchCardData = {
   creatorAvatar?: string // Avatar URL of the project creator
   boostCount?: number // Real-time boost count
   viewCount?: number // Real-time view count
+  twitterUrl?: string // Twitter/X profile URL
 }
 
 export type LaunchTimeseriesPoint = {

@@ -36,7 +36,10 @@
 - **Styling**: Tailwind CSS
 - **UI Components**: ShadCN UI (Radix)
 - **Icons**: Lucide React
-- **State**: React local state (demo mode)
+- **Authentication**: Privy v3.3.0 (Embedded Solana Wallets)
+- **Blockchain**: Solana (web3.js + @solana/kit v4.0.0)
+- **Backend**: Appwrite (Database, Auth, Storage)
+- **State**: React local state + Zustand
 
 ## 📦 Installation
 
@@ -50,11 +53,25 @@ cd -LAUNCH-unified-platform-MVP
 # Install dependencies
 npm install
 
+# Configure environment variables
+cp .env.example .env.local
+# Edit .env.local with your Privy, Solana, and Appwrite credentials
+
 # Run development server
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+### ⚠️ Important Configuration Notes
+
+**Privy + Solana Setup**: This project uses Privy for authentication with embedded Solana wallets. Configuration is critical. See [PRIVY_SOLANA_CONFIG_REFERENCE.md](./PRIVY_SOLANA_CONFIG_REFERENCE.md) for:
+- Correct import statements
+- PrivyProvider configuration with RPC endpoints
+- Transaction signing patterns
+- Common errors and solutions
+
+**If you get RPC errors**, always check `PRIVY_SOLANA_CONFIG_REFERENCE.md` first.
 
 ## 🗂 Project Structure
 

@@ -65,6 +65,7 @@ const config: Config = {
         'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
         'belief-pulse': 'belief-pulse 1.5s ease-in-out infinite',
         'glow': 'glow 3s ease-in-out infinite',
+        'shimmer': 'shimmer 2s ease-in-out infinite',
       },
       keyframes: {
         ticker: {
@@ -82,6 +83,10 @@ const config: Config = {
         glow: {
           '0%, 100%': { boxShadow: '0 0 20px rgba(16, 185, 129, 0.1)' },
           '50%': { boxShadow: '0 0 40px rgba(16, 185, 129, 0.25)' },
+        },
+        shimmer: {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(100%)' },
         },
       },
     },

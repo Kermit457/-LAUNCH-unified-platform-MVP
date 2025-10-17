@@ -14,6 +14,7 @@ interface SimpleBuySellModalProps {
   curve: Curve
   ownerName: string
   ownerAvatar?: string
+  twitterHandle: string
   userBalance: number
   userKeys: number
   onTrade: (type: 'buy' | 'sell', keys: number) => Promise<void>
@@ -25,12 +26,13 @@ export function SimpleBuySellModal({
   curve,
   ownerName,
   ownerAvatar,
+  twitterHandle,
   userBalance,
   userKeys,
   onTrade
 }: SimpleBuySellModalProps) {
   const { user } = usePrivy()
-  const [keys, setKeys] = useState(1)
+  const [keys, setKeys] = useState(5)
   const [priceChange24h, setPriceChange24h] = useState<number | null>(null)
   const [loadingPriceChange, setLoadingPriceChange] = useState(false)
 
@@ -49,7 +51,7 @@ export function SimpleBuySellModal({
   // Fetch 24h price change when modal opens
   useEffect(() => {
     if (isOpen && curve.id) {
-      setKeys(1)
+      setKeys(5)
 
       // Fetch price change
       setLoadingPriceChange(true)
@@ -71,14 +73,49 @@ export function SimpleBuySellModal({
   const incrementKeys = () => setKeys(prev => prev + 1)
   const decrementKeys = () => setKeys(prev => Math.max(1, prev - 1))
 
-  const canBuy = userBalance >= solCost
+  // Calculate supply share based on ACTUAL curve supply
+  const currentTotalSupply = curve.supply || 1 // Total keys in circulation NOW
+  const newKeyCount = userKeys + keys
+  const newTotalSupply = currentTotalSupply + keys // Total supply after purchase
+
+  const currentSharePct = currentTotalSupply > 0 ? (userKeys / currentTotalSupply) * 100 : 0
+  const newSharePct = (newKeyCount / newTotalSupply) * 100
+
+  // Check if user owns nearly all keys (>95% means they shouldn't buy more)
+  const ownsNearlyAll = currentSharePct >= 95
+
+  const canBuy = userBalance >= solCost && !ownsNearlyAll
   const canSell = userKeys >= keys
+
+  // Debug logging
+  console.log('📊 Sell calculation:', {
+    curveSupply: curve.supply,
+    keysToSell: keys,
+    userKeys,
+    solReceived,
+    currentSharePct
+  })
+
+  // V6 Token launch calculations
+  // Based on curve-launch-service-v6.ts logic:
+  // - 1 billion total token supply
+  // - Tokens bought at launch = (launchAmountSOL / 40) * 1B
+  // - Each holder gets: (keyBalance / totalKeys) * tokensBought
+  const TOTAL_SUPPLY = 1_000_000_000
+  const DEFAULT_LAUNCH_SOL = 10 // Default 10 SOL launch amount
+
+  // Estimate tokens that will be bought at launch (V6 formula)
+  const estimatedTokensBought = Math.floor((DEFAULT_LAUNCH_SOL / 40) * TOTAL_SUPPLY)
+
+  // User's share of those tokens based on key percentage
+  const currentEstTokens = Math.floor((userKeys / currentTotalSupply) * estimatedTokensBought)
+  const newEstTokens = Math.floor((newKeyCount / newTotalSupply) * estimatedTokensBought)
 
   if (!isOpen) return null
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-      <div className="w-full max-w-md bg-[#1a1a1a] rounded-3xl border border-white/10 shadow-2xl">
+      <div className="w-full max-w-md bg-[rgba(255,255,255,0.06)] backdrop-blur-[8px] rounded-3xl ring-1 ring-[rgba(255,255,255,0.10)] shadow-[0_0_0_1px_rgba(255,255,255,0.05),0_20px_60px_rgba(0,0,0,0.35)]">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-white/10">
           <h2 className="text-xl font-bold text-white">Buy Keys</h2>
@@ -128,7 +165,7 @@ export function SimpleBuySellModal({
                   <span className="text-gray-500 ml-0.5">24h</span>
                 </div>
               ) : (
-                <div className="text-xs text-gray-400">{curve.supply || 0} keys sold</div>
+                <div className="text-xs text-gray-400">--</div>
               )}
             </div>
           </div>
@@ -136,7 +173,7 @@ export function SimpleBuySellModal({
           {/* Your Holdings */}
           <div className="flex items-center justify-between text-sm">
             <span className="text-gray-400">YOU OWN:</span>
-            <span className="text-white font-bold">{userKeys} keys</span>
+            <span className="text-white font-bold">{userKeys} keys ({currentSharePct.toFixed(2)}%)</span>
           </div>
 
           {/* Balance */}
@@ -150,56 +187,90 @@ export function SimpleBuySellModal({
           </div>
 
           {/* Keys Input */}
-          <div className="flex items-center justify-between p-4 bg-black/40 rounded-2xl border border-white/10">
-            <button
-              onClick={decrementKeys}
-              className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors text-white"
-              disabled={keys <= 1}
-            >
-              <Minus className="w-5 h-5" />
-            </button>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between p-4 bg-black/40 rounded-2xl border border-white/10">
+              <button
+                onClick={decrementKeys}
+                className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors text-white"
+                disabled={keys <= 1}
+              >
+                <Minus className="w-5 h-5" />
+              </button>
 
-            <div className="text-3xl font-bold text-white">{keys.toFixed(2)}</div>
+              <div className="text-3xl font-bold text-white">{keys.toFixed(2)}</div>
 
-            <button
-              onClick={incrementKeys}
-              className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors text-white"
-            >
-              <Plus className="w-5 h-5" />
-            </button>
+              <button
+                onClick={incrementKeys}
+                className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors text-white"
+              >
+                <Plus className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Quick Select Buttons */}
+            <div className="flex items-center justify-center gap-2">
+              {[1, 5, 10, 20].map((amount) => (
+                <button
+                  key={amount}
+                  onClick={() => setKeys(amount)}
+                  className={`px-4 py-1.5 rounded-lg text-sm font-semibold transition-all ${
+                    keys === amount
+                      ? 'bg-orange-500 text-white'
+                      : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'
+                  }`}
+                >
+                  {amount}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Cost Breakdown */}
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span className="text-gray-400">Keys Cost:</span>
-              <span className="text-white">◎ {solCost.toFixed(4)}</span>
+          <div className="p-6 rounded-2xl bg-white/5 border border-white/10 space-y-3">
+            <div className="flex justify-between items-center">
+              <span className="text-gray-400">Total Cost:</span>
+              <span className="text-white font-bold text-xl">◎ {solCost.toFixed(4)}</span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-gray-400">Total Fee (6%):</span>
-              <span className="text-white">◎ {totalFee}</span>
+
+            <div className="h-px bg-white/10" />
+
+            <div className="flex justify-between items-center">
+              <span className="text-gray-400">New Balance:</span>
+              <span className="text-white font-bold">{newKeyCount} keys</span>
             </div>
-            <div className="text-xs text-gray-500 pl-4">
-              • 4% Instant (referrer/creator)
+
+            <div className="flex justify-between items-center">
+              <span className="text-gray-400">New Share:</span>
+              <div className="flex items-center gap-2">
+                {userKeys > 0 && currentSharePct > 0 && (
+                  <span className="text-gray-500 line-through text-sm">{currentSharePct.toFixed(2)}%</span>
+                )}
+                <span className="text-white font-bold">{newSharePct.toFixed(2)}%</span>
+              </div>
             </div>
-            <div className="text-xs text-gray-500 pl-4">
-              • 1% Platform
-            </div>
-            <div className="text-xs text-gray-500 pl-4">
-              • 1% Buyback & Burn
-            </div>
-            <div className="h-px bg-white/10 my-2" />
-            <div className="flex justify-between font-bold">
-              <span className="text-white">Total Cost:</span>
-              <span className="text-white">◎ {(solCost + parseFloat(totalFee)).toFixed(4)}</span>
+
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-gray-500">Per Key Rate:</span>
+              <span className="text-gray-300">
+                ≈ {new Intl.NumberFormat('en-US').format(Math.floor(newEstTokens / newKeyCount))} tokens
+              </span>
             </div>
           </div>
+
+          {/* Warning if user owns nearly all keys */}
+          {ownsNearlyAll && (
+            <div className="p-3 bg-orange-500/10 border border-orange-500/30 rounded-xl">
+              <p className="text-sm text-orange-300 text-center">
+                ⚠️ You own {currentSharePct.toFixed(1)}% of the supply. You can only sell at this point.
+              </p>
+            </div>
+          )}
 
           {/* Buy/Sell Buttons */}
           <div className="grid grid-cols-2 gap-3">
             <BuyKeysButton
               curveId={curve.id}
-              twitterHandle={ownerName}
+              twitterHandle={twitterHandle}
               keys={keys}
               solCost={solCost}
               userId={user?.id || ''}
@@ -226,12 +297,15 @@ export function SimpleBuySellModal({
 
             <SellKeysButton
               curveId={curve.id}
-              twitterHandle={ownerName}
+              twitterHandle={twitterHandle}
               keys={keys}
               solReceived={solReceived}
               userId={user?.id || ''}
               onSuccess={() => {
+                // Close modal and trigger page refresh
                 onClose()
+                // Reload the page to show updated balances
+                window.location.reload()
               }}
               onError={(error) => {
                 console.error('Sell failed:', error)
