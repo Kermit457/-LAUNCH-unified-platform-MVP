@@ -4,7 +4,7 @@
  */
 
 export type CurveOwnerType = 'user' | 'project'
-export type CurveState = 'active' | 'frozen' | 'launched' | 'utility'
+export type CurveState = 'inactive' | 'active' | 'frozen' | 'launched' | 'utility'  // 🆕 Added 'inactive'
 export type CurveEventType = 'buy' | 'sell' | 'freeze' | 'launch'
 
 /**

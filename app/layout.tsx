@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import '../styles/tokens.css'
-import NavBar from '@/components/NavBar'
+import { TopNav } from '@/components/TopNav'
 import { ToastProvider } from '@/components/ToastProvider'
 import { NetworkProvider } from '@/lib/contexts/NetworkContext'
 import { NotificationProvider } from '@/lib/contexts/NotificationContext'
@@ -40,7 +40,7 @@ export default function RootLayout({
                   <NetworkProvider>
                     <ToastProvider>
                       <ReferralTracker />
-                      <NavBar />
+                      <TopNav />
                       <main className="relative">
                         {children}
                       </main>

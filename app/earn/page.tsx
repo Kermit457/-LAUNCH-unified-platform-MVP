@@ -154,6 +154,28 @@ const OpportunityCard = ({
                 </span>
               </div>
               <p className="text-sm text-zinc-400 line-clamp-2">{card.description}</p>
+
+              {/* Content Type Pills */}
+              {card.platform && card.platform.length > 0 && (
+                <div className="flex flex-wrap gap-1 mt-2">
+                  {card.platform.slice(0, 3).map((platform, i) => (
+                    <span key={i} className="px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 text-xs">
+                      {platform === 'twitter' && '🐦 Twitter'}
+                      {platform === 'youtube' && '📹 YouTube'}
+                      {platform === 'tiktok' && '🎵 TikTok'}
+                      {platform === 'instagram' && '📷 Instagram'}
+                      {platform === 'discord' && '💬 Discord'}
+                      {platform === 'telegram' && '✈️ Telegram'}
+                      {!['twitter', 'youtube', 'tiktok', 'instagram', 'discord', 'telegram'].includes(platform) && platform}
+                    </span>
+                  ))}
+                  {card.platform.length > 3 && (
+                    <span className="px-2 py-0.5 rounded bg-zinc-800 text-zinc-500 text-xs">
+                      +{card.platform.length - 3}
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
@@ -470,46 +492,127 @@ export default function EarnPage() {
         />
       </div>
 
-      {/* KPI Section */}
-      <section className="relative z-10 px-4 sm:px-6 lg:px-8 pt-8 pb-6">
+      {/* Hero Section */}
+      <section className="relative z-10 px-4 sm:px-6 lg:px-8 pt-12 pb-8">
         <div className="max-w-7xl mx-auto">
+          {/* Main Hero */}
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-8"
+            className="text-center mb-12"
           >
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent mb-2">
-              Earn Rewards
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-green-500/10 via-emerald-500/10 to-teal-500/10 border border-green-500/20 text-sm font-medium mb-6">
+              <DollarSign className="w-4 h-4 text-green-400" />
+              <span className="bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
+                Content Creator Marketplace
+              </span>
+            </div>
+
+            <h1 className="text-5xl sm:text-6xl font-black bg-gradient-to-r from-green-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent mb-6">
+              Get Paid to Promote
+              <br />
+              <span className="text-white">Projects You Believe In</span>
             </h1>
-            <p className="text-zinc-400">Complete campaigns, raids, and bounties to earn</p>
+            <p className="text-xl text-zinc-400 max-w-3xl mx-auto mb-8">
+              Create content, share on social media, and earn SOL for every approved submission.
+              <span className="block mt-2 text-lg text-zinc-500">
+                Turn your creativity into income while helping projects grow.
+              </span>
+            </p>
+
+            {/* Value Props Pills */}
+            <div className="flex flex-wrap items-center justify-center gap-3 mb-12">
+              <div className="px-4 py-2 rounded-full bg-green-500/10 border border-green-500/30 text-green-400 text-sm font-medium">
+                🎬 Video Clips
+              </div>
+              <div className="px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm font-medium">
+                🐦 Twitter Threads
+              </div>
+              <div className="px-4 py-2 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-400 text-sm font-medium">
+                🎨 Graphics & Memes
+              </div>
+              <div className="px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-sm font-medium">
+                📱 Social Posts
+              </div>
+            </div>
           </motion.div>
 
           {/* KPI Cards */}
           <div className="grid md:grid-cols-3 gap-6">
             <KPICard
-              label="Today"
+              label="Available Today"
               value={`$${stats.today.toLocaleString()}`}
               icon={DollarSign}
-              trend={{ value: '+12%', direction: 'up' }}
+              trend={{ value: 'Active Campaigns', direction: 'up' }}
               gradient="from-green-500 to-emerald-500"
               delay={0}
             />
             <KPICard
-              label="Last 7 Days"
+              label="Paid This Week"
               value={`$${stats.week.toLocaleString()}`}
               icon={TrendingUp}
-              trend={{ value: '+24%', direction: 'up' }}
+              trend={{ value: 'To Creators', direction: 'up' }}
               gradient="from-emerald-500 to-teal-500"
               delay={0.1}
             />
             <KPICard
-              label="Last 30 Days"
+              label="Total Pool"
               value={`$${Math.round(stats.month).toLocaleString()}`}
               icon={Gift}
-              trend={{ value: '+8%', direction: 'up' }}
+              trend={{ value: 'Live Bounties', direction: 'up' }}
               gradient="from-teal-500 to-cyan-500"
               delay={0.2}
             />
+          </div>
+        </div>
+      </section>
+
+      {/* Value Proposition Section */}
+      <section className="relative z-10 px-4 sm:px-6 lg:px-8 py-12">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              {
+                emoji: '🎬',
+                title: 'Video Clips',
+                description: '30-60s promotional videos, tutorials, or reactions',
+                payout: '5-50 SOL'
+              },
+              {
+                emoji: '🐦',
+                title: 'Twitter Threads',
+                description: 'Engaging 5+ tweet threads explaining projects',
+                payout: '2-20 SOL'
+              },
+              {
+                emoji: '🎨',
+                title: 'Graphics & Memes',
+                description: 'Visual content, infographics, or viral memes',
+                payout: '3-30 SOL'
+              },
+              {
+                emoji: '📱',
+                title: 'Social Posts',
+                description: 'Instagram posts, TikToks, or Discord messages',
+                payout: '1-15 SOL'
+              }
+            ].map((content, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                whileHover={{ scale: 1.05 }}
+                className="p-6 rounded-2xl bg-gradient-to-br from-zinc-900/60 to-zinc-800/40 backdrop-blur-xl border border-zinc-800 hover:border-green-500/30 transition-all"
+              >
+                <div className="text-4xl mb-3">{content.emoji}</div>
+                <h3 className="font-bold text-white mb-2">{content.title}</h3>
+                <p className="text-sm text-zinc-400 mb-4">{content.description}</p>
+                <div className="px-3 py-1.5 rounded-lg bg-green-500/10 border border-green-500/30 text-green-400 text-xs font-bold inline-block">
+                  {content.payout} per submission
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
@@ -613,38 +716,43 @@ export default function EarnPage() {
             className="text-center py-16"
           >
             <Target className="w-16 h-16 text-zinc-700 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-white mb-2">No Opportunities Found</h3>
-            <p className="text-zinc-400 mb-6">Check back soon for new earning opportunities</p>
+            <h3 className="text-xl font-semibold text-white mb-2">No Active Campaigns</h3>
+            <p className="text-zinc-400 mb-6">
+              Be the first! Create a campaign and get content creators to promote your project
+            </p>
             <PremiumButton
               variant="primary"
               onClick={handleCreateCampaign}
             >
-              Create First Campaign
+              Create Your First Campaign
             </PremiumButton>
           </motion.div>
         )}
 
         {/* How It Works Section */}
         <section className="mt-24">
-          <h2 className="text-2xl font-bold text-white text-center mb-12">How It Works</h2>
+          <h2 className="text-3xl font-bold text-white text-center mb-4">How to Start Earning</h2>
+          <p className="text-center text-zinc-400 mb-12 max-w-2xl mx-auto">
+            Join campaigns, create content for projects you believe in, and get paid in SOL
+          </p>
           <div className="grid md:grid-cols-3 gap-8">
             {[
               {
                 icon: Target,
-                title: '1. Choose Your Path',
-                description: 'Pick campaigns, bounties, or raids based on your skills',
+                title: '1. Browse Campaigns',
+                description: 'Find projects looking for clips, tweets, memes, and more. Choose campaigns that match your skills.',
                 gradient: 'from-green-500 to-emerald-500',
               },
               {
                 icon: Users,
-                title: '2. Create & Engage',
-                description: 'Produce content, complete tasks, or refer friends',
+                title: '2. Create Content',
+                description: 'Make videos, design graphics, write threads, or create memes. Submit your work for review.',
                 gradient: 'from-emerald-500 to-teal-500',
               },
               {
                 icon: DollarSign,
-                title: '3. Get Paid',
-                description: 'Earn automatically as you complete objectives',
+                title: '3. Earn SOL',
+                description: 'Get paid instantly when your content is approved. Bonus rewards for high-performing submissions.',
                 gradient: 'from-teal-500 to-cyan-500',
               },
             ].map((step, index) => {

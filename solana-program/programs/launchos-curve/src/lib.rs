@@ -2,12 +2,15 @@ use anchor_lang::prelude::*;
 
 pub mod errors;
 pub mod events;
-pub mod math;
+pub mod math_v6;
 pub mod state;
 
 use errors::*;
 use events::*;
 use state::*;
+
+// Alias math_v6 as math for convenience
+use math_v6 as math;
 
 declare_id!("Ej8XrDazXPSRFebCYhycbV1LZGdLHCFddRufRMqZUXQF");
 

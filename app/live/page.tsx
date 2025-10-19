@@ -1,118 +1,67 @@
 "use client"
 
-import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Zap, Eye, Radio, Send, Sparkles, Play, Users2, TrendingUp, Target } from 'lucide-react'
-import { useLive, type LiveLaunch } from '@/hooks/useLive'
-import { useRealtimeViewers } from '@/hooks/useRealtimeViewers'
-import { PaginationControls } from '@/components/PaginationControls'
-import { StreamModal } from '@/components/StreamModal'
+import { useState } from 'react'
+import { motion } from 'framer-motion'
+import {
+  Radio, Eye, Send, Sparkles, Zap, DollarSign, MessageCircle,
+  Bell, Play, Calendar, Rocket, Gift
+} from 'lucide-react'
 import { GlassCard } from '@/components/design-system'
-import { ShareButton } from '@/components/ShareButton'
-
-// Chat message type for live chat feature
-interface ChatMessage {
-  id: string
-  user: string
-  message: string
-  timestamp: string
-}
-
-// Component to display real-time viewer count
-function LiveViewerCount({ mint }: { mint: string }) {
-  const { viewerCount, loading } = useRealtimeViewers({ mint, enabled: true, joinStream: false })
-
-  if (loading) return <span className="text-xs text-zinc-500">...</span>
-
-  return (
-    <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-black/60 backdrop-blur-md rounded-lg border border-white/10">
-      <Eye className="w-3 h-3 text-violet-400" />
-      <span className="text-xs font-bold text-white">{viewerCount.toLocaleString()}</span>
-    </div>
-  )
-}
+import {
+  mockLiveStats,
+  getFeaturedPitch,
+  getLivePitches,
+  getUpcomingPitches,
+  type LivePitchData
+} from '@/lib/livePitchMockData'
 
 export default function LivePage() {
-  const { page, setPage, pagesTotal, items, totals, loading, error } = useLive(48)
-  const [selectedCoin, setSelectedCoin] = useState<LiveLaunch | null>(null)
-  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([])
   const [chatMessage, setChatMessage] = useState('')
+  const [sortBy, setSortBy] = useState<'viewers' | 'recent' | 'trending'>('viewers')
+  const [typeFilter, setTypeFilter] = useState<'all' | 'icm' | 'ccm' | 'meme'>('all')
 
-  // Mock chat messages for featured stream
-  useEffect(() => {
-    const mockMessages: ChatMessage[] = [
-      { id: '1', user: 'crypto_trader', message: 'This launch is pumping! 🚀', timestamp: '2s' },
-      { id: '2', user: 'degen_mike', message: 'Just aped in with 5 SOL', timestamp: '5s' },
-      { id: '3', user: 'whale_watcher', message: 'Volume looking good', timestamp: '8s' },
-      { id: '4', user: 'moon_hunter', message: 'LFG! To the moon! 🌙', timestamp: '12s' },
-    ]
-    setChatMessages(mockMessages)
-  }, [])
+  const featuredPitch = getFeaturedPitch()
+  const livePitches = getLivePitches()
+  const upcomingPitches = getUpcomingPitches()
 
-  const formatMarketCap = (marketCap: number) => {
-    if (marketCap >= 1_000_000) {
-      return `$${(marketCap / 1_000_000).toFixed(2)}M`
-    }
-    if (marketCap >= 1_000) {
-      return `$${(marketCap / 1_000).toFixed(2)}K`
-    }
-    return `$${marketCap.toFixed(2)}`
+  const filteredPitches = livePitches.filter(pitch =>
+    typeFilter === 'all' || pitch.curve.type === typeFilter
+  ).sort((a, b) => {
+    if (sortBy === 'viewers') return b.viewerCount - a.viewerCount
+    if (sortBy === 'recent') return b.startedAt - a.startedAt
+    return b.liveStats.volumeTraded - a.liveStats.volumeTraded
+  })
+
+  const handleSendMessage = () => {
+    if (chatMessage.trim()) setChatMessage('')
   }
 
   const formatTime = (timestamp: number) => {
-    const now = Date.now()
-    const diff = now - timestamp
+    const diff = Date.now() - timestamp
     const minutes = Math.floor(diff / 60000)
     const hours = Math.floor(minutes / 60)
-    const days = Math.floor(hours / 24)
-
-    if (days > 0) return `${days}d ago`
-    if (hours > 0) return `${hours}h ago`
-    if (minutes > 0) return `${minutes}m ago`
-    return 'Just now'
+    if (hours > 0) return `${hours}h ${minutes % 60}m`
+    return `${minutes}m`
   }
 
-  const handlePrev = () => setPage((p) => Math.max(1, p - 1))
-  const handleNext = () => setPage((p) => Math.min(pagesTotal, p + 1))
-  const handleJumpToPage = (targetPage: number) => setPage(targetPage)
-
-  const showingStart = (page - 1) * 48 + 1
-  const showingEnd = Math.min(page * 48, totals.liveCount)
-  const showViewersKPI = totals.viewerCount > 0
-
-  const handleSendMessage = () => {
-    if (chatMessage.trim()) {
-      const newMessage: ChatMessage = {
-        id: Date.now().toString(),
-        user: 'You',
-        message: chatMessage,
-        timestamp: 'now'
-      }
-      setChatMessages(prev => [...prev, newMessage])
-      setChatMessage('')
-    }
+  const formatCountdown = (timestamp: number) => {
+    const diff = timestamp - Date.now()
+    const hours = Math.floor(diff / (60 * 60 * 1000))
+    const minutes = Math.floor((diff % (60 * 60 * 1000)) / (60 * 1000))
+    return `${hours}h ${minutes}m`
   }
-
-  // Get featured launch (highest market cap)
-  const featuredLaunch = items[0]
 
   return (
     <div className="min-h-screen bg-black">
-      {/* Animated Background */}
+      {/* Background */}
       <div className="fixed inset-0 -z-10 pointer-events-none">
         <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.3, 0.5, 0.3]
-          }}
+          animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
           transition={{ duration: 10, repeat: Infinity }}
           className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-red-500/20 rounded-full blur-[150px]"
         />
         <motion.div
-          animate={{
-            scale: [1, 1.1, 1],
-            x: [0, 50, 0]
-          }}
+          animate={{ scale: [1, 1.1, 1], x: [0, 50, 0] }}
           transition={{ duration: 15, repeat: Infinity }}
           className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-orange-500/15 rounded-full blur-[120px]"
         />
@@ -120,453 +69,80 @@ export default function LivePage() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-8"
-        >
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-3">
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              className="relative"
-            >
+            <motion.div animate={{ rotate: 360 }} transition={{ duration: 20, repeat: Infinity, ease: "linear" }} className="relative">
               <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center">
                 <Radio className="w-6 h-6 text-white" />
               </div>
-              <motion.div
-                animate={{ scale: [1, 1.3, 1], opacity: [0.5, 0, 0.5] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="absolute inset-0 bg-red-500 rounded-2xl"
-              />
+              <motion.div animate={{ scale: [1, 1.3, 1], opacity: [0.5, 0, 0.5] }} transition={{ duration: 2, repeat: Infinity }} className="absolute inset-0 bg-red-500 rounded-2xl" />
             </motion.div>
             <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text text-transparent">
-              LIVE LAUNCHES
+              PITCH YOUR PROJECT LIVE
             </h1>
           </div>
-          <p className="text-zinc-400">
-            Real-time token launches on pump.fun • {totals.liveCount} launches streaming now
+          <p className="text-zinc-400 text-lg">
+            Reach thousands of investors in real-time • {mockLiveStats.totalLiveNow} pitches streaming now
           </p>
         </motion.div>
 
-        {/* OBS Widgets Section - Outstanding Design */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="mb-12"
-        >
-          <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text text-transparent mb-2">
-              OBS Streaming Widgets
-            </h2>
-            <p className="text-sm text-zinc-500">Professional overlay widgets for your live streams</p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            {/* Prediction Widget */}
-            <motion.div
-              whileHover={{ y: -8, scale: 1.02 }}
-              className="relative group"
-            >
-              {/* Glow Effect */}
-              <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-500 rounded-3xl blur-lg opacity-0 group-hover:opacity-75 transition-all duration-500" />
-
-              <div className="relative h-full p-8 rounded-3xl bg-gradient-to-br from-zinc-900 via-zinc-900 to-blue-950 border border-zinc-800 group-hover:border-blue-500/50 transition-all overflow-hidden">
-                {/* Animated background pattern */}
-                <motion.div
-                  animate={{
-                    backgroundPosition: ['0% 0%', '100% 100%'],
-                  }}
-                  transition={{ duration: 20, repeat: Infinity, repeatType: 'reverse' }}
-                  className="absolute inset-0 opacity-5"
-                  style={{
-                    backgroundImage: 'radial-gradient(circle, rgba(59, 130, 246, 0.3) 1px, transparent 1px)',
-                    backgroundSize: '40px 40px'
-                  }}
-                />
-
-                <div className="relative z-10">
-                  {/* Icon */}
-                  <div className="w-16 h-16 mb-4 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-blue-500/50">
-                    <Target className="w-8 h-8 text-white" />
-                  </div>
-
-                  {/* Title */}
-                  <h3 className="text-xl font-bold text-white mb-2">Prediction Widget</h3>
-                  <p className="text-sm text-zinc-400 mb-6 leading-relaxed">
-                    Live voting, outcomes, and winner tracking with real-time updates
-                  </p>
-
-                  {/* Feature Pills */}
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    <span className="px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-medium">
-                      Live Polls
-                    </span>
-                    <span className="px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-medium">
-                      Results
-                    </span>
-                  </div>
-
-                  {/* Configure Button */}
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="w-full py-3 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold shadow-lg hover:shadow-blue-500/50 transition-all"
-                  >
-                    Configure →
-                  </motion.button>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Social Goals Widget */}
-            <motion.div
-              whileHover={{ y: -8, scale: 1.02 }}
-              className="relative group"
-            >
-              {/* Glow Effect */}
-              <div className="absolute -inset-1 bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 rounded-3xl blur-lg opacity-0 group-hover:opacity-75 transition-all duration-500" />
-
-              <div className="relative h-full p-8 rounded-3xl bg-gradient-to-br from-zinc-900 via-zinc-900 to-purple-950 border border-zinc-800 group-hover:border-purple-500/50 transition-all overflow-hidden">
-                {/* Animated background pattern */}
-                <motion.div
-                  animate={{
-                    backgroundPosition: ['0% 0%', '100% 100%'],
-                  }}
-                  transition={{ duration: 20, repeat: Infinity, repeatType: 'reverse' }}
-                  className="absolute inset-0 opacity-5"
-                  style={{
-                    backgroundImage: 'radial-gradient(circle, rgba(168, 85, 247, 0.3) 1px, transparent 1px)',
-                    backgroundSize: '40px 40px'
-                  }}
-                />
-
-                <div className="relative z-10">
-                  {/* Icon */}
-                  <div className="w-16 h-16 mb-4 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-lg shadow-purple-500/50">
-                    <Users2 className="w-8 h-8 text-white" />
-                  </div>
-
-                  {/* Title */}
-                  <h3 className="text-xl font-bold text-white mb-2">Social Goals Widget</h3>
-                  <p className="text-sm text-zinc-400 mb-6 leading-relaxed">
-                    Follow/subscribe goals for X, YouTube, Twitch, and Discord
-                  </p>
-
-                  {/* Feature Pills */}
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    <span className="px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-400 text-xs font-medium">
-                      Multi-Platform
-                    </span>
-                    <span className="px-3 py-1 rounded-full bg-pink-500/10 border border-pink-500/30 text-pink-400 text-xs font-medium">
-                      Auto-Update
-                    </span>
-                  </div>
-
-                  {/* Configure Button */}
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="w-full py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold shadow-lg hover:shadow-purple-500/50 transition-all"
-                  >
-                    Configure →
-                  </motion.button>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Ads Widget */}
-            <motion.div
-              whileHover={{ y: -8, scale: 1.02 }}
-              className="relative group"
-            >
-              {/* Glow Effect */}
-              <div className="absolute -inset-1 bg-gradient-to-r from-orange-500 via-red-500 to-orange-500 rounded-3xl blur-lg opacity-0 group-hover:opacity-75 transition-all duration-500" />
-
-              <div className="relative h-full p-8 rounded-3xl bg-gradient-to-br from-zinc-900 via-zinc-900 to-orange-950 border border-zinc-800 group-hover:border-orange-500/50 transition-all overflow-hidden">
-                {/* Animated background pattern */}
-                <motion.div
-                  animate={{
-                    backgroundPosition: ['0% 0%', '100% 100%'],
-                  }}
-                  transition={{ duration: 20, repeat: Infinity, repeatType: 'reverse' }}
-                  className="absolute inset-0 opacity-5"
-                  style={{
-                    backgroundImage: 'radial-gradient(circle, rgba(249, 115, 22, 0.3) 1px, transparent 1px)',
-                    backgroundSize: '40px 40px'
-                  }}
-                />
-
-                <div className="relative z-10">
-                  {/* Icon */}
-                  <div className="w-16 h-16 mb-4 rounded-2xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center shadow-lg shadow-orange-500/50">
-                    <Zap className="w-8 h-8 text-white" />
-                  </div>
-
-                  {/* Title */}
-                  <h3 className="text-xl font-bold text-white mb-2">Ads Widget</h3>
-                  <p className="text-sm text-zinc-400 mb-6 leading-relaxed">
-                    Sponsored banners with payouts and real-time tracking
-                  </p>
-
-                  {/* Feature Pills */}
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    <span className="px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/30 text-orange-400 text-xs font-medium">
-                      Monetize
-                    </span>
-                    <span className="px-3 py-1 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-medium">
-                      Analytics
-                    </span>
-                  </div>
-
-                  {/* Configure Button */}
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="w-full py-3 rounded-xl bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold shadow-lg hover:shadow-orange-500/50 transition-all"
-                  >
-                    Configure →
-                  </motion.button>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </motion.div>
-
-        {/* KPI Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            whileHover={{ scale: 1.02 }}
-          >
-            <GlassCard className="p-4 relative overflow-hidden group">
-              <div className="absolute inset-0 bg-gradient-to-br from-red-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="relative z-10">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-                  <span className="text-xs text-zinc-500 font-medium">Live Now</span>
-                </div>
-                <div className="text-2xl font-bold text-red-400">
-                  {totals.liveCount > 0 ? totals.liveCount.toLocaleString() : items.length}
-                </div>
-              </div>
-            </GlassCard>
-          </motion.div>
-
-          {showViewersKPI && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              whileHover={{ scale: 1.02 }}
-            >
-              <GlassCard className="p-4 relative overflow-hidden group">
-                <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="relative z-10">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Eye className="w-4 h-4 text-violet-400" />
-                    <span className="text-xs text-zinc-500 font-medium">Total Viewers</span>
-                  </div>
-                  <div className="text-2xl font-bold bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
-                    {totals.viewerCount.toLocaleString()}
-                  </div>
-                </div>
-              </GlassCard>
-            </motion.div>
-          )}
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            whileHover={{ scale: 1.02 }}
-          >
-            <GlassCard className="p-4 relative overflow-hidden group">
-              <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="relative z-10">
-                <div className="flex items-center gap-2 mb-2">
-                  <Zap className="w-4 h-4 text-cyan-400" />
-                  <span className="text-xs text-zinc-500 font-medium">Showing</span>
-                </div>
-                <div className="text-2xl font-bold text-cyan-400">
-                  {totals.liveCount > 0 ? `${showingStart}–${showingEnd}` : `${items.length}`}
-                </div>
-              </div>
-            </GlassCard>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            whileHover={{ scale: 1.02 }}
-          >
-            <GlassCard className="p-4 relative overflow-hidden group">
-              <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="relative z-10">
-                <div className="flex items-center gap-2 mb-2">
-                  <TrendingUp className="w-4 h-4 text-green-400" />
-                  <span className="text-xs text-zinc-500 font-medium">24h Volume</span>
-                </div>
-                <div className="text-2xl font-bold text-green-400">
-                  $0M
-                </div>
-              </div>
-            </GlassCard>
-          </motion.div>
-        </div>
-
-        {/* Featured Stream/Launch with Live Chat */}
-        {featuredLaunch && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="mb-8"
-          >
+        {/* Featured Pitch */}
+        {featuredPitch && (
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
             <GlassCard className="p-0 overflow-hidden">
               <div className="grid lg:grid-cols-[1fr_380px]">
-                {/* Featured Launch */}
                 <div className="relative bg-gradient-to-br from-red-900/20 via-zinc-900/50 to-orange-900/20 p-8">
-                  {/* LIVE Badge */}
                   <div className="absolute top-4 left-4 z-10">
                     <div className="flex items-center gap-2 px-3 py-1.5 bg-red-500 rounded-md">
-                      <motion.div
-                        animate={{ opacity: [1, 0.3, 1] }}
-                        transition={{ duration: 2, repeat: Infinity }}
-                        className="w-2 h-2 bg-white rounded-full"
-                      />
-                      <span className="text-xs font-bold text-white uppercase tracking-wider">FEATURED</span>
+                      <motion.div animate={{ opacity: [1, 0.3, 1] }} transition={{ duration: 2, repeat: Infinity }} className="w-2 h-2 bg-white rounded-full" />
+                      <span className="text-xs font-bold text-white uppercase">FEATURED LIVE</span>
                     </div>
                   </div>
-
-                  {/* Launch Info */}
-                  <div className="flex items-start gap-6 mt-12">
-                    <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center text-3xl font-bold text-white overflow-hidden">
-                      {featuredLaunch.image_uri ? (
-                        <img
-                          src={featuredLaunch.image_uri}
-                          alt={featuredLaunch.name}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        featuredLaunch.symbol?.charAt(0) || 'T'
-                      )}
+                  <div className="absolute top-4 right-4 z-10 flex gap-2">
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-black/60 backdrop-blur-md rounded-lg border border-white/10">
+                      <Eye className="w-3 h-3 text-violet-400" />
+                      <span className="text-xs font-bold text-white">{featuredPitch.viewerCount.toLocaleString()}</span>
                     </div>
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-black/60 backdrop-blur-md rounded-lg border border-white/10">
+                      <DollarSign className="w-3 h-3 text-green-400" />
+                      <span className="text-xs font-bold text-white">{featuredPitch.liveStats.volumeTraded.toFixed(1)} SOL</span>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-6 mt-12">
+                    <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center text-3xl">{featuredPitch.curve.avatar}</div>
                     <div className="flex-1">
-                      <h2 className="text-3xl font-bold text-white mb-2">{featuredLaunch.name}</h2>
+                      <h2 className="text-3xl font-bold text-white mb-2">{featuredPitch.curve.title}</h2>
                       <div className="flex items-center gap-2 text-zinc-400 mb-4">
-                        <span className="text-lg font-medium">${featuredLaunch.symbol}</span>
-                        <span>•</span>
-                        <span>Launched {formatTime(featuredLaunch.created_timestamp)}</span>
+                        <span>{featuredPitch.curve.symbol}</span><span>•</span><span>by {featuredPitch.creatorName}</span><span>•</span><span>Live for {formatTime(featuredPitch.startedAt)}</span>
                       </div>
-                      <p className="text-zinc-300 mb-6">{featuredLaunch.description || 'No description available'}</p>
-
-                      {/* Stats Grid */}
-                      <div className="grid grid-cols-3 gap-4">
-                        <div>
-                          <div className="text-xs text-zinc-500 mb-1">Market Cap</div>
-                          <div className="text-xl font-bold text-green-400">
-                            {formatMarketCap(featuredLaunch.market_cap)}
-                          </div>
-                        </div>
-                        <div>
-                          <div className="text-xs text-zinc-500 mb-1">Age</div>
-                          <div className="text-xl font-bold text-blue-400">
-                            {Math.floor(featuredLaunch.ageSec / 3600)}h
-                          </div>
-                        </div>
-                        <div>
-                          <div className="text-xs text-zinc-500 mb-1">Replies</div>
-                          <div className="text-xl font-bold text-violet-400">
-                            {featuredLaunch.reply_count || 0}
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Action Buttons */}
-                      <div className="flex gap-3 mt-6">
-                        <motion.button
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          onClick={() => setSelectedCoin(featuredLaunch)}
-                          className="flex-1 px-6 py-3 rounded-xl bg-gradient-to-r from-red-500 to-orange-500 text-white font-semibold hover:shadow-lg hover:shadow-red-500/25 transition-all"
-                        >
-                          View Details
-                        </motion.button>
-                        <ShareButton
-                          url={`${typeof window !== 'undefined' ? window.location.origin : ''}/live?stream=${featuredLaunch.mint}`}
-                          title={`🔴 LIVE: ${featuredLaunch.name}`}
-                          description={featuredLaunch.description}
-                        />
+                      <p className="text-zinc-300 mb-6">{featuredPitch.pitchDescription}</p>
+                      <div className="grid grid-cols-2 gap-3">
+                        <button className="px-6 py-3 rounded-xl bg-gradient-to-r from-green-500 to-emerald-500 text-white font-semibold">💰 Buy Keys</button>
+                        <button className="px-6 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold">🎁 Send Gift</button>
                       </div>
                     </div>
                   </div>
                 </div>
-
-                {/* Live Chat */}
-                <div className="bg-zinc-900/60 backdrop-blur-xl flex flex-col h-[400px]">
-                  {/* Chat Header */}
-                  <div className="flex items-center justify-between p-4 border-b border-zinc-800">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-semibold text-white">Live Chat</span>
-                    </div>
-                    <span className="text-xs text-zinc-500">{Math.floor(Math.random() * 100) + 50} online</span>
+                <div className="bg-gradient-to-br from-red-900/30 to-orange-900/30 backdrop-blur-xl flex flex-col justify-center h-[500px] p-8">
+                  <div className="text-center mb-8">
+                    <div className="text-7xl mb-4">🎬</div>
+                    <h2 className="text-3xl font-bold text-white mb-3">🎤 Want to pitch your project to thousands?</h2>
                   </div>
-
-                  {/* Messages */}
-                  <div className="flex-1 overflow-y-auto p-4 space-y-3">
-                    <AnimatePresence>
-                      {chatMessages.map((msg) => (
-                        <motion.div
-                          key={msg.id}
-                          initial={{ opacity: 0, x: -10 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          exit={{ opacity: 0, x: 10 }}
-                          className="flex items-start gap-2"
-                        >
-                          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center text-xs text-white font-bold flex-shrink-0">
-                            {msg.user.charAt(0).toUpperCase()}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-baseline gap-2">
-                              <span className="text-xs font-semibold text-violet-400 truncate">{msg.user}</span>
-                              <span className="text-[10px] text-zinc-600">{msg.timestamp}</span>
-                            </div>
-                            <p className="text-sm text-zinc-300 break-words">{msg.message}</p>
-                          </div>
-                        </motion.div>
-                      ))}
-                    </AnimatePresence>
+                  <div className="space-y-3 mb-8">
+                    {['Reach 1000+ potential investors instantly', 'Real-time key purchases during your pitch', 'Live Q&A with your audience', 'Build hype and momentum'].map((text, i) => (
+                      <div key={i} className="flex items-center gap-3 text-zinc-300 text-lg">
+                        <div className="w-2 h-2 rounded-full bg-green-500" />
+                        <span>{text}</span>
+                      </div>
+                    ))}
                   </div>
-
-                  {/* Chat Input */}
-                  <div className="p-4 border-t border-zinc-800">
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="text"
-                        value={chatMessage}
-                        onChange={(e) => setChatMessage(e.target.value)}
-                        placeholder="Send a message..."
-                        className="flex-1 px-3 py-2 rounded-lg bg-zinc-800/50 border border-zinc-700 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-red-500/50"
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') {
-                            handleSendMessage()
-                          }
-                        }}
-                      />
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={handleSendMessage}
-                        className="w-10 h-10 rounded-lg bg-red-500 hover:bg-red-600 flex items-center justify-center text-white transition-colors"
-                      >
-                        <Send className="w-4 h-4" />
-                      </motion.button>
-                    </div>
+                  <div className="flex flex-col gap-3">
+                    <button className="w-full px-6 py-4 rounded-xl bg-gradient-to-r from-red-500 to-orange-500 text-white font-bold text-xl hover:shadow-lg hover:shadow-red-500/50 transition-all">
+                      🚀 GO LIVE NOW
+                    </button>
+                    <button className="w-full px-6 py-4 rounded-xl bg-zinc-800 text-white font-semibold text-lg hover:bg-zinc-700 transition-colors">
+                      📅 Schedule Stream
+                    </button>
                   </div>
                 </div>
               </div>
@@ -574,146 +150,84 @@ export default function LivePage() {
           </motion.div>
         )}
 
-        {/* Pagination */}
-        <div className="sticky top-0 z-10 bg-black/80 backdrop-blur-xl py-4 -mx-4 px-4 mb-6 border-b border-zinc-800">
-          <PaginationControls
-            page={page}
-            totalPages={pagesTotal}
-            onPrev={handlePrev}
-            onNext={handleNext}
-            onJumpToPage={handleJumpToPage}
-          />
+        {/* Stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          {[
+            { label: 'Live Now', value: mockLiveStats.totalLiveNow, color: 'text-red-400' },
+            { label: 'Total Viewers', value: mockLiveStats.totalViewers.toLocaleString(), color: 'text-violet-400' },
+            { label: 'Raised Today', value: `${mockLiveStats.totalRaisedToday.toFixed(1)} SOL`, color: 'text-green-400' },
+            { label: 'Your Streams', value: mockLiveStats.yourActiveStreams, color: 'text-orange-400' }
+          ].map((stat, i) => (
+            <GlassCard key={i} className="p-4">
+              <div className="text-xs text-zinc-500 mb-2">{stat.label}</div>
+              <div className={`text-2xl font-bold ${stat.color}`}>{stat.value}</div>
+            </GlassCard>
+          ))}
         </div>
 
-        {/* Active Streams Grid */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-red-400" />
-              <h2 className="text-2xl font-bold text-white">Active Launches</h2>
-            </div>
+        {/* Filters */}
+        <div className="mb-6 flex flex-wrap gap-2 justify-between">
+          <div className="flex gap-2">
+            {(['all', 'icm', 'ccm', 'meme'] as const).map(type => (
+              <button key={type} onClick={() => setTypeFilter(type)} className={`px-4 py-3 rounded-xl font-semibold text-sm ${typeFilter === type ? 'bg-gradient-to-r from-red-500 to-orange-500 text-white' : 'bg-zinc-900/60 text-zinc-400 border border-zinc-800'}`}>
+                {type === 'all' ? 'All' : type === 'icm' ? '💼 Projects' : type === 'ccm' ? '🟣 Creators' : '🟠 Memes'}
+              </button>
+            ))}
           </div>
+          <div className="flex gap-2">
+            {(['viewers', 'recent', 'trending'] as const).map(sort => (
+              <button key={sort} onClick={() => setSortBy(sort)} className={`px-4 py-3 rounded-xl font-semibold text-sm ${sortBy === sort ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white' : 'bg-zinc-900/60 text-zinc-400 border border-zinc-800'}`}>
+                {sort.charAt(0).toUpperCase() + sort.slice(1)}
+              </button>
+            ))}
+          </div>
+        </div>
 
-          {loading ? (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[...Array(6)].map((_, i) => (
-                <GlassCard key={i} className="h-48 animate-pulse">
-                  <div className="p-4">
-                    <div className="h-4 bg-zinc-800 rounded mb-4" />
-                    <div className="h-3 bg-zinc-800 rounded mb-2" />
-                    <div className="h-3 bg-zinc-800 rounded w-2/3" />
-                  </div>
-                </GlassCard>
-              ))}
-            </div>
-          ) : error ? (
-            <GlassCard className="p-8 text-center">
-              <p className="text-red-400">Error loading launches: {error}</p>
-            </GlassCard>
-          ) : items.length === 0 ? (
+        {/* Live Pitches */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+            <Sparkles className="w-5 h-5 text-red-400" />Live Now ({filteredPitches.length})
+          </h2>
+          {filteredPitches.length === 0 ? (
             <GlassCard className="p-8 text-center">
               <Zap className="w-12 h-12 text-zinc-600 mx-auto mb-3" />
-              <h3 className="text-lg font-semibold text-white mb-1">No live launches</h3>
-              <p className="text-sm text-zinc-400">Check back soon for new launches</p>
+              <h3 className="text-lg font-semibold text-white mb-1">No live pitches</h3>
+              <p className="text-sm text-zinc-400">Check back soon!</p>
             </GlassCard>
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {items.map((launch, index) => (
-                <motion.div
-                  key={launch.mint}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                  whileHover={{ y: -4 }}
-                  className="relative group cursor-pointer"
-                  onClick={() => setSelectedCoin(launch)}
-                >
-                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-red-500/20 to-orange-500/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
-
-                  <GlassCard className="relative h-full p-0 overflow-hidden border-zinc-800 group-hover:border-red-500/30 transition-all">
-                    {/* Stream Preview Thumbnail */}
-                    <div className="relative h-48 bg-gradient-to-br from-zinc-800 to-zinc-900 overflow-hidden">
-                      {launch.image_uri ? (
-                        <>
-                          <img
-                            src={launch.image_uri}
-                            alt={launch.name}
-                            className="w-full h-full object-cover"
-                          />
-                          {/* Dark overlay for readability */}
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                        </>
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-6xl font-bold text-white/20">
-                          {launch.symbol?.charAt(0) || 'T'}
-                        </div>
-                      )}
-
-                      {/* LIVE Badge */}
-                      <div className="absolute top-3 left-3 z-10">
-                        <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-red-500 rounded-lg shadow-lg">
-                          <motion.div
-                            animate={{ opacity: [1, 0.3, 1] }}
-                            transition={{ duration: 2, repeat: Infinity }}
-                            className="w-2 h-2 bg-white rounded-full"
-                          />
-                          <span className="text-xs font-bold text-white uppercase tracking-wide">LIVE</span>
+              {filteredPitches.map((pitch) => (
+                <motion.div key={pitch.id} whileHover={{ y: -4 }} className="cursor-pointer">
+                  <GlassCard className="p-0 overflow-hidden">
+                    <div className="relative h-48 bg-gradient-to-br from-zinc-800 to-zinc-900">
+                      <div className="absolute top-3 left-3">
+                        <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-red-500 rounded-lg">
+                          <motion.div animate={{ opacity: [1, 0.3, 1] }} transition={{ duration: 2, repeat: Infinity }} className="w-2 h-2 bg-white rounded-full" />
+                          <span className="text-xs font-bold text-white">LIVE</span>
                         </div>
                       </div>
-
-                      {/* Market Cap & Viewer Count Badges */}
-                      <div className="absolute top-3 right-3 flex gap-2">
-                        <div className="px-2.5 py-1.5 bg-black/60 backdrop-blur-md rounded-lg border border-white/10">
-                          <span className="text-xs font-bold text-green-400">
-                            {formatMarketCap(launch.market_cap)}
-                          </span>
+                      <div className="absolute top-3 right-3 flex flex-col gap-2">
+                        <div className="px-2.5 py-1.5 bg-black/60 rounded-lg flex items-center gap-1">
+                          <Eye className="w-3 h-3 text-violet-400" />
+                          <span className="text-xs font-bold text-white">{pitch.viewerCount.toLocaleString()}</span>
                         </div>
-                        <LiveViewerCount mint={launch.mint} />
                       </div>
-
-                      {/* Logo/Title Overlay */}
-                      <div className="absolute bottom-3 left-3 right-3 flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center text-lg font-bold text-white overflow-hidden border-2 border-white/20 shadow-lg flex-shrink-0">
-                          {launch.image_uri ? (
-                            <img
-                              src={launch.image_uri}
-                              alt={launch.name}
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            launch.symbol?.charAt(0) || 'T'
-                          )}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-bold text-white text-sm drop-shadow-lg truncate group-hover:text-red-300 transition-colors">
-                            {launch.name}
-                          </h3>
-                          <p className="text-xs text-white/80 drop-shadow">${launch.symbol}</p>
+                      <div className="absolute bottom-3 left-3 flex items-center gap-3">
+                        <div className="text-4xl">{pitch.curve.avatar}</div>
+                        <div>
+                          <h3 className="font-bold text-white text-sm">{pitch.curve.title}</h3>
+                          <p className="text-xs text-white/80">by {pitch.creatorName}</p>
                         </div>
                       </div>
                     </div>
-
-                    {/* Stats */}
                     <div className="p-4 space-y-2">
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="text-zinc-500">Market Cap</span>
-                        <span className="text-zinc-300 font-medium">{formatMarketCap(launch.mcap)}</span>
+                      <div className="flex justify-between text-xs">
+                        <span className="text-zinc-500">Live for</span>
+                        <span className="text-zinc-300">{formatTime(pitch.startedAt)}</span>
                       </div>
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="text-zinc-500">Replies</span>
-                        <span className="text-zinc-300 font-medium">{launch.reply_count || 0}</span>
-                      </div>
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="text-zinc-500">Launched</span>
-                        <span className="text-zinc-300">{formatTime(launch.created_timestamp)}</span>
-                      </div>
-                    </div>
-
-                    {/* Play Button Overlay on Hover */}
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center pointer-events-none">
-                      <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center opacity-0 group-hover:opacity-100 scale-0 group-hover:scale-100 transition-all">
-                        <Play className="w-6 h-6 text-black ml-1" />
-                      </div>
+                      <button className="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-red-500 to-orange-500 text-white font-semibold flex items-center justify-center gap-2">
+                        <Play className="w-4 h-4" />Watch Live
+                      </button>
                     </div>
                   </GlassCard>
                 </motion.div>
@@ -722,28 +236,35 @@ export default function LivePage() {
           )}
         </div>
 
-        {/* Bottom Pagination */}
-        <div className="mt-8">
-          <PaginationControls
-            page={page}
-            totalPages={pagesTotal}
-            onPrev={handlePrev}
-            onNext={handleNext}
-            onJumpToPage={handleJumpToPage}
-          />
-        </div>
+        {/* Upcoming */}
+        {upcomingPitches.length > 0 && (
+          <div>
+            <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+              <Calendar className="w-5 h-5 text-orange-400" />Starting Soon
+            </h2>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {upcomingPitches.map((pitch) => (
+                <div key={pitch.id} className="p-6 rounded-2xl bg-zinc-900/60 border border-zinc-800">
+                  <div className="flex items-start gap-4 mb-4">
+                    <div className="text-4xl">{pitch.curve.avatar}</div>
+                    <div>
+                      <h3 className="font-semibold text-white">{pitch.curve.title}</h3>
+                      <p className="text-sm text-zinc-400">by {pitch.creatorName}</p>
+                    </div>
+                  </div>
+                  <div className="mb-4">
+                    <div className="text-xs text-zinc-500 mb-1">Starts in</div>
+                    <div className="text-2xl font-bold text-orange-400">{formatCountdown(pitch.scheduledFor!)}</div>
+                  </div>
+                  <button className="w-full px-4 py-2 rounded-lg bg-orange-500 text-white font-semibold flex items-center justify-center gap-2">
+                    <Bell className="w-4 h-4" />Set Reminder
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
-
-      {/* Stream Modal */}
-      {selectedCoin && (
-        <StreamModal
-          isOpen={true}
-          onClose={() => setSelectedCoin(null)}
-          coin={selectedCoin}
-          formatMarketCap={formatMarketCap}
-          formatTime={formatTime}
-        />
-      )}
     </div>
   )
 }

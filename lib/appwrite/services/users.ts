@@ -21,6 +21,7 @@ export interface UserProfile {
   tiktok?: string
   youtube?: string
   contributionsJson?: string  // JSON string of contributions array
+  curveId?: string  // 🆕 Auto-created CCM curve ID
 }
 
 /**

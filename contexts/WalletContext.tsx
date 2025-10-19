@@ -9,7 +9,7 @@ interface WalletContextType {
   userId: string | null
   userInfo: any
   connect: () => Promise<void>
-  disconnect: () => void
+  disconnect: () => Promise<void>
 }
 
 const WalletContext = createContext<WalletContextType | undefined>(undefined)
@@ -56,9 +56,15 @@ export function WalletProvider({ children }: { children: ReactNode }) {
 
   async function disconnect() {
     try {
-      logout()
+      console.log('🚪 Logging out...')
+      await logout()
+      console.log('✅ Logged out successfully')
+      // Clear local state
+      setAddress(null)
+      // Force page reload to clear all state
+      window.location.href = '/'
     } catch (error) {
-      console.error('Failed to disconnect wallet:', error)
+      console.error('❌ Failed to disconnect wallet:', error)
       // Don't throw, just log the error
     }
   }

@@ -1,0 +1,361 @@
+"use client"
+
+import { useState } from 'react'
+import { motion } from 'framer-motion'
+import { Twitter, MessageCircle, Globe, TrendingUp, TrendingDown, ArrowUp, Eye, MessageSquare, Users } from 'lucide-react'
+import { cn } from '@/lib/cn'
+import type { AdvancedListingData } from '@/lib/advancedTradingData'
+import { formatTimeAgo, formatSOL } from '@/lib/advancedTradingData'
+
+interface AdvancedTableViewProps {
+  listings: AdvancedListingData[]
+  onBuyClick?: (listing: AdvancedListingData, amount: number) => void
+}
+
+export function AdvancedTableView({ listings, onBuyClick }: AdvancedTableViewProps) {
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full border-separate border-spacing-0">
+        <thead>
+          <tr className="text-xs font-medium text-zinc-400 uppercase tracking-wider">
+            <th className="sticky left-0 z-10 bg-black/90 backdrop-blur-xl px-4 py-3 text-left border-b border-zinc-800">
+              Token
+            </th>
+            <th className="px-4 py-3 text-left border-b border-zinc-800">Age</th>
+            <th className="px-4 py-3 text-center border-b border-zinc-800">Belief Score</th>
+            <th className="px-4 py-3 text-center border-b border-zinc-800">Upvotes</th>
+            <th className="px-4 py-3 text-center border-b border-zinc-800">
+              <Eye className="w-4 h-4 mx-auto" />
+            </th>
+            <th className="px-4 py-3 text-center border-b border-zinc-800">
+              <MessageSquare className="w-4 h-4 mx-auto" />
+            </th>
+            <th className="px-4 py-3 text-center border-b border-zinc-800">Holders</th>
+            <th className="px-4 py-3 text-right border-b border-zinc-800">Price</th>
+            <th className="px-4 py-3 text-left border-b border-zinc-800">Creator</th>
+            <th className="px-4 py-3 text-center border-b border-zinc-800">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {listings.map((listing, index) => (
+            <TableRow
+              key={listing.id}
+              listing={listing}
+              index={index}
+              onBuyClick={onBuyClick}
+            />
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+function TableRow({
+  listing,
+  index,
+  onBuyClick
+}: {
+  listing: AdvancedListingData
+  index: number
+  onBuyClick?: (listing: AdvancedListingData, amount: number) => void
+}) {
+  const [isHovered, setIsHovered] = useState(false)
+  const [hasVoted, setHasVoted] = useState(listing.hasVoted || false)
+  const [upvotes, setUpvotes] = useState(listing.upvotes)
+
+  // Type-based styling
+  const typeColors = {
+    icm: {
+      bg: 'from-green-500/10 to-emerald-500/5',
+      border: 'border-green-500/30',
+      text: 'text-green-400',
+      glow: 'shadow-green-500/20',
+      badge: 'bg-green-500/20 text-green-400 border-green-500/30'
+    },
+    ccm: {
+      bg: 'from-purple-500/10 to-violet-500/5',
+      border: 'border-purple-500/30',
+      text: 'text-purple-400',
+      glow: 'shadow-purple-500/20',
+      badge: 'bg-purple-500/20 text-purple-400 border-purple-500/30'
+    },
+    meme: {
+      bg: 'from-orange-500/10 to-red-500/5',
+      border: 'border-orange-500/30',
+      text: 'text-orange-400',
+      glow: 'shadow-orange-500/20',
+      badge: 'bg-orange-500/20 text-orange-400 border-orange-500/30'
+    }
+  }
+
+  const colors = typeColors[listing.type]
+  const timeAgo = formatTimeAgo(listing.metrics.createdAt)
+  const isPositive = (listing.priceChange24h ?? 0) >= 0
+
+  const handleVote = async () => {
+    if (listing.onVote) {
+      await listing.onVote()
+    }
+    setHasVoted(!hasVoted)
+    setUpvotes(prev => hasVoted ? prev - 1 : prev + 1)
+  }
+
+  // Status badge colors
+  const statusColors = {
+    live: 'bg-red-500/20 text-red-400 border-red-500/40',
+    active: 'bg-green-500/20 text-green-400 border-green-500/40',
+    upcoming: 'bg-blue-500/20 text-blue-400 border-blue-500/40',
+    frozen: 'bg-zinc-500/20 text-zinc-400 border-zinc-500/40',
+    ended: 'bg-zinc-600/20 text-zinc-500 border-zinc-600/40',
+    launched: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/40'
+  }
+
+  return (
+    <motion.tr
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.02 }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className={cn(
+        "group transition-all duration-200",
+        isHovered && "bg-zinc-900/50"
+      )}
+    >
+      {/* Token Column */}
+      <td className={cn(
+        "sticky left-0 z-10 px-4 py-3 border-b border-zinc-800/50",
+        isHovered ? "bg-zinc-900/90 backdrop-blur-xl" : "bg-black/90 backdrop-blur-xl"
+      )}>
+        <div className="flex items-center gap-3 min-w-[280px]">
+          {/* Token Icon */}
+          <div className={cn(
+            "relative w-12 h-12 rounded-xl border-2 flex-shrink-0 overflow-hidden",
+            colors.border,
+            colors.glow
+          )}>
+            {listing.logoUrl ? (
+              <img
+                src={listing.logoUrl}
+                alt={listing.ticker}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className={cn(
+                "w-full h-full flex items-center justify-center bg-gradient-to-br text-xl font-bold",
+                colors.bg,
+                colors.text
+              )}>
+                {listing.ticker?.[0] || '?'}
+              </div>
+            )}
+          </div>
+
+          {/* Token Info */}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1">
+              <h3 className="font-bold text-white text-sm truncate">
+                {listing.title}
+              </h3>
+              <span className={cn("text-xs font-mono", colors.text)}>
+                {listing.ticker}
+              </span>
+            </div>
+
+            {/* Status Badge + Social Links */}
+            <div className="flex items-center gap-2">
+              <span className={cn(
+                "px-2 py-0.5 rounded text-xs font-medium border",
+                statusColors[listing.status || 'active']
+              )}>
+                {(listing.status || 'ACTIVE').toUpperCase()}
+              </span>
+
+              {listing.twitterUrl && (
+                <a
+                  href={listing.twitterUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-zinc-500 hover:text-blue-400 transition-colors"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <Twitter className="w-3.5 h-3.5" />
+                </a>
+              )}
+              {listing.metrics.telegram && (
+                <a
+                  href={listing.metrics.telegram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-zinc-500 hover:text-blue-400 transition-colors"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <MessageCircle className="w-3.5 h-3.5" />
+                </a>
+              )}
+              {listing.metrics.website && (
+                <a
+                  href={listing.metrics.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-zinc-500 hover:text-blue-400 transition-colors"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <Globe className="w-3.5 h-3.5" />
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+      </td>
+
+      {/* Age Column */}
+      <td className="px-4 py-3 border-b border-zinc-800/50">
+        <div className="text-sm font-medium text-zinc-300">
+          {timeAgo}
+        </div>
+      </td>
+
+      {/* Belief Score Column */}
+      <td className="px-4 py-3 border-b border-zinc-800/50">
+        <div className="flex flex-col items-center gap-1">
+          <div className={cn("text-2xl font-bold", colors.text)}>
+            {listing.beliefScore}
+          </div>
+          <div className="w-16 h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: `${listing.beliefScore}%` }}
+              transition={{ duration: 0.8, delay: index * 0.02 }}
+              className={cn(
+                "h-full rounded-full bg-gradient-to-r",
+                listing.type === 'icm' && "from-green-500 to-emerald-400",
+                listing.type === 'ccm' && "from-purple-500 to-violet-400",
+                listing.type === 'meme' && "from-orange-500 to-red-400"
+              )}
+            />
+          </div>
+        </div>
+      </td>
+
+      {/* Upvotes Column with Button */}
+      <td className="px-4 py-3 border-b border-zinc-800/50">
+        <button
+          onClick={handleVote}
+          className={cn(
+            "flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-all group/vote mx-auto",
+            hasVoted
+              ? cn("bg-gradient-to-br", colors.bg, colors.border, "border")
+              : "bg-zinc-800/50 hover:bg-zinc-800 border border-zinc-700"
+          )}
+        >
+          <ArrowUp className={cn(
+            "w-4 h-4 transition-all",
+            hasVoted ? colors.text : "text-zinc-400 group-hover/vote:text-white group-hover/vote:-translate-y-0.5"
+          )} />
+          <span className={cn(
+            "text-sm font-bold",
+            hasVoted ? colors.text : "text-white"
+          )}>
+            {upvotes}
+          </span>
+        </button>
+      </td>
+
+      {/* Views Column */}
+      <td className="px-4 py-3 border-b border-zinc-800/50 text-center">
+        <div className="flex items-center justify-center gap-1 text-zinc-400">
+          <span className="text-sm font-medium text-white">
+            {listing.viewCount ? (listing.viewCount / 1000).toFixed(1) : '0'}k
+          </span>
+        </div>
+      </td>
+
+      {/* Comments Column */}
+      <td className="px-4 py-3 border-b border-zinc-800/50 text-center">
+        <div className="flex items-center justify-center gap-1 text-zinc-400">
+          <span className="text-sm font-medium text-white">
+            {listing.commentsCount}
+          </span>
+        </div>
+      </td>
+
+      {/* Holders Column */}
+      <td className="px-4 py-3 border-b border-zinc-800/50 text-center">
+        <div className="flex items-center justify-center gap-1">
+          <Users className="w-3.5 h-3.5 text-zinc-500" />
+          <span className="text-sm font-medium text-white">
+            {listing.holders?.toLocaleString() || '0'}
+          </span>
+        </div>
+      </td>
+
+      {/* Price Column */}
+      <td className="px-4 py-3 border-b border-zinc-800/50 text-right">
+        <div className="space-y-0.5">
+          <div className="font-semibold text-white text-sm">
+            {formatSOL(listing.currentPrice || 0)}
+          </div>
+          {listing.priceChange24h !== undefined && (
+            <div className={cn(
+              "flex items-center justify-end gap-1 text-xs font-medium",
+              isPositive ? "text-green-400" : "text-red-400"
+            )}>
+              {isPositive ? (
+                <TrendingUp className="w-3 h-3" />
+              ) : (
+                <TrendingDown className="w-3 h-3" />
+              )}
+              {isPositive ? '+' : ''}{listing.priceChange24h.toFixed(1)}%
+            </div>
+          )}
+        </div>
+      </td>
+
+      {/* Creator Column */}
+      <td className="px-4 py-3 border-b border-zinc-800/50">
+        <div className="flex items-center gap-2">
+          <img
+            src={listing.metrics.creatorAvatar}
+            alt={listing.metrics.creatorName}
+            className="w-8 h-8 rounded-full"
+          />
+          <div className="min-w-0">
+            <div className="text-sm font-medium text-white truncate">
+              {listing.metrics.creatorName}
+            </div>
+            <div className="text-xs text-zinc-500 font-mono">
+              {listing.metrics.creatorWallet}
+            </div>
+          </div>
+        </div>
+      </td>
+
+      {/* Actions Column */}
+      <td className="px-4 py-3 border-b border-zinc-800/50">
+        <div className="flex flex-col gap-2">
+          <button
+            onClick={() => onBuyClick?.(listing, 0.1)}
+            className={cn(
+              "px-4 py-2 rounded-lg font-bold text-sm transition-all",
+              "bg-gradient-to-r hover:scale-105 text-white",
+              listing.type === 'icm' && "from-green-500 to-emerald-500",
+              listing.type === 'ccm' && "from-purple-500 to-violet-500",
+              listing.type === 'meme' && "from-orange-500 to-red-500"
+            )}
+          >
+            Buy Keys
+          </button>
+          {listing.myKeys && listing.myKeys > 0 && (
+            <div className="text-xs text-center">
+              <span className={cn("font-medium", colors.text)}>
+                You own {listing.myKeys}
+              </span>
+            </div>
+          )}
+        </div>
+      </td>
+    </motion.tr>
+  )
+}

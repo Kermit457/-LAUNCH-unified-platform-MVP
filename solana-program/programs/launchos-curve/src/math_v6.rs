@@ -415,6 +415,71 @@ pub enum ReferrerType {
     None,     // No referral
 }
 
+// ============================================================================
+// BACKWARD COMPATIBILITY WRAPPERS
+// ============================================================================
+
+/// Simplified fee structure for backward compatibility
+/// Maps V6's flexible routing to match existing transfer logic
+#[derive(Debug, Clone, Copy)]
+pub struct BuyFeeDistribution {
+    pub reserve: u128,           // 94%
+    pub instant_fee: u128,       // 3% referral (to referrer or creator)
+    pub buyback_burn: u128,      // 1%
+    pub community_rewards: u128, // 1%
+    pub platform: u128,          // 1% project fee (sent to platform_treasury)
+}
+
+/// Simplified sell fee structure
+#[derive(Debug, Clone, Copy)]
+pub struct SellFeeDistribution {
+    pub to_seller: u128,         // 94%
+    pub instant_fee: u128,       // 3% referral (to referrer or creator)
+    pub buyback_burn: u128,      // 1%
+    pub community_rewards: u128, // 1%
+    pub platform: u128,          // 1% project fee (sent to platform_treasury)
+}
+
+/// Wrapper for buy fees - assumes User referral by default
+/// For no referrer, use calculate_buy_fees_no_referrer()
+pub fn calculate_buy_fees(total_cost: u128) -> Result<BuyFeeDistribution> {
+    let v6_fees = calculate_v6_buy_fees(total_cost, ReferrerType::User)?;
+
+    Ok(BuyFeeDistribution {
+        reserve: v6_fees.reserve,
+        instant_fee: v6_fees.referral,    // 3% goes to referrer
+        buyback_burn: v6_fees.buyback_burn,
+        community_rewards: v6_fees.community_rewards,
+        platform: v6_fees.project,        // 1% project fee → platform_treasury
+    })
+}
+
+/// Buy fees when there's no referrer (routes to community)
+pub fn calculate_buy_fees_no_referrer(total_cost: u128) -> Result<BuyFeeDistribution> {
+    let v6_fees = calculate_v6_buy_fees(total_cost, ReferrerType::None)?;
+
+    Ok(BuyFeeDistribution {
+        reserve: v6_fees.reserve,
+        instant_fee: 0,                    // No referrer = no instant fee
+        buyback_burn: v6_fees.buyback_burn,
+        community_rewards: v6_fees.community_rewards, // 3% to community
+        platform: v6_fees.project,         // 2% project → platform_treasury
+    })
+}
+
+/// Wrapper for sell fees - assumes User referral by default
+pub fn calculate_sell_fees(gross_return: u128) -> Result<SellFeeDistribution> {
+    let v6_fees = calculate_v6_sell_fees(gross_return, ReferrerType::User)?;
+
+    Ok(SellFeeDistribution {
+        to_seller: v6_fees.to_seller,
+        instant_fee: v6_fees.referral,     // 3% to referrer
+        buyback_burn: v6_fees.buyback_burn,
+        community_rewards: v6_fees.community_rewards,
+        platform: v6_fees.project,         // 1% project → platform_treasury
+    })
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
