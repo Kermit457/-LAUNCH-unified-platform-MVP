@@ -101,17 +101,8 @@ export type SubmitLaunchInput = {
   scope: "ICM" | "CCM" | "MEME"
   status: "Live" | "Upcoming"
   description: string
-  platforms: ("twitter" | "discord" | "telegram" | "youtube" | "twitch" | "tiktok" | "obs")[]
-  economics?: {
-    poolUsd?: number
-    contributionPoolPct?: number
-    feesSharePct?: number
-    endAt?: number
-  }
-  creator?: string
-  existingToken?: {
-    mint: string            // SPL mint
-    treasury: string        // Solana wallet address
-  } // present only if scope=ICM and toggle on
-  tokenAddress?: string // For Live status with token address
+  platforms: ("twitter" | "discord" | "telegram" | "youtube" | "twitch" | "tiktok" | "obs")[] // Twitter is mandatory
+  projectLink?: string        // Optional project website or homepage URL
+  projectImages: File[]       // 3-5 project images (PNG/JPG, ≤5MB each)
+  tokenAddress?: string       // For Live status with token address
 }

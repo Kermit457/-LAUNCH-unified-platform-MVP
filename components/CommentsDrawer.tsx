@@ -73,7 +73,7 @@ export function CommentsDrawer({ project, open, onClose, onAddComment }: Comment
     e.preventDefault()
 
     if (!authenticated || !user?.id) {
-      alert('Please connect your wallet to comment')
+      showError('Authentication Required', 'Please connect your wallet to comment')
       return
     }
 
@@ -164,9 +164,24 @@ export function CommentsDrawer({ project, open, onClose, onAddComment }: Comment
         {/* Comments List */}
         <div id="comments-list" className="flex-1 overflow-y-auto p-4 space-y-4">
           {isLoading ? (
-            <div className="flex items-center justify-center py-16">
-              <div className="text-design-zinc-400">Loading comments...</div>
-            </div>
+            // Loading skeleton
+            <>
+              {[1, 2, 3].map((i) => (
+                <GlassCard key={i} className="p-4 space-y-2 animate-pulse">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-full bg-design-zinc-800" />
+                    <div className="space-y-1">
+                      <div className="h-3 w-24 bg-design-zinc-800 rounded" />
+                      <div className="h-2 w-16 bg-design-zinc-800 rounded" />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="h-3 w-full bg-design-zinc-800 rounded" />
+                    <div className="h-3 w-4/5 bg-design-zinc-800 rounded" />
+                  </div>
+                </GlassCard>
+              ))}
+            </>
           ) : comments.length > 0 ? (
             comments.map((comment) => (
               <GlassCard key={comment.id} className="p-4 space-y-2">

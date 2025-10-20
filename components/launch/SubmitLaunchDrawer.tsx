@@ -47,16 +47,8 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit, isLoading = fals
   const [tokenAddress, setTokenAddress] = useState('')
   const [description, setDescription] = useState('')
   const [platforms, setPlatforms] = useState<SubmitLaunchInput['platforms']>([])
-
-  const [existingToken, setExistingToken] = useState(false)
-  const [mint, setMint] = useState('')
-  const [treasury, setTreasury] = useState('')
-
-  const [poolUsd, setPoolUsd] = useState('')
-  const [contributionPoolPct, setContributionPoolPct] = useState('')
-  const [feesSharePct, setFeesSharePct] = useState('')
-
-  const [creator, setCreator] = useState('')
+  const [projectLink, setProjectLink] = useState('')
+  const [projectImages, setProjectImages] = useState<File[]>([])
 
   // Persist scope
   useEffect(() => {
@@ -84,18 +76,13 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit, isLoading = fals
     )
   }
 
-  // Validation
+  // Form Validation
   const isTitleValid = title.trim().length > 0 && title.length <= 80
   const isSubtitleValid = subtitle.trim().length > 0 && subtitle.length <= 120
   const isLogoValid = logoFile !== null
   const isDescriptionValid = description.trim().length > 0 && description.length <= 500
-  const arePlatformsValid = platforms.length >= 1
-
-  const isMintValid = !mint || isValidBase58(mint)
-  const isTreasuryValid = !treasury || isValidBase58(treasury)
-  const areTokenFieldsValid = !existingToken || (scope === 'CCM') || (mint.trim() !== '' && treasury.trim() !== '' && isMintValid && isTreasuryValid)
-
-  const isPoolValid = !poolUsd || (!isNaN(Number(poolUsd)) && Number(poolUsd) >= 0)
+  const arePlatformsValid = platforms.length >= 1 && platforms.includes('twitter') // Twitter is mandatory
+  const areProjectImagesValid = projectImages.length >= 3 && projectImages.length <= 5
 
   const isFormValid =
     isTitleValid &&
@@ -103,8 +90,7 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit, isLoading = fals
     isLogoValid &&
     isDescriptionValid &&
     arePlatformsValid &&
-    areTokenFieldsValid &&
-    isPoolValid
+    areProjectImagesValid
 
   const handleSubmit = () => {
     if (!isFormValid || !logoFile) return
@@ -117,22 +103,8 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit, isLoading = fals
       status,
       description: description.trim(),
       platforms,
-      economics:
-        poolUsd || contributionPoolPct || feesSharePct
-          ? {
-              poolUsd: poolUsd ? Number(poolUsd) : undefined,
-              contributionPoolPct: contributionPoolPct ? Number(contributionPoolPct) : undefined,
-              feesSharePct: feesSharePct ? Number(feesSharePct) : undefined,
-            }
-          : undefined,
-      creator: creator.trim() || undefined,
-      existingToken:
-        scope === 'ICM' && existingToken
-          ? {
-              mint: mint.trim(),
-              treasury: treasury.trim(),
-            }
-          : undefined,
+      projectLink: projectLink.trim() || undefined,
+      projectImages,
       tokenAddress: tokenAddress.trim() || undefined,
     }
 
@@ -333,6 +305,21 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit, isLoading = fals
                 <p className="mt-1 text-xs text-white/40 text-right">{description.length}/500</p>
               </div>
 
+              {/* Project Link */}
+              <div>
+                <label className="block text-sm font-medium text-white/70 mb-2">
+                  Project Link
+                </label>
+                <input
+                  type="url"
+                  value={projectLink}
+                  onChange={(e) => setProjectLink(e.target.value)}
+                  placeholder="https://yourproject.com"
+                  className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
+                />
+                <p className="mt-1 text-xs text-white/40">Website or project homepage (optional)</p>
+              </div>
+
               {/* Platforms */}
               <div>
                 <label className="block text-sm font-medium text-white/70 mb-2">
@@ -356,180 +343,68 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit, isLoading = fals
                     )
                   })}
                 </div>
+                {!platforms.includes('twitter') && (
+                  <p className="mt-1 text-xs text-red-400">Twitter/X is required</p>
+                )}
                 {platforms.length === 0 && (
-                  <p className="mt-1 text-xs text-red-400">Select at least one platform</p>
+                  <p className="mt-1 text-xs text-red-400">Select at least one platform (Twitter/X required)</p>
                 )}
               </div>
-            </div>
 
-            {/* Token Section (ICM only) */}
-            {scope === 'ICM' && (
-              <div className="space-y-4 pt-4 border-t border-white/10">
-                <h3 className="text-sm font-semibold text-white/90">Token</h3>
-
-                {/* Existing Token Toggle */}
-                <div>
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={existingToken}
-                      onChange={(e) => setExistingToken(e.target.checked)}
-                      className="w-4 h-4 rounded border-white/20 bg-white/5 text-fuchsia-500 focus:ring-2 focus:ring-fuchsia-400/80"
-                    />
-                    <span className="text-sm text-white/70">Existing Token?</span>
-                  </label>
-                </div>
-
-                {existingToken && (
-                  <>
-                    {/* Solana Token Mint Address */}
-                    <div>
-                      <label className="block text-sm font-medium text-white/70 mb-2">
-                        Solana Token Mint Address <span className="text-red-400">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        value={mint}
-                        onChange={(e) => setMint(e.target.value)}
-                        placeholder="SPL mint address (base58)"
-                        className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
-                      />
-                      <p className="mt-1 text-xs text-white/40">SPL mint address (base58). Solana only.</p>
-                      {mint && !isMintValid && (
-                        <p className="mt-1 text-xs text-red-400">Invalid base58 address (32-44 characters)</p>
-                      )}
-                    </div>
-
-                    {/* Treasury Wallet Address */}
-                    <div>
-                      <label className="block text-sm font-medium text-white/70 mb-2">
-                        Treasury Wallet Address <span className="text-red-400">*</span>
-                      </label>
-                      <div className="flex gap-2">
-                        <input
-                          type="text"
-                          value={treasury}
-                          onChange={(e) => setTreasury(e.target.value)}
-                          placeholder="Solana wallet address"
-                          className="flex-1 h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
-                        />
-                        <button
-                          disabled={!isTreasuryValid || treasury.trim() === ''}
-                          className="px-4 h-12 rounded-xl bg-white/5 border border-white/10 text-white/70 text-sm font-medium hover:bg-white/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                          Verify
-                        </button>
-                      </div>
-                      <p className="mt-1 text-xs text-white/40">Receive wallet for fees and buybacks.</p>
-                      {treasury && !isTreasuryValid && (
-                        <p className="mt-1 text-xs text-red-400">Invalid base58 address (32-44 characters)</p>
-                      )}
-                      {treasury && isTreasuryValid && (
-                        <p className="mt-1 text-xs text-emerald-400">Valid</p>
-                      )}
-                    </div>
-
-                    <p className="text-xs text-white/40">💡 Solana only</p>
-                  </>
-                )}
-              </div>
-            )}
-
-            {/* Economics (optional) */}
-            <div className="space-y-4 pt-4 border-t border-white/10">
-              <h3 className="text-sm font-semibold text-white/90">Economics (optional)</h3>
-
-              <div className="grid grid-cols-1 gap-4">
-                {/* Pool $ */}
-                <div>
-                  <label className="block text-sm font-medium text-white/70 mb-2">Pool $</label>
-                  <div className="relative">
-                    <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
-                    <input
-                      type="number"
-                      value={poolUsd}
-                      onChange={(e) => {
-                        const val = e.target.value
-                        if (val === '' || /^\d+\.?\d{0,2}$/.test(val)) {
-                          setPoolUsd(val)
-                        }
-                      }}
-                      placeholder="0.00"
-                      step="0.01"
-                      min="0"
-                      className="w-full h-12 pl-10 pr-16 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
-                    />
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2 px-2 py-0.5 rounded bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-semibold">
-                      USDC
-                    </div>
-                  </div>
-                </div>
-
-                {/* Contribution Pool % and Fees Share % */}
-                <div className="grid grid-cols-2 gap-4">
-                  {/* Contribution Pool % */}
-                  <div>
-                    <label className="block text-sm font-medium text-white/70 mb-2">
-                      🪙 Contribution Pool %
-                    </label>
-                    <input
-                      type="number"
-                      value={contributionPoolPct}
-                      onChange={(e) => {
-                        const val = e.target.value
-                        if (val === '' || (/^\d+\.?\d{0,2}$/.test(val) && Number(val) <= 100)) {
-                          setContributionPoolPct(val)
-                        }
-                      }}
-                      placeholder="e.g., 2"
-                      step="0.1"
-                      min="0"
-                      max="100"
-                      className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
-                    />
-                    <p className="text-xs text-white/40 mt-1">% of supply</p>
-                  </div>
-
-                  {/* Fees Share % */}
-                  <div>
-                    <label className="block text-sm font-medium text-white/70 mb-2">
-                      💰 Fees Share %
-                    </label>
-                    <input
-                      type="number"
-                      value={feesSharePct}
-                      onChange={(e) => {
-                        const val = e.target.value
-                        if (val === '' || (/^\d+\.?\d{0,2}$/.test(val) && Number(val) <= 100)) {
-                          setFeesSharePct(val)
-                        }
-                      }}
-                      placeholder="e.g., 10"
-                      step="0.1"
-                      min="0"
-                      max="100"
-                      className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
-                    />
-                    <p className="text-xs text-white/40 mt-1">% of fees</p>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-
-            {/* Creator (optional) */}
-            <div className="space-y-4 pt-4 border-t border-white/10">
-              <h3 className="text-sm font-semibold text-white/90">Creator (optional)</h3>
-
+              {/* Project Images */}
               <div>
-                <label className="block text-sm font-medium text-white/70 mb-2">Creator name / handle</label>
-                <input
-                  type="text"
-                  value={creator}
-                  onChange={(e) => setCreator(e.target.value)}
-                  placeholder="@username or full name"
-                  className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
-                />
+                <label className="block text-sm font-medium text-white/70 mb-2">
+                  Project Images <span className="text-red-400">*</span>
+                </label>
+                <div className="space-y-3">
+                  <input
+                    type="file"
+                    accept="image/png,image/jpeg,image/jpg"
+                    multiple
+                    onChange={(e) => {
+                      const files = Array.from(e.target.files || [])
+                      if (files.length > 5) {
+                        setProjectImages(files.slice(0, 5))
+                      } else {
+                        setProjectImages(files)
+                      }
+                    }}
+                    className="w-full text-sm text-white/70 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-fuchsia-500/20 file:text-fuchsia-300 hover:file:bg-fuchsia-500/30 file:cursor-pointer"
+                  />
+                  <p className="text-xs text-white/40">
+                    Upload 3-5 images showcasing your project (PNG or JPG, max 5MB each)
+                  </p>
+                  {projectImages.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {projectImages.map((img, idx) => (
+                        <div key={idx} className="relative group">
+                          <div className="w-20 h-20 rounded-lg overflow-hidden border border-white/10">
+                            <img
+                              src={URL.createObjectURL(img)}
+                              alt={`Preview ${idx + 1}`}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <button
+                            onClick={() => setProjectImages(prev => prev.filter((_, i) => i !== idx))}
+                            className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-500 text-white text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {projectImages.length > 0 && projectImages.length < 3 && (
+                    <p className="text-xs text-red-400">At least 3 images required ({projectImages.length}/3)</p>
+                  )}
+                  {projectImages.length > 5 && (
+                    <p className="text-xs text-red-400">Maximum 5 images allowed</p>
+                  )}
+                  {projectImages.length >= 3 && projectImages.length <= 5 && (
+                    <p className="text-xs text-emerald-400">✓ {projectImages.length} images added</p>
+                  )}
+                </div>
               </div>
             </div>
           </div>

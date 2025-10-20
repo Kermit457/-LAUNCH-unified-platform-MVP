@@ -165,17 +165,13 @@ export function UnifiedCard({ data }: { data: UnifiedCardData }) {
   }
 
   const handleBuyOrManage = () => {
+    // If onBuyKeys callback provided, use that (page-level modal)
     if (data.onBuyKeys) {
       data.onBuyKeys()
       return
     }
-
-    // Fallback internal modal
-    if (hasPos) {
-      setModalMode('manage')
-    } else {
-      setModalMode('buy')
-    }
+    // Otherwise use internal modal
+    setModalMode('buy')
     setModalOpen(true)
   }
 
@@ -511,17 +507,10 @@ export function UnifiedCard({ data }: { data: UnifiedCardData }) {
                 'text-black hover:scale-[1.02]'
               )}
             >
-              {hasPos ? (
-                <>
-                  <Users className="w-4 h-4" strokeWidth={2.5} />
-                  Manage
-                </>
-              ) : (
-                <>
-                  Buy Keys
-                  {data.currentPrice && <span className="opacity-90 font-normal">@{data.currentPrice.toFixed(3)}</span>}
-                </>
-              )}
+              <>
+                Buy Keys
+                {data.currentPrice && <span className="opacity-90 font-normal">@{data.currentPrice.toFixed(3)}</span>}
+              </>
             </button>
 
             {/* Secondary Actions */}

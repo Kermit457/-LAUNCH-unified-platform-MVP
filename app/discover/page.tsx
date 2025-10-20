@@ -1,21 +1,35 @@
 "use client"
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { UnifiedCard } from '@/components/UnifiedCard'
 import { AdvancedTableView } from '@/components/AdvancedTableView'
+import { CommentsDrawer } from '@/components/CommentsDrawer'
+import { BuySellModal } from '@/components/launch/BuySellModal'
+import { LaunchDetailsModal } from '@/components/launch/LaunchDetailsModal'
 import { unifiedListings, filterByType, filterByStatus, sortListings, getMyHoldings, getMyCurves } from '@/lib/unifiedMockData'
 import { advancedListings, type AdvancedListingData } from '@/lib/advancedTradingData'
 import type { CurveType } from '@/components/UnifiedCard'
 import { Search, TrendingUp, DollarSign, Users, Zap, LayoutGrid, Table } from 'lucide-react'
 import { cn } from '@/lib/cn'
+import { useToast } from '@/hooks/useToast'
+import { usePrivy } from '@privy-io/react-auth'
+import { addVote, removeVote } from '@/lib/appwrite/services/votes'
 
 export default function DiscoverPage() {
+  const router = useRouter()
+  const { success, info, error: showError, warning } = useToast()
+  const { authenticated, user } = usePrivy()
+
   const [typeFilter, setTypeFilter] = useState<'all' | CurveType>('all')
   const [viewFilter, setViewFilter] = useState<'trending' | 'my-holdings' | 'my-curves' | 'following'>('trending')
   const [statusFilter, setStatusFilter] = useState<'all' | 'live' | 'active' | 'upcoming' | 'frozen'>('all')
   const [sortBy, setSortBy] = useState<'trending' | 'new' | 'volume' | 'conviction'>('trending')
   const [searchQuery, setSearchQuery] = useState('')
   const [displayMode, setDisplayMode] = useState<'cards' | 'table'>('table') // Default to table view
+  const [commentDrawerListing, setCommentDrawerListing] = useState<AdvancedListingData | null>(null)
+  const [buyModalListing, setBuyModalListing] = useState<AdvancedListingData | null>(null)
+  const [detailsModalListing, setDetailsModalListing] = useState<AdvancedListingData | null>(null)
 
   // Get base listings based on view filter - use advancedListings for table view
   let baseListings: AdvancedListingData[] = advancedListings
@@ -295,7 +309,16 @@ export default function DiscoverPage() {
                 <AdvancedTableView
                   listings={filtered}
                   onBuyClick={(listing, amount) => {
-                    console.log(`Buy ${amount} SOL of`, listing.title)
+                    setBuyModalListing(listing)
+                  }}
+                  onCollaborateClick={(listing) => {
+                    info('Collaborate', 'Send invite to collaborate on ' + listing.title)
+                  }}
+                  onCommentClick={(listing) => {
+                    setCommentDrawerListing(listing)
+                  }}
+                  onRowClick={(listing) => {
+                    setDetailsModalListing(listing)
                   }}
                 />
               </div>
@@ -308,31 +331,62 @@ export default function DiscoverPage() {
                     data={{
                       ...listing,
                       onVote: async () => {
-                        console.log('Voted for', listing.title)
+                        if (!authenticated || !user?.id) {
+                          warning('Authentication Required', 'Please connect your wallet to vote')
+                          return
+                        }
+
+                        try {
+                          // Check if already voted (toggle logic)
+                          if (listing.hasVoted) {
+                            await removeVote(listing.id, user.id)
+                            listing.hasVoted = false
+                            listing.upvotes = Math.max(0, (listing.upvotes || 0) - 1)
+                            success('Vote Removed', 'Your vote has been removed')
+                          } else {
+                            await addVote(listing.id, user.id)
+                            listing.hasVoted = true
+                            listing.upvotes = (listing.upvotes || 0) + 1
+                            success('Voted!', 'Your vote has been recorded')
+                          }
+                        } catch (error: any) {
+                          showError('Vote Failed', error.message || 'Failed to vote')
+                        }
                       },
                       onComment: () => {
-                        console.log('Comment on', listing.title)
+                        setCommentDrawerListing(listing)
                       },
                       onCollaborate: () => {
-                        console.log('Collaborate on', listing.title)
+                        info('Collaborate', 'Send invite to collaborate on ' + listing.title)
                       },
                       onDetails: () => {
-                        console.log('View details for', listing.title)
+                        setDetailsModalListing(listing)
                       },
                       onBuyKeys: () => {
-                        console.log('Buy keys for', listing.title)
+                        setBuyModalListing(listing)
                       },
                       onClaimAirdrop: async () => {
-                        console.log('Claim airdrop for', listing.title)
+                        info('Airdrop Claim', 'Airdrop claiming coming soon!')
                       },
                       onNotificationToggle: () => {
-                        console.log('Toggle notifications for', listing.title)
+                        success('Notifications', 'Notifications toggled')
                       },
                       onShare: () => {
-                        console.log('Share', listing.title)
+                        if (navigator.share) {
+                          navigator.share({
+                            title: listing.title,
+                            text: listing.subtitle || '',
+                            url: window.location.origin + `/launch/${listing.id}`,
+                          })
+                        } else {
+                          navigator.clipboard.writeText(window.location.origin + `/launch/${listing.id}`)
+                          success('Link Copied', 'Launch link copied to clipboard')
+                        }
                       },
                       onTwitterClick: () => {
-                        console.log('Open Twitter for', listing.title)
+                        if (listing.platforms?.twitter) {
+                          window.open(`https://twitter.com/${listing.platforms.twitter}`, '_blank')
+                        }
                       },
                     }}
                   />
@@ -364,6 +418,64 @@ export default function DiscoverPage() {
           </div>
         )}
       </div>
+
+      {/* Comments Drawer */}
+      {commentDrawerListing && (
+        <CommentsDrawer
+          project={{
+            id: commentDrawerListing.id,
+            title: commentDrawerListing.title,
+            subtitle: commentDrawerListing.subtitle,
+            logo: commentDrawerListing.logo,
+          } as any}
+          open={!!commentDrawerListing}
+          onClose={() => setCommentDrawerListing(null)}
+          onAddComment={(comment) => {
+            // Optimistically update comment count
+            const listing = filtered.find(l => l.id === commentDrawerListing.id)
+            if (listing) {
+              listing.commentsCount = (listing.commentsCount || 0) + 1
+            }
+          }}
+        />
+      )}
+
+      {/* Buy/Sell Modal */}
+      {buyModalListing && (
+        <BuySellModal
+          open={!!buyModalListing}
+          onClose={() => setBuyModalListing(null)}
+          mode="buy"
+          data={{
+            title: buyModalListing.title,
+            logoUrl: buyModalListing.logo,
+            currentPrice: buyModalListing.currentPrice || 0.01,
+            myKeys: buyModalListing.myKeys || 0,
+            mySharePct: buyModalListing.mySharePct || 0,
+            totalSupply: 1000000,
+            priceChange24h: buyModalListing.metrics?.priceChange24h,
+            estLaunchTokens: null,
+          }}
+          onBuy={async (amount) => {
+            success('Buy', `Buying ${amount} keys...`)
+            // TODO: Wire to actual buy function
+          }}
+          onSell={async (amount) => {
+            success('Sell', `Selling ${amount} keys...`)
+            // TODO: Wire to actual sell function
+          }}
+        />
+      )}
+
+      {/* Launch Details Modal */}
+      {detailsModalListing && (
+        <LaunchDetailsModal
+          open={!!detailsModalListing}
+          onClose={() => setDetailsModalListing(null)}
+          launchId={detailsModalListing.id}
+          listing={detailsModalListing}
+        />
+      )}
     </div>
   )
 }

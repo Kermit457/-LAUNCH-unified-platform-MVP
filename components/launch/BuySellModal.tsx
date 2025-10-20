@@ -85,7 +85,7 @@ export function BuySellModal({ open, onClose, mode, data, onBuy, onSell }: BuySe
   const isManage = mode === 'manage'
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
       <div className="relative w-full max-w-md rounded-2xl bg-[rgba(255,255,255,0.06)] backdrop-blur-[8px] ring-1 ring-[rgba(255,255,255,0.10)] shadow-[0_0_0_1px_rgba(255,255,255,0.05),0_20px_60px_rgba(0,0,0,0.35)]">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-white/10">

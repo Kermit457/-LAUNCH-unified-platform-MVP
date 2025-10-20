@@ -88,15 +88,13 @@ export function getNavItems(options?: {
       return false
     }
 
-    // Check auth requirement
-    if (item.requiresAuth && !options?.authenticated) {
-      return false
-    }
-
     // Check showInNav
     if (!item.showInNav) {
       return false
     }
+
+    // Note: We don't filter by requiresAuth here - show all nav items
+    // The page itself should handle auth requirements
 
     return true
   })

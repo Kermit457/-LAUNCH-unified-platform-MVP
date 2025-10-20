@@ -10,9 +10,12 @@ import { formatTimeAgo, formatSOL } from '@/lib/advancedTradingData'
 interface AdvancedTableViewProps {
   listings: AdvancedListingData[]
   onBuyClick?: (listing: AdvancedListingData, amount: number) => void
+  onCollaborateClick?: (listing: AdvancedListingData) => void
+  onCommentClick?: (listing: AdvancedListingData) => void
+  onRowClick?: (listing: AdvancedListingData) => void
 }
 
-export function AdvancedTableView({ listings, onBuyClick }: AdvancedTableViewProps) {
+export function AdvancedTableView({ listings, onBuyClick, onCollaborateClick, onCommentClick, onRowClick }: AdvancedTableViewProps) {
   return (
     <div className="overflow-x-auto">
       <table className="w-full border-separate border-spacing-0">
@@ -43,6 +46,9 @@ export function AdvancedTableView({ listings, onBuyClick }: AdvancedTableViewPro
               listing={listing}
               index={index}
               onBuyClick={onBuyClick}
+              onCollaborateClick={onCollaborateClick}
+              onCommentClick={onCommentClick}
+              onRowClick={onRowClick}
             />
           ))}
         </tbody>
@@ -54,11 +60,17 @@ export function AdvancedTableView({ listings, onBuyClick }: AdvancedTableViewPro
 function TableRow({
   listing,
   index,
-  onBuyClick
+  onBuyClick,
+  onCollaborateClick,
+  onCommentClick,
+  onRowClick
 }: {
   listing: AdvancedListingData
   index: number
   onBuyClick?: (listing: AdvancedListingData, amount: number) => void
+  onCollaborateClick?: (listing: AdvancedListingData) => void
+  onCommentClick?: (listing: AdvancedListingData) => void
+  onRowClick?: (listing: AdvancedListingData) => void
 }) {
   const [isHovered, setIsHovered] = useState(false)
   const [hasVoted, setHasVoted] = useState(listing.hasVoted || false)
@@ -118,8 +130,9 @@ function TableRow({
       transition={{ delay: index * 0.02 }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onClick={() => onRowClick?.(listing)}
       className={cn(
-        "group transition-all duration-200",
+        "group transition-all duration-200 cursor-pointer",
         isHovered && "bg-zinc-900/50"
       )}
     >
@@ -239,12 +252,15 @@ function TableRow({
         </div>
       </td>
 
-      {/* Upvotes Column with Button */}
+      {/* Upvotes Column with Button - Opens Details */}
       <td className="px-4 py-3 border-b border-zinc-800/50">
         <button
-          onClick={handleVote}
+          onClick={(e) => {
+            e.stopPropagation()
+            onRowClick?.(listing)
+          }}
           className={cn(
-            "flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-all group/vote mx-auto",
+            "flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-all group/vote mx-auto cursor-pointer",
             hasVoted
               ? cn("bg-gradient-to-br", colors.bg, colors.border, "border")
               : "bg-zinc-800/50 hover:bg-zinc-800 border border-zinc-700"
@@ -274,11 +290,17 @@ function TableRow({
 
       {/* Comments Column */}
       <td className="px-4 py-3 border-b border-zinc-800/50 text-center">
-        <div className="flex items-center justify-center gap-1 text-zinc-400">
-          <span className="text-sm font-medium text-white">
-            {listing.commentsCount}
+        <button
+          onClick={(e) => {
+            e.stopPropagation()
+            onCommentClick?.(listing)
+          }}
+          className="flex items-center justify-center gap-1 text-zinc-400 hover:text-white transition-colors mx-auto cursor-pointer"
+        >
+          <span className="text-sm font-medium">
+            {listing.commentsCount || 0}
           </span>
-        </div>
+        </button>
       </td>
 
       {/* Holders Column */}
@@ -337,7 +359,10 @@ function TableRow({
         <div className="flex flex-col gap-2">
           <div className="flex items-stretch gap-2">
             <button
-              onClick={() => onBuyClick?.(listing, 0.1)}
+              onClick={(e) => {
+                e.stopPropagation()
+                onBuyClick?.(listing, 0.1)
+              }}
               className={cn(
                 "px-4 py-2 rounded-lg font-bold text-sm transition-all whitespace-nowrap hover:scale-105",
                 listing.type === 'icm' && "bg-[#00FF88] text-black",
@@ -352,8 +377,7 @@ function TableRow({
             <button
               onClick={(e) => {
                 e.stopPropagation()
-                // TODO: Implement DM/Collaborate modal
-                console.log('Opening DM with', listing.metrics.creatorName)
+                onCollaborateClick?.(listing)
               }}
               className="px-2 py-2 rounded-lg transition-all bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 hover:border-[#8800FF]/50 text-zinc-400 hover:text-[#8800FF] flex items-center justify-center"
               title="Collaborate"

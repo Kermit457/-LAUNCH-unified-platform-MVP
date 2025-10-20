@@ -5,6 +5,7 @@ import { ChevronUp } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { usePrivy } from '@privy-io/react-auth'
 import { addVote, removeVote, getVoteCount, hasUserVoted } from '@/lib/appwrite/services/votes'
+import { useToast } from '@/hooks/useToast'
 
 interface VoteButtonProps {
   initialVotes: number
@@ -20,6 +21,7 @@ export function VoteButton({
   orientation = 'vertical'
 }: VoteButtonProps) {
   const { authenticated, user } = usePrivy()
+  const { warning, error: showError } = useToast()
   const [votes, setVotes] = useState(initialVotes)
   const [hasVoted, setHasVoted] = useState(false)
   const [isAnimating, setIsAnimating] = useState(false)
@@ -41,7 +43,7 @@ export function VoteButton({
 
   const handleVote = async () => {
     if (!authenticated || !user?.id) {
-      alert('Please connect your wallet to vote')
+      warning('Authentication Required', 'Please connect your wallet to vote')
       return
     }
 
@@ -64,7 +66,7 @@ export function VoteButton({
       }
     } catch (error: any) {
       console.error('Vote error:', error)
-      alert(error.message || 'Failed to vote')
+      showError('Failed to vote', error.message || 'An error occurred while voting')
     } finally {
       setIsLoading(false)
       setTimeout(() => setIsAnimating(false), 600)
