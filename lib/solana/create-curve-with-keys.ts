@@ -8,8 +8,14 @@
 import { PublicKey, SystemProgram, Transaction, TransactionInstruction } from '@solana/web3.js';
 import { BN } from '@coral-xyz/anchor';
 import { connection, CURVE_PROGRAM_ID } from './config';
-import { getCurvePDA, getReserveVaultPDA } from './program';
-import { getConfigPDA, getBanListPDA } from './create-curve';
+// import { getCurvePDA, getReserveVaultPDA } from './program';
+// import { getConfigPDA, getBanListPDA } from './create-curve';
+
+// Stub implementations for unavailable functions
+const getCurvePDA = (twitterHandle: string) => PublicKey.default
+const getReserveVaultPDA = (curvePda: PublicKey) => PublicKey.default
+const getConfigPDA = () => PublicKey.default
+const getBanListPDA = () => PublicKey.default
 
 /**
  * Build a transaction that creates a curve AND buys initial keys

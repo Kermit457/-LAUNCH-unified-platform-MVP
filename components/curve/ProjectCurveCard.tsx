@@ -188,6 +188,7 @@ export function ProjectCurveCard({
           curve={curve}
           ownerName={projectName}
           ownerAvatar={projectLogo}
+          twitterHandle=""
           userBalance={userBalance}
           userKeys={userKeys}
           onTrade={handleTrade}

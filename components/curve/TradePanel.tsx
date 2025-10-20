@@ -206,24 +206,19 @@ export const TradePanel = ({
                 <div className="space-y-1 text-xs">
                   <div className="flex justify-between text-gray-500">
                     <span>Reserve (94%)</span>
-                    <span>{tradeCalc.fees.reserve.toFixed(6)} SOL</span>
+                    <span>{tradeCalc.fees?.reserve.toFixed(6) || '0.000000'} SOL</span>
                   </div>
                   <div className="flex justify-between text-gray-500">
-                    <span>Project (3%)</span>
-                    <span>{tradeCalc.fees.project.toFixed(6)} SOL</span>
+                    <span>Instant (3%)</span>
+                    <span>{tradeCalc.fees?.instant.toFixed(6) || '0.000000'} SOL</span>
                   </div>
                   <div className="flex justify-between text-gray-500">
                     <span>Platform (2%)</span>
-                    <span>{tradeCalc.fees.platform.toFixed(6)} SOL</span>
+                    <span>{tradeCalc.fees?.platform.toFixed(6) || '0.000000'} SOL</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className={referrerId ? 'text-purple-400' : 'text-gray-500'}>
-                      {referrerId ? 'Referral (1%)' : 'Rewards Pool (1%)'}
-                    </span>
-                    <span className={referrerId ? 'text-purple-400 font-medium' : 'text-gray-500'}>
-                      {tradeCalc.fees.referral.toFixed(6)} SOL
-                      {referrerId && <Sparkles className="inline w-3 h-3 ml-1" />}
-                    </span>
+                  <div className="flex justify-between text-gray-500">
+                    <span>Buyback (1%)</span>
+                    <span>{tradeCalc.fees?.buyback.toFixed(6) || '0.000000'} SOL</span>
                   </div>
                 </div>
 

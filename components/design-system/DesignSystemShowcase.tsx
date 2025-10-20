@@ -208,7 +208,7 @@ export const PremiumButton = ({
   className?: string;
   type?: 'button' | 'submit' | 'reset';
   disabled?: boolean;
-} & React.ButtonHTMLAttributes<HTMLButtonElement>) => {
+} & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onDrag' | 'onDragStart' | 'onDragEnd' | 'onAnimationStart' | 'onAnimationEnd'>) => {
   const { triggerHaptic } = useHaptic();
   const [isPressed, setIsPressed] = useState(false);
 

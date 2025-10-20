@@ -19,11 +19,11 @@ export function useSolanaWallet() {
       (account: any) => account.type === 'wallet' && account.chainType === 'solana'
     );
 
-    if (!solanaAccount || !solanaAccount.address) {
+    if (!solanaAccount || !('address' in solanaAccount) || !solanaAccount.address) {
       return null;
     }
 
-    const address = solanaAccount.address;
+    const address = solanaAccount.address as string;
 
     try {
       return {

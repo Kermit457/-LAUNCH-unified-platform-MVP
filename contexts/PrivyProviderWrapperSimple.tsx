@@ -33,7 +33,9 @@ export function PrivyProviderWrapper({ children }: { children: ReactNode }) {
         },
         loginMethods: ['email', 'twitter', 'wallet'],
         embeddedWallets: {
-          createOnLogin: 'all-users',
+          solana: {
+            createOnLogin: 'all-users',
+          },
         },
       }}
     >

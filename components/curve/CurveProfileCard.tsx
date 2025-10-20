@@ -169,7 +169,7 @@ export function CurveProfileCard({
               <span className="text-orange-500">◎</span>
               {curve.price.toFixed(4)}
             </div>
-            <div className="text-sm text-green-400 mt-1">+{curve.change24h?.toFixed(1) || 0}%</div>
+            {/* <div className="text-sm text-green-400 mt-1">+{curve.change24h?.toFixed(1) || 0}%</div> */}
           </div>
 
           <div className="p-4 bg-white/5 rounded-2xl border border-white/10">
@@ -274,6 +274,7 @@ export function CurveProfileCard({
         curve={curve}
         ownerName={ownerName}
         ownerAvatar={ownerAvatar}
+        twitterHandle=""
         userBalance={userBalance}
         userKeys={userKeys}
         onTrade={handleTrade}

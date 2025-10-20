@@ -81,8 +81,8 @@ export function ProjectCardWithOwnership({ project, onUpdateProject }: {
 
     // Stats
     viewCount: project.stats?.views,
-    poolSize: project.progress?.pool ? Math.round(project.progress.pool / 1000) : undefined,
-    feesPercent: project.economics?.feesSharePct,
+    // poolSize: project.progress?.pool ? Math.round(project.progress.pool / 1000) : undefined,
+    // feesPercent: project.economics?.feesSharePct,
     currentPrice: holdings?.avgPrice,
 
     // Ownership data
@@ -107,7 +107,8 @@ export function ProjectCardWithOwnership({ project, onUpdateProject }: {
     },
     onDetails: () => {
       // Navigate to details
-      router.push(`/launch/${project.id}`)
+      // router.push(`/launch/${project.id}`)
+      window.location.href = `/launch/${project.id}`
     },
   }
 

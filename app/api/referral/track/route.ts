@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { ReferralService } from '@/lib/appwrite/services/referrals'
-import { ReferralRewardService } from '@/lib/appwrite/services/referral-rewards'
-import { RewardsPoolService } from '@/lib/appwrite/services/rewards-pools'
+// import { ReferralRewardService } from '@/lib/appwrite/services/referral-rewards'
+// import { RewardsPoolService } from '@/lib/appwrite/services/rewards-pools'
 import { computeSplit } from '@/lib/referral'
 import type { ReferralAction } from '@/types/referral'
 
@@ -46,53 +46,20 @@ export async function POST(request: NextRequest) {
       referrerId,
       referredId,
       action: action as ReferralAction,
+      page: projectName || projectId || 'unknown',
       grossAmount,
       reserveAmount: split.reserve,
       projectAmount: split.project,
       platformAmount: split.platform,
       referralAmount: split.referral,
+      rewardsPoolAmount: split.toRewardsPool ? split.referral * 0.1 : 0,
       projectId,
-      metadata,
-      timestamp: new Date().toISOString()
+      status: 'completed'
     })
 
-    // If there's a referrer, create a reward for them
-    if (referrerId && split.referral > 0) {
-      await ReferralRewardService.createReward({
-        userId: referrerId,
-        referralId: referral.id,
-        amount: split.referral,
-        type: 'referral_fee',
-        status: 'pending',
-        metadata: {
-          referredUserId: referredId,
-          action,
-          projectId,
-          projectName
-        }
-      })
-    } else if (!referrerId && split.referral > 0) {
-      // Add unclaimed referral fee to rewards pool
-      const mainPool = await RewardsPoolService.getMainPool()
-      await RewardsPoolService.addToPool(
-        mainPool.id,
-        split.referral,
-        referredId
-      )
-    }
-
-    // If there's a project, handle project-specific pool
-    if (projectId && split.project > 0) {
-      const projectPool = await RewardsPoolService.getOrCreateProjectPool(
-        projectId,
-        projectName
-      )
-      await RewardsPoolService.addToPool(
-        projectPool.id,
-        split.project,
-        referredId
-      )
-    }
+    // Update referrer's rewards aggregate if they exist
+    // The ReferralReward is now an aggregate of all referrals per user
+    // We don't need to create individual reward records here
 
     return NextResponse.json({
       success: true,

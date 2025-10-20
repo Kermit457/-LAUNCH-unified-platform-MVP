@@ -2,9 +2,6 @@
 
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import PredictionWidgetDemo from '@/components/widgets/PredictionWidgetDemo'
-import SocialWidgetDemo from '@/components/widgets/SocialWidgetDemo'
-import AdsWidgetDemo from '@/components/widgets/AdsWidgetDemo'
 import { Sparkles, TrendingUp, Users, Zap } from 'lucide-react'
 
 export default function HomePage() {
@@ -52,11 +49,11 @@ export default function HomePage() {
             </Link>
           </div>
 
-          {/* Widget Previews */}
+          {/* Widget Previews - Placeholder */}
           <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
             <div className="flex flex-col items-center gap-4">
-              <div className="transform scale-75 origin-top">
-                <PredictionWidgetDemo />
+              <div className="w-64 h-48 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-lg border border-purple-500/30 flex items-center justify-center">
+                <p className="text-white/50">Prediction Widget</p>
               </div>
               <div className="text-center">
                 <h3 className="font-bold text-white mb-1">Predictions</h3>
@@ -65,8 +62,8 @@ export default function HomePage() {
             </div>
 
             <div className="flex flex-col items-center gap-4">
-              <div className="transform scale-75 origin-top">
-                <SocialWidgetDemo />
+              <div className="w-64 h-48 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-lg border border-cyan-500/30 flex items-center justify-center">
+                <p className="text-white/50">Social Widget</p>
               </div>
               <div className="text-center">
                 <h3 className="font-bold text-white mb-1">Social Actions</h3>
@@ -75,8 +72,8 @@ export default function HomePage() {
             </div>
 
             <div className="flex flex-col items-center gap-4">
-              <div className="transform scale-75 origin-top">
-                <AdsWidgetDemo />
+              <div className="w-64 h-48 bg-gradient-to-br from-yellow-500/20 to-orange-500/20 rounded-lg border border-yellow-500/30 flex items-center justify-center">
+                <p className="text-white/50">Ads Widget</p>
               </div>
               <div className="text-center">
                 <h3 className="font-bold text-white mb-1">Sponsored Ads</h3>

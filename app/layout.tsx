@@ -13,15 +13,49 @@ import { ReferralTracker } from '@/components/ReferralTracker'
 import { GlobalActivationModal } from '@/components/GlobalActivationModal'
 import { DebugPanel } from '@/components/DebugPanel'
 import { CurveActivationProvider } from '@/contexts/CurveActivationContext'
+import { PWAInitializer } from '@/components/PWAInitializer'
+import { BottomNav } from '@/components/mobile/BottomNav'
 import { BRAND } from '@/lib/brand'
 
 export const metadata: Metadata = {
   title: `${BRAND.name} - ${BRAND.tagline}`,
   description: BRAND.description,
+  manifest: '/manifest.webmanifest',
+  themeColor: [
+    { media: '(prefers-color-scheme: dark)', color: '#000000' },
+    { media: '(prefers-color-scheme: light)', color: '#00FFFF' }
+  ],
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: BRAND.name,
+    startupImage: '/icons/icon-512.svg',
+  },
+  applicationName: BRAND.name,
+  formatDetection: {
+    telephone: false,
+  },
   icons: {
     icon: [
       {
         url: BRAND.assets.favicon,
+        type: 'image/svg+xml',
+      },
+      {
+        url: '/icons/icon-192.svg',
+        sizes: '192x192',
+        type: 'image/svg+xml',
+      },
+      {
+        url: '/icons/icon-512.svg',
+        sizes: '512x512',
+        type: 'image/svg+xml',
+      },
+    ],
+    apple: [
+      {
+        url: '/icons/icon-192.svg',
+        sizes: '192x192',
         type: 'image/svg+xml',
       },
     ],
@@ -44,6 +78,13 @@ export const metadata: Metadata = {
     title: `${BRAND.name} - ${BRAND.tagline}`,
     description: BRAND.description,
     images: [BRAND.assets.ogImage],
+  },
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
+    viewportFit: 'cover',
   },
 }
 
@@ -71,13 +112,15 @@ export default function RootLayout({
                   <NetworkProvider>
                     <CurveActivationProvider>
                       <ToastProvider>
+                        <PWAInitializer />
                         <ReferralTracker />
                         <GlobalActivationModal />
                         <DebugPanel />
                         <TopNav />
-                        <main className="relative">
+                        <main className="relative pb-16 md:pb-0">
                           {children}
                         </main>
+                        <BottomNav />
                       </ToastProvider>
                     </CurveActivationProvider>
                   </NetworkProvider>

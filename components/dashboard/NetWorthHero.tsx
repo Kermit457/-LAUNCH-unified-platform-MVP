@@ -3,7 +3,17 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { TrendingUp, TrendingDown, DollarSign, Coins, Users2, MessageCircle, Rocket, Activity, Gift, Copy, Check, Share2, Trophy, Zap } from 'lucide-react'
-import type { NetWorthStats } from '@/lib/dashboardMockData'
+
+export interface NetWorthStats {
+  totalValue: number // Total portfolio value in SOL
+  change24h: number // Change in SOL
+  changePercent: number
+  totalEarned: {
+    lifetime: number
+    thisWeek: number
+    thisMonth: number
+  }
+}
 
 interface NetWorthHeroProps {
   stats: NetWorthStats
@@ -44,17 +54,17 @@ export function NetWorthHero({
   }
 
   return (
-    <div className="mb-8">
-      {/* Referral Network + Network + Net Worth Cards Grid */}
-      <div className="grid lg:grid-cols-3 gap-6 mb-6">
-        {/* Referral Network Card */}
+    <div className="mb-4 md:mb-8">
+      {/* Referral Network + Network + Net Worth Cards Grid - Compact on Mobile */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 md:gap-6 mb-3 md:mb-6">
+        {/* Referral Network Card - Super Compact Mobile */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#0a1628] to-[#0c1d3a] border-2 border-[#1e3a5f]/50 p-8"
+          className="relative overflow-hidden rounded-xl md:rounded-3xl bg-gradient-to-br from-[#0a1628] to-[#0c1d3a] border md:border-2 border-[#1e3a5f]/50 p-4 md:p-8"
         >
-          {/* Animated Background */}
-          <div className="absolute inset-0 -z-10">
+          {/* Animated Background - Hidden on mobile for performance */}
+          <div className="absolute inset-0 -z-10 hidden md:block">
             <motion.div
               animate={{
                 scale: [1, 1.2, 1],
@@ -73,44 +83,44 @@ export function NetWorthHero({
             />
           </div>
 
-          {/* Content */}
+          {/* Content - Compact */}
           <div className="relative z-10">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-3 rounded-2xl bg-gradient-to-br from-[#0088FF] to-[#0066CC]">
-                <Gift className="w-7 h-7 text-white font-bold" />
+            <div className="flex items-center gap-2 md:gap-3 mb-3 md:mb-6">
+              <div className="p-2 md:p-3 rounded-lg md:rounded-2xl bg-gradient-to-br from-[#0088FF] to-[#0066CC]">
+                <Gift className="w-4 h-4 md:w-7 md:h-7 text-white font-bold" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-white">Referral Network</h1>
-                <p className="text-[#5a9fd4] text-sm">3% lifetime commissions</p>
+                <h1 className="text-base md:text-2xl font-bold text-white">Referral Network</h1>
+                <p className="text-[#5a9fd4] text-xs md:text-sm">3% commissions</p>
               </div>
             </div>
 
-            {/* Main Value - Commissions Earned */}
-            <div className="mb-4">
-              <div className="text-6xl font-bold bg-gradient-to-r from-[#00FF88] via-[#00DD77] to-[#00CC66] bg-clip-text text-transparent mb-2">
+            {/* Main Value - Commissions Earned - Smaller on mobile */}
+            <div className="mb-3 md:mb-4">
+              <div className="text-2xl md:text-6xl font-bold bg-gradient-to-r from-[#00FF88] via-[#00DD77] to-[#00CC66] bg-clip-text text-transparent mb-1 md:mb-2">
                 {referralStats.lifetimeCommissions.toFixed(2)}
               </div>
-              <div className="text-2xl text-zinc-400">
+              <div className="text-sm md:text-2xl text-zinc-400">
                 SOL earned
               </div>
             </div>
 
             {/* Referral Stats */}
-            <div className="grid grid-cols-2 gap-3">
-              <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#0088FF]/20 border border-[#1e3a5f]/50">
-                <Users2 className="w-5 h-5 text-[#0088FF]" />
+            <div className="grid grid-cols-2 gap-2 md:gap-3">
+              <div className="flex items-center gap-1.5 md:gap-2 px-2 md:px-4 py-1.5 md:py-2 rounded-lg md:rounded-xl bg-[#0088FF]/20 border border-[#1e3a5f]/50">
+                <Users2 className="w-4 h-4 md:w-5 md:h-5 text-[#0088FF]" />
                 <div>
-                  <div className="text-xs text-zinc-500">Referrals</div>
-                  <div className="font-bold text-white">
+                  <div className="text-[10px] md:text-xs text-zinc-500">Referrals</div>
+                  <div className="font-bold text-sm md:text-base text-white">
                     {referralStats.totalReferrals}
                   </div>
                 </div>
               </div>
-              <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#FFD700]/20 border border-[#FFD700]/30">
-                <Trophy className="w-5 h-5 text-[#FFD700]" />
+              <div className="flex items-center gap-1.5 md:gap-2 px-2 md:px-4 py-1.5 md:py-2 rounded-lg md:rounded-xl bg-[#FFD700]/20 border border-[#FFD700]/30">
+                <Trophy className="w-4 h-4 md:w-5 md:h-5 text-[#FFD700]" />
                 <div>
-                  <div className="text-xs text-zinc-500">Rank</div>
-                  <div className="font-bold text-white">
+                  <div className="text-[10px] md:text-xs text-zinc-500">Rank</div>
+                  <div className="font-bold text-sm md:text-base text-white">
                     #{referralStats.leaderboardRank}
                   </div>
                 </div>
@@ -123,7 +133,7 @@ export function NetWorthHero({
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#0088FF]/20 via-zinc-900/60 to-[#0044FF]/20 border border-[#0088FF]/30 p-8"
+          className="relative overflow-hidden rounded-xl md:rounded-3xl bg-gradient-to-br from-[#0088FF]/20 via-zinc-900/60 to-[#0044FF]/20 border md:border-2 border-[#0088FF]/30 p-4 md:p-8"
         >
           {/* Animated Background */}
           <div className="absolute inset-0 -z-10">
@@ -147,42 +157,42 @@ export function NetWorthHero({
 
           {/* Content */}
           <div className="relative z-10">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-3 rounded-2xl bg-gradient-to-br from-[#0088FF] to-[#0044FF]">
-                <Users2 className="w-7 h-7 text-white font-bold" />
+            <div className="flex items-center gap-2 md:gap-3 mb-3 md:mb-6">
+              <div className="p-2 md:p-3 rounded-lg md:rounded-2xl bg-gradient-to-br from-[#0088FF] to-[#0044FF]">
+                <Users2 className="w-4 h-4 md:w-7 md:h-7 text-white font-bold" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-white">Network</h1>
-                <p className="text-zinc-400 text-sm">Your total reach</p>
+                <h1 className="text-base md:text-2xl font-bold text-white">Network</h1>
+                <p className="text-zinc-400 text-xs md:text-sm">Your total reach</p>
               </div>
             </div>
 
             {/* Main Value */}
-            <div className="mb-4">
-              <div className="text-6xl font-bold bg-gradient-to-r from-[#0088FF] via-[#00AAFF] to-[#00DDFF] bg-clip-text text-transparent mb-2" suppressHydrationWarning>
+            <div className="mb-3 md:mb-4">
+              <div className="text-2xl md:text-6xl font-bold bg-gradient-to-r from-[#0088FF] via-[#00AAFF] to-[#00DDFF] bg-clip-text text-transparent mb-1 md:mb-2" suppressHydrationWarning>
                 {networkSize.toLocaleString()}
               </div>
-              <div className="text-2xl text-zinc-400">
+              <div className="text-sm md:text-2xl text-zinc-400">
                 Total connections
               </div>
             </div>
 
             {/* Network Stats */}
-            <div className="grid grid-cols-2 gap-3">
-              <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#0088FF]/20 border border-[#0088FF]/30">
-                <Users2 className="w-5 h-5 text-[#0088FF]" />
+            <div className="grid grid-cols-2 gap-2 md:gap-3">
+              <div className="flex items-center gap-1.5 md:gap-2 px-2 md:px-4 py-1.5 md:py-2 rounded-lg md:rounded-xl bg-[#0088FF]/20 border border-[#0088FF]/30">
+                <Users2 className="w-4 h-4 md:w-5 md:h-5 text-[#0088FF]" />
                 <div>
-                  <div className="text-xs text-zinc-500">Holders</div>
-                  <div className="font-bold text-white" suppressHydrationWarning>
+                  <div className="text-[10px] md:text-xs text-zinc-500">Holders</div>
+                  <div className="font-bold text-sm md:text-base text-white" suppressHydrationWarning>
                     {holdingsCount.toLocaleString()}
                   </div>
                 </div>
               </div>
-              <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#00AAFF]/20 border border-[#00AAFF]/30">
-                <Rocket className="w-5 h-5 text-[#00AAFF]" />
+              <div className="flex items-center gap-1.5 md:gap-2 px-2 md:px-4 py-1.5 md:py-2 rounded-lg md:rounded-xl bg-[#00AAFF]/20 border border-[#00AAFF]/30">
+                <Rocket className="w-4 h-4 md:w-5 md:h-5 text-[#00AAFF]" />
                 <div>
-                  <div className="text-xs text-zinc-500">Collaborations</div>
-                  <div className="font-bold text-white" suppressHydrationWarning>
+                  <div className="text-[10px] md:text-xs text-zinc-500">Collaborations</div>
+                  <div className="font-bold text-sm md:text-base text-white" suppressHydrationWarning>
                     {collaborationsCount.toLocaleString()}
                   </div>
                 </div>
@@ -196,7 +206,7 @@ export function NetWorthHero({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#00FF88]/20 via-zinc-900/60 to-[#FFD700]/20 border border-[#00FF88]/30 p-8"
+          className="relative overflow-hidden rounded-xl md:rounded-3xl bg-gradient-to-br from-[#00FF88]/20 via-zinc-900/60 to-[#FFD700]/20 border md:border-2 border-[#00FF88]/30 p-4 md:p-8"
         >
           {/* Animated Background */}
           <div className="absolute inset-0 -z-10">
@@ -220,44 +230,44 @@ export function NetWorthHero({
 
           {/* Content */}
           <div className="relative z-10">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-3 rounded-2xl bg-gradient-to-br from-[#00FF88] to-[#FFD700]">
-                <DollarSign className="w-7 h-7 text-black font-bold" />
+            <div className="flex items-center gap-2 md:gap-3 mb-3 md:mb-6">
+              <div className="p-2 md:p-3 rounded-lg md:rounded-2xl bg-gradient-to-br from-[#00FF88] to-[#FFD700]">
+                <DollarSign className="w-4 h-4 md:w-7 md:h-7 text-black font-bold" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-white">Net Worth</h1>
-                <p className="text-zinc-400 text-sm">Your total portfolio value</p>
+                <h1 className="text-base md:text-2xl font-bold text-white">Net Worth</h1>
+                <p className="text-zinc-400 text-xs md:text-sm">Your total portfolio value</p>
               </div>
             </div>
 
             {/* Main Value */}
-            <div className="mb-4">
-              <div className="text-6xl font-bold bg-gradient-to-r from-[#00FF88] via-[#FFD700] to-[#FF8800] bg-clip-text text-transparent mb-2">
+            <div className="mb-3 md:mb-4">
+              <div className="text-2xl md:text-6xl font-bold bg-gradient-to-r from-[#00FF88] via-[#FFD700] to-[#FF8800] bg-clip-text text-transparent mb-1 md:mb-2">
                 {stats.totalValue.toFixed(2)} SOL
               </div>
-              <div className="text-2xl text-zinc-400">
+              <div className="text-sm md:text-2xl text-zinc-400">
                 ≈ ${(stats.totalValue * 120).toLocaleString()} USD
               </div>
             </div>
 
             {/* 24h Change */}
-            <div className="flex items-center gap-2">
-              <div className={`flex items-center gap-1.5 px-4 py-2 rounded-xl ${
+            <div className="flex items-center gap-1.5 md:gap-2">
+              <div className={`flex items-center gap-1 md:gap-1.5 px-2 md:px-4 py-1.5 md:py-2 rounded-lg md:rounded-xl ${
                 isPositive ? 'bg-[#00FF88]/20 text-[#00FF88] border border-[#00FF88]/30' : 'bg-[#FF0040]/20 text-[#FF0040] border border-[#FF0040]/30'
               }`}>
                 {isPositive ? (
-                  <TrendingUp className="w-5 h-5" />
+                  <TrendingUp className="w-3.5 h-3.5 md:w-5 md:h-5" />
                 ) : (
-                  <TrendingDown className="w-5 h-5" />
+                  <TrendingDown className="w-3.5 h-3.5 md:w-5 md:h-5" />
                 )}
-                <span className="font-bold text-lg">
+                <span className="font-bold text-xs md:text-lg">
                   {isPositive ? '+' : ''}{stats.change24h.toFixed(2)} SOL
                 </span>
-                <span className="text-sm">
+                <span className="text-[10px] md:text-sm">
                   ({isPositive ? '+' : ''}{stats.changePercent.toFixed(1)}%)
                 </span>
               </div>
-              <span className="text-zinc-500 text-sm">24h change</span>
+              <span className="text-zinc-500 text-xs md:text-sm">24h change</span>
             </div>
           </div>
         </motion.div>
@@ -268,18 +278,18 @@ export function NetWorthHero({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="bg-gradient-to-br from-[#0a1628] to-[#0c1d3a] border-2 border-[#1e3a5f]/50 rounded-2xl p-6 mb-6"
+        className="bg-gradient-to-br from-[#0a1628] to-[#0c1d3a] border md:border-2 border-[#1e3a5f]/50 rounded-lg md:rounded-2xl p-3 md:p-6 mb-3 md:mb-6"
       >
-        <div className="flex items-center gap-4">
+        <div className="flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-4">
           {/* Referral Link Input */}
-          <div className="flex-1 flex items-center gap-3">
-            <label className="text-sm font-medium text-[#5a9fd4] whitespace-nowrap">Your Referral Link</label>
-            <div className="flex-1 px-4 py-3 rounded-lg bg-[#0a1628] border border-[#1e3a5f]/50 text-[#5a9fd4] font-mono text-sm">
+          <div className="flex-1 w-full flex flex-col md:flex-row md:items-center gap-2 md:gap-3">
+            <label className="text-xs md:text-sm font-medium text-[#5a9fd4] whitespace-nowrap">Your Referral Link</label>
+            <div className="flex-1 px-3 md:px-4 py-2 md:py-3 rounded-lg bg-[#0a1628] border border-[#1e3a5f]/50 text-[#5a9fd4] font-mono text-xs md:text-sm truncate">
               {referralStats.referralLink}
             </div>
             <button
               onClick={copyReferralLink}
-              className="px-6 py-3 rounded-lg bg-[#0088FF] hover:bg-[#0066CC] text-white font-bold transition-all flex items-center gap-2"
+              className="px-3 md:px-6 py-2 md:py-3 rounded-lg bg-[#0088FF] hover:bg-[#0066CC] text-white font-bold transition-all flex items-center gap-1.5 md:gap-2 text-xs md:text-base"
             >
               {copied ? (
                 <>

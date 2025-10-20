@@ -3,7 +3,7 @@ import { useRouter } from 'next/navigation'
 import { useUser } from './useUser'
 import { getUserProfile, createUserProfile, updateUserProfile } from '@/lib/appwrite/services/users'
 import { CurveService } from '@/lib/appwrite/services/curves'
-import { useCreateCurve } from './useCreateCurve'
+// import { useCreateCurve } from './useCreateCurve'
 import { authenticateWithAppwrite } from '@/lib/appwrite/auth'
 
 /**
@@ -13,7 +13,7 @@ import { authenticateWithAppwrite } from '@/lib/appwrite/auth'
  */
 export function useSyncPrivyToAppwrite() {
   const { user, userId, username, name, avatar, isAuthenticated, twitter } = useUser()
-  const { createCurve } = useCreateCurve()
+  // const { createCurve } = useCreateCurve()
   const router = useRouter()
 
   useEffect(() => {
@@ -56,23 +56,23 @@ export function useSyncPrivyToAppwrite() {
 
           // 1. Create curve on Solana blockchain first
           let onChainSignature: string | null = null
-          if (username) {
-            try {
-              console.log('🎨 Creating curve on-chain for:', username)
-              const signature = await createCurve(username, 0) // 0 = creator gets 0 initial keys
+          // if (username) {
+          //   try {
+          //     console.log('🎨 Creating curve on-chain for:', username)
+          //     const signature = await createCurve(username, 0) // 0 = creator gets 0 initial keys
 
-              if (signature !== 'already_exists') {
-                onChainSignature = signature
-                console.log('🎉 Curve created on-chain! TX:', signature)
-                console.log('🔗 Explorer:', `https://explorer.solana.com/tx/${signature}?cluster=devnet`)
-              } else {
-                console.log('✅ Curve already exists on-chain for:', username)
-              }
-            } catch (error) {
-              console.error('⚠️ On-chain curve creation failed:', error)
-              // Continue anyway - curve can be created later via UI
-            }
-          }
+          //     if (signature !== 'already_exists') {
+          //       onChainSignature = signature
+          //       console.log('🎉 Curve created on-chain! TX:', signature)
+          //       console.log('🔗 Explorer:', `https://explorer.solana.com/tx/${signature}?cluster=devnet`)
+          //     } else {
+          //       console.log('✅ Curve already exists on-chain for:', username)
+          //     }
+          //   } catch (error) {
+          //     console.error('⚠️ On-chain curve creation failed:', error)
+          //     // Continue anyway - curve can be created later via UI
+          //   }
+          // }
 
           // 2. Create CCM curve in Appwrite (for metadata/UI)
           const curve = await CurveService.createCurve({

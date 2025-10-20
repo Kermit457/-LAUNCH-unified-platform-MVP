@@ -1,6 +1,6 @@
 import { ID, Query } from 'appwrite'
 import { appwriteClient } from '../client'
-import type { Referral, ReferralAction, ReferralWithDetails } from '@/types/referral'
+import type { Referral, ReferralAction } from '@/types/referral'
 
 const { database, referralsCollectionId } = appwriteClient
 
@@ -9,17 +9,14 @@ export class ReferralService {
    * Create a new referral record
    */
   static async createReferral(
-    referral: Omit<Referral, 'id' | 'timestamp'>
+    referral: Omit<Referral, '$id' | '$createdAt'>
   ): Promise<Referral> {
     try {
       const document = await database.createDocument(
         process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
         referralsCollectionId,
         ID.unique(),
-        {
-          ...referral,
-          timestamp: new Date().toISOString(),
-        }
+        referral
       )
       return document as unknown as Referral
     } catch (error) {

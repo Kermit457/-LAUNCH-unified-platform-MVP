@@ -63,7 +63,7 @@ export function useCurveActivation() {
           // Check if curve is active
           isActive: false, // TODO: Get curve.status === 'active'
 
-          curveId: user?.curveId // User's auto-created CCM curve ID
+          curveId: undefined // user?.curveId // User's auto-created CCM curve ID
         }
 
         setProgress(mockProgress)

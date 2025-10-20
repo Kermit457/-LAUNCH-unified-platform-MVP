@@ -203,6 +203,7 @@ export function UserProfileCurveCard({
           curve={curve}
           ownerName={userName}
           ownerAvatar={userAvatar}
+          twitterHandle=""
           userBalance={userBalance}
           userKeys={userKeys}
           onTrade={handleTrade}

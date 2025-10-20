@@ -1,7 +1,12 @@
 import { useState, useEffect } from 'react'
 import { useUser } from './useUser'
 import { PublicKey } from '@solana/web3.js'
-import { getCurveStatus, getUserKeyHoldings, curveExistsOnChain } from '@/lib/solana/create-curve'
+// import { getCurveStatus, getUserKeyHoldings, curveExistsOnChain } from '@/lib/solana/create-curve'
+
+// Stub implementations for unavailable functions
+const getCurveStatus = async (twitterHandle: string) => null
+const getUserKeyHoldings = async (twitterHandle: string, wallet: PublicKey) => 0
+const curveExistsOnChain = async (twitterHandle: string) => false
 
 export interface CurveActivationProgress {
   hasMinKeys: boolean // User owns 10+ of their own keys

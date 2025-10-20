@@ -113,8 +113,8 @@ export default function NetworkPage() {
         />
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Hero Stats */}
+      <div className="relative z-10 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 md:py-8">
+        {/* Hero Stats - Compact on Mobile */}
         <NetWorthHero
           stats={{
             totalValue: 0,
@@ -134,26 +134,26 @@ export default function NetworkPage() {
           networkSize={0}
         />
 
-        {/* 🆕 Curve Creation Banner (shows if curve doesn't exist on-chain) */}
+        {/* 🆕 Curve Creation Banner - Compact on Mobile */}
         {!loading && needsCreation && progress.twitterHandle && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-8 p-6 rounded-2xl bg-gradient-to-br from-orange-900/40 to-zinc-900/60 border border-orange-500/20"
+            className="mb-4 md:mb-8 p-4 md:p-6 rounded-xl md:rounded-2xl bg-gradient-to-br from-orange-900/40 to-zinc-900/60 border border-orange-500/20"
           >
-            <div className="flex items-center gap-3 mb-3">
-              <Rocket className="w-6 h-6 text-orange-400" />
-              <h3 className="text-xl font-bold text-white">Create Your Curve</h3>
+            <div className="flex items-center gap-2 md:gap-3 mb-2 md:mb-3">
+              <Rocket className="w-5 h-5 md:w-6 md:h-6 text-orange-400" />
+              <h3 className="text-lg md:text-xl font-bold text-white">Create Your Curve</h3>
             </div>
-            <p className="text-zinc-400 mb-4">
-              Initialize your bonding curve on Solana to start trading and unlock platform features.
+            <p className="text-sm md:text-base text-zinc-400 mb-3 md:mb-4">
+              Initialize your bonding curve on Solana to start trading.
             </p>
-            <p className="text-sm text-zinc-500 mb-4">
-              Your Twitter handle: <span className="text-white font-medium">@{progress.twitterHandle}</span>
+            <p className="text-xs md:text-sm text-zinc-500 mb-3 md:mb-4">
+              Twitter: <span className="text-white font-medium">@{progress.twitterHandle}</span>
             </p>
             <button
               onClick={() => setShowActivationModal(true)}
-              className="px-6 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-pink-500 text-white font-semibold hover:opacity-90 transition-opacity"
+              className="w-full md:w-auto px-4 md:px-6 py-2.5 md:py-3 rounded-lg md:rounded-xl bg-gradient-to-r from-orange-500 to-pink-500 text-white text-sm md:text-base font-semibold hover:opacity-90 transition-opacity"
             >
               Create My Curve
             </button>
@@ -184,7 +184,7 @@ export default function NetworkPage() {
         )}
 
         {/* Tabs */}
-        <div className="mb-6 flex flex-wrap gap-2">
+        <div className="mb-4 md:mb-6 grid grid-cols-4 sm:grid-cols-4 md:flex md:flex-wrap gap-2 md:gap-2">
           {tabs.map((tab, index) => {
             // Get background color based on tab color when active
             const getActiveClass = () => {
@@ -202,6 +202,20 @@ export default function NetworkPage() {
               }
             }
 
+            // Shorter mobile labels
+            const getMobileLabel = () => {
+              switch(tab.id) {
+                case 'holdings': return 'Hold'
+                case 'my-curves': return 'Curves'
+                case 'earnings': return 'Earn'
+                case 'collaborations': return 'Collab'
+                case 'messages': return 'Msgs'
+                case 'activity': return 'Activity'
+                case 'submissions': return 'Submit'
+                default: return tab.label
+              }
+            }
+
             return (
               <motion.button
                 key={tab.id}
@@ -209,19 +223,20 @@ export default function NetworkPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
                 onClick={() => setActiveTab(tab.id)}
-                className={`relative flex items-center gap-2 px-5 py-3 rounded-xl font-semibold transition-all border-2 ${
+                className={`relative flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1 md:gap-2 px-2 sm:px-3 md:px-5 py-2 sm:py-2 md:py-3 rounded-lg md:rounded-xl font-semibold transition-all border md:border-2 text-[10px] sm:text-xs md:text-base ${
                   activeTab === tab.id
                     ? `${getActiveClass()} text-white shadow-lg`
                     : 'bg-zinc-900/60 text-white border-zinc-800 hover:border-zinc-700 hover:bg-zinc-800/60'
                 }`}
               >
-                <tab.icon className={`w-4 h-4 ${activeTab === tab.id ? 'text-white' : tab.color}`} />
-                <span>{tab.label}</span>
-                {tab.count !== undefined && (
-                  <span className="text-xs opacity-75">({tab.count})</span>
+                <tab.icon className={`w-4 h-4 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4 ${activeTab === tab.id ? 'text-white' : tab.color}`} />
+                <span className="hidden md:inline">{tab.label}</span>
+                <span className="md:hidden">{getMobileLabel()}</span>
+                {tab.count !== undefined && tab.count > 0 && (
+                  <span className="text-[9px] md:text-xs opacity-75 hidden sm:inline">({tab.count})</span>
                 )}
                 {tab.value && (
-                  <span className="text-xs opacity-75">{tab.value}</span>
+                  <span className="text-[9px] md:text-xs opacity-75 hidden lg:inline">{tab.value}</span>
                 )}
                 {tab.badge && typeof tab.badge === 'number' && tab.badge > 0 && (
                   <motion.div
@@ -255,23 +270,23 @@ export default function NetworkPage() {
               exit={{ opacity: 0, y: -20 }}
             >
               {/* Filters */}
-              <div className="mb-6 flex flex-col sm:flex-row gap-4">
+              <div className="mb-3 md:mb-6 flex flex-col sm:flex-row gap-2 md:gap-4">
                 <div className="flex-1 relative">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500" />
+                  <Search className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-zinc-500" />
                   <input
                     type="text"
                     placeholder="Search holdings..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-12 pr-4 py-3 rounded-xl bg-zinc-900/60 border border-zinc-800 text-white placeholder:text-zinc-500 focus:outline-none focus:border-purple-500/50 transition-colors"
+                    className="w-full pl-9 md:pl-12 pr-3 md:pr-4 py-2 md:py-3 rounded-lg md:rounded-xl bg-zinc-900/60 border border-zinc-800 text-white placeholder:text-zinc-500 focus:outline-none focus:border-purple-500/50 transition-colors text-sm md:text-base"
                   />
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-1 md:gap-2">
                   {(['value', 'pnl', 'conviction'] as const).map((sort) => (
                     <button
                       key={sort}
                       onClick={() => setSortBy(sort)}
-                      className={`px-4 py-3 rounded-xl font-semibold text-sm transition-all border-2 ${
+                      className={`px-2.5 md:px-4 py-1.5 md:py-3 rounded-lg md:rounded-xl font-semibold text-xs md:text-sm transition-all border md:border-2 ${
                         sortBy === sort
                           ? 'bg-[#FF00FF]/20 border-[#FF00FF] text-white'
                           : 'bg-zinc-900/60 text-white border-zinc-800 hover:bg-zinc-800/60 hover:border-zinc-700'

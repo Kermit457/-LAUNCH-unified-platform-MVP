@@ -38,7 +38,7 @@ export async function updateViewerCount(mint: string, viewerCount: number): Prom
         existing.documents[0].$id,
         data
       )
-      return updated as LiveStreamView
+      return updated as unknown as LiveStreamView
     } else {
       // Create new
       const created = await databases.createDocument(
@@ -47,7 +47,7 @@ export async function updateViewerCount(mint: string, viewerCount: number): Prom
         ID.unique(),
         data
       )
-      return created as LiveStreamView
+      return created as unknown as LiveStreamView
     }
   } catch (error) {
     console.error('Error updating viewer count:', error)
@@ -67,7 +67,7 @@ export async function getViewerCount(mint: string): Promise<number> {
     )
 
     if (result.documents.length > 0) {
-      return (result.documents[0] as LiveStreamView).viewerCount || 0
+      return (result.documents[0] as unknown as LiveStreamView).viewerCount || 0
     }
     return 0
   } catch (error) {
@@ -89,7 +89,7 @@ export async function getViewerCounts(mints: string[]): Promise<Record<string, n
 
     const counts: Record<string, number> = {}
     result.documents.forEach((doc) => {
-      const stream = doc as LiveStreamView
+      const stream = doc as unknown as LiveStreamView
       counts[stream.mint] = stream.viewerCount || 0
     })
 

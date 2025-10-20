@@ -144,7 +144,9 @@ export const ProfileCurveSection = ({
               curve={curve}
               isOwner={isOwner}
               onFreeze={freeze}
-              onLaunch={launch}
+              onLaunch={async (tokenMint: string) => {
+                await launch()
+              }}
             />
           )}
 

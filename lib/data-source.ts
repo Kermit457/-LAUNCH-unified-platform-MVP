@@ -6,7 +6,7 @@
  * based on the USE_MOCK_DATA environment variable.
  */
 
-import { launchProjects } from './sampleData'
+// import { launchProjects } from './sampleData'
 import { getLaunches, getLaunch, type Launch } from './appwrite/services/launches'
 import { getCampaigns, getCampaignById, type Campaign } from './appwrite/services/campaigns'
 import { getQuests, getQuestById, type Quest } from './appwrite/services/quests'
@@ -41,11 +41,11 @@ export interface LaunchesOptions {
 export async function getDataLaunches(options?: LaunchesOptions): Promise<any[]> {
   if (USE_MOCK_DATA) {
     console.log('📦 Using mock launches data')
-    let filtered = launchProjects
+    let filtered: any[] = [] // launchProjects not available
 
     // Filter by status
     if (options?.status) {
-      filtered = filtered.filter(p => p.status === options.status)
+      filtered = filtered.filter((p: any) => p.status === options.status)
     }
 
     // Apply limit
@@ -66,7 +66,7 @@ export async function getDataLaunches(options?: LaunchesOptions): Promise<any[]>
 export async function getDataLaunch(id: string): Promise<any> {
   if (USE_MOCK_DATA) {
     console.log(`📦 Using mock launch data for ID: ${id}`)
-    const launch = launchProjects.find(p => p.id === id)
+    const launch = [].find((p: any) => p.id === id) // launchProjects not available
     if (!launch) {
       throw new Error(`Launch not found: ${id}`)
     }

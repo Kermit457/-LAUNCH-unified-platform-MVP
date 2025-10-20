@@ -18,8 +18,8 @@ export function TradingPanel({ curveId, currentPrice, userBalance = 0, symbol }:
   const [amount, setAmount] = useState('')
 
   const { user } = useUser()
-  const { buyKeys, isBuying, error: buyError } = useSolanaBuyKeys()
-  const { sellKeys, isSelling, error: sellError } = useSolanaSellKeys()
+  const { buyKeys, loading: isBuying, error: buyError } = useSolanaBuyKeys()
+  const { sellKeys, loading: isSelling, error: sellError } = useSolanaSellKeys()
 
   const isLoading = isBuying || isSelling
   const error = buyError || sellError

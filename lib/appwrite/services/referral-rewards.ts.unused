@@ -1,6 +1,8 @@
 import { ID, Query } from 'appwrite'
 import { appwriteClient } from '../client'
-import type { ReferralReward, RewardStatus } from '@/types/referral'
+import type { ReferralReward } from '@/types/referral'
+
+type RewardStatus = 'pending' | 'claimed' | 'expired'
 
 const { database, referralRewardsCollectionId } = appwriteClient
 

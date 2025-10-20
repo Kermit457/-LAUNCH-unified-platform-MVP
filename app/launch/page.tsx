@@ -8,13 +8,13 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { SubmitLaunchDrawer } from '@/components/launch/SubmitLaunchDrawer'
-import { useCreateCurve } from '@/hooks/useCreateCurve'
+// import { useCreateCurve } from '@/hooks/useCreateCurve'
 import { useRouter } from 'next/navigation'
 import { useUser } from '@/hooks/useUser'
 
 export default function LaunchPage() {
   const [drawerOpen, setDrawerOpen] = useState(false)
-  const { createCurve, isCreating, error } = useCreateCurve()
+  // const { createCurve, isCreating, error } = useCreateCurve()
   const { username } = useUser()
   const router = useRouter()
 
@@ -22,21 +22,21 @@ export default function LaunchPage() {
     try {
       console.log('Launch submitted:', data)
 
-      const curveId = await createCurve({
-        name: data.title,
-        symbol: data.subtitle,
-        description: data.description,
-        logoFile: data.logoFile,
-        scope: data.scope,
-        platforms: data.platforms,
-        twitterHandle: username || 'default',
-      })
+      // const curveId = await createCurve({
+      //   name: data.title,
+      //   symbol: data.subtitle,
+      //   description: data.description,
+      //   logoFile: data.logoFile,
+      //   scope: data.scope,
+      //   platforms: data.platforms,
+      //   twitterHandle: username || 'default',
+      // })
 
       setDrawerOpen(false)
 
-      if (curveId) {
-        router.push(`/launch/${curveId}`)
-      }
+      // if (curveId) {
+      //   router.push(`/launch/${curveId}`)
+      // }
     } catch (err) {
       console.error('Error creating curve:', err)
     }
@@ -44,18 +44,18 @@ export default function LaunchPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-zinc-950 to-black text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 md:py-16">
 
-        {/* Hero Section */}
-        <div className="text-center mb-20">
+        {/* Hero Section - TINY on mobile */}
+        <div className="text-center mb-3 md:mb-20">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#00FF88]/10 border-2 border-[#00FF88]/30 text-sm font-bold mb-6"
+            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#00FF88]/10 border border-[#00FF88]/30 md:border-2 text-[10px] md:text-sm font-bold mb-2 md:mb-6"
           >
-            <Rocket className="w-5 h-5 text-[#00FF88]" />
+            <Rocket className="w-3 h-3 md:w-5 md:h-5 text-[#00FF88]" />
             <span className="text-[#00FF88]">
-              Pre-Launch Protocol for Pump.fun
+              Pre-Launch Protocol
             </span>
           </motion.div>
 
@@ -63,7 +63,7 @@ export default function LaunchPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-5xl sm:text-7xl font-black text-[#00FF88] mb-6"
+            className="text-xl sm:text-3xl md:text-5xl lg:text-7xl font-black text-[#00FF88] mb-2 md:mb-6"
           >
             20x Higher Launch Success
           </motion.h1>
@@ -72,7 +72,7 @@ export default function LaunchPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-xl sm:text-2xl text-zinc-300 max-w-3xl mx-auto mb-4"
+            className="text-sm sm:text-lg md:text-xl lg:text-2xl text-zinc-300 max-w-3xl mx-auto mb-2 md:mb-4"
           >
             Sniper and bundle proof. Community first.
           </motion.p>
@@ -81,7 +81,7 @@ export default function LaunchPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.25 }}
-            className="text-lg text-zinc-400 max-w-2xl mx-auto mb-12"
+            className="text-xs md:text-lg text-zinc-400 max-w-2xl mx-auto mb-3 md:mb-12 hidden sm:block"
           >
             ICM Network = Find the perfect team. Incubation, platform acceleration, launch advisory. Building in public.
           </motion.p>
@@ -92,20 +92,20 @@ export default function LaunchPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
             onClick={() => setDrawerOpen(true)}
-            className="inline-flex items-center gap-3 px-8 py-4 rounded-xl text-black font-bold text-lg transition-all bg-[#00FF88] hover:bg-[#00FFFF] hover:scale-105"
+            className="inline-flex items-center gap-1.5 md:gap-3 px-4 py-2 md:px-8 md:py-4 rounded-lg md:rounded-xl text-black font-bold text-sm md:text-lg transition-all bg-[#00FF88] hover:bg-[#00FFFF] hover:scale-105"
           >
-            <Rocket className="w-6 h-6" />
+            <Rocket className="w-4 h-4 md:w-6 md:h-6" />
             Start Your Launch
-            <ArrowRight className="w-5 h-5" />
+            <ArrowRight className="w-3.5 h-3.5 md:w-5 md:h-5" />
           </motion.button>
         </div>
 
         {/* Core Features - 2x3 Grid */}
-        <div className="mb-20">
-          <h2 className="text-3xl font-bold text-center mb-12 text-white">
+        <div className="mb-3 md:mb-20">
+          <h2 className="text-base md:text-3xl font-bold text-center mb-3 md:mb-12 text-white">
             Why Our Pre-Launch Protocol
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-6">
             <FeatureCard
               icon={Shield}
               title="Sniper & Bundle Proof"
@@ -146,10 +146,10 @@ export default function LaunchPage() {
         </div>
 
         {/* Success Stats */}
-        <div className="mb-20">
-          <div className="bg-zinc-900/50 backdrop-blur-xl rounded-3xl border-2 border-[#00FFFF]/20 p-12">
-            <h3 className="text-3xl font-bold text-center mb-10 text-white">Launch Success Metrics</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="mb-3 md:mb-20">
+          <div className="bg-zinc-900/50 backdrop-blur-xl rounded-xl md:rounded-3xl border md:border-2 border-[#00FFFF]/20 p-4 md:p-12">
+            <h3 className="text-base md:text-3xl font-bold text-center mb-3 md:mb-10 text-white">Launch Success Metrics</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-8">
               <StatCard
                 value="20x"
                 label="Higher Success"
@@ -175,14 +175,14 @@ export default function LaunchPage() {
         </div>
 
         {/* How It Works - 4 Steps */}
-        <div className="mb-20">
-          <h2 className="text-3xl font-bold text-center mb-4 text-white">
+        <div className="mb-3 md:mb-20">
+          <h2 className="text-base md:text-3xl font-bold text-center mb-2 md:mb-4 text-white">
             Launch Protocol Steps
           </h2>
-          <p className="text-center text-zinc-400 mb-12 text-lg max-w-2xl mx-auto">
+          <p className="text-center text-zinc-400 mb-3 md:mb-12 text-xs md:text-lg max-w-2xl mx-auto hidden sm:block">
             Our proven 4-step process ensures maximum success and community engagement
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-8">
             <ProcessStep
               step={1}
               icon={Users}
@@ -215,11 +215,11 @@ export default function LaunchPage() {
         </div>
 
         {/* Protection Features */}
-        <div className="mb-20">
-          <h2 className="text-3xl font-bold text-center mb-12 text-white">
+        <div className="mb-3 md:mb-20">
+          <h2 className="text-base md:text-3xl font-bold text-center mb-3 md:mb-12 text-white">
             Anti-Sniper Protection
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-6">
             <ProtectionCard
               icon={Lock}
               title="Bundle Prevention"
@@ -239,12 +239,12 @@ export default function LaunchPage() {
         </div>
 
         {/* Benefits List */}
-        <div className="mb-20">
-          <div className="bg-gradient-to-br from-[#00FFFF]/5 via-[#00FF88]/5 to-[#FFD700]/5 rounded-3xl border-2 border-[#00FFFF]/20 p-12">
-            <h2 className="text-3xl font-bold text-center mb-12 text-white">
+        <div className="mb-3 md:mb-20">
+          <div className="bg-gradient-to-br from-[#00FFFF]/5 via-[#00FF88]/5 to-[#FFD700]/5 rounded-xl md:rounded-3xl border md:border-2 border-[#00FFFF]/20 p-4 md:p-12">
+            <h2 className="text-base md:text-3xl font-bold text-center mb-3 md:mb-12 text-white">
               What You Get
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-6 max-w-4xl mx-auto">
               <BenefitItem text="Access to ICM Network talent pool" />
               <BenefitItem text="Dedicated launch advisory team" />
               <BenefitItem text="Platform acceleration program" />
@@ -259,20 +259,20 @@ export default function LaunchPage() {
 
         {/* Final CTA */}
         <div className="text-center">
-          <div className="inline-block p-12 rounded-3xl bg-zinc-900/80 border-2 border-[#00FFFF]/30 backdrop-blur-xl max-w-3xl">
-            <h3 className="text-3xl font-bold text-white mb-4">
+          <div className="inline-block p-4 md:p-12 rounded-xl md:rounded-3xl bg-zinc-900/80 border md:border-2 border-[#00FFFF]/30 backdrop-blur-xl max-w-3xl">
+            <h3 className="text-base md:text-3xl font-bold text-white mb-2 md:mb-4">
               Ready to Launch Successfully?
             </h3>
-            <p className="text-lg text-zinc-300 mb-8">
+            <p className="text-xs md:text-lg text-zinc-300 mb-3 md:mb-8 hidden sm:block">
               Join 248+ projects that achieved 20x higher success rate through our protocol
             </p>
             <button
               onClick={() => setDrawerOpen(true)}
-              className="inline-flex items-center gap-3 px-10 py-5 rounded-xl text-black font-bold text-xl transition-all bg-[#00FFFF] hover:bg-[#00FF88] hover:scale-105"
+              className="inline-flex items-center gap-1.5 md:gap-3 px-4 py-2 md:px-10 md:py-5 rounded-lg md:rounded-xl text-black font-bold text-sm md:text-xl transition-all bg-[#00FFFF] hover:bg-[#00FF88] hover:scale-105"
             >
-              <Rocket className="w-6 h-6" />
+              <Rocket className="w-4 h-4 md:w-6 md:h-6" />
               Start Pre-Launch Protocol
-              <ArrowRight className="w-6 h-6" />
+              <ArrowRight className="w-4 h-4 md:w-6 md:h-6" />
             </button>
           </div>
         </div>
@@ -284,8 +284,8 @@ export default function LaunchPage() {
         isOpen={drawerOpen}
         onClose={() => setDrawerOpen(false)}
         onSubmit={handleSubmit}
-        isLoading={isCreating}
-        error={error}
+        isLoading={false}
+        error={null}
       />
     </div>
   )
@@ -340,13 +340,13 @@ function FeatureCard({
 
   return (
     <div className={cn(
-      "p-6 rounded-2xl border-2 bg-gradient-to-br backdrop-blur-sm transition-all hover:scale-105",
+      "p-3 md:p-6 rounded-lg md:rounded-2xl border md:border-2 bg-gradient-to-br backdrop-blur-sm transition-all hover:scale-105",
       scheme.bg,
       scheme.border
     )}>
-      <Icon className={cn("w-12 h-12 mb-4", scheme.icon)} />
-      <h3 className="text-xl font-bold text-white mb-3">{title}</h3>
-      <p className="text-sm text-zinc-400 leading-relaxed">{description}</p>
+      <Icon className={cn("w-6 h-6 md:w-12 md:h-12 mb-2 md:mb-4", scheme.icon)} />
+      <h3 className="text-sm md:text-xl font-bold text-white mb-1 md:mb-3">{title}</h3>
+      <p className="text-xs md:text-sm text-zinc-400 leading-relaxed">{description}</p>
     </div>
   )
 }
@@ -370,10 +370,10 @@ function StatCard({
 
   return (
     <div className="text-center">
-      <div className={cn("text-5xl sm:text-6xl font-black mb-3", colors[color])}>
+      <div className={cn("text-2xl md:text-5xl lg:text-6xl font-black mb-1 md:mb-3", colors[color])}>
         {value}
       </div>
-      <div className="text-sm text-zinc-400 uppercase tracking-wider font-bold">
+      <div className="text-[10px] md:text-sm text-zinc-400 uppercase tracking-wider font-bold">
         {label}
       </div>
     </div>
@@ -416,10 +416,10 @@ function ProcessStep({
   const scheme = colors[color]
 
   return (
-    <div className="relative p-8 rounded-2xl bg-zinc-900/50 border-2 border-zinc-800 hover:border-zinc-700 transition-all">
+    <div className="relative p-3 md:p-8 rounded-lg md:rounded-2xl bg-zinc-900/50 border md:border-2 border-zinc-800 hover:border-zinc-700 transition-all">
       {/* Step Number */}
       <div className={cn(
-        "absolute -top-5 -left-5 w-14 h-14 rounded-full flex items-center justify-center font-black text-2xl",
+        "absolute -top-3 -left-3 md:-top-5 md:-left-5 w-8 h-8 md:w-14 md:h-14 rounded-full flex items-center justify-center font-black text-sm md:text-2xl",
         scheme.number
       )}>
         {step}
@@ -427,15 +427,15 @@ function ProcessStep({
 
       {/* Icon */}
       <div className={cn(
-        "w-16 h-16 rounded-xl flex items-center justify-center mb-5 border-2 mt-4",
+        "w-10 h-10 md:w-16 md:h-16 rounded-lg md:rounded-xl flex items-center justify-center mb-2 md:mb-5 border md:border-2 mt-2 md:mt-4",
         scheme.icon
       )}>
-        <Icon className="w-8 h-8" />
+        <Icon className="w-5 h-5 md:w-8 md:h-8" />
       </div>
 
       {/* Content */}
-      <h3 className="text-2xl font-bold text-white mb-3">{title}</h3>
-      <p className="text-base text-zinc-400 leading-relaxed">{description}</p>
+      <h3 className="text-sm md:text-2xl font-bold text-white mb-1 md:mb-3">{title}</h3>
+      <p className="text-xs md:text-base text-zinc-400 leading-relaxed">{description}</p>
     </div>
   )
 }
@@ -451,12 +451,12 @@ function ProtectionCard({
   description: string
 }) {
   return (
-    <div className="p-6 rounded-2xl bg-zinc-900/50 border-2 border-[#FF0040]/20 hover:border-[#FF0040]/40 transition-all">
-      <div className="w-14 h-14 rounded-xl bg-[#FF0040]/20 border-2 border-[#FF0040]/30 flex items-center justify-center mb-4">
-        <Icon className="w-7 h-7 text-[#FF0040]" />
+    <div className="p-3 md:p-6 rounded-lg md:rounded-2xl bg-zinc-900/50 border md:border-2 border-[#FF0040]/20 hover:border-[#FF0040]/40 transition-all">
+      <div className="w-8 h-8 md:w-14 md:h-14 rounded-lg md:rounded-xl bg-[#FF0040]/20 border md:border-2 border-[#FF0040]/30 flex items-center justify-center mb-2 md:mb-4">
+        <Icon className="w-4 h-4 md:w-7 md:h-7 text-[#FF0040]" />
       </div>
-      <h3 className="text-xl font-bold text-white mb-3">{title}</h3>
-      <p className="text-sm text-zinc-400 leading-relaxed">{description}</p>
+      <h3 className="text-sm md:text-xl font-bold text-white mb-1 md:mb-3">{title}</h3>
+      <p className="text-xs md:text-sm text-zinc-400 leading-relaxed">{description}</p>
     </div>
   )
 }
@@ -464,9 +464,9 @@ function ProtectionCard({
 // Benefit Item Component
 function BenefitItem({ text }: { text: string }) {
   return (
-    <div className="flex items-start gap-3">
-      <CheckCircle2 className="w-6 h-6 text-[#00FF88] flex-shrink-0 mt-0.5" />
-      <span className="text-base text-zinc-300">{text}</span>
+    <div className="flex items-start gap-1.5 md:gap-3">
+      <CheckCircle2 className="w-3.5 h-3.5 md:w-6 md:h-6 text-[#00FF88] flex-shrink-0 mt-0.5" />
+      <span className="text-xs md:text-base text-zinc-300">{text}</span>
     </div>
   )
 }

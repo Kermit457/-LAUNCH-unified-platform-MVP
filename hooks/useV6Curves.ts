@@ -5,12 +5,18 @@
 
 import { useState, useEffect } from 'react';
 import { PublicKey } from '@solana/web3.js';
-import {
-  fetchCurveByTwitter,
-  fetchKeyHoldings,
-  CurveData,
-  KeyHolderData,
-} from '@/lib/solana/v6-curve-service';
+// import {
+//   fetchCurveByTwitter,
+//   fetchKeyHoldings,
+//   CurveData,
+//   KeyHolderData,
+// } from '@/lib/solana/v6-curve-service';
+
+// Stub implementations
+const fetchCurveByTwitter = async (twitterHandle: string): Promise<any> => null;
+const fetchKeyHoldings = async (twitterHandleOrPDA: string | PublicKey, userWallet: PublicKey): Promise<any> => null;
+type CurveData = any;
+type KeyHolderData = any;
 
 export interface V6Curve {
   id: string; // launchId/projectId

@@ -48,7 +48,7 @@ interface ExtendedEarnCard {
 const TABS = ['All', 'Campaign', 'Clips'] as const
 type Tab = typeof TABS[number]
 
-// Enhanced KPI Card Component
+// Enhanced KPI Card Component - Super Compact on Mobile
 const KPICard = ({
   label,
   value,
@@ -71,26 +71,26 @@ const KPICard = ({
     whileHover={{ scale: 1.02, y: -2 }}
     className="relative group"
   >
-    <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${gradient} opacity-10 group-hover:opacity-20 blur-xl transition-opacity`} />
+    <div className={`absolute inset-0 rounded-xl md:rounded-2xl bg-gradient-to-br ${gradient} opacity-10 group-hover:opacity-20 blur-xl transition-opacity`} />
 
-    <div className="relative p-6 rounded-2xl bg-zinc-900/60 backdrop-blur-xl border border-zinc-800 group-hover:border-zinc-700 transition-all">
-      <div className="flex items-start justify-between mb-4">
-        <div className={`p-3 rounded-xl bg-gradient-to-br ${gradient}`}>
-          <Icon className="w-5 h-5 text-white" />
+    <div className="relative p-2 md:p-6 rounded-lg md:rounded-2xl bg-zinc-900/60 backdrop-blur-xl border border-zinc-800 group-hover:border-zinc-700 transition-all">
+      <div className="flex items-start justify-between mb-1 md:mb-4">
+        <div className={`p-1.5 md:p-3 rounded-lg md:rounded-xl bg-gradient-to-br ${gradient}`}>
+          <Icon className="w-3.5 h-3.5 md:w-5 md:h-5 text-white" />
         </div>
         {trend && (
-          <div className={`flex items-center gap-1 text-sm font-semibold px-2 py-1 rounded-full ${
+          <div className={`flex items-center gap-0.5 md:gap-1 text-[9px] md:text-sm font-semibold px-1 md:px-2 py-0.5 md:py-1 rounded-full ${
             trend.direction === 'up'
               ? 'bg-green-500/10 text-green-400 border border-green-500/20'
               : 'bg-red-500/10 text-red-400 border border-red-500/20'
           }`}>
-            <TrendingUp className={`w-3 h-3 ${trend.direction === 'down' ? 'rotate-180' : ''}`} />
-            <span>{trend.value}</span>
+            <TrendingUp className={`w-2 h-2 md:w-3 md:h-3 ${trend.direction === 'down' ? 'rotate-180' : ''}`} />
+            <span className="hidden sm:inline">{trend.value}</span>
           </div>
         )}
       </div>
-      <div className="text-3xl font-bold text-white mb-1">{value}</div>
-      <div className="text-sm text-zinc-500">{label}</div>
+      <div className="text-base md:text-3xl font-bold text-white mb-0.5 md:mb-1">{value}</div>
+      <div className="text-[10px] md:text-sm text-zinc-500">{label}</div>
     </div>
   </motion.div>
 )
@@ -131,45 +131,46 @@ const OpportunityCard = ({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -4 }}
+      whileHover={{ y: -2 }}
       className="group"
     >
       <div className="relative h-full">
-        <div className="relative h-full p-5 rounded-2xl bg-zinc-900/60 backdrop-blur-xl border-2 border-zinc-800 group-hover:border-[#FFD700]/30 transition-all">
+        <div className="relative h-full p-2 md:p-5 rounded-lg md:rounded-2xl bg-zinc-900/60 backdrop-blur-xl border md:border-2 border-zinc-800 group-hover:border-[#FFD700]/30 transition-all">
 
           {/* Header: Logo and Price Badge */}
-          <div className="flex items-start justify-between mb-3">
-            <div className="p-2.5 rounded-xl bg-[#FFD700]/20 border-2 border-[#FFD700]/30 flex-shrink-0">
-              <Icon className="w-7 h-7 text-[#FFD700]" />
+          <div className="flex items-start justify-between mb-1.5 md:mb-3">
+            <div className="p-1 md:p-2.5 rounded-lg md:rounded-xl bg-[#FFD700]/20 border md:border-2 border-[#FFD700]/30 flex-shrink-0">
+              <Icon className="w-3.5 h-3.5 md:w-7 md:h-7 text-[#FFD700]" />
             </div>
-            <div className="px-3 py-1.5 rounded-lg bg-[#FFD700]/10 border border-[#FFD700]/30">
-              <span className="text-[#FFD700] text-sm font-bold">
+            <div className="px-1.5 md:px-3 py-0.5 md:py-1.5 rounded-md md:rounded-lg bg-[#FFD700]/10 border border-[#FFD700]/30">
+              <span className="text-[#FFD700] text-[9px] md:text-sm font-bold">
                 ${ratePerThousand} / 1000
               </span>
             </div>
           </div>
 
           {/* Campaign Name */}
-          <h3 className="font-bold text-white text-base mb-1.5 line-clamp-1">
+          <h3 className="font-bold text-white text-xs md:text-base mb-0.5 md:mb-1.5 line-clamp-1">
             {card.title}
           </h3>
 
-          {/* Earnings Description */}
-          <p className="text-xs text-zinc-400 mb-3">
+          {/* Earnings Description - Desktop only */}
+          <p className="hidden md:block text-xs text-zinc-400 mb-3">
             (Earn ${ratePerThousand} per 1,000 Views)
           </p>
 
           {/* Budget Progress */}
-          <div className="mb-3">
-            <div className="flex items-center justify-between text-xs mb-1.5">
+          <div className="mb-1.5 md:mb-3">
+            <div className="flex items-center justify-between text-[9px] md:text-xs mb-0.5 md:mb-1.5">
               <span className="text-zinc-400">
-                ${Math.round(budgetPaid).toLocaleString()} of ${budgetTotal.toLocaleString()} paid out
+                <span className="hidden md:inline">${Math.round(budgetPaid).toLocaleString()} of ${budgetTotal.toLocaleString()} paid out</span>
+                <span className="md:hidden">${Math.round(budgetPaid / 1000).toFixed(0)}K/${Math.round(budgetTotal / 1000).toFixed(0)}K</span>
               </span>
               <span className="text-[#FFD700] font-bold">{budgetProgressPct}%</span>
             </div>
-            <div className="h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+            <div className="h-1 md:h-1.5 bg-zinc-800 rounded-full overflow-hidden">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${budgetProgressPct}%` }}
@@ -179,19 +180,19 @@ const OpportunityCard = ({
             </div>
           </div>
 
-          {/* Type Badge and Platform Icons */}
-          <div className="flex items-center justify-between mb-3">
-            <div className="px-2.5 py-1 rounded-lg bg-zinc-800/60 border border-zinc-700">
-              <span className="text-xs text-zinc-300 font-medium">
+          {/* Type and Platform Icons */}
+          <div className="flex items-center justify-between mb-1.5 md:mb-3">
+            <div className="px-1.5 md:px-2.5 py-0.5 md:py-1 rounded-md md:rounded-lg bg-zinc-800/60 border border-zinc-700">
+              <span className="text-[9px] md:text-xs text-zinc-300 font-medium">
                 Type: {card.type.charAt(0).toUpperCase() + card.type.slice(1)}
               </span>
             </div>
 
             {/* Platform Icons */}
             {card.platform && card.platform.length > 0 && (
-              <div className="flex items-center gap-1.5">
-                {card.platform.slice(0, 4).map((platform, i) => (
-                  <span key={i} className="text-base">
+              <div className="flex items-center gap-0.5 md:gap-1.5">
+                {card.platform.slice(0, 3).map((platform, i) => (
+                  <span key={i} className="text-xs md:text-base">
                     {platform === 'twitter' && '🐦'}
                     {platform === 'youtube' && '📹'}
                     {platform === 'tiktok' && '🎵'}
@@ -201,22 +202,22 @@ const OpportunityCard = ({
                     {!['twitter', 'youtube', 'tiktok', 'instagram', 'discord', 'telegram'].includes(platform) && '🌐'}
                   </span>
                 ))}
-                {card.platform.length > 4 && (
-                  <span className="text-xs text-zinc-500 ml-1">+{card.platform.length - 4}</span>
+                {card.platform.length > 3 && (
+                  <span className="text-[9px] md:text-xs text-zinc-500 ml-0.5 md:ml-1">+{card.platform.length - 3}</span>
                 )}
               </div>
             )}
           </div>
 
           {/* Views Count */}
-          <div className="flex items-center justify-end mb-3">
-            <span className="text-xs text-zinc-400">
-              Views: <span className="text-white font-semibold">{viewsCount.toLocaleString()}</span>
+          <div className="flex items-center justify-end mb-1.5 md:mb-3">
+            <span className="text-[9px] md:text-xs text-zinc-400">
+              Views: <span className="text-white font-semibold">{viewsCount > 1000000 ? `${(viewsCount / 1000000).toFixed(1)}M` : viewsCount.toLocaleString()}</span>
             </span>
           </div>
 
           {/* Two Button Layout */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-1.5 md:gap-3">
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -224,7 +225,7 @@ const OpportunityCard = ({
                 e.stopPropagation()
                 onView(card.id)
               }}
-              className="py-2 rounded-xl bg-zinc-800/80 border border-zinc-700 text-white text-sm font-bold hover:bg-zinc-700/80 transition-all"
+              className="py-1 md:py-2 rounded-md md:rounded-xl bg-zinc-800/80 border border-zinc-700 text-white text-[10px] md:text-sm font-bold hover:bg-zinc-700/80 transition-all"
             >
               View
             </motion.button>
@@ -235,7 +236,7 @@ const OpportunityCard = ({
                 e.stopPropagation()
                 onJoin(card.id)
               }}
-              className="py-2 rounded-xl bg-[#FFD700] text-black text-sm font-bold hover:bg-[#FFD700]/90 transition-all"
+              className="py-1 md:py-2 rounded-md md:rounded-xl bg-[#FFD700] text-black text-[10px] md:text-sm font-bold hover:bg-[#FFD700]/90 transition-all"
             >
               Join
             </motion.button>
@@ -469,147 +470,99 @@ export default function EarnPage() {
         />
       </div>
 
-      {/* Hero Section - Compact & Dynamic */}
-      <section className="relative z-10 px-4 sm:px-6 lg:px-8 pt-8 pb-6">
+      {/* Hero Section - ULTRA Compact on Mobile */}
+      <section className="relative z-10 px-3 sm:px-6 lg:px-8 pt-2 md:pt-8 pb-2 md:pb-6">
         <div className="max-w-7xl mx-auto">
-          {/* Main Hero */}
+          {/* Header Row - Earn left, Create right */}
+          <div className="flex items-center justify-between mb-3 md:mb-6">
+            <motion.h1
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="text-2xl md:text-4xl font-black text-[#FFD700]"
+            >
+              Earn
+            </motion.h1>
+
+            <motion.button
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleCreateCampaign}
+              className="flex items-center gap-1.5 px-3 md:px-5 py-1.5 md:py-2.5 rounded-lg md:rounded-xl bg-[#FFD700] hover:bg-[#FFD700]/90 text-black text-sm md:text-base font-bold transition-all"
+            >
+              <Plus className="w-4 h-4 md:w-5 md:h-5" />
+              <span>Create</span>
+            </motion.button>
+          </div>
+
+          {/* Combined Stats Box - All in one line */}
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-8"
+            className="bg-zinc-900/60 backdrop-blur-xl rounded-lg md:rounded-xl border border-zinc-800 p-2 md:p-4 mb-3 md:mb-4"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#FFD700]/10 border-2 border-[#FFD700]/30 text-sm font-bold mb-4">
-              <DollarSign className="w-4 h-4 text-[#FFD700]" />
-              <span className="text-[#FFD700]">
-                Content Creator Marketplace
-              </span>
-            </div>
-
-            <h1 className="text-4xl sm:text-5xl font-black text-[#FFD700] mb-4">
-              Get Paid to Clip
-              <br />
-              <span className="text-white">Projects You Believe In</span>
-            </h1>
-            <p className="text-base text-zinc-400 max-w-2xl mx-auto mb-6">
-              Create 30-60s video clips, share on social media, and earn SOL for every approved submission.
-            </p>
-
-            {/* Value Props Pills - Focus on Clipping */}
-            <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
-              <div className="px-3 py-1.5 rounded-full bg-[#FFD700]/10 border border-[#FFD700]/30 text-[#FFD700] text-xs font-bold">
-                🎬 Clipping
+            <div className="grid grid-cols-3 gap-2 md:gap-4">
+              <div className="text-center">
+                <div className="text-base md:text-2xl font-bold text-[#FFD700]">
+                  ${stats.today.toLocaleString()}
+                </div>
+                <div className="text-[10px] md:text-xs text-zinc-500">Available</div>
               </div>
-              <div className="px-3 py-1.5 rounded-full bg-zinc-800/60 border border-zinc-700 text-zinc-400 text-xs font-bold">
-                🎙️ Yapping (Coming Soon)
+              <div className="text-center border-x border-zinc-800">
+                <div className="text-base md:text-2xl font-bold text-[#FFD700]">
+                  ${stats.week.toLocaleString()}
+                </div>
+                <div className="text-[10px] md:text-xs text-zinc-500">Paid</div>
               </div>
-              <div className="px-3 py-1.5 rounded-full bg-zinc-800/60 border border-zinc-700 text-zinc-400 text-xs font-bold">
-                💼 Bagwork (Coming Soon)
+              <div className="text-center">
+                <div className="text-base md:text-2xl font-bold text-[#FFD700]">
+                  ${Math.round(stats.month).toLocaleString()}
+                </div>
+                <div className="text-[10px] md:text-xs text-zinc-500">Total Pool</div>
               </div>
             </div>
           </motion.div>
 
-          {/* KPI Cards - More Compact */}
-          <div className="grid md:grid-cols-3 gap-4">
-            <KPICard
-              label="Available Today"
-              value={`$${stats.today.toLocaleString()}`}
-              icon={DollarSign}
-              trend={{ value: 'Active Campaigns', direction: 'up' }}
-              gradient="from-[#FFD700] to-[#FFD700]"
-              delay={0}
-            />
-            <KPICard
-              label="Paid This Week"
-              value={`$${stats.week.toLocaleString()}`}
-              icon={TrendingUp}
-              trend={{ value: 'To Creators', direction: 'up' }}
-              gradient="from-[#FFD700] to-[#FFD700]"
-              delay={0.1}
-            />
-            <KPICard
-              label="Total Pool"
-              value={`$${Math.round(stats.month).toLocaleString()}`}
-              icon={Gift}
-              trend={{ value: 'Live Bounties', direction: 'up' }}
-              gradient="from-[#FFD700] to-[#FFD700]"
-              delay={0.2}
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Value Proposition Section - Focus on Clipping */}
-      <section className="relative z-10 px-4 sm:px-6 lg:px-8 py-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-3 gap-4">
-            {/* Clipping - Active */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0 }}
-              whileHover={{ scale: 1.05 }}
-              className="p-5 rounded-2xl bg-zinc-900/60 backdrop-blur-xl border-2 border-[#FFD700]/50 hover:border-[#FFD700]/70 transition-all shadow-lg shadow-[#FFD700]/10"
-            >
-              <div className="text-3xl mb-2">🎬</div>
-              <h3 className="font-bold text-white mb-2 text-sm">Clipping</h3>
-              <p className="text-xs text-zinc-400 mb-3">30-60s promotional videos, tutorials, or reactions</p>
-              <div className="px-2.5 py-1 rounded-lg bg-[#FFD700]/10 border border-[#FFD700]/30 text-[#FFD700] text-xs font-bold inline-block">
-                5-50 SOL per submission
+          {/* Clipping Info - Thin on mobile, more detail on desktop */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="bg-[#FFD700]/10 border border-[#FFD700]/30 rounded-lg md:rounded-xl px-3 md:px-5 py-1.5 md:py-3 mb-3 md:mb-6"
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 md:gap-3">
+                <span className="text-sm md:text-xl">🎬</span>
+                <div>
+                  <span className="text-xs md:text-base font-bold text-[#FFD700]">Clipping</span>
+                  <p className="hidden md:block text-xs text-zinc-400 mt-0.5">
+                    Create 30-60s promotional videos for projects
+                  </p>
+                </div>
               </div>
-            </motion.div>
-
-            {/* Yapping - Coming Soon */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="p-5 rounded-2xl bg-zinc-900/40 backdrop-blur-xl border-2 border-zinc-800 transition-all relative overflow-hidden"
-            >
-              <div className="absolute top-3 right-3 px-2 py-0.5 rounded-full bg-purple-500/20 border border-purple-500/50 text-purple-300 text-[10px] font-bold">
-                COMING SOON
+              <div className="text-right">
+                <span className="text-xs md:text-base font-bold text-[#FFD700]">5-50 SOL</span>
+                <span className="hidden md:block text-xs text-zinc-400">per submission</span>
               </div>
-              <div className="text-3xl mb-2 opacity-50">🎙️</div>
-              <h3 className="font-bold text-zinc-400 mb-2 text-sm">Yapping</h3>
-              <p className="text-xs text-zinc-500 mb-3">Podcast appearances, space talks, and audio content</p>
-              <div className="px-2.5 py-1 rounded-lg bg-zinc-800/60 border border-zinc-700 text-zinc-500 text-xs font-bold inline-block">
-                Coming Q2 2025
-              </div>
-            </motion.div>
-
-            {/* Bagwork - Coming Soon */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="p-5 rounded-2xl bg-zinc-900/40 backdrop-blur-xl border-2 border-zinc-800 transition-all relative overflow-hidden"
-            >
-              <div className="absolute top-3 right-3 px-2 py-0.5 rounded-full bg-cyan-500/20 border border-cyan-500/50 text-cyan-300 text-[10px] font-bold">
-                COMING SOON
-              </div>
-              <div className="text-3xl mb-2 opacity-50">💼</div>
-              <h3 className="font-bold text-zinc-400 mb-2 text-sm">Bagwork</h3>
-              <p className="text-xs text-zinc-500 mb-3">Long-form content, research reports, and technical analysis</p>
-              <div className="px-2.5 py-1 rounded-lg bg-zinc-800/60 border border-zinc-700 text-zinc-500 text-xs font-bold inline-block">
-                Coming Q3 2025
-              </div>
-            </motion.div>
-          </div>
+            </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Filter Bar */}
       <div className="sticky top-0 z-40 bg-black/80 backdrop-blur-xl border-b border-zinc-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between flex-wrap gap-4">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2 md:py-4">
+          <div className="flex items-center justify-between flex-wrap gap-2 md:gap-4">
             {/* Tabs */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 md:gap-2">
               {TABS.map((tab) => (
                 <motion.button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className={`px-4 py-2 rounded-xl font-bold text-sm transition-all ${
+                  className={`px-2.5 md:px-4 py-1.5 md:py-2 rounded-lg md:rounded-xl font-bold text-xs md:text-sm transition-all ${
                     activeTab === tab
                       ? 'bg-[#FFD700] text-black'
                       : 'bg-zinc-900/60 text-zinc-400 hover:bg-zinc-800/60 border border-zinc-800'
@@ -629,22 +582,10 @@ export default function EarnPage() {
               ))}
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex items-center gap-3">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={handleCreateCampaign}
-                className="px-4 py-2 rounded-xl bg-[#FFD700] hover:bg-[#FFD700]/90 text-black text-sm font-bold transition-all"
-              >
-                <Plus className="w-4 h-4 inline mr-1" />
-                Create Campaign
-              </motion.button>
-            </div>
           </div>
 
           {/* Sort Options */}
-          <div className="flex items-center gap-2 mt-4">
+          <div className="flex items-center gap-1 md:gap-2 mt-2 md:mt-4">
             <span className="text-xs text-zinc-500">Sort by:</span>
             {['trending', 'payout', 'closing'].map((sort) => (
               <button
@@ -667,19 +608,19 @@ export default function EarnPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Opportunities Grid */}
         {loading ? (
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-2 gap-2 md:gap-6">
             {[...Array(6)].map((_, i) => (
-              <GlassCard key={i} className="h-64 animate-pulse">
-                <div className="p-6">
-                  <div className="h-4 bg-zinc-800 rounded mb-4" />
-                  <div className="h-3 bg-zinc-800 rounded mb-2" />
-                  <div className="h-3 bg-zinc-800 rounded w-2/3" />
+              <GlassCard key={i} className="h-32 md:h-48 animate-pulse">
+                <div className="p-2 md:p-4">
+                  <div className="h-3 md:h-4 bg-zinc-800 rounded mb-2 md:mb-3" />
+                  <div className="h-2 md:h-3 bg-zinc-800 rounded mb-1 md:mb-2" />
+                  <div className="h-2 md:h-3 bg-zinc-800 rounded w-2/3" />
                 </div>
               </GlassCard>
             ))}
           </div>
         ) : filteredCards.length > 0 ? (
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-2 gap-2 md:gap-6">
             {filteredCards.map((card) => (
               <OpportunityCard
                 key={card.id}
@@ -710,9 +651,9 @@ export default function EarnPage() {
         )}
 
         {/* How It Works Section */}
-        <section className="mt-16">
-          <h2 className="text-2xl font-bold text-white text-center mb-3">How to Start Earning</h2>
-          <p className="text-center text-zinc-400 mb-8 max-w-2xl mx-auto text-sm">
+        <section className="mt-6 md:mt-16 hidden md:block">
+          <h2 className="text-lg md:text-2xl font-bold text-white text-center mb-2 md:mb-3">How to Start Earning</h2>
+          <p className="text-center text-zinc-400 mb-4 md:mb-8 max-w-2xl mx-auto text-xs md:text-sm">
             Join campaigns, create content for projects you believe in, and get paid in SOL
           </p>
           <div className="grid md:grid-cols-3 gap-6">

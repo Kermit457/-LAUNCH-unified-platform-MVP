@@ -161,12 +161,12 @@ export async function curveExistsOnChain(twitterHandle: string): Promise<boolean
 export async function getCurveStatus(twitterHandle: string): Promise<'pending' | 'active' | 'frozen' | 'launched' | null> {
   try {
     const curvePDA = getCurvePDA(twitterHandle);
-    const provider = new AnchorProvider(
+    const anchorProvider = new AnchorProvider(
       connection,
       {} as any,
       { commitment: 'confirmed' }
     );
-    const program = new Program(IDL as any, CURVE_PROGRAM_ID, provider);
+    const program = new Program(IDL as any, anchorProvider);
 
     const curveAccount = await program.account.bondingCurve.fetch(curvePDA) as any;
 

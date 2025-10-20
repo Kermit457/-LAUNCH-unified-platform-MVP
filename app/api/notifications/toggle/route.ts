@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { databases, DB_ID } from '@/lib/appwrite/server'
+import { serverDatabases as databases, DB_ID } from '@/lib/appwrite/server'
 import { ID, Query } from 'node-appwrite'
 
 const NOTIFICATIONS_COLLECTION = 'user_notifications'

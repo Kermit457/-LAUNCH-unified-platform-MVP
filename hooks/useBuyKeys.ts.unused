@@ -68,7 +68,7 @@ export function useBuyKeys() {
 
       // Create Anchor provider and program
       const provider = new AnchorProvider(connection, mockWallet as any, { commitment: 'confirmed' });
-      const program = new Program(IDL as any, CURVE_PROGRAM_ID, provider);
+      const program = new Program(IDL as any, provider);
 
       // Fetch curve data to get wallet addresses
       const curveData: any = await program.account.bondingCurve.fetch(curvePda);

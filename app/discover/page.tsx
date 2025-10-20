@@ -7,6 +7,7 @@ import { CommentsDrawer } from '@/components/CommentsDrawer'
 import { BuySellModal } from '@/components/launch/BuySellModal'
 import { LaunchDetailsModal } from '@/components/launch/LaunchDetailsModal'
 import { SubmitLaunchDrawer } from '@/components/launch/SubmitLaunchDrawer'
+import { CoinListItem } from '@/components/mobile/CoinListItem'
 import { unifiedListings, filterByType, filterByStatus, sortListings, getMyHoldings, getMyCurves } from '@/lib/unifiedMockData'
 import { advancedListings, type AdvancedListingData } from '@/lib/advancedTradingData'
 import type { CurveType } from '@/components/UnifiedCard'
@@ -80,62 +81,62 @@ export default function DiscoverPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-zinc-950 to-black text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 md:py-8">
 
-        {/* Header with Prominent View Toggle */}
-        <div className="mb-8">
-          <div className="flex items-start justify-between mb-6">
+        {/* Header - Super Compact on Mobile */}
+        <div className="mb-3 md:mb-8">
+          {/* Title Row - Horizontal on mobile */}
+          <div className="flex items-center justify-between mb-3 md:mb-6">
             <div>
-              <h1 className="text-4xl sm:text-5xl font-black text-[#00FFFF] mb-3">
+              <h1 className="text-xl md:text-4xl lg:text-5xl font-black text-[#00FFFF] mb-1 md:mb-3">
                 Discover
               </h1>
-              <p className="text-lg text-zinc-400">
+              <p className="text-xs md:text-lg text-zinc-400 hidden md:block">
                 Markets for ideas, creators, and memes
               </p>
             </div>
-          </div>
 
-          {/* Display Mode Toggle + Create Launch Button */}
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3 bg-zinc-900/80 backdrop-blur-xl rounded-2xl p-2 border-2 border-zinc-800/80 shadow-2xl max-w-md">
-              <button
-                onClick={() => setDisplayMode('cards')}
-                className={cn(
-                  "flex-1 px-6 py-3.5 rounded-xl font-bold text-base transition-all flex items-center justify-center gap-3",
-                  displayMode === 'cards'
-                    ? "bg-[#00FFFF] text-black"
-                    : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"
-                )}
-              >
-                <LayoutGrid className="w-5 h-5" />
-                Cards
-              </button>
-              <button
-                onClick={() => setDisplayMode('table')}
-                className={cn(
-                  "flex-1 px-6 py-3.5 rounded-xl font-bold text-base transition-all flex items-center justify-center gap-3",
-                  displayMode === 'table'
-                    ? "bg-[#00FFFF] text-black"
-                    : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"
-                )}
-              >
-                <Table className="w-5 h-5" />
-                Table
-              </button>
-            </div>
-
+            {/* Create Button - Always visible, compact on mobile */}
             <button
               onClick={() => setShowSubmitDrawer(true)}
-              className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-[#FFD700] to-[#FFC700] hover:from-[#FFE700] hover:to-[#FFD700] text-black font-bold transition-all hover:scale-105 flex items-center gap-2"
+              className="px-3 py-2 md:px-6 md:py-3.5 rounded-lg md:rounded-xl bg-gradient-to-r from-[#FFD700] to-[#FFC700] hover:from-[#FFE700] hover:to-[#FFD700] text-black font-bold transition-all hover:scale-105 flex items-center gap-1.5 md:gap-2 text-xs md:text-base"
             >
-              <Rocket className="w-5 h-5" />
-              Create Launch
+              <Rocket className="w-3.5 h-3.5 md:w-5 md:h-5" />
+              <span>Create</span>
+            </button>
+          </div>
+
+          {/* Desktop view toggle - hidden on mobile */}
+          <div className="hidden md:flex items-center gap-3 bg-zinc-900/80 backdrop-blur-xl rounded-2xl p-2 border-2 border-zinc-800/80 shadow-2xl max-w-md">
+            <button
+              onClick={() => setDisplayMode('cards')}
+              className={cn(
+                "flex-1 px-6 py-3.5 rounded-xl font-bold text-base transition-all flex items-center justify-center gap-3",
+                displayMode === 'cards'
+                  ? "bg-[#00FFFF] text-black"
+                  : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"
+              )}
+            >
+              <LayoutGrid className="w-5 h-5" />
+              Cards
+            </button>
+            <button
+              onClick={() => setDisplayMode('table')}
+              className={cn(
+                "flex-1 px-6 py-3.5 rounded-xl font-bold text-base transition-all flex items-center justify-center gap-3",
+                displayMode === 'table'
+                  ? "bg-[#00FFFF] text-black"
+                  : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"
+              )}
+            >
+              <Table className="w-5 h-5" />
+              Table
             </button>
           </div>
         </div>
 
-        {/* Stats Strip (for logged-in users) */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+        {/* Stats Strip - Hidden on mobile, compact grid on tablet */}
+        <div className="hidden sm:grid sm:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4 mb-4 md:mb-8">
           <StatCard
             icon={DollarSign}
             label="Holdings Value"
@@ -175,26 +176,26 @@ export default function DiscoverPage() {
           />
         </div>
 
-        {/* Search Bar */}
-        <div className="mb-8">
+        {/* Search Bar - Compact on mobile */}
+        <div className="mb-3 md:mb-8">
           <div className="relative">
-            <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-[#00FFFF]" />
+            <Search className="absolute left-3 md:left-5 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-[#00FFFF]" />
             <input
               type="text"
-              placeholder="Search projects, creators, memes..."
+              placeholder="Search..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-14 pr-5 py-4 rounded-2xl bg-zinc-900/80 border-2 border-zinc-800 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#00FFFF]/50 focus:border-[#00FFFF] transition-all font-medium"
+              className="w-full pl-10 md:pl-14 pr-3 md:pr-5 py-2.5 md:py-4 rounded-lg md:rounded-2xl bg-zinc-900/80 border border-zinc-800 md:border-2 text-sm md:text-base text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#00FFFF]/50 focus:border-[#00FFFF] transition-all font-medium"
             />
           </div>
         </div>
 
-        {/* Filters - Better Spacing */}
-        <div className="bg-zinc-900/30 backdrop-blur-xl rounded-2xl border border-zinc-800/50 p-8 mb-8">
+        {/* Filters - Super Compact on Mobile */}
+        <div className="bg-zinc-900/30 backdrop-blur-xl rounded-lg md:rounded-2xl border border-zinc-800/50 p-3 md:p-8 mb-3 md:mb-8">
           {/* Type Filter */}
-          <div className="mb-8">
-            <label className="text-sm font-bold text-white mb-4 block uppercase tracking-wider">Type</label>
-            <div className="flex flex-wrap gap-3">
+          <div className="mb-3 md:mb-8">
+            <label className="text-xs md:text-sm font-bold text-white mb-2 md:mb-4 block uppercase tracking-wider">Type</label>
+            <div className="flex flex-wrap gap-2 md:gap-3">
               <FilterPill
                 active={typeFilter === 'all'}
                 onClick={() => setTypeFilter('all')}
@@ -226,12 +227,12 @@ export default function DiscoverPage() {
             </div>
           </div>
 
-          {/* Status & Sort Row */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+          {/* Status & Sort Row - Compact on mobile */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-8">
             {/* Status Filter */}
             <div>
-              <label className="text-sm font-bold text-white mb-4 block uppercase tracking-wider">Stage</label>
-              <div className="flex flex-wrap gap-3">
+              <label className="text-xs md:text-sm font-bold text-white mb-2 md:mb-4 block uppercase tracking-wider">Stage</label>
+              <div className="flex flex-wrap gap-2 md:gap-3">
                 <FilterPill
                   active={statusFilter === 'all'}
                   onClick={() => setStatusFilter('all')}
@@ -325,96 +326,122 @@ export default function DiscoverPage() {
         {/* Display Content Based on Mode */}
         {filtered.length > 0 ? (
           <>
-            {displayMode === 'table' ? (
-              // Table View
-              <div className="bg-zinc-900/20 backdrop-blur-xl rounded-2xl border border-zinc-800/50 overflow-hidden">
-                <AdvancedTableView
-                  listings={filtered}
-                  onBuyClick={(listing, amount) => {
-                    setBuyModalListing(listing)
-                  }}
-                  onCollaborateClick={(listing) => {
-                    info('Collaborate', 'Send invite to collaborate on ' + listing.title)
-                  }}
-                  onCommentClick={(listing) => {
-                    setCommentDrawerListing(listing)
-                  }}
-                  onRowClick={(listing) => {
-                    setDetailsModalListing(listing)
-                  }}
+            {/* Mobile List View - Always shown on mobile */}
+            <div className="md:hidden flex flex-col gap-3">
+              {filtered.map(listing => (
+                <CoinListItem
+                  key={listing.id}
+                  id={listing.id}
+                  name={listing.title}
+                  ticker={listing.ticker || ''}
+                  logoUrl={listing.logoUrl}
+                  status={listing.status}
+                  age={listing.metrics?.createdAt ? getTimeAgo(listing.metrics.createdAt) : '0d ago'}
+                  motion={listing.metrics?.graduationPercent || 0}
+                  upvotes={listing.upvotes || 0}
+                  comments={listing.commentsCount || 0}
+                  views={listing.viewCount}
+                  price={listing.currentPrice || 0}
+                  priceChange={listing.priceChange24h}
+                  holders={listing.holders || 0}
+                  creatorName={listing.metrics?.creatorName || 'Anonymous'}
+                  creatorAvatar={listing.metrics?.creatorAvatar || 'https://api.dicebear.com/7.x/avataaars/svg?seed=default'}
+                  href={`/launch/${listing.id}`}
                 />
-              </div>
-            ) : (
-              // Card Grid View
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {filtered.map(listing => (
-                  <UnifiedCard
-                    key={listing.id}
-                    data={{
-                      ...listing,
-                      onVote: async () => {
-                        if (!authenticated || !user?.id) {
-                          warning('Authentication Required', 'Please connect your wallet to vote')
-                          return
-                        }
+              ))}
+            </div>
 
-                        try {
-                          // Check if already voted (toggle logic)
-                          if (listing.hasVoted) {
-                            await removeVote(listing.id, user.id)
-                            listing.hasVoted = false
-                            listing.upvotes = Math.max(0, (listing.upvotes || 0) - 1)
-                            success('Vote Removed', 'Your vote has been removed')
-                          } else {
-                            await addVote(listing.id, user.id)
-                            listing.hasVoted = true
-                            listing.upvotes = (listing.upvotes || 0) + 1
-                            success('Voted!', 'Your vote has been recorded')
-                          }
-                        } catch (error: any) {
-                          showError('Vote Failed', error.message || 'Failed to vote')
-                        }
-                      },
-                      onComment: () => {
-                        setCommentDrawerListing(listing)
-                      },
-                      onCollaborate: () => {
-                        info('Collaborate', 'Send invite to collaborate on ' + listing.title)
-                      },
-                      onDetails: () => {
-                        setDetailsModalListing(listing)
-                      },
-                      onBuyKeys: () => {
-                        setBuyModalListing(listing)
-                      },
-                      onClaimAirdrop: async () => {
-                        info('Airdrop Claim', 'Airdrop claiming coming soon!')
-                      },
-                      onNotificationToggle: () => {
-                        success('Notifications', 'Notifications toggled')
-                      },
-                      onShare: () => {
-                        if (navigator.share) {
-                          navigator.share({
-                            title: listing.title,
-                            text: listing.subtitle || '',
-                            url: window.location.origin + `/launch/${listing.id}`,
-                          })
-                        } else {
-                          navigator.clipboard.writeText(window.location.origin + `/launch/${listing.id}`)
-                          success('Link Copied', 'Launch link copied to clipboard')
-                        }
-                      },
-                      onTwitterClick: () => {
-                        if (listing.platforms?.twitter) {
-                          window.open(`https://twitter.com/${listing.platforms.twitter}`, '_blank')
-                        }
-                      },
+            {/* Desktop Views - Hidden on mobile */}
+            <div className="hidden md:block">
+              {displayMode === 'table' ? (
+                // Table View
+                <div className="bg-zinc-900/20 backdrop-blur-xl rounded-2xl border border-zinc-800/50 overflow-hidden">
+                  <AdvancedTableView
+                    listings={filtered}
+                    onBuyClick={(listing, amount) => {
+                      setBuyModalListing(listing)
+                    }}
+                    onCollaborateClick={(listing) => {
+                      info('Collaborate', 'Send invite to collaborate on ' + listing.title)
+                    }}
+                    onCommentClick={(listing) => {
+                      setCommentDrawerListing(listing)
+                    }}
+                    onRowClick={(listing) => {
+                      setDetailsModalListing(listing)
                     }}
                   />
-                ))}
-              </div>
-            )}
+                </div>
+              ) : (
+                // Card Grid View
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {filtered.map(listing => (
+                    <UnifiedCard
+                      key={listing.id}
+                      data={{
+                        ...listing,
+                        onVote: async () => {
+                          if (!authenticated || !user?.id) {
+                            warning('Authentication Required', 'Please connect your wallet to vote')
+                            return
+                          }
+
+                          try {
+                            // Check if already voted (toggle logic)
+                            if (listing.hasVoted) {
+                              await removeVote(listing.id, user.id)
+                              listing.hasVoted = false
+                              listing.upvotes = Math.max(0, (listing.upvotes || 0) - 1)
+                              success('Vote Removed', 'Your vote has been removed')
+                            } else {
+                              await addVote(listing.id, user.id)
+                              listing.hasVoted = true
+                              listing.upvotes = (listing.upvotes || 0) + 1
+                              success('Voted!', 'Your vote has been recorded')
+                            }
+                          } catch (error: any) {
+                            showError('Vote Failed', error.message || 'Failed to vote')
+                          }
+                        },
+                        onComment: () => {
+                          setCommentDrawerListing(listing)
+                        },
+                        onCollaborate: () => {
+                          info('Collaborate', 'Send invite to collaborate on ' + listing.title)
+                        },
+                        onDetails: () => {
+                          setDetailsModalListing(listing)
+                        },
+                        onBuyKeys: () => {
+                          setBuyModalListing(listing)
+                        },
+                        onClaimAirdrop: async () => {
+                          info('Airdrop Claim', 'Airdrop claiming coming soon!')
+                        },
+                        onNotificationToggle: () => {
+                          success('Notifications', 'Notifications toggled')
+                        },
+                        onShare: () => {
+                          if (navigator.share) {
+                            navigator.share({
+                              title: listing.title,
+                              text: listing.subtitle || '',
+                              url: window.location.origin + `/launch/${listing.id}`,
+                            })
+                          } else {
+                            navigator.clipboard.writeText(window.location.origin + `/launch/${listing.id}`)
+                            success('Link Copied', 'Launch link copied to clipboard')
+                          }
+                        },
+                        onTwitterClick: () => {
+                          // Twitter click handler - platforms not implemented yet
+                        },
+                      }}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
           </>
         ) : (
           // Empty State
@@ -447,8 +474,8 @@ export default function DiscoverPage() {
           project={{
             id: commentDrawerListing.id,
             title: commentDrawerListing.title,
-            subtitle: commentDrawerListing.subtitle,
-            logo: commentDrawerListing.logo,
+            subtitle: commentDrawerListing.subtitle || '',
+            logo: commentDrawerListing.logoUrl || '',
           } as any}
           open={!!commentDrawerListing}
           onClose={() => setCommentDrawerListing(null)}
@@ -470,12 +497,12 @@ export default function DiscoverPage() {
           mode="buy"
           data={{
             title: buyModalListing.title,
-            logoUrl: buyModalListing.logo,
+            logoUrl: buyModalListing.logoUrl || '',
             currentPrice: buyModalListing.currentPrice || 0.01,
             myKeys: buyModalListing.myKeys || 0,
             mySharePct: buyModalListing.mySharePct || 0,
             totalSupply: 1000000,
-            priceChange24h: buyModalListing.metrics?.priceChange24h,
+            priceChange24h: buyModalListing.priceChange24h,
             estLaunchTokens: null,
           }}
           onBuy={async (amount) => {
@@ -573,8 +600,8 @@ function FilterPill({
       onClick={onClick}
       data-active={active}
       className={cn(
-        "rounded-xl font-bold transition-all border-2",
-        small ? "px-4 py-2 text-sm" : "px-5 py-2.5 text-base",
+        "rounded-lg md:rounded-xl font-bold transition-all border md:border-2",
+        small ? "px-2.5 py-1.5 text-xs md:px-4 md:py-2 md:text-sm" : "px-3 py-2 text-sm md:px-5 md:py-2.5 md:text-base",
         active
           ? cn("scale-105", className) // Apply custom color classes only when active
           : "bg-zinc-800/50 border-zinc-700/50 text-white hover:bg-zinc-800 hover:border-zinc-600 hover:scale-105"
@@ -583,4 +610,18 @@ function FilterPill({
       {children}
     </button>
   )
+}
+
+// Time Ago Helper
+function getTimeAgo(timestamp: number): string {
+  const now = Date.now()
+  const diff = now - timestamp
+  const minutes = Math.floor(diff / 60000)
+  const hours = Math.floor(diff / 3600000)
+  const days = Math.floor(diff / 86400000)
+
+  if (minutes < 1) return 'just now'
+  if (minutes < 60) return `${minutes}m ago`
+  if (hours < 24) return `${hours}h ago`
+  return `${days}d ago`
 }

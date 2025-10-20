@@ -27,6 +27,7 @@ export function useSolanaBalance() {
         setError(null);
 
         // Fetch balance from Solana
+        if (!publicKey) return;
         const lamports = await connection.getBalance(publicKey);
         const sol = lamports / 1_000_000_000; // Convert lamports to SOL
 

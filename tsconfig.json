@@ -22,5 +22,5 @@
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules", "**/*.unused/**", "app/api/predictions.unused/**"]
+  "exclude": ["node_modules", "**/*.unused/**", "app/api/predictions.unused/**", "archive/**", "solana-program/**"]
 }

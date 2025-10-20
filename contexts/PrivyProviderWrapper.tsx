@@ -27,13 +27,16 @@ export function PrivyProviderWrapper({ children }: { children: ReactNode }) {
         },
         loginMethods: ['email', 'twitter', 'wallet'],
         embeddedWallets: {
-          createOnLogin: 'all-users',
+          solana: {
+            createOnLogin: 'all-users',
+          },
         },
         // Configure Solana RPC endpoints
         solana: {
           rpcs: {
             [chainId]: {
               rpc: createSolanaRpc(solanaRpcUrl),
+              rpcSubscriptions: null as any, // Optional websocket subscriptions
             },
           },
         },
