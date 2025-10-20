@@ -180,9 +180,14 @@ export function ActivateCurveModal({
                       {/* Action Button */}
                       {!step.completed && (
                         <button
+                          onClick={() => {
+                            // TODO: Wire up to actual curve creation + key purchase
+                            alert(`🚧 Coming Soon!\n\nThis will:\n1. Create your curve on Solana (if it doesn't exist)\n2. Open Buy/Sell modal with 10 keys pre-filled\n3. Sign transaction with your Privy wallet\n4. Activate your account\n\nFor now, this is a placeholder.`)
+                            console.log('Buy My Keys clicked - TODO: Implement curve creation + purchase')
+                          }}
                           className={cn(
                             "px-4 py-2 rounded-lg font-semibold text-sm text-white transition-all",
-                            `bg-gradient-to-r ${colors[step.color as keyof typeof colors]} hover:shadow-lg`
+                            `bg-gradient-to-r ${colors[step.color as keyof typeof colors]} hover:shadow-lg hover:scale-105`
                           )}
                         >
                           {step.action}

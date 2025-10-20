@@ -64,7 +64,7 @@ export const ENV = {
 
   /** Feature flags */
   features: {
-    enableLive: getOptionalEnvVar('NEXT_PUBLIC_ENABLE_LIVE', 'true') === 'true',
+    enableLive: getOptionalEnvVar('NEXT_PUBLIC_ENABLE_LIVE', 'false') === 'true',
     enableEarn: getOptionalEnvVar('NEXT_PUBLIC_ENABLE_EARN', 'true') === 'true',
     enableNetwork: getOptionalEnvVar('NEXT_PUBLIC_ENABLE_NETWORK', 'true') === 'true',
   },

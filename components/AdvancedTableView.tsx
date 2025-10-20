@@ -25,7 +25,7 @@ export function AdvancedTableView({ listings, onBuyClick, onCollaborateClick, on
               Token
             </th>
             <th className="px-4 py-3 text-left border-b border-zinc-800">Age</th>
-            <th className="px-4 py-3 text-center border-b border-zinc-800">Belief Score</th>
+            <th className="px-4 py-3 text-center border-b border-zinc-800">Motion</th>
             <th className="px-4 py-3 text-center border-b border-zinc-800">Upvotes</th>
             <th className="px-4 py-3 text-center border-b border-zinc-800">
               <Eye className="w-4 h-4 mx-auto" />
@@ -252,12 +252,13 @@ function TableRow({
         </div>
       </td>
 
-      {/* Upvotes Column with Button - Opens Details */}
+      {/* Upvotes Column with Button - Toggles Vote */}
       <td className="px-4 py-3 border-b border-zinc-800/50">
         <button
           onClick={(e) => {
             e.stopPropagation()
-            onRowClick?.(listing)
+            setHasVoted(!hasVoted)
+            setUpvotes(hasVoted ? upvotes - 1 : upvotes + 1)
           }}
           className={cn(
             "flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-all group/vote mx-auto cursor-pointer",

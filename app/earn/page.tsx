@@ -486,27 +486,24 @@ export default function EarnPage() {
             </div>
 
             <h1 className="text-4xl sm:text-5xl font-black text-[#FFD700] mb-4">
-              Get Paid to Promote
+              Get Paid to Clip
               <br />
               <span className="text-white">Projects You Believe In</span>
             </h1>
             <p className="text-base text-zinc-400 max-w-2xl mx-auto mb-6">
-              Create content, share on social media, and earn SOL for every approved submission.
+              Create 30-60s video clips, share on social media, and earn SOL for every approved submission.
             </p>
 
-            {/* Value Props Pills */}
+            {/* Value Props Pills - Focus on Clipping */}
             <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
               <div className="px-3 py-1.5 rounded-full bg-[#FFD700]/10 border border-[#FFD700]/30 text-[#FFD700] text-xs font-bold">
-                🎬 Video Clips
+                🎬 Clipping
               </div>
-              <div className="px-3 py-1.5 rounded-full bg-[#FFD700]/10 border border-[#FFD700]/30 text-[#FFD700] text-xs font-bold">
-                🐦 Twitter Threads
+              <div className="px-3 py-1.5 rounded-full bg-zinc-800/60 border border-zinc-700 text-zinc-400 text-xs font-bold">
+                🎙️ Yapping (Coming Soon)
               </div>
-              <div className="px-3 py-1.5 rounded-full bg-[#FFD700]/10 border border-[#FFD700]/30 text-[#FFD700] text-xs font-bold">
-                🎨 Graphics & Memes
-              </div>
-              <div className="px-3 py-1.5 rounded-full bg-[#FFD700]/10 border border-[#FFD700]/30 text-[#FFD700] text-xs font-bold">
-                📱 Social Posts
+              <div className="px-3 py-1.5 rounded-full bg-zinc-800/60 border border-zinc-700 text-zinc-400 text-xs font-bold">
+                💼 Bagwork (Coming Soon)
               </div>
             </div>
           </motion.div>
@@ -541,52 +538,61 @@ export default function EarnPage() {
         </div>
       </section>
 
-      {/* Value Proposition Section */}
+      {/* Value Proposition Section - Focus on Clipping */}
       <section className="relative z-10 px-4 sm:px-6 lg:px-8 py-8">
         <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {[
-              {
-                emoji: '🎬',
-                title: 'Video Clips',
-                description: '30-60s promotional videos, tutorials, or reactions',
-                payout: '5-50 SOL'
-              },
-              {
-                emoji: '🐦',
-                title: 'Twitter Threads',
-                description: 'Engaging 5+ tweet threads explaining projects',
-                payout: '2-20 SOL'
-              },
-              {
-                emoji: '🎨',
-                title: 'Graphics & Memes',
-                description: 'Visual content, infographics, or viral memes',
-                payout: '3-30 SOL'
-              },
-              {
-                emoji: '📱',
-                title: 'Social Posts',
-                description: 'Instagram posts, TikToks, or Discord messages',
-                payout: '1-15 SOL'
-              }
-            ].map((content, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                whileHover={{ scale: 1.05 }}
-                className="p-5 rounded-2xl bg-zinc-900/60 backdrop-blur-xl border-2 border-zinc-800 hover:border-[#FFD700]/30 transition-all"
-              >
-                <div className="text-3xl mb-2">{content.emoji}</div>
-                <h3 className="font-bold text-white mb-2 text-sm">{content.title}</h3>
-                <p className="text-xs text-zinc-400 mb-3">{content.description}</p>
-                <div className="px-2.5 py-1 rounded-lg bg-[#FFD700]/10 border border-[#FFD700]/30 text-[#FFD700] text-xs font-bold inline-block">
-                  {content.payout} per submission
-                </div>
-              </motion.div>
-            ))}
+          <div className="grid md:grid-cols-3 gap-4">
+            {/* Clipping - Active */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0 }}
+              whileHover={{ scale: 1.05 }}
+              className="p-5 rounded-2xl bg-zinc-900/60 backdrop-blur-xl border-2 border-[#FFD700]/50 hover:border-[#FFD700]/70 transition-all shadow-lg shadow-[#FFD700]/10"
+            >
+              <div className="text-3xl mb-2">🎬</div>
+              <h3 className="font-bold text-white mb-2 text-sm">Clipping</h3>
+              <p className="text-xs text-zinc-400 mb-3">30-60s promotional videos, tutorials, or reactions</p>
+              <div className="px-2.5 py-1 rounded-lg bg-[#FFD700]/10 border border-[#FFD700]/30 text-[#FFD700] text-xs font-bold inline-block">
+                5-50 SOL per submission
+              </div>
+            </motion.div>
+
+            {/* Yapping - Coming Soon */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="p-5 rounded-2xl bg-zinc-900/40 backdrop-blur-xl border-2 border-zinc-800 transition-all relative overflow-hidden"
+            >
+              <div className="absolute top-3 right-3 px-2 py-0.5 rounded-full bg-purple-500/20 border border-purple-500/50 text-purple-300 text-[10px] font-bold">
+                COMING SOON
+              </div>
+              <div className="text-3xl mb-2 opacity-50">🎙️</div>
+              <h3 className="font-bold text-zinc-400 mb-2 text-sm">Yapping</h3>
+              <p className="text-xs text-zinc-500 mb-3">Podcast appearances, space talks, and audio content</p>
+              <div className="px-2.5 py-1 rounded-lg bg-zinc-800/60 border border-zinc-700 text-zinc-500 text-xs font-bold inline-block">
+                Coming Q2 2025
+              </div>
+            </motion.div>
+
+            {/* Bagwork - Coming Soon */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="p-5 rounded-2xl bg-zinc-900/40 backdrop-blur-xl border-2 border-zinc-800 transition-all relative overflow-hidden"
+            >
+              <div className="absolute top-3 right-3 px-2 py-0.5 rounded-full bg-cyan-500/20 border border-cyan-500/50 text-cyan-300 text-[10px] font-bold">
+                COMING SOON
+              </div>
+              <div className="text-3xl mb-2 opacity-50">💼</div>
+              <h3 className="font-bold text-zinc-400 mb-2 text-sm">Bagwork</h3>
+              <p className="text-xs text-zinc-500 mb-3">Long-form content, research reports, and technical analysis</p>
+              <div className="px-2.5 py-1 rounded-lg bg-zinc-800/60 border border-zinc-700 text-zinc-500 text-xs font-bold inline-block">
+                Coming Q3 2025
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>

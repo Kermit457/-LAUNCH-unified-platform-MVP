@@ -1,35 +1,34 @@
-import { useState, useEffect } from 'react'
-import { useUser } from './useUser'
+"use client"
+
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { useUser } from '@/hooks/useUser'
 import { PublicKey } from '@solana/web3.js'
 import { getCurveStatus, getUserKeyHoldings, curveExistsOnChain } from '@/lib/solana/create-curve'
 
 export interface CurveActivationProgress {
-  hasMinKeys: boolean // User owns 10+ of their own keys
-  currentKeys: number // Keys owned of their own curve
-  minKeysRequired: number // Default: 10
-  isActive: boolean // Curve is activated (status: Active on-chain)
-  curveExists: boolean // Curve has been created on-chain
-  twitterHandle?: string // User's Twitter handle (curve identifier)
+  hasMinKeys: boolean
+  currentKeys: number
+  minKeysRequired: number
+  isActive: boolean
+  curveExists: boolean
+  twitterHandle?: string
 }
 
-/**
- * Hook to manage user's curve activation status (V6 Solana version)
- *
- * ACTIVATION FLOW:
- * 1. User logs in with Twitter (Privy) → Auto-authenticated
- * 2. Curve created on-chain with status: Pending
- * 3. Modal pops up: "Buy 10 of your own keys to activate"
- * 4. User buys keys → Curve status changes to Active
- *
- * UNLOCKS when status === Active:
- * - Comment/upvote on projects
- * - Collaborate on launches
- * - Launch own projects
- * - Participate in Earn campaigns
- * - Visible in Discover feed
- */
-export function useCurveActivationV6() {
-  const { userId, username, user } = useUser() // username from Privy Twitter
+interface CurveActivationContextType {
+  progress: CurveActivationProgress
+  loading: boolean
+  showActivationModal: boolean
+  setShowActivationModal: (show: boolean) => void
+  activateCurve: () => void
+  canActivate: boolean
+  isActivated: boolean
+  needsCreation: boolean
+}
+
+const CurveActivationContext = createContext<CurveActivationContextType | undefined>(undefined)
+
+export function CurveActivationProvider({ children }: { children: ReactNode }) {
+  const { userId, username, user } = useUser()
   const [progress, setProgress] = useState<CurveActivationProgress>({
     hasMinKeys: false,
     currentKeys: 0,
@@ -61,7 +60,7 @@ export function useCurveActivationV6() {
           return
         }
 
-        const twitterHandle = username // From Privy
+        const twitterHandle = username
 
         console.log('📊 Checking activation for:', {
           userId,
@@ -73,7 +72,6 @@ export function useCurveActivationV6() {
         const exists = await curveExistsOnChain(twitterHandle)
 
         if (!exists) {
-          // Curve hasn't been created yet
           const newProgress = {
             hasMinKeys: false,
             currentKeys: 0,
@@ -85,7 +83,7 @@ export function useCurveActivationV6() {
           setProgress(newProgress)
           console.log('ℹ️ Curve not yet created on-chain')
 
-          // 🆕 Show modal for first-time users to create + activate curve
+          // Show modal for first-time users
           const hasSeenOnboarding = localStorage.getItem(`onboarding_v6_${userId}`)
           console.log('🔍 Modal trigger check (no curve):', {
             curveExists: false,
@@ -113,7 +111,6 @@ export function useCurveActivationV6() {
           hasMinKeys: currentKeys >= 10,
           currentKeys,
           minKeysRequired: 10,
-          // Curve is active when status === 'active' on-chain
           isActive: curveStatus === 'active',
           curveExists: true,
           twitterHandle
@@ -149,26 +146,38 @@ export function useCurveActivationV6() {
     }
 
     checkActivationStatus()
-    // Re-check every 10 seconds to catch key purchases
-    const interval = setInterval(checkActivationStatus, 10000)
+    // Re-check every 30 seconds (reduced from 10) to catch key purchases
+    const interval = setInterval(checkActivationStatus, 30000)
 
     return () => clearInterval(interval)
   }, [userId, username, user])
 
   const activateCurve = async () => {
-    // Activation happens automatically when user buys 10+ keys
-    // This function just closes the modal
     setShowActivationModal(false)
   }
 
-  return {
-    progress,
-    loading,
-    showActivationModal,
-    setShowActivationModal,
-    activateCurve,
-    canActivate: progress.hasMinKeys,
-    isActivated: progress.isActive,
-    needsCreation: !progress.curveExists
+  return (
+    <CurveActivationContext.Provider
+      value={{
+        progress,
+        loading,
+        showActivationModal,
+        setShowActivationModal,
+        activateCurve,
+        canActivate: progress.hasMinKeys,
+        isActivated: progress.isActive,
+        needsCreation: !progress.curveExists
+      }}
+    >
+      {children}
+    </CurveActivationContext.Provider>
+  )
+}
+
+export function useCurveActivation() {
+  const context = useContext(CurveActivationContext)
+  if (!context) {
+    throw new Error('useCurveActivation must be used within CurveActivationProvider')
   }
+  return context
 }

@@ -15,13 +15,11 @@ interface SubmitLaunchDrawerProps {
 }
 
 const PLATFORMS = [
-  { id: 'twitter' as const, label: 'Twitter/X' },
-  { id: 'discord' as const, label: 'Discord' },
-  { id: 'telegram' as const, label: 'Telegram' },
-  { id: 'youtube' as const, label: 'YouTube' },
-  { id: 'twitch' as const, label: 'Twitch' },
-  { id: 'tiktok' as const, label: 'TikTok' },
-  { id: 'obs' as const, label: 'OBS' },
+  { id: 'discord' as const, label: 'Discord', placeholder: 'https://discord.gg/yourserver' },
+  { id: 'telegram' as const, label: 'Telegram', placeholder: 'https://t.me/yourchannel' },
+  { id: 'youtube' as const, label: 'YouTube', placeholder: 'https://youtube.com/@yourchannel' },
+  { id: 'twitch' as const, label: 'Twitch', placeholder: 'https://twitch.tv/yourchannel' },
+  { id: 'tiktok' as const, label: 'TikTok', placeholder: 'https://tiktok.com/@youraccount' },
 ]
 
 // Base58 validation helper
@@ -49,6 +47,16 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit, isLoading = fals
   const [platforms, setPlatforms] = useState<SubmitLaunchInput['platforms']>([])
   const [projectLink, setProjectLink] = useState('')
   const [projectImages, setProjectImages] = useState<File[]>([])
+
+  // Platform links
+  const [twitterLink, setTwitterLink] = useState('')
+  const [platformLinks, setPlatformLinks] = useState<Record<string, string>>({
+    discord: '',
+    telegram: '',
+    youtube: '',
+    twitch: '',
+    tiktok: '',
+  })
 
   // Persist scope
   useEffect(() => {
@@ -81,7 +89,7 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit, isLoading = fals
   const isSubtitleValid = subtitle.trim().length > 0 && subtitle.length <= 120
   const isLogoValid = logoFile !== null
   const isDescriptionValid = description.trim().length > 0 && description.length <= 500
-  const arePlatformsValid = platforms.length >= 1 && platforms.includes('twitter') // Twitter is mandatory
+  const isTwitterValid = twitterLink.trim().length > 0 // Twitter is mandatory
   const areProjectImagesValid = projectImages.length >= 3 && projectImages.length <= 5
 
   const isFormValid =
@@ -89,7 +97,7 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit, isLoading = fals
     isSubtitleValid &&
     isLogoValid &&
     isDescriptionValid &&
-    arePlatformsValid &&
+    isTwitterValid &&
     areProjectImagesValid
 
   const handleSubmit = () => {
@@ -154,7 +162,7 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit, isLoading = fals
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="e.g., Solana"
                   maxLength={80}
-                  className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
+                  className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-500/50 focus:border-fuchsia-500/50 transition-all"
                 />
                 <p className="mt-1 text-xs text-white/40 text-right">{title.length}/80</p>
               </div>
@@ -170,7 +178,7 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit, isLoading = fals
                   onChange={(e) => setSubtitle(e.target.value)}
                   placeholder="e.g., SOL"
                   maxLength={120}
-                  className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
+                  className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-500/50 focus:border-fuchsia-500/50 transition-all"
                 />
                 <p className="mt-1 text-xs text-white/40 text-right">{subtitle.length}/120</p>
               </div>
@@ -193,10 +201,11 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit, isLoading = fals
                   Scope <span className="text-red-400">*</span>
                 </label>
                 <div className="grid grid-cols-3 gap-3">
+                  {/* ICM - Fuchsia */}
                   <label className={`flex flex-col items-center justify-center h-20 px-4 rounded-xl border cursor-pointer transition-all ${
                     scope === 'ICM'
-                      ? 'bg-fuchsia-500/20 border-fuchsia-500/50'
-                      : 'bg-white/5 border-white/10 hover:bg-white/10'
+                      ? 'bg-gradient-to-br from-fuchsia-500/20 to-fuchsia-600/10 border-fuchsia-500/50 shadow-lg shadow-fuchsia-500/20'
+                      : 'bg-white/5 border-white/10 hover:bg-white/10 hover:border-fuchsia-500/30'
                   }`}>
                     <input
                       type="radio"
@@ -205,13 +214,15 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit, isLoading = fals
                       onChange={() => setScope('ICM')}
                       className="sr-only"
                     />
-                    <Coins className={`w-6 h-6 mb-1 ${scope === 'ICM' ? 'text-fuchsia-400' : 'text-white/70'}`} />
-                    <span className={`text-xs font-medium ${scope === 'ICM' ? 'text-fuchsia-300' : 'text-white/70'}`}>ICM</span>
+                    <Coins className={`w-6 h-6 mb-1 transition-colors ${scope === 'ICM' ? 'text-fuchsia-400' : 'text-white/70'}`} />
+                    <span className={`text-xs font-medium transition-colors ${scope === 'ICM' ? 'text-fuchsia-300' : 'text-white/70'}`}>ICM</span>
                   </label>
+
+                  {/* CCM - Purple */}
                   <label className={`flex flex-col items-center justify-center h-20 px-4 rounded-xl border cursor-pointer transition-all ${
                     scope === 'CCM'
-                      ? 'bg-fuchsia-500/20 border-fuchsia-500/50'
-                      : 'bg-white/5 border-white/10 hover:bg-white/10'
+                      ? 'bg-gradient-to-br from-purple-500/20 to-purple-600/10 border-purple-500/50 shadow-lg shadow-purple-500/20'
+                      : 'bg-white/5 border-white/10 hover:bg-white/10 hover:border-purple-500/30'
                   }`}>
                     <input
                       type="radio"
@@ -220,13 +231,15 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit, isLoading = fals
                       onChange={() => setScope('CCM')}
                       className="sr-only"
                     />
-                    <Camera className={`w-6 h-6 mb-1 ${scope === 'CCM' ? 'text-fuchsia-400' : 'text-white/70'}`} />
-                    <span className={`text-xs font-medium ${scope === 'CCM' ? 'text-fuchsia-300' : 'text-white/70'}`}>CCM</span>
+                    <Camera className={`w-6 h-6 mb-1 transition-colors ${scope === 'CCM' ? 'text-purple-400' : 'text-white/70'}`} />
+                    <span className={`text-xs font-medium transition-colors ${scope === 'CCM' ? 'text-purple-300' : 'text-white/70'}`}>CCM</span>
                   </label>
+
+                  {/* MEME - Cyan */}
                   <label className={`flex flex-col items-center justify-center h-20 px-4 rounded-xl border cursor-pointer transition-all ${
                     scope === 'MEME'
-                      ? 'bg-fuchsia-500/20 border-fuchsia-500/50'
-                      : 'bg-white/5 border-white/10 hover:bg-white/10'
+                      ? 'bg-gradient-to-br from-cyan-500/20 to-cyan-600/10 border-cyan-500/50 shadow-lg shadow-cyan-500/20'
+                      : 'bg-white/5 border-white/10 hover:bg-white/10 hover:border-cyan-500/30'
                   }`}>
                     <input
                       type="radio"
@@ -235,8 +248,8 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit, isLoading = fals
                       onChange={() => setScope('MEME')}
                       className="sr-only"
                     />
-                    <Smile className={`w-6 h-6 mb-1 ${scope === 'MEME' ? 'text-fuchsia-400' : 'text-white/70'}`} />
-                    <span className={`text-xs font-medium ${scope === 'MEME' ? 'text-fuchsia-300' : 'text-white/70'}`}>MEME</span>
+                    <Smile className={`w-6 h-6 mb-1 transition-colors ${scope === 'MEME' ? 'text-cyan-400' : 'text-white/70'}`} />
+                    <span className={`text-xs font-medium transition-colors ${scope === 'MEME' ? 'text-cyan-300' : 'text-white/70'}`}>MEME</span>
                   </label>
                 </div>
               </div>
@@ -247,24 +260,27 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit, isLoading = fals
                   Status <span className="text-red-400">*</span>
                 </label>
                 <div className="grid grid-cols-2 gap-3">
+                  {/* Upcoming - Purple gradient */}
                   <button
                     type="button"
                     onClick={() => setStatus('Upcoming')}
                     className={`h-12 px-4 rounded-xl border font-medium transition-all ${
                       status === 'Upcoming'
-                        ? 'bg-fuchsia-500/20 border-fuchsia-500/50 text-fuchsia-300'
-                        : 'bg-white/5 border-white/10 text-white/70 hover:bg-white/10'
+                        ? 'bg-gradient-to-r from-purple-500/20 to-fuchsia-500/20 border-purple-500/50 text-purple-300 shadow-lg shadow-purple-500/20'
+                        : 'bg-white/5 border-white/10 text-white/70 hover:bg-white/10 hover:border-purple-500/30'
                     }`}
                   >
                     Upcoming
                   </button>
+
+                  {/* Live - Emerald/Green (traditional live indicator) */}
                   <button
                     type="button"
                     onClick={() => setStatus('Live')}
                     className={`h-12 px-4 rounded-xl border font-medium transition-all ${
                       status === 'Live'
-                        ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-300'
-                        : 'bg-white/5 border-white/10 text-white/70 hover:bg-white/10'
+                        ? 'bg-gradient-to-r from-emerald-500/20 to-green-500/20 border-emerald-500/50 text-emerald-300 shadow-lg shadow-emerald-500/20'
+                        : 'bg-white/5 border-white/10 text-white/70 hover:bg-white/10 hover:border-emerald-500/30'
                     }`}
                   >
                     Live
@@ -282,7 +298,7 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit, isLoading = fals
                       value={tokenAddress}
                       onChange={(e) => setTokenAddress(e.target.value)}
                       placeholder="Enter token contract address"
-                      className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-emerald-400/80"
+                      className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all"
                     />
                     <p className="mt-1 text-xs text-white/40">Optional: Add the contract address if token is already live</p>
                   </div>
@@ -300,7 +316,7 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit, isLoading = fals
                   placeholder="Describe your project..."
                   maxLength={500}
                   rows={4}
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80 resize-none"
+                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-500/50 focus:border-fuchsia-500/50 resize-none transition-all"
                 />
                 <p className="mt-1 text-xs text-white/40 text-right">{description.length}/500</p>
               </div>
@@ -315,27 +331,46 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit, isLoading = fals
                   value={projectLink}
                   onChange={(e) => setProjectLink(e.target.value)}
                   placeholder="https://yourproject.com"
-                  className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
+                  className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-500/50 focus:border-fuchsia-500/50 transition-all"
                 />
                 <p className="mt-1 text-xs text-white/40">Website or project homepage (optional)</p>
               </div>
 
-              {/* Platforms */}
+              {/* Twitter/X - Required */}
               <div>
                 <label className="block text-sm font-medium text-white/70 mb-2">
-                  Platforms <span className="text-red-400">*</span>
+                  Twitter/X <span className="text-red-400">*</span>
                 </label>
-                <div className="flex flex-wrap gap-2">
+                <input
+                  type="url"
+                  value={twitterLink}
+                  onChange={(e) => setTwitterLink(e.target.value)}
+                  placeholder="https://twitter.com/yourproject or https://x.com/yourproject"
+                  className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-500/50 focus:border-fuchsia-500/50 transition-all"
+                />
+                {!isTwitterValid && (
+                  <p className="mt-1 text-xs text-red-400">Twitter/X is required</p>
+                )}
+              </div>
+
+              {/* Other Platforms - Optional */}
+              <div>
+                <label className="block text-sm font-medium text-white/70 mb-2">
+                  Other Platforms
+                </label>
+                <p className="text-xs text-white/40 mb-3">Click to add links (optional)</p>
+                <div className="flex flex-wrap gap-2 mb-3">
                   {PLATFORMS.map(p => {
                     const isSelected = platforms.includes(p.id)
                     return (
                       <button
                         key={p.id}
+                        type="button"
                         onClick={() => togglePlatform(p.id)}
                         className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                           isSelected
-                            ? 'bg-fuchsia-500/20 border border-fuchsia-500/50 text-fuchsia-300'
-                            : 'bg-white/5 border border-white/10 text-white/60 hover:bg-white/10'
+                            ? 'bg-gradient-to-r from-fuchsia-500/20 to-purple-500/20 border border-fuchsia-500/50 text-fuchsia-300 shadow-md shadow-fuchsia-500/10'
+                            : 'bg-white/5 border border-white/10 text-white/60 hover:bg-white/10 hover:border-fuchsia-500/30'
                         }`}
                       >
                         {p.label}
@@ -343,12 +378,24 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit, isLoading = fals
                     )
                   })}
                 </div>
-                {!platforms.includes('twitter') && (
-                  <p className="mt-1 text-xs text-red-400">Twitter/X is required</p>
-                )}
-                {platforms.length === 0 && (
-                  <p className="mt-1 text-xs text-red-400">Select at least one platform (Twitter/X required)</p>
-                )}
+
+                {/* Dynamic input fields for selected platforms */}
+                <div className="space-y-3">
+                  {PLATFORMS.filter(p => platforms.includes(p.id)).map(p => (
+                    <div key={p.id}>
+                      <label className="block text-xs font-medium text-white/60 mb-1.5">
+                        {p.label} Link
+                      </label>
+                      <input
+                        type="url"
+                        value={platformLinks[p.id] || ''}
+                        onChange={(e) => setPlatformLinks(prev => ({ ...prev, [p.id]: e.target.value }))}
+                        placeholder={p.placeholder}
+                        className="w-full h-10 px-3 rounded-lg bg-white/5 border border-white/10 text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-500/50 focus:border-fuchsia-500/50 transition-all"
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
 
               {/* Project Images */}

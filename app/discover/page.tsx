@@ -1,23 +1,22 @@
 "use client"
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { UnifiedCard } from '@/components/UnifiedCard'
 import { AdvancedTableView } from '@/components/AdvancedTableView'
 import { CommentsDrawer } from '@/components/CommentsDrawer'
 import { BuySellModal } from '@/components/launch/BuySellModal'
 import { LaunchDetailsModal } from '@/components/launch/LaunchDetailsModal'
+import { SubmitLaunchDrawer } from '@/components/launch/SubmitLaunchDrawer'
 import { unifiedListings, filterByType, filterByStatus, sortListings, getMyHoldings, getMyCurves } from '@/lib/unifiedMockData'
 import { advancedListings, type AdvancedListingData } from '@/lib/advancedTradingData'
 import type { CurveType } from '@/components/UnifiedCard'
-import { Search, TrendingUp, DollarSign, Users, Zap, LayoutGrid, Table } from 'lucide-react'
+import { Search, TrendingUp, DollarSign, Users, Zap, LayoutGrid, Table, Rocket } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { useToast } from '@/hooks/useToast'
 import { usePrivy } from '@privy-io/react-auth'
 import { addVote, removeVote } from '@/lib/appwrite/services/votes'
 
 export default function DiscoverPage() {
-  const router = useRouter()
   const { success, info, error: showError, warning } = useToast()
   const { authenticated, user } = usePrivy()
 
@@ -30,6 +29,7 @@ export default function DiscoverPage() {
   const [commentDrawerListing, setCommentDrawerListing] = useState<AdvancedListingData | null>(null)
   const [buyModalListing, setBuyModalListing] = useState<AdvancedListingData | null>(null)
   const [detailsModalListing, setDetailsModalListing] = useState<AdvancedListingData | null>(null)
+  const [showSubmitDrawer, setShowSubmitDrawer] = useState(false)
 
   // Get base listings based on view filter - use advancedListings for table view
   let baseListings: AdvancedListingData[] = advancedListings
@@ -95,37 +95,47 @@ export default function DiscoverPage() {
             </div>
           </div>
 
-          {/* Display Mode Toggle - Prominent */}
-          <div className="flex items-center gap-3 bg-zinc-900/80 backdrop-blur-xl rounded-2xl p-2 border-2 border-zinc-800/80 shadow-2xl max-w-md">
+          {/* Display Mode Toggle + Create Launch Button */}
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3 bg-zinc-900/80 backdrop-blur-xl rounded-2xl p-2 border-2 border-zinc-800/80 shadow-2xl max-w-md">
+              <button
+                onClick={() => setDisplayMode('cards')}
+                className={cn(
+                  "flex-1 px-6 py-3.5 rounded-xl font-bold text-base transition-all flex items-center justify-center gap-3",
+                  displayMode === 'cards'
+                    ? "bg-[#00FFFF] text-black"
+                    : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"
+                )}
+              >
+                <LayoutGrid className="w-5 h-5" />
+                Cards
+              </button>
+              <button
+                onClick={() => setDisplayMode('table')}
+                className={cn(
+                  "flex-1 px-6 py-3.5 rounded-xl font-bold text-base transition-all flex items-center justify-center gap-3",
+                  displayMode === 'table'
+                    ? "bg-[#00FFFF] text-black"
+                    : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"
+                )}
+              >
+                <Table className="w-5 h-5" />
+                Table
+              </button>
+            </div>
+
             <button
-              onClick={() => setDisplayMode('cards')}
-              className={cn(
-                "flex-1 px-6 py-3.5 rounded-xl font-bold text-base transition-all flex items-center justify-center gap-3",
-                displayMode === 'cards'
-                  ? "bg-[#00FFFF] text-black"
-                  : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"
-              )}
+              onClick={() => setShowSubmitDrawer(true)}
+              className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-[#FFD700] to-[#FFC700] hover:from-[#FFE700] hover:to-[#FFD700] text-black font-bold transition-all hover:scale-105 flex items-center gap-2"
             >
-              <LayoutGrid className="w-5 h-5" />
-              Cards
-            </button>
-            <button
-              onClick={() => setDisplayMode('table')}
-              className={cn(
-                "flex-1 px-6 py-3.5 rounded-xl font-bold text-base transition-all flex items-center justify-center gap-3",
-                displayMode === 'table'
-                  ? "bg-[#00FFFF] text-black"
-                  : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"
-              )}
-            >
-              <Table className="w-5 h-5" />
-              Table
+              <Rocket className="w-5 h-5" />
+              Create Launch
             </button>
           </div>
         </div>
 
         {/* Stats Strip (for logged-in users) */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
           <StatCard
             icon={DollarSign}
             label="Holdings Value"
@@ -150,6 +160,18 @@ export default function DiscoverPage() {
             label="Referral XP"
             value="1,240"
             color="orange"
+          />
+          <StatCard
+            icon={DollarSign}
+            label="Referral Earnings"
+            value="3.45 SOL"
+            color="green"
+          />
+          <StatCard
+            icon={Users}
+            label="Total Referrals"
+            value="12"
+            color="blue"
           />
         </div>
 
@@ -476,6 +498,18 @@ export default function DiscoverPage() {
           listing={detailsModalListing}
         />
       )}
+
+      {/* Submit Launch Drawer */}
+      <SubmitLaunchDrawer
+        isOpen={showSubmitDrawer}
+        onClose={() => setShowSubmitDrawer(false)}
+        onSubmit={(data) => {
+          console.log('Launch submitted:', data)
+          success('Launch submitted successfully!')
+          setShowSubmitDrawer(false)
+          // TODO: Send to backend API
+        }}
+      />
     </div>
   )
 }

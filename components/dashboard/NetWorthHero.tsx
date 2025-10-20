@@ -45,176 +45,80 @@ export function NetWorthHero({
 
   return (
     <div className="mb-8">
-      {/* 🆕 Referral Dashboard - Hero Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#FFD700]/20 via-zinc-900/60 to-[#FF8800]/20 border-2 border-[#FFD700]/30 p-8 mb-6"
-      >
-        {/* Animated Background */}
-        <div className="absolute inset-0 -z-10">
-          <motion.div
-            animate={{
-              scale: [1, 1.2, 1],
-              opacity: [0.3, 0.5, 0.3]
-            }}
-            transition={{ duration: 8, repeat: Infinity }}
-            className="absolute top-0 right-0 w-96 h-96 bg-[#FFD700]/20 rounded-full blur-3xl"
-          />
-          <motion.div
-            animate={{
-              scale: [1, 1.1, 1],
-              opacity: [0.2, 0.4, 0.2]
-            }}
-            transition={{ duration: 10, repeat: Infinity }}
-            className="absolute bottom-0 left-0 w-96 h-96 bg-[#FF8800]/20 rounded-full blur-3xl"
-          />
-        </div>
+      {/* Referral Network + Network + Net Worth Cards Grid */}
+      <div className="grid lg:grid-cols-3 gap-6 mb-6">
+        {/* Referral Network Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#0a1628] to-[#0c1d3a] border-2 border-[#1e3a5f]/50 p-8"
+        >
+          {/* Animated Background */}
+          <div className="absolute inset-0 -z-10">
+            <motion.div
+              animate={{
+                scale: [1, 1.2, 1],
+                opacity: [0.3, 0.5, 0.3]
+              }}
+              transition={{ duration: 8, repeat: Infinity }}
+              className="absolute top-0 right-0 w-96 h-96 bg-[#0088FF]/10 rounded-full blur-3xl"
+            />
+            <motion.div
+              animate={{
+                scale: [1, 1.1, 1],
+                opacity: [0.2, 0.4, 0.2]
+              }}
+              transition={{ duration: 10, repeat: Infinity }}
+              className="absolute bottom-0 left-0 w-96 h-96 bg-[#0066CC]/10 rounded-full blur-3xl"
+            />
+          </div>
 
-        <div className="relative z-10">
-          <div className="flex items-start justify-between gap-6 mb-6">
-            {/* Left: Title & Stats */}
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-3 rounded-2xl bg-gradient-to-br from-[#FFD700] to-[#FF8800]">
-                  <Gift className="w-7 h-7 text-black font-bold" />
-                </div>
-                <div>
-                  <h1 className="text-3xl font-black text-white flex items-center gap-3">
-                    Referral Program
-                    <span className="px-3 py-1 rounded-lg bg-[#FFD700]/20 border border-[#FFD700]/30 text-[#FFD700] text-sm font-bold">
-                      {referralStats.tier} Tier
-                    </span>
-                  </h1>
-                  <p className="text-zinc-400 text-sm">
-                    Earn <span className="text-[#00FF88] font-bold">3% lifetime trading commissions</span> + bonus XP from every referral
-                  </p>
-                </div>
+          {/* Content */}
+          <div className="relative z-10">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-3 rounded-2xl bg-gradient-to-br from-[#0088FF] to-[#0066CC]">
+                <Gift className="w-7 h-7 text-white font-bold" />
               </div>
-
-              {/* Stats Grid */}
-              <div className="grid grid-cols-3 gap-4 mb-6">
-                {/* Lifetime Commissions - MOST IMPORTANT */}
-                <div className="p-5 rounded-xl bg-gradient-to-br from-[#00FF88]/20 to-[#00DD77]/20 border-2 border-[#00FF88]/50 relative overflow-hidden">
-                  <div className="absolute top-0 right-0 px-2 py-0.5 bg-[#00FF88] text-black text-[10px] font-black rounded-bl-lg">
-                    LIFETIME
-                  </div>
-                  <div className="flex items-center gap-2 mb-2 mt-2">
-                    <DollarSign className="w-5 h-5 text-[#00FF88]" />
-                    <span className="text-xs text-zinc-400 font-medium">Commissions Earned</span>
-                  </div>
-                  <div className="text-3xl font-bold text-[#00FF88] mb-1">
-                    {referralStats.lifetimeCommissions.toFixed(2)} SOL
-                  </div>
-                  <div className="text-xs text-zinc-500">
-                    ≈ ${(referralStats.lifetimeCommissions * 140).toFixed(0)} USD
-                  </div>
-                </div>
-
-                {/* Total Referrals */}
-                <div className="p-4 rounded-xl bg-[#FFD700]/10 border border-[#FFD700]/30">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Users2 className="w-5 h-5 text-[#FFD700]" />
-                    <span className="text-xs text-zinc-400 font-medium">Total Referrals</span>
-                  </div>
-                  <div className="text-3xl font-bold text-[#FFD700]">{referralStats.totalReferrals}</div>
-                  <div className="text-xs text-zinc-500">Active users</div>
-                </div>
-
-                {/* Leaderboard Rank */}
-                <div className="p-4 rounded-xl bg-[#FFD700]/10 border border-[#FFD700]/30">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Trophy className="w-5 h-5 text-[#FFD700]" />
-                    <span className="text-xs text-zinc-400 font-medium">Leaderboard</span>
-                  </div>
-                  <div className="text-3xl font-bold text-white">#{referralStats.leaderboardRank}</div>
-                  <div className="text-xs text-zinc-500">{referralStats.xpEarned.toLocaleString()} XP</div>
-                </div>
-              </div>
-
-              {/* Referral Link */}
-              <div className="bg-zinc-900/60 border border-zinc-800 rounded-xl p-4">
-                <label className="text-xs text-zinc-400 font-medium mb-2 block">Your Referral Link</label>
-                <div className="flex items-center gap-2">
-                  <div className="flex-1 px-4 py-3 rounded-lg bg-black/40 border border-zinc-700 text-white font-mono text-sm">
-                    {referralStats.referralLink}
-                  </div>
-                  <button
-                    onClick={copyReferralLink}
-                    className="px-4 py-3 rounded-lg bg-[#FFD700] hover:bg-[#FFD700]/90 text-black font-bold transition-all flex items-center gap-2"
-                  >
-                    {copied ? (
-                      <>
-                        <Check className="w-4 h-4" />
-                        Copied!
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="w-4 h-4" />
-                        Copy
-                      </>
-                    )}
-                  </button>
-                  <button
-                    className="px-4 py-3 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white font-bold transition-all flex items-center gap-2 border border-zinc-700"
-                  >
-                    <Share2 className="w-4 h-4" />
-                    Share
-                  </button>
-                </div>
+              <div>
+                <h1 className="text-2xl font-bold text-white">Referral Network</h1>
+                <p className="text-[#5a9fd4] text-sm">3% lifetime commissions</p>
               </div>
             </div>
 
-            {/* Right: Rewards Info */}
-            <div className="w-80 p-6 rounded-2xl bg-zinc-900/60 border border-zinc-800">
-              <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                <DollarSign className="w-5 h-5 text-[#00FF88]" />
-                Earning Breakdown
-              </h3>
-              <div className="space-y-3">
-                {/* Main Reward - Trading Commissions */}
-                <div className="p-3 rounded-xl bg-[#00FF88]/10 border border-[#00FF88]/30">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-bold text-white">Trading Commissions</span>
-                    <span className="text-[#00FF88] font-black text-lg">3%</span>
-                  </div>
-                  <p className="text-xs text-zinc-400">
-                    Earn 3% of ALL trading fees from your referrals
-                  </p>
-                  <div className="mt-2 pt-2 border-t border-[#00FF88]/20">
-                    <span className="text-xs text-[#00FF88] font-bold">LIFETIME & PASSIVE</span>
-                  </div>
-                </div>
+            {/* Main Value - Commissions Earned */}
+            <div className="mb-4">
+              <div className="text-6xl font-bold bg-gradient-to-r from-[#00FF88] via-[#00DD77] to-[#00CC66] bg-clip-text text-transparent mb-2">
+                {referralStats.lifetimeCommissions.toFixed(2)}
+              </div>
+              <div className="text-2xl text-zinc-400">
+                SOL earned
+              </div>
+            </div>
 
-                {/* Bonus XP Rewards */}
-                <div className="text-xs text-zinc-500 font-medium mb-2">+ Bonus XP Rewards:</div>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-zinc-400">Friend joins</span>
-                    <span className="text-[#FFD700] font-bold">+50 XP</span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-zinc-400">Activates curve</span>
-                    <span className="text-[#FFD700] font-bold">+100 XP</span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-zinc-400">Launches project</span>
-                    <span className="text-[#FFD700] font-bold">+200 XP</span>
+            {/* Referral Stats */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#0088FF]/20 border border-[#1e3a5f]/50">
+                <Users2 className="w-5 h-5 text-[#0088FF]" />
+                <div>
+                  <div className="text-xs text-zinc-500">Referrals</div>
+                  <div className="font-bold text-white">
+                    {referralStats.totalReferrals}
                   </div>
                 </div>
               </div>
-              <div className="mt-4 pt-4 border-t border-zinc-800">
-                <button className="w-full py-2 rounded-lg bg-[#FFD700]/10 border border-[#FFD700]/30 text-[#FFD700] text-sm font-bold hover:bg-[#FFD700]/20 transition-all">
-                  View Leaderboard
-                </button>
+              <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#FFD700]/20 border border-[#FFD700]/30">
+                <Trophy className="w-5 h-5 text-[#FFD700]" />
+                <div>
+                  <div className="text-xs text-zinc-500">Rank</div>
+                  <div className="font-bold text-white">
+                    #{referralStats.leaderboardRank}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </motion.div>
+        </motion.div>
 
-      {/* Network + Net Worth Cards Grid */}
-      <div className="grid lg:grid-cols-2 gap-6 mb-6">
         {/* Network Card - Blue Gradient */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -358,6 +262,49 @@ export function NetWorthHero({
           </div>
         </motion.div>
       </div>
+
+      {/* Referral Link Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="bg-gradient-to-br from-[#0a1628] to-[#0c1d3a] border-2 border-[#1e3a5f]/50 rounded-2xl p-6 mb-6"
+      >
+        <div className="flex items-center gap-4">
+          {/* Referral Link Input */}
+          <div className="flex-1 flex items-center gap-3">
+            <label className="text-sm font-medium text-[#5a9fd4] whitespace-nowrap">Your Referral Link</label>
+            <div className="flex-1 px-4 py-3 rounded-lg bg-[#0a1628] border border-[#1e3a5f]/50 text-[#5a9fd4] font-mono text-sm">
+              {referralStats.referralLink}
+            </div>
+            <button
+              onClick={copyReferralLink}
+              className="px-6 py-3 rounded-lg bg-[#0088FF] hover:bg-[#0066CC] text-white font-bold transition-all flex items-center gap-2"
+            >
+              {copied ? (
+                <>
+                  <Check className="w-4 h-4" />
+                  Copied!
+                </>
+              ) : (
+                <>
+                  <Copy className="w-4 h-4" />
+                  Copy
+                </>
+              )}
+            </button>
+            <button className="px-6 py-3 rounded-lg bg-[#0088FF]/10 hover:bg-[#0088FF]/20 text-[#0088FF] font-bold transition-all flex items-center gap-2 border border-[#1e3a5f]/50">
+              <Share2 className="w-4 h-4" />
+              Share
+            </button>
+          </div>
+
+          {/* View Leaderboard Button */}
+          <button className="px-8 py-3 rounded-lg bg-gradient-to-r from-[#0088FF] to-[#0066CC] hover:from-[#0099FF] hover:to-[#0077DD] text-white font-bold transition-all whitespace-nowrap">
+            View Leaderboard
+          </button>
+        </div>
+      </motion.div>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">

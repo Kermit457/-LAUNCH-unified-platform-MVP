@@ -8,8 +8,7 @@ import {
 } from 'lucide-react'
 import { NetWorthHero } from '@/components/dashboard/NetWorthHero'
 import { UnifiedCard } from '@/components/UnifiedCard'
-import { useCurveActivationV6 } from '@/hooks/useCurveActivationV6'
-import { ActivateCurveModal } from '@/components/onboarding/ActivateCurveModal'
+import { useCurveActivation } from '@/contexts/CurveActivationContext'
 import { InactiveCurveBanner } from '@/components/onboarding/InactiveCurveBanner'
 import { useUser } from '@/hooks/useUser'
 // Removed mock data imports - using real blockchain data
@@ -21,17 +20,16 @@ export default function NetworkPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [sortBy, setSortBy] = useState<'value' | 'pnl' | 'conviction'>('value')
 
-  // 🆕 V6 Curve Activation System (Blockchain-based)
+  // 🆕 V6 Curve Activation System (Blockchain-based) - Now using global context
   const { userId } = useUser()
   const {
     progress,
     loading,
     showActivationModal,
     setShowActivationModal,
-    activateCurve,
     isActivated,
     needsCreation
-  } = useCurveActivationV6()
+  } = useCurveActivation()
 
   // TODO: Replace with real blockchain data
   const activeCollabs: any[] = []
@@ -523,14 +521,7 @@ export default function NetworkPage() {
           )}
         </AnimatePresence>
 
-        {/* 🆕 Activation Modal */}
-        <ActivateCurveModal
-          isOpen={showActivationModal}
-          onClose={() => setShowActivationModal(false)}
-          onActivate={activateCurve}
-          userId={userId || ''}
-          progress={progress}
-        />
+        {/* 🆕 Activation Modal - Now Global (see app/layout.tsx) */}
       </div>
     </div>
   )

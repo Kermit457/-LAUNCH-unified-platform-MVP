@@ -18,12 +18,14 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useWallet } from '@/contexts/WalletContext'
 import { getNavItems, isNavItemActive } from '@/config/nav'
 import { BRAND } from '@/lib/brand'
+import { ProfileModal } from '@/components/ProfileModal'
 
 export function TopNav() {
   const router = useRouter()
   const pathname = usePathname()
   const [avatarMenuOpen, setAvatarMenuOpen] = useState(false)
   const [notificationsOpen, setNotificationsOpen] = useState(false)
+  const [profileModalOpen, setProfileModalOpen] = useState(false)
 
   // 🔥 Use real Privy wallet data
   const { connected, address, userInfo, connect, disconnect } = useWallet()
@@ -224,7 +226,7 @@ export function TopNav() {
                         icon={User}
                         label="My Profile"
                         onClick={() => {
-                          router.push('/network/@me')
+                          setProfileModalOpen(true)
                           setAvatarMenuOpen(false)
                         }}
                       />
@@ -232,7 +234,7 @@ export function TopNav() {
                         icon={LayoutGrid}
                         label="Portfolio"
                         onClick={() => {
-                          router.push('/discover?view=my-holdings')
+                          router.push('/network')
                           setAvatarMenuOpen(false)
                         }}
                       />
@@ -240,7 +242,7 @@ export function TopNav() {
                         icon={Rocket}
                         label="My Curves"
                         onClick={() => {
-                          router.push('/discover?view=my-curves')
+                          router.push('/network')
                           setAvatarMenuOpen(false)
                         }}
                       />
@@ -249,7 +251,7 @@ export function TopNav() {
                         label="Wallet"
                         badge={address ? address.slice(0, 6) + '...' + address.slice(-4) : 'Not connected'}
                         onClick={() => {
-                          router.push('/discover?view=my-holdings')
+                          router.push('/network')
                           setAvatarMenuOpen(false)
                         }}
                       />
@@ -257,7 +259,7 @@ export function TopNav() {
                         icon={Coins}
                         label="Earnings"
                         onClick={() => {
-                          router.push('/earn')
+                          router.push('/network')
                           setAvatarMenuOpen(false)
                         }}
                       />
@@ -327,6 +329,12 @@ export function TopNav() {
           }}
         />
       )}
+
+      {/* Profile Modal */}
+      <ProfileModal
+        isOpen={profileModalOpen}
+        onClose={() => setProfileModalOpen(false)}
+      />
     </nav>
   )
 }

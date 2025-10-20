@@ -10,6 +10,9 @@ import { WalletProvider } from '@/contexts/WalletContext'
 import { PrivyProviderWrapper } from '@/contexts/PrivyProviderWrapper'
 import { PrivySyncWrapper } from '@/components/PrivySyncWrapper'
 import { ReferralTracker } from '@/components/ReferralTracker'
+import { GlobalActivationModal } from '@/components/GlobalActivationModal'
+import { DebugPanel } from '@/components/DebugPanel'
+import { CurveActivationProvider } from '@/contexts/CurveActivationContext'
 import { BRAND } from '@/lib/brand'
 
 export const metadata: Metadata = {
@@ -66,13 +69,17 @@ export default function RootLayout({
               <WalletProvider>
                 <NotificationProvider>
                   <NetworkProvider>
-                    <ToastProvider>
-                      <ReferralTracker />
-                      <TopNav />
-                      <main className="relative">
-                        {children}
-                      </main>
-                    </ToastProvider>
+                    <CurveActivationProvider>
+                      <ToastProvider>
+                        <ReferralTracker />
+                        <GlobalActivationModal />
+                        <DebugPanel />
+                        <TopNav />
+                        <main className="relative">
+                          {children}
+                        </main>
+                      </ToastProvider>
+                    </CurveActivationProvider>
                   </NetworkProvider>
                 </NotificationProvider>
               </WalletProvider>
