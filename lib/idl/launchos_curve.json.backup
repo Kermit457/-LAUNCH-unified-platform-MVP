@@ -1,0 +1,153 @@
+{
+  "version": "0.1.0",
+  "name": "launchos_curve",
+  "instructions": [
+    {
+      "name": "initialize",
+      "accounts": [
+        { "name": "config", "isMut": true, "isSigner": false },
+        { "name": "banList", "isMut": true, "isSigner": false },
+        { "name": "authority", "isMut": true, "isSigner": true },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [
+        { "name": "platformTreasury", "type": "publicKey" },
+        { "name": "buybackWallet", "type": "publicKey" },
+        { "name": "communityWallet", "type": "publicKey" }
+      ]
+    },
+    {
+      "name": "createCurve",
+      "accounts": [
+        { "name": "curve", "isMut": true, "isSigner": false },
+        { "name": "reserveVault", "isMut": true, "isSigner": false },
+        { "name": "creator", "isMut": true, "isSigner": true },
+        { "name": "config", "isMut": false, "isSigner": false },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [
+        { "name": "twitterHandle", "type": "string" },
+        { "name": "creatorKeysAmount", "type": "u64" },
+        { "name": "launchTs", "type": { "option": "i64" } }
+      ]
+    },
+    {
+      "name": "buyKeys",
+      "accounts": [
+        { "name": "curve", "isMut": true, "isSigner": false },
+        { "name": "reserveVault", "isMut": true, "isSigner": false },
+        { "name": "keyHolder", "isMut": true, "isSigner": false },
+        { "name": "buyer", "isMut": true, "isSigner": true },
+        { "name": "creator", "isMut": true, "isSigner": false },
+        { "name": "platformTreasury", "isMut": true, "isSigner": false },
+        { "name": "buybackWallet", "isMut": true, "isSigner": false },
+        { "name": "communityWallet", "isMut": true, "isSigner": false },
+        { "name": "referrer", "isMut": true, "isSigner": false, "isOptional": true },
+        { "name": "config", "isMut": false, "isSigner": false },
+        { "name": "banList", "isMut": false, "isSigner": false },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [
+        { "name": "amount", "type": "u64" },
+        { "name": "referrer", "type": { "option": "publicKey" } }
+      ]
+    },
+    {
+      "name": "sellKeys",
+      "accounts": [
+        { "name": "curve", "isMut": true, "isSigner": false },
+        { "name": "reserveVault", "isMut": true, "isSigner": false },
+        { "name": "keyHolder", "isMut": true, "isSigner": false },
+        { "name": "seller", "isMut": true, "isSigner": true },
+        { "name": "creator", "isMut": true, "isSigner": false },
+        { "name": "platformTreasury", "isMut": true, "isSigner": false },
+        { "name": "buybackWallet", "isMut": true, "isSigner": false },
+        { "name": "communityWallet", "isMut": true, "isSigner": false },
+        { "name": "referrer", "isMut": true, "isSigner": false, "isOptional": true },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [
+        { "name": "amount", "type": "u64" },
+        { "name": "referrer", "type": { "option": "publicKey" } }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "BondingCurve",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "twitterHandle", "type": "string" },
+          { "name": "creator", "type": "publicKey" },
+          { "name": "supply", "type": "u128" },
+          { "name": "reserveBalance", "type": "u128" },
+          { "name": "status", "type": { "defined": "CurveStatus" } },
+          { "name": "uniqueHolders", "type": "u32" },
+          { "name": "totalBuys", "type": "u64" },
+          { "name": "totalSells", "type": "u64" },
+          { "name": "platformTreasury", "type": "publicKey" },
+          { "name": "buybackWallet", "type": "publicKey" },
+          { "name": "communityWallet", "type": "publicKey" },
+          { "name": "reserveVault", "type": "publicKey" },
+          { "name": "launchTs", "type": { "option": "i64" } },
+          { "name": "targetReserve", "type": "u64" },
+          { "name": "freezeTs", "type": { "option": "i64" } },
+          { "name": "snapshotRoot", "type": { "option": { "array": ["u8", 32] } } },
+          { "name": "bump", "type": "u8" },
+          { "name": "reserveBump", "type": "u8" }
+        ]
+      }
+    },
+    {
+      "name": "KeyHolder",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "owner", "type": "publicKey" },
+          { "name": "curve", "type": "publicKey" },
+          { "name": "amount", "type": "u64" },
+          { "name": "acquiredAt", "type": "i64" },
+          { "name": "isCreator", "type": "bool" },
+          { "name": "bump", "type": "u8" }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "CurveStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          { "name": "Pending" },
+          { "name": "Active" },
+          { "name": "Frozen" },
+          { "name": "Launched" }
+        ]
+      }
+    }
+  ],
+  "events": [
+    {
+      "name": "KeysPurchasedEvent",
+      "fields": [
+        { "name": "curve", "type": "publicKey" },
+        { "name": "buyer", "type": "publicKey" },
+        { "name": "amount", "type": "u64" },
+        { "name": "cost", "type": "u128" },
+        { "name": "referrer", "type": { "option": "publicKey" } },
+        { "name": "instantFeePaid", "type": "u128" }
+      ]
+    },
+    {
+      "name": "KeysSoldEvent",
+      "fields": [
+        { "name": "curve", "type": "publicKey" },
+        { "name": "seller", "type": "publicKey" },
+        { "name": "amount", "type": "u64" },
+        { "name": "proceeds", "type": "u128" }
+      ]
+    }
+  ]
+}

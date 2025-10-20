@@ -68,41 +68,43 @@ export default function DiscoverPage() {
     <div className="min-h-screen bg-gradient-to-b from-black via-zinc-950 to-black text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-        {/* Header */}
-        <div className="mb-8 flex items-end justify-between">
-          <div>
-            <h1 className="text-4xl sm:text-5xl font-black bg-gradient-to-r from-green-400 via-purple-400 to-orange-400 bg-clip-text text-transparent mb-3">
-              Discover
-            </h1>
-            <p className="text-lg text-zinc-400">
-              Markets for ideas, creators, and memes
-            </p>
+        {/* Header with Prominent View Toggle */}
+        <div className="mb-8">
+          <div className="flex items-start justify-between mb-6">
+            <div>
+              <h1 className="text-4xl sm:text-5xl font-black text-[#00FFFF] mb-3">
+                Discover
+              </h1>
+              <p className="text-lg text-zinc-400">
+                Markets for ideas, creators, and memes
+              </p>
+            </div>
           </div>
 
-          {/* Display Mode Toggle */}
-          <div className="flex items-center gap-2 bg-zinc-900/50 rounded-xl p-1 border border-zinc-800">
+          {/* Display Mode Toggle - Prominent */}
+          <div className="flex items-center gap-3 bg-zinc-900/80 backdrop-blur-xl rounded-2xl p-2 border-2 border-zinc-800/80 shadow-2xl max-w-md">
             <button
               onClick={() => setDisplayMode('cards')}
               className={cn(
-                "px-4 py-2 rounded-lg font-medium text-sm transition-all flex items-center gap-2",
+                "flex-1 px-6 py-3.5 rounded-xl font-bold text-base transition-all flex items-center justify-center gap-3",
                 displayMode === 'cards'
-                  ? "bg-white/10 text-white"
-                  : "text-zinc-400 hover:text-white"
+                  ? "bg-[#00FFFF] text-black"
+                  : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"
               )}
             >
-              <LayoutGrid className="w-4 h-4" />
+              <LayoutGrid className="w-5 h-5" />
               Cards
             </button>
             <button
               onClick={() => setDisplayMode('table')}
               className={cn(
-                "px-4 py-2 rounded-lg font-medium text-sm transition-all flex items-center gap-2",
+                "flex-1 px-6 py-3.5 rounded-xl font-bold text-base transition-all flex items-center justify-center gap-3",
                 displayMode === 'table'
-                  ? "bg-white/10 text-white"
-                  : "text-zinc-400 hover:text-white"
+                  ? "bg-[#00FFFF] text-black"
+                  : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"
               )}
             >
-              <Table className="w-4 h-4" />
+              <Table className="w-5 h-5" />
               Table
             </button>
           </div>
@@ -138,49 +140,50 @@ export default function DiscoverPage() {
         </div>
 
         {/* Search Bar */}
-        <div className="mb-6">
+        <div className="mb-8">
           <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400" />
+            <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-[#00FFFF]" />
             <input
               type="text"
               placeholder="Search projects, creators, memes..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-zinc-900/50 border border-zinc-800 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all"
+              className="w-full pl-14 pr-5 py-4 rounded-2xl bg-zinc-900/80 border-2 border-zinc-800 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#00FFFF]/50 focus:border-[#00FFFF] transition-all font-medium"
             />
           </div>
         </div>
 
-        {/* Filters */}
-        <div className="bg-zinc-900/30 backdrop-blur-xl rounded-2xl border border-zinc-800/50 p-6 mb-8">
+        {/* Filters - Better Spacing */}
+        <div className="bg-zinc-900/30 backdrop-blur-xl rounded-2xl border border-zinc-800/50 p-8 mb-8">
           {/* Type Filter */}
-          <div className="mb-6">
-            <label className="text-sm font-medium text-zinc-400 mb-3 block">Type</label>
-            <div className="flex flex-wrap gap-2">
+          <div className="mb-8">
+            <label className="text-sm font-bold text-white mb-4 block uppercase tracking-wider">Type</label>
+            <div className="flex flex-wrap gap-3">
               <FilterPill
                 active={typeFilter === 'all'}
                 onClick={() => setTypeFilter('all')}
+                className="data-[active]:bg-zinc-800/50 data-[active]:border-zinc-700 data-[active]:text-white"
               >
                 All
               </FilterPill>
               <FilterPill
                 active={typeFilter === 'icm'}
                 onClick={() => setTypeFilter('icm')}
-                className="data-[active]:bg-green-500/20 data-[active]:border-green-500/50 data-[active]:text-green-400"
+                className="data-[active]:bg-[#00FF88]/20 data-[active]:border-[#00FF88] data-[active]:text-white"
               >
                 💼 Projects
               </FilterPill>
               <FilterPill
                 active={typeFilter === 'ccm'}
                 onClick={() => setTypeFilter('ccm')}
-                className="data-[active]:bg-purple-500/20 data-[active]:border-purple-500/50 data-[active]:text-purple-400"
+                className="data-[active]:bg-[#00FFFF]/20 data-[active]:border-[#00FFFF] data-[active]:text-white"
               >
                 🎥 Creators
               </FilterPill>
               <FilterPill
                 active={typeFilter === 'meme'}
                 onClick={() => setTypeFilter('meme')}
-                className="data-[active]:bg-orange-500/20 data-[active]:border-orange-500/50 data-[active]:text-orange-400"
+                className="data-[active]:bg-[#FFD700]/20 data-[active]:border-[#FFD700] data-[active]:text-white"
               >
                 🔥 Memes
               </FilterPill>
@@ -188,15 +191,16 @@ export default function DiscoverPage() {
           </div>
 
           {/* Status & Sort Row */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
             {/* Status Filter */}
             <div>
-              <label className="text-sm font-medium text-zinc-400 mb-3 block">Stage</label>
-              <div className="flex flex-wrap gap-2">
+              <label className="text-sm font-bold text-white mb-4 block uppercase tracking-wider">Stage</label>
+              <div className="flex flex-wrap gap-3">
                 <FilterPill
                   active={statusFilter === 'all'}
                   onClick={() => setStatusFilter('all')}
                   small
+                  className="data-[active]:bg-zinc-800/50 data-[active]:border-zinc-700 data-[active]:text-white"
                 >
                   All
                 </FilterPill>
@@ -204,6 +208,7 @@ export default function DiscoverPage() {
                   active={statusFilter === 'active'}
                   onClick={() => setStatusFilter('active')}
                   small
+                  className="data-[active]:bg-[#00FF88]/20 data-[active]:border-[#00FF88] data-[active]:text-white"
                 >
                   Active
                 </FilterPill>
@@ -211,6 +216,7 @@ export default function DiscoverPage() {
                   active={statusFilter === 'live'}
                   onClick={() => setStatusFilter('live')}
                   small
+                  className="data-[active]:bg-[#FF0040]/20 data-[active]:border-[#FF0040] data-[active]:text-white"
                 >
                   Live
                 </FilterPill>
@@ -218,6 +224,7 @@ export default function DiscoverPage() {
                   active={statusFilter === 'frozen'}
                   onClick={() => setStatusFilter('frozen')}
                   small
+                  className="data-[active]:bg-[#00FFFF]/20 data-[active]:border-[#00FFFF] data-[active]:text-white"
                 >
                   Frozen
                 </FilterPill>
@@ -225,6 +232,7 @@ export default function DiscoverPage() {
                   active={statusFilter === 'upcoming'}
                   onClick={() => setStatusFilter('upcoming')}
                   small
+                  className="data-[active]:bg-[#0088FF]/20 data-[active]:border-[#0088FF] data-[active]:text-white"
                 >
                   Upcoming
                 </FilterPill>
@@ -233,12 +241,13 @@ export default function DiscoverPage() {
 
             {/* Sort */}
             <div>
-              <label className="text-sm font-medium text-zinc-400 mb-3 block">Sort</label>
-              <div className="flex flex-wrap gap-2">
+              <label className="text-sm font-bold text-white mb-4 block uppercase tracking-wider">Sort</label>
+              <div className="flex flex-wrap gap-3">
                 <FilterPill
                   active={sortBy === 'trending'}
                   onClick={() => setSortBy('trending')}
                   small
+                  className="data-[active]:bg-[#FF0040]/20 data-[active]:border-[#FF0040] data-[active]:text-white"
                 >
                   Trending
                 </FilterPill>
@@ -246,6 +255,7 @@ export default function DiscoverPage() {
                   active={sortBy === 'conviction'}
                   onClick={() => setSortBy('conviction')}
                   small
+                  className="data-[active]:bg-[#8800FF]/20 data-[active]:border-[#8800FF] data-[active]:text-white"
                 >
                   Conviction
                 </FilterPill>
@@ -253,6 +263,7 @@ export default function DiscoverPage() {
                   active={sortBy === 'volume'}
                   onClick={() => setSortBy('volume')}
                   small
+                  className="data-[active]:bg-[#0088FF]/20 data-[active]:border-[#0088FF] data-[active]:text-white"
                 >
                   Volume
                 </FilterPill>
@@ -260,6 +271,7 @@ export default function DiscoverPage() {
                   active={sortBy === 'new'}
                   onClick={() => setSortBy('new')}
                   small
+                  className="data-[active]:bg-[#FFD700]/20 data-[active]:border-[#FFD700] data-[active]:text-white"
                 >
                   New
                 </FilterPill>
@@ -268,8 +280,8 @@ export default function DiscoverPage() {
           </div>
 
           {/* Results Count */}
-          <div className="mt-4 pt-4 border-t border-zinc-800/50 text-sm text-zinc-500">
-            Showing <span className="text-white font-medium">{filtered.length}</span> of{' '}
+          <div className="mt-6 pt-6 border-t border-zinc-800/50 text-sm text-zinc-500">
+            Showing <span className="text-[#00FFFF] font-bold">{filtered.length}</span> of{' '}
             <span className="text-white font-medium">{baseListings.length}</span> listings
           </div>
         </div>
@@ -345,7 +357,7 @@ export default function DiscoverPage() {
                 setSearchQuery('')
                 setViewFilter('trending')
               }}
-              className="px-6 py-3 rounded-xl bg-purple-500 hover:bg-purple-600 text-white font-medium transition-all"
+              className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#8800FF] to-[#0088FF] hover:scale-105 text-white font-bold transition-transform"
             >
               Reset Filters
             </button>
@@ -371,10 +383,10 @@ function StatCard({
   color: 'green' | 'purple' | 'blue' | 'orange'
 }) {
   const colorClasses = {
-    green: 'bg-green-500/10 border-green-500/20 text-green-400',
-    purple: 'bg-purple-500/10 border-purple-500/20 text-purple-400',
-    blue: 'bg-blue-500/10 border-blue-500/20 text-blue-400',
-    orange: 'bg-orange-500/10 border-orange-500/20 text-orange-400'
+    green: 'bg-[#00FF88]/10 border-[#00FF88]/20 text-[#00FF88]',
+    purple: 'bg-[#8800FF]/10 border-[#8800FF]/20 text-[#8800FF]',
+    blue: 'bg-[#0088FF]/10 border-[#0088FF]/20 text-[#0088FF]',
+    orange: 'bg-[#FF8800]/10 border-[#FF8800]/20 text-[#FF8800]'
   }
 
   return (
@@ -415,12 +427,11 @@ function FilterPill({
       onClick={onClick}
       data-active={active}
       className={cn(
-        "rounded-lg font-medium transition-all border",
-        small ? "px-3 py-1.5 text-xs" : "px-4 py-2 text-sm",
+        "rounded-xl font-bold transition-all border-2",
+        small ? "px-4 py-2 text-sm" : "px-5 py-2.5 text-base",
         active
-          ? "bg-white/10 border-white/30 text-white shadow-lg"
-          : "bg-zinc-800/50 border-zinc-700/50 text-zinc-400 hover:bg-zinc-800 hover:border-zinc-600 hover:text-white",
-        className
+          ? cn("scale-105", className) // Apply custom color classes only when active
+          : "bg-zinc-800/50 border-zinc-700/50 text-white hover:bg-zinc-800 hover:border-zinc-600 hover:scale-105"
       )}
     >
       {children}

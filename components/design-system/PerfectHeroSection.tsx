@@ -230,15 +230,18 @@ export default function PerfectHeroSection({ onLaunchApp }: { onLaunchApp?: () =
               <span>Solana • OBS • Agents</span>
             </motion.div>
 
-            {/* Main Heading */}
+            {/* Main Heading with Logo */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
+              className="flex items-center gap-4"
             >
-              <h1 className="text-6xl font-bold text-white leading-tight tracking-tight">
-                Launch OS
-              </h1>
+              <img
+                src="/icm-motion-logo.svg"
+                alt="ICM Motion"
+                className="h-20 w-auto"
+              />
             </motion.div>
 
             {/* Description */}
@@ -248,7 +251,7 @@ export default function PerfectHeroSection({ onLaunchApp }: { onLaunchApp?: () =
               transition={{ delay: 0.3 }}
               className="text-lg text-gray-400 leading-relaxed max-w-xl"
             >
-              <span className="font-bold text-white">Launch OS The Creator's Operating System</span>. Launch, earn, and collaborate in one place. Instant access to campaigns, bounties, predictions, widgets, and analytics.
+              <span className="font-bold text-white">The Engine of the Internet Capital Market</span>. Launch, earn, and collaborate in one place. Instant access to campaigns, bounties, predictions, widgets, and analytics powered by Solana.
             </motion.p>
 
             {/* Action Buttons */}

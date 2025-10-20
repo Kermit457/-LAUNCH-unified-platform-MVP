@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import {
   Trophy, TrendingUp, DollarSign, Gift,
-  Users, Target, Swords, Clock, Plus
+  Users, Target, Swords, Clock, Plus, Camera
 } from 'lucide-react'
 import { GlassCard, PremiumButton } from '@/components/design-system'
 
@@ -95,7 +95,7 @@ const KPICard = ({
   </motion.div>
 )
 
-// Enhanced Opportunity Card Component
+// Enhanced Opportunity Card Component - Redesigned to match reference
 const OpportunityCard = ({
   card,
   onJoin,
@@ -105,18 +105,9 @@ const OpportunityCard = ({
   onJoin: (id: string) => void
   onView: (id: string) => void
 }) => {
-  const getTypeGradient = (type: EarnType) => {
-    switch(type) {
-      case 'campaign': return 'from-green-500 to-emerald-500'
-      case 'raid': return 'from-violet-500 to-fuchsia-500'
-      case 'bounty': return 'from-cyan-500 to-blue-500'
-      default: return 'from-zinc-600 to-zinc-700'
-    }
-  }
-
   const getTypeIcon = (type: EarnType) => {
     switch(type) {
-      case 'campaign': return Gift
+      case 'campaign': return Camera
       case 'raid': return Swords
       case 'bounty': return Target
       default: return Trophy
@@ -124,145 +115,131 @@ const OpportunityCard = ({
   }
 
   const Icon = getTypeIcon(card.type)
-  const gradient = getTypeGradient(card.type)
+
+  // Calculate budget progress
+  const budgetTotal = typeof card.reward.value === 'number' ? card.reward.value : 0
+  const budgetPaid = card.escrowAmount ? (card.paidParticipants || 0) * (budgetTotal / (card.expectedParticipants || 1)) : 0
+  const budgetProgressPct = budgetTotal > 0 ? Math.round((budgetPaid / budgetTotal) * 100) : 0
+
+  // Calculate rate per 1000 (mock calculation based on total budget and expected participants)
+  const ratePerThousand = card.expectedParticipants && card.expectedParticipants > 0
+    ? (budgetTotal / card.expectedParticipants / 1000).toFixed(2)
+    : (budgetTotal / 10000).toFixed(2) // fallback estimate
+
+  // Mock views count (in real app, this would come from Appwrite)
+  const viewsCount = card.participantsCount ? card.participantsCount * 12345 : 7584093
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -4 }}
-      className="group cursor-pointer"
-      onClick={() => onView(card.id)}
+      className="group"
     >
       <div className="relative h-full">
-        {/* Glow effect */}
-        <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-20 blur-xl transition-opacity`} />
+        <div className="relative h-full p-5 rounded-2xl bg-zinc-900/60 backdrop-blur-xl border-2 border-zinc-800 group-hover:border-[#FFD700]/30 transition-all">
 
-        <div className="relative h-full p-6 rounded-2xl bg-zinc-900/60 backdrop-blur-xl border border-zinc-800 group-hover:border-zinc-700 transition-all">
-          {/* Header */}
-          <div className="flex items-start gap-4 mb-4">
-            <div className={`p-3 rounded-xl bg-gradient-to-br ${gradient} flex-shrink-0`}>
-              <Icon className="w-6 h-6 text-white" />
+          {/* Header: Logo and Price Badge */}
+          <div className="flex items-start justify-between mb-3">
+            <div className="p-2.5 rounded-xl bg-[#FFD700]/20 border-2 border-[#FFD700]/30 flex-shrink-0">
+              <Icon className="w-7 h-7 text-[#FFD700]" />
             </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-start justify-between gap-2 mb-1">
-                <h3 className="font-bold text-white group-hover:text-zinc-100 transition-colors line-clamp-2">
-                  {card.title}
-                </h3>
-                <span className={`px-2 py-1 rounded-full text-xs font-semibold bg-gradient-to-br ${gradient} text-white`}>
-                  {card.type}
-                </span>
-              </div>
-              <p className="text-sm text-zinc-400 line-clamp-2">{card.description}</p>
-
-              {/* Content Type Pills */}
-              {card.platform && card.platform.length > 0 && (
-                <div className="flex flex-wrap gap-1 mt-2">
-                  {card.platform.slice(0, 3).map((platform, i) => (
-                    <span key={i} className="px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 text-xs">
-                      {platform === 'twitter' && '🐦 Twitter'}
-                      {platform === 'youtube' && '📹 YouTube'}
-                      {platform === 'tiktok' && '🎵 TikTok'}
-                      {platform === 'instagram' && '📷 Instagram'}
-                      {platform === 'discord' && '💬 Discord'}
-                      {platform === 'telegram' && '✈️ Telegram'}
-                      {!['twitter', 'youtube', 'tiktok', 'instagram', 'discord', 'telegram'].includes(platform) && platform}
-                    </span>
-                  ))}
-                  {card.platform.length > 3 && (
-                    <span className="px-2 py-0.5 rounded bg-zinc-800 text-zinc-500 text-xs">
-                      +{card.platform.length - 3}
-                    </span>
-                  )}
-                </div>
-              )}
+            <div className="px-3 py-1.5 rounded-lg bg-[#FFD700]/10 border border-[#FFD700]/30">
+              <span className="text-[#FFD700] text-sm font-bold">
+                ${ratePerThousand} / 1000
+              </span>
             </div>
           </div>
 
-          {/* Escrow Badge */}
-          {card.escrowId && card.escrowStatus && card.escrowAmount && (
-            <div className="mb-4">
-              <EscrowStatusCard
-                escrowId={card.escrowId}
-                status={card.escrowStatus}
-                totalAmount={card.escrowAmount}
-                participantsTotal={card.expectedParticipants || 0}
-                participantsPaid={card.paidParticipants || 0}
-                compact={true}
+          {/* Campaign Name */}
+          <h3 className="font-bold text-white text-base mb-1.5 line-clamp-1">
+            {card.title}
+          </h3>
+
+          {/* Earnings Description */}
+          <p className="text-xs text-zinc-400 mb-3">
+            (Earn ${ratePerThousand} per 1,000 Views)
+          </p>
+
+          {/* Budget Progress */}
+          <div className="mb-3">
+            <div className="flex items-center justify-between text-xs mb-1.5">
+              <span className="text-zinc-400">
+                ${Math.round(budgetPaid).toLocaleString()} of ${budgetTotal.toLocaleString()} paid out
+              </span>
+              <span className="text-[#FFD700] font-bold">{budgetProgressPct}%</span>
+            </div>
+            <div className="h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${budgetProgressPct}%` }}
+                transition={{ duration: 1, ease: "easeOut" }}
+                className="h-full bg-[#FFD700]"
               />
             </div>
-          )}
+          </div>
 
-          {/* Stats */}
-          <div className="space-y-3 mb-4">
-            {/* Reward */}
-            <div className="flex items-center justify-between">
-              <span className="text-xs text-zinc-500">Reward</span>
-              <div className="flex items-center gap-1">
-                <DollarSign className="w-4 h-4 text-green-400" />
-                <span className="font-bold text-white">
-                  {typeof card.reward.value === 'number'
-                    ? card.reward.value.toLocaleString()
-                    : card.reward.value} {card.reward.currency}
-                </span>
-              </div>
+          {/* Type Badge and Platform Icons */}
+          <div className="flex items-center justify-between mb-3">
+            <div className="px-2.5 py-1 rounded-lg bg-zinc-800/60 border border-zinc-700">
+              <span className="text-xs text-zinc-300 font-medium">
+                Type: {card.type.charAt(0).toUpperCase() + card.type.slice(1)}
+              </span>
             </div>
 
-            {/* Deadline */}
-            {card.endsAt && (
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-zinc-500">Deadline</span>
-                <div className="flex items-center gap-1">
-                  <Clock className="w-3 h-3 text-zinc-400" />
-                  <span className="text-xs text-zinc-300">
-                    {new Date(card.endsAt).toLocaleDateString()}
+            {/* Platform Icons */}
+            {card.platform && card.platform.length > 0 && (
+              <div className="flex items-center gap-1.5">
+                {card.platform.slice(0, 4).map((platform, i) => (
+                  <span key={i} className="text-base">
+                    {platform === 'twitter' && '🐦'}
+                    {platform === 'youtube' && '📹'}
+                    {platform === 'tiktok' && '🎵'}
+                    {platform === 'instagram' && '📷'}
+                    {platform === 'discord' && '💬'}
+                    {platform === 'telegram' && '✈️'}
+                    {!['twitter', 'youtube', 'tiktok', 'instagram', 'discord', 'telegram'].includes(platform) && '🌐'}
                   </span>
-                </div>
-              </div>
-            )}
-
-            {/* Participants */}
-            {card.participantsCount !== undefined && (
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-zinc-500">Participants</span>
-                <div className="flex items-center gap-1">
-                  <Users className="w-3 h-3 text-zinc-400" />
-                  <span className="text-xs text-zinc-300">{card.participantsCount}</span>
-                </div>
-              </div>
-            )}
-
-            {/* Progress */}
-            {card.progress !== undefined && (
-              <div>
-                <div className="flex items-center justify-between text-xs mb-1">
-                  <span className="text-zinc-500">Progress</span>
-                  <span className="text-zinc-300">{card.progress}%</span>
-                </div>
-                <div className="h-1.5 bg-zinc-800 rounded-full overflow-hidden">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${card.progress}%` }}
-                    transition={{ duration: 1, ease: "easeOut" }}
-                    className={`h-full bg-gradient-to-r ${gradient}`}
-                  />
-                </div>
+                ))}
+                {card.platform.length > 4 && (
+                  <span className="text-xs text-zinc-500 ml-1">+{card.platform.length - 4}</span>
+                )}
               </div>
             )}
           </div>
 
-          {/* Action Button */}
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={(e) => {
-              e.stopPropagation()
-              onJoin(card.id)
-            }}
-            className={`w-full py-2.5 rounded-xl bg-gradient-to-r ${gradient} text-white text-sm font-semibold hover:shadow-lg transition-all`}
-          >
-            Join Now
-          </motion.button>
+          {/* Views Count */}
+          <div className="flex items-center justify-end mb-3">
+            <span className="text-xs text-zinc-400">
+              Views: <span className="text-white font-semibold">{viewsCount.toLocaleString()}</span>
+            </span>
+          </div>
+
+          {/* Two Button Layout */}
+          <div className="grid grid-cols-2 gap-3">
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={(e) => {
+                e.stopPropagation()
+                onView(card.id)
+              }}
+              className="py-2 rounded-xl bg-zinc-800/80 border border-zinc-700 text-white text-sm font-bold hover:bg-zinc-700/80 transition-all"
+            >
+              View
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={(e) => {
+                e.stopPropagation()
+                onJoin(card.id)
+              }}
+              className="py-2 rounded-xl bg-[#FFD700] text-black text-sm font-bold hover:bg-[#FFD700]/90 transition-all"
+            >
+              Join
+            </motion.button>
+          </div>
         </div>
       </div>
     </motion.div>
@@ -492,59 +469,56 @@ export default function EarnPage() {
         />
       </div>
 
-      {/* Hero Section */}
-      <section className="relative z-10 px-4 sm:px-6 lg:px-8 pt-12 pb-8">
+      {/* Hero Section - Compact & Dynamic */}
+      <section className="relative z-10 px-4 sm:px-6 lg:px-8 pt-8 pb-6">
         <div className="max-w-7xl mx-auto">
           {/* Main Hero */}
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-12"
+            className="text-center mb-8"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-green-500/10 via-emerald-500/10 to-teal-500/10 border border-green-500/20 text-sm font-medium mb-6">
-              <DollarSign className="w-4 h-4 text-green-400" />
-              <span className="bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#FFD700]/10 border-2 border-[#FFD700]/30 text-sm font-bold mb-4">
+              <DollarSign className="w-4 h-4 text-[#FFD700]" />
+              <span className="text-[#FFD700]">
                 Content Creator Marketplace
               </span>
             </div>
 
-            <h1 className="text-5xl sm:text-6xl font-black bg-gradient-to-r from-green-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent mb-6">
+            <h1 className="text-4xl sm:text-5xl font-black text-[#FFD700] mb-4">
               Get Paid to Promote
               <br />
               <span className="text-white">Projects You Believe In</span>
             </h1>
-            <p className="text-xl text-zinc-400 max-w-3xl mx-auto mb-8">
+            <p className="text-base text-zinc-400 max-w-2xl mx-auto mb-6">
               Create content, share on social media, and earn SOL for every approved submission.
-              <span className="block mt-2 text-lg text-zinc-500">
-                Turn your creativity into income while helping projects grow.
-              </span>
             </p>
 
             {/* Value Props Pills */}
-            <div className="flex flex-wrap items-center justify-center gap-3 mb-12">
-              <div className="px-4 py-2 rounded-full bg-green-500/10 border border-green-500/30 text-green-400 text-sm font-medium">
+            <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
+              <div className="px-3 py-1.5 rounded-full bg-[#FFD700]/10 border border-[#FFD700]/30 text-[#FFD700] text-xs font-bold">
                 🎬 Video Clips
               </div>
-              <div className="px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm font-medium">
+              <div className="px-3 py-1.5 rounded-full bg-[#FFD700]/10 border border-[#FFD700]/30 text-[#FFD700] text-xs font-bold">
                 🐦 Twitter Threads
               </div>
-              <div className="px-4 py-2 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-400 text-sm font-medium">
+              <div className="px-3 py-1.5 rounded-full bg-[#FFD700]/10 border border-[#FFD700]/30 text-[#FFD700] text-xs font-bold">
                 🎨 Graphics & Memes
               </div>
-              <div className="px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-sm font-medium">
+              <div className="px-3 py-1.5 rounded-full bg-[#FFD700]/10 border border-[#FFD700]/30 text-[#FFD700] text-xs font-bold">
                 📱 Social Posts
               </div>
             </div>
           </motion.div>
 
-          {/* KPI Cards */}
-          <div className="grid md:grid-cols-3 gap-6">
+          {/* KPI Cards - More Compact */}
+          <div className="grid md:grid-cols-3 gap-4">
             <KPICard
               label="Available Today"
               value={`$${stats.today.toLocaleString()}`}
               icon={DollarSign}
               trend={{ value: 'Active Campaigns', direction: 'up' }}
-              gradient="from-green-500 to-emerald-500"
+              gradient="from-[#FFD700] to-[#FFD700]"
               delay={0}
             />
             <KPICard
@@ -552,7 +526,7 @@ export default function EarnPage() {
               value={`$${stats.week.toLocaleString()}`}
               icon={TrendingUp}
               trend={{ value: 'To Creators', direction: 'up' }}
-              gradient="from-emerald-500 to-teal-500"
+              gradient="from-[#FFD700] to-[#FFD700]"
               delay={0.1}
             />
             <KPICard
@@ -560,7 +534,7 @@ export default function EarnPage() {
               value={`$${Math.round(stats.month).toLocaleString()}`}
               icon={Gift}
               trend={{ value: 'Live Bounties', direction: 'up' }}
-              gradient="from-teal-500 to-cyan-500"
+              gradient="from-[#FFD700] to-[#FFD700]"
               delay={0.2}
             />
           </div>
@@ -568,9 +542,9 @@ export default function EarnPage() {
       </section>
 
       {/* Value Proposition Section */}
-      <section className="relative z-10 px-4 sm:px-6 lg:px-8 py-12">
+      <section className="relative z-10 px-4 sm:px-6 lg:px-8 py-8">
         <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
             {[
               {
                 emoji: '🎬',
@@ -603,12 +577,12 @@ export default function EarnPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 whileHover={{ scale: 1.05 }}
-                className="p-6 rounded-2xl bg-gradient-to-br from-zinc-900/60 to-zinc-800/40 backdrop-blur-xl border border-zinc-800 hover:border-green-500/30 transition-all"
+                className="p-5 rounded-2xl bg-zinc-900/60 backdrop-blur-xl border-2 border-zinc-800 hover:border-[#FFD700]/30 transition-all"
               >
-                <div className="text-4xl mb-3">{content.emoji}</div>
-                <h3 className="font-bold text-white mb-2">{content.title}</h3>
-                <p className="text-sm text-zinc-400 mb-4">{content.description}</p>
-                <div className="px-3 py-1.5 rounded-lg bg-green-500/10 border border-green-500/30 text-green-400 text-xs font-bold inline-block">
+                <div className="text-3xl mb-2">{content.emoji}</div>
+                <h3 className="font-bold text-white mb-2 text-sm">{content.title}</h3>
+                <p className="text-xs text-zinc-400 mb-3">{content.description}</p>
+                <div className="px-2.5 py-1 rounded-lg bg-[#FFD700]/10 border border-[#FFD700]/30 text-[#FFD700] text-xs font-bold inline-block">
                   {content.payout} per submission
                 </div>
               </motion.div>
@@ -629,9 +603,9 @@ export default function EarnPage() {
                   onClick={() => setActiveTab(tab)}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className={`px-4 py-2 rounded-xl font-semibold text-sm transition-all ${
+                  className={`px-4 py-2 rounded-xl font-bold text-sm transition-all ${
                     activeTab === tab
-                      ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg'
+                      ? 'bg-[#FFD700] text-black'
                       : 'bg-zinc-900/60 text-zinc-400 hover:bg-zinc-800/60 border border-zinc-800'
                   }`}
                 >
@@ -655,7 +629,7 @@ export default function EarnPage() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleCreateCampaign}
-                className="px-4 py-2 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-white text-sm font-medium transition-all shadow-lg hover:shadow-green-500/25"
+                className="px-4 py-2 rounded-xl bg-[#FFD700] hover:bg-[#FFD700]/90 text-black text-sm font-bold transition-all"
               >
                 <Plus className="w-4 h-4 inline mr-1" />
                 Create Campaign
@@ -687,7 +661,7 @@ export default function EarnPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Opportunities Grid */}
         {loading ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 gap-6">
             {[...Array(6)].map((_, i) => (
               <GlassCard key={i} className="h-64 animate-pulse">
                 <div className="p-6">
@@ -699,7 +673,7 @@ export default function EarnPage() {
             ))}
           </div>
         ) : filteredCards.length > 0 ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 gap-6">
             {filteredCards.map((card) => (
               <OpportunityCard
                 key={card.id}
@@ -730,30 +704,30 @@ export default function EarnPage() {
         )}
 
         {/* How It Works Section */}
-        <section className="mt-24">
-          <h2 className="text-3xl font-bold text-white text-center mb-4">How to Start Earning</h2>
-          <p className="text-center text-zinc-400 mb-12 max-w-2xl mx-auto">
+        <section className="mt-16">
+          <h2 className="text-2xl font-bold text-white text-center mb-3">How to Start Earning</h2>
+          <p className="text-center text-zinc-400 mb-8 max-w-2xl mx-auto text-sm">
             Join campaigns, create content for projects you believe in, and get paid in SOL
           </p>
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-6">
             {[
               {
                 icon: Target,
                 title: '1. Browse Campaigns',
                 description: 'Find projects looking for clips, tweets, memes, and more. Choose campaigns that match your skills.',
-                gradient: 'from-green-500 to-emerald-500',
+                gradient: 'from-[#FFD700] to-[#FFD700]',
               },
               {
                 icon: Users,
                 title: '2. Create Content',
                 description: 'Make videos, design graphics, write threads, or create memes. Submit your work for review.',
-                gradient: 'from-emerald-500 to-teal-500',
+                gradient: 'from-[#FFD700] to-[#FFD700]',
               },
               {
                 icon: DollarSign,
                 title: '3. Earn SOL',
                 description: 'Get paid instantly when your content is approved. Bonus rewards for high-performing submissions.',
-                gradient: 'from-teal-500 to-cyan-500',
+                gradient: 'from-[#FFD700] to-[#FFD700]',
               },
             ].map((step, index) => {
               const Icon = step.icon
@@ -765,12 +739,12 @@ export default function EarnPage() {
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1 }}
                 >
-                  <GlassCard className="p-6 text-center h-full">
-                    <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${step.gradient} flex items-center justify-center mx-auto mb-4`}>
-                      <Icon className="w-7 h-7 text-white" />
+                  <GlassCard className="p-5 text-center h-full">
+                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${step.gradient} flex items-center justify-center mx-auto mb-3`}>
+                      <Icon className="w-6 h-6 text-black" />
                     </div>
-                    <h3 className="font-bold text-white text-lg mb-2">{step.title}</h3>
-                    <p className="text-sm text-zinc-400">{step.description}</p>
+                    <h3 className="font-bold text-white text-base mb-2">{step.title}</h3>
+                    <p className="text-xs text-zinc-400">{step.description}</p>
                   </GlassCard>
                 </motion.div>
               )

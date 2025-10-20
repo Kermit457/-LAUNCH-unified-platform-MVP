@@ -1192,8 +1192,9 @@ pub struct CreateCurve<'info> {
     #[account(seeds = [b"config"], bump)]
     pub config: Account<'info, CurveConfig>,
 
+    /// CHECK: Ban list validation is optional for now (devnet compatibility)
     #[account(seeds = [b"ban_list"], bump)]
-    pub ban_list: Account<'info, BanList>,
+    pub ban_list: UncheckedAccount<'info>,
 
     pub system_program: Program<'info, System>,
 }

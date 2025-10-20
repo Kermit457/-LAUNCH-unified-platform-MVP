@@ -4,21 +4,20 @@ import { useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { cn } from '@/lib/cn'
 import {
-  Search,
-  Rocket,
-  Coins,
-  Radio,
-  Users,
   Bell,
   Settings,
   LogOut,
   User,
   Wallet,
   LayoutGrid,
-  ChevronDown
+  ChevronDown,
+  Rocket,
+  Coins
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useWallet } from '@/contexts/WalletContext'
+import { getNavItems, isNavItemActive } from '@/config/nav'
+import { BRAND } from '@/lib/brand'
 
 export function TopNav() {
   const router = useRouter()
@@ -37,40 +36,10 @@ export function TopNav() {
     verified: !!userInfo?.twitter?.username
   }
 
-  const navItems = [
-    {
-      label: 'Discover',
-      icon: Search,
-      href: '/discover',
-      color: 'text-purple-400'
-    },
-    {
-      label: 'Launch',
-      icon: Rocket,
-      href: '/launch',
-      color: 'text-green-400'
-    },
-    {
-      label: 'Earn',
-      icon: Coins,
-      href: '/earn',
-      color: 'text-orange-400'
-    },
-    {
-      label: 'Live',
-      icon: Radio,
-      href: '/live',
-      color: 'text-red-400'
-    },
-    {
-      label: 'Network',
-      icon: Users,
-      href: '/network',
-      color: 'text-blue-400'
-    }
-  ]
+  // Get navigation items with feature flag filtering
+  const navItems = getNavItems({ authenticated: connected })
 
-  const isActive = (href: string) => pathname === href || pathname?.startsWith(href + '/')
+  const isActive = (href: string) => isNavItemActive(href, pathname || '')
 
   return (
     <nav className="sticky top-0 z-50 border-b border-zinc-800/50 bg-black/80 backdrop-blur-xl">
@@ -81,13 +50,13 @@ export function TopNav() {
           <button
             onClick={() => router.push('/discover')}
             className="flex items-center gap-3 group"
+            aria-label={`${BRAND.name} Home`}
           >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 via-purple-500 to-orange-500 flex items-center justify-center font-black text-white text-xl group-hover:scale-110 transition-transform">
-              L
-            </div>
-            <span className="text-xl font-black bg-gradient-to-r from-green-400 via-purple-400 to-orange-400 bg-clip-text text-transparent hidden sm:block">
-              LaunchOS
-            </span>
+            <img
+              src={BRAND.assets.logo}
+              alt={BRAND.name}
+              className="h-10 w-auto group-hover:scale-105 transition-transform"
+            />
           </button>
 
           {/* Nav Items - Desktop */}
@@ -100,14 +69,16 @@ export function TopNav() {
                 <button
                   key={item.href}
                   onClick={() => router.push(item.href)}
+                  aria-current={active ? 'page' : undefined}
                   className={cn(
-                    "relative px-4 py-2 rounded-lg font-medium text-sm transition-all flex items-center gap-2",
+                    "relative px-4 py-2 rounded-lg font-bold text-sm transition-all flex items-center gap-2",
+                    "focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black focus:ring-white/20",
                     active
-                      ? "text-white"
+                      ? item.color
                       : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"
                   )}
                 >
-                  <Icon className={cn("w-4 h-4", active && item.color)} />
+                  <Icon className="w-4 h-4" />
                   <span>{item.label}</span>
 
                   {/* Active indicator */}
@@ -130,7 +101,7 @@ export function TopNav() {
             {!connected && (
               <button
                 onClick={connect}
-                className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold hover:opacity-90 transition-opacity"
+                className="px-6 py-2.5 rounded-xl bg-[#FFD700] text-black font-bold hover:scale-105 hover:bg-[#FFED4E] transition-all"
               >
                 Connect Wallet
               </button>
@@ -278,7 +249,7 @@ export function TopNav() {
                         label="Wallet"
                         badge={address ? address.slice(0, 6) + '...' + address.slice(-4) : 'Not connected'}
                         onClick={() => {
-                          router.push('/wallet')
+                          router.push('/discover?view=my-holdings')
                           setAvatarMenuOpen(false)
                         }}
                       />
@@ -297,7 +268,7 @@ export function TopNav() {
                         icon={Settings}
                         label="Settings"
                         onClick={() => {
-                          router.push('/settings')
+                          router.push('/dashboard/settings')
                           setAvatarMenuOpen(false)
                         }}
                       />
@@ -330,8 +301,10 @@ export function TopNav() {
                 <button
                   key={item.href}
                   onClick={() => router.push(item.href)}
+                  aria-current={active ? 'page' : undefined}
                   className={cn(
                     "flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-all",
+                    "focus:outline-none focus:ring-2 focus:ring-white/20",
                     active ? "text-white" : "text-zinc-500"
                   )}
                 >

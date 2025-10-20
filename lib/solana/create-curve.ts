@@ -58,31 +58,78 @@ export async function buildCreateCurveTransaction(
   const curvePDA = getCurvePDA(twitterHandle);
   const reserveVault = getReserveVaultPDA(curvePDA);
   const configPDA = getConfigPDA();
+  const banListPDA = getBanListPDA();
 
-  // Create provider (read-only for building transaction)
-  const provider = new AnchorProvider(
-    connection,
-    {} as any, // No wallet needed for building
-    { commitment: 'confirmed' }
-  );
+  // Check if config PDA is initialized
+  console.log('🔍 Checking config PDA:', configPDA.toString());
+  const configAccount = await connection.getAccountInfo(configPDA);
+  if (!configAccount) {
+    throw new Error(`Config PDA not initialized. Admin must run 'initialize' instruction first. Config PDA: ${configPDA.toString()}`);
+  }
+  console.log('✅ Config PDA exists');
+  console.log('📦 Config data length:', configAccount.data.length, 'bytes');
 
-  const program = new Program(IDL as any, CURVE_PROGRAM_ID, provider);
+  // Check if ban list exists (required by deployed program)
+  const banListAccount = await connection.getAccountInfo(banListPDA);
+  if (!banListAccount) {
+    console.warn('⚠️  BanList PDA not initialized - transaction may fail');
+    console.warn('   Admin should run: node scripts/initialize-banlist.mjs');
+  }
 
-  // Build createCurve instruction
-  const createCurveIx = await program.methods
-    .createCurve(
-      twitterHandle,
-      new BN(creatorKeysAmount),
-      null // No auto-launch timestamp
-    )
-    .accounts({
-      curve: curvePDA,
-      reserveVault: reserveVault,
-      creator: creatorWallet,
-      config: configPDA,
-      systemProgram: SystemProgram.programId,
-    })
-    .instruction();
+  // Log all account PDAs for debugging
+  console.log('📍 All PDAs for transaction:');
+  console.log('  - Curve PDA:', curvePDA.toString());
+  console.log('  - Reserve Vault:', reserveVault.toString());
+  console.log('  - Config PDA:', configPDA.toString());
+  console.log('  - BanList PDA:', banListPDA.toString(), banListAccount ? '✅' : '❌');
+  console.log('  - Creator:', creatorWallet.toString());
+
+  // Build instruction manually to avoid Anchor version mismatch
+  // Program built with Anchor 0.30.1, frontend uses 0.32.1
+
+  // Use web3.js TransactionInstruction for compatibility
+  const { TransactionInstruction } = await import('@solana/web3.js');
+
+  // Create instruction discriminator for create_curve (snake_case for Rust function name)
+  // This is sha256("global:create_curve")[0..8]
+  // Calculated: [169, 235, 221, 223, 65, 109, 120, 183]
+  const discriminator = Buffer.from([169, 235, 221, 223, 65, 109, 120, 183]);
+
+  // Serialize instruction data using Borsh-compatible encoding
+  // Format: [discriminator (8 bytes), twitterHandle (string), creatorKeysAmount (u64), launchTs (Option<i64>)]
+  const twitterHandleBytes = Buffer.from(twitterHandle, 'utf-8');
+  const twitterHandleLenBytes = Buffer.alloc(4);
+  twitterHandleLenBytes.writeUInt32LE(twitterHandleBytes.length, 0);
+
+  const creatorKeysAmountBytes = Buffer.alloc(8);
+  new BN(creatorKeysAmount).toArrayLike(Buffer, 'le', 8).copy(creatorKeysAmountBytes);
+
+  // Option<i64> None = 0x00 (discriminant), Some = 0x01 followed by i64
+  const launchTsBytes = Buffer.from([0x00]);
+
+  const data = Buffer.concat([
+    discriminator,
+    twitterHandleLenBytes,
+    twitterHandleBytes,
+    creatorKeysAmountBytes,
+    launchTsBytes
+  ]);
+
+  // Build instruction with manual account keys (including ban_list required by deployed program)
+  const keys = [
+    { pubkey: curvePDA, isSigner: false, isWritable: true },
+    { pubkey: reserveVault, isSigner: false, isWritable: true },
+    { pubkey: creatorWallet, isSigner: true, isWritable: true },
+    { pubkey: configPDA, isSigner: false, isWritable: false },
+    { pubkey: banListPDA, isSigner: false, isWritable: false }, // Required by deployed program
+    { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
+  ];
+
+  const createCurveIx = new TransactionInstruction({
+    keys,
+    programId: CURVE_PROGRAM_ID,
+    data,
+  });
 
   // Create transaction
   const transaction = new Transaction().add(createCurveIx);
@@ -96,20 +143,13 @@ export async function buildCreateCurveTransaction(
 export async function curveExistsOnChain(twitterHandle: string): Promise<boolean> {
   try {
     const curvePDA = getCurvePDA(twitterHandle);
-    const provider = new AnchorProvider(
-      connection,
-      {} as any,
-      { commitment: 'confirmed' }
-    );
-    const program = new Program(IDL as any, CURVE_PROGRAM_ID, provider);
 
-    const curveAccount = await program.account.bondingCurve.fetch(curvePDA);
-    return !!curveAccount;
+    // Use simple getAccountInfo instead of Anchor to avoid IDL parsing issues
+    const accountInfo = await connection.getAccountInfo(curvePDA);
+
+    // If account exists and has data, curve exists
+    return accountInfo !== null && accountInfo.data.length > 0;
   } catch (error: any) {
-    // Account doesn't exist
-    if (error.message?.includes('Account does not exist')) {
-      return false;
-    }
     console.error('Error checking curve existence:', error);
     return false;
   }

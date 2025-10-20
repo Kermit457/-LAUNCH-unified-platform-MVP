@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   TrendingUp, TrendingDown, Rocket, Coins, Users2, MessageCircle, Activity,
-  Search, Filter, ArrowUpRight, ArrowDownRight, Gift, Zap, Clock
+  Search, Filter, ArrowUpRight, ArrowDownRight, Gift, Zap, Clock, Video, CheckCircle, XCircle
 } from 'lucide-react'
 import { NetWorthHero } from '@/components/dashboard/NetWorthHero'
 import { UnifiedCard } from '@/components/UnifiedCard'
@@ -14,7 +14,7 @@ import { InactiveCurveBanner } from '@/components/onboarding/InactiveCurveBanner
 import { useUser } from '@/hooks/useUser'
 // Removed mock data imports - using real blockchain data
 
-type TabId = 'holdings' | 'my-curves' | 'earnings' | 'collaborations' | 'messages' | 'network' | 'activity'
+type TabId = 'holdings' | 'my-curves' | 'earnings' | 'collaborations' | 'messages' | 'network' | 'activity' | 'submissions'
 
 export default function NetworkPage() {
   const [activeTab, setActiveTab] = useState<TabId>('holdings')
@@ -45,21 +45,21 @@ export default function NetworkPage() {
       label: 'Holdings',
       icon: TrendingUp,
       count: 0,
-      color: 'text-blue-400'
+      color: 'text-[#8800FF]' // Purple
     },
     {
       id: 'my-curves' as TabId,
       label: 'My Curves',
       icon: Rocket,
       count: isActivated ? 1 : 0, // User has 1 curve if activated
-      color: 'text-green-400'
+      color: 'text-[#00FF88]' // Green
     },
     {
       id: 'earnings' as TabId,
       label: 'Earnings',
       icon: Coins,
       value: '0 SOL',
-      color: 'text-orange-400'
+      color: 'text-[#FFD700]' // Yellow
     },
     {
       id: 'collaborations' as TabId,
@@ -67,7 +67,7 @@ export default function NetworkPage() {
       icon: Users2,
       count: 0,
       badge: 0,
-      color: 'text-purple-400'
+      color: 'text-[#0088FF]' // Blue
     },
     {
       id: 'messages' as TabId,
@@ -75,13 +75,21 @@ export default function NetworkPage() {
       icon: MessageCircle,
       count: 0,
       badge: false,
-      color: 'text-pink-400'
+      color: 'text-[#FF0040]' // Red
     },
     {
       id: 'activity' as TabId,
       label: 'Activity',
       icon: Activity,
-      color: 'text-cyan-400'
+      color: 'text-[#00FFFF]' // Cyan
+    },
+    {
+      id: 'submissions' as TabId,
+      label: 'Submissions',
+      icon: Video,
+      count: 0,
+      badge: 0, // Number of pending submissions
+      color: 'text-[#FF00FF]' // Magenta
     }
   ]
 
@@ -179,45 +187,63 @@ export default function NetworkPage() {
 
         {/* Tabs */}
         <div className="mb-6 flex flex-wrap gap-2">
-          {tabs.map((tab, index) => (
-            <motion.button
-              key={tab.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05 }}
-              onClick={() => setActiveTab(tab.id)}
-              className={`relative flex items-center gap-2 px-5 py-3 rounded-xl font-semibold transition-all ${
-                activeTab === tab.id
-                  ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg'
-                  : 'bg-zinc-900/60 text-zinc-400 hover:text-white border border-zinc-800 hover:border-purple-500/50'
-              }`}
-            >
-              <tab.icon className={`w-4 h-4 ${activeTab === tab.id ? 'text-white' : tab.color}`} />
-              <span>{tab.label}</span>
-              {tab.count !== undefined && (
-                <span className="text-xs opacity-75">({tab.count})</span>
-              )}
-              {tab.value && (
-                <span className="text-xs opacity-75">{tab.value}</span>
-              )}
-              {tab.badge && typeof tab.badge === 'number' && tab.badge > 0 && (
-                <motion.div
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                  className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-orange-500 flex items-center justify-center text-xs font-bold text-white"
-                >
-                  {tab.badge}
-                </motion.div>
-              )}
-              {tab.badge === true && (
-                <motion.div
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                  className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-red-500"
-                />
-              )}
-            </motion.button>
-          ))}
+          {tabs.map((tab, index) => {
+            // Get background color based on tab color when active
+            const getActiveClass = () => {
+              if (activeTab !== tab.id) return ''
+
+              switch(tab.id) {
+                case 'holdings': return 'bg-[#8800FF]/20 border-[#8800FF]'
+                case 'my-curves': return 'bg-[#00FF88]/20 border-[#00FF88]'
+                case 'earnings': return 'bg-[#FFD700]/20 border-[#FFD700]'
+                case 'collaborations': return 'bg-[#0088FF]/20 border-[#0088FF]'
+                case 'messages': return 'bg-[#FF0040]/20 border-[#FF0040]'
+                case 'activity': return 'bg-[#00FFFF]/20 border-[#00FFFF]'
+                case 'submissions': return 'bg-[#FF00FF]/20 border-[#FF00FF]'
+                default: return 'bg-zinc-800/50 border-zinc-700'
+              }
+            }
+
+            return (
+              <motion.button
+                key={tab.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05 }}
+                onClick={() => setActiveTab(tab.id)}
+                className={`relative flex items-center gap-2 px-5 py-3 rounded-xl font-semibold transition-all border-2 ${
+                  activeTab === tab.id
+                    ? `${getActiveClass()} text-white shadow-lg`
+                    : 'bg-zinc-900/60 text-white border-zinc-800 hover:border-zinc-700 hover:bg-zinc-800/60'
+                }`}
+              >
+                <tab.icon className={`w-4 h-4 ${activeTab === tab.id ? 'text-white' : tab.color}`} />
+                <span>{tab.label}</span>
+                {tab.count !== undefined && (
+                  <span className="text-xs opacity-75">({tab.count})</span>
+                )}
+                {tab.value && (
+                  <span className="text-xs opacity-75">{tab.value}</span>
+                )}
+                {tab.badge && typeof tab.badge === 'number' && tab.badge > 0 && (
+                  <motion.div
+                    animate={{ scale: [1, 1.2, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                    className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-orange-500 flex items-center justify-center text-xs font-bold text-white"
+                  >
+                    {tab.badge}
+                  </motion.div>
+                )}
+                {tab.badge === true && (
+                  <motion.div
+                    animate={{ scale: [1, 1.2, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                    className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-red-500"
+                  />
+                )}
+              </motion.button>
+            )
+          })}
         </div>
 
         {/* Tab Content */}
@@ -247,10 +273,10 @@ export default function NetworkPage() {
                     <button
                       key={sort}
                       onClick={() => setSortBy(sort)}
-                      className={`px-4 py-3 rounded-xl font-semibold text-sm transition-all ${
+                      className={`px-4 py-3 rounded-xl font-semibold text-sm transition-all border-2 ${
                         sortBy === sort
-                          ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
-                          : 'bg-zinc-900/60 text-zinc-400 hover:text-white border border-zinc-800'
+                          ? 'bg-[#FF00FF]/20 border-[#FF00FF] text-white'
+                          : 'bg-zinc-900/60 text-white border-zinc-800 hover:bg-zinc-800/60 hover:border-zinc-700'
                       }`}
                     >
                       {sort === 'value' && 'Value'}
@@ -307,7 +333,7 @@ export default function NetworkPage() {
                   </p>
                   <button
                     onClick={() => setShowActivationModal(true)}
-                    className="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold hover:opacity-90 transition-opacity"
+                    className="px-6 py-3 rounded-xl bg-[#00FF88] text-black font-bold hover:bg-[#00FF88]/90 transition-all"
                   >
                     Activate Now
                   </button>
@@ -418,6 +444,81 @@ export default function NetworkPage() {
                   Your trading activity and transactions will appear here
                 </p>
               </div>
+            </motion.div>
+          )}
+
+          {/* Submissions Tab */}
+          {activeTab === 'submissions' && (
+            <motion.div
+              key="submissions"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="space-y-6"
+            >
+              {/* Submissions Header */}
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h2 className="text-2xl font-bold text-white">Campaign Submissions</h2>
+                  <p className="text-zinc-400">Review and approve video submissions from creators</p>
+                </div>
+                <div className="flex gap-2">
+                  <button className="px-4 py-2 rounded-xl bg-zinc-900/60 border border-zinc-800 text-white text-sm font-semibold hover:border-zinc-700 transition-all">
+                    All
+                  </button>
+                  <button className="px-4 py-2 rounded-xl bg-zinc-900/60 border border-zinc-800 text-zinc-400 text-sm font-semibold hover:border-zinc-700 transition-all">
+                    Pending
+                  </button>
+                  <button className="px-4 py-2 rounded-xl bg-zinc-900/60 border border-zinc-800 text-zinc-400 text-sm font-semibold hover:border-zinc-700 transition-all">
+                    Approved
+                  </button>
+                  <button className="px-4 py-2 rounded-xl bg-zinc-900/60 border border-zinc-800 text-zinc-400 text-sm font-semibold hover:border-zinc-700 transition-all">
+                    Rejected
+                  </button>
+                </div>
+              </div>
+
+              {/* Empty State */}
+              <div className="text-center py-16">
+                <Video className="w-16 h-16 text-zinc-700 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-white mb-2">No Submissions Yet</h3>
+                <p className="text-zinc-400 mb-6">
+                  When creators submit videos for your campaigns, they'll appear here for review
+                </p>
+              </div>
+
+              {/* Example of what submissions will look like (commented for now) */}
+              {/* <div className="grid gap-4">
+                <div className="p-6 rounded-2xl bg-zinc-900/60 border border-zinc-800">
+                  <div className="flex gap-4">
+                    <div className="w-48 h-32 rounded-xl bg-zinc-800 flex items-center justify-center">
+                      <Video className="w-12 h-12 text-zinc-600" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-start justify-between mb-2">
+                        <div>
+                          <h4 className="text-lg font-bold text-white">Campaign Name</h4>
+                          <p className="text-sm text-zinc-400">By @username • 2 hours ago</p>
+                        </div>
+                        <span className="px-3 py-1 rounded-full bg-orange-500/20 text-orange-400 text-xs font-bold border border-orange-500/30">
+                          Pending Review
+                        </span>
+                      </div>
+                      <p className="text-zinc-300 mb-4">Video description goes here...</p>
+                      <div className="flex gap-3">
+                        <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-green-500/20 text-green-400 border border-green-500/30 font-semibold hover:bg-green-500/30 transition-all">
+                          <CheckCircle className="w-4 h-4" />
+                          Approve
+                        </button>
+                        <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-red-500/20 text-red-400 border border-red-500/30 font-semibold hover:bg-red-500/30 transition-all">
+                          <XCircle className="w-4 h-4" />
+                          Reject
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div> */}
             </motion.div>
           )}
         </AnimatePresence>

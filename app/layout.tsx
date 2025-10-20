@@ -10,10 +10,38 @@ import { WalletProvider } from '@/contexts/WalletContext'
 import { PrivyProviderWrapper } from '@/contexts/PrivyProviderWrapper'
 import { PrivySyncWrapper } from '@/components/PrivySyncWrapper'
 import { ReferralTracker } from '@/components/ReferralTracker'
+import { BRAND } from '@/lib/brand'
 
 export const metadata: Metadata = {
-  title: 'LaunchOS - The Engine of the Internet Capital Market',
-  description: 'Launch. Engage. Earn. The viral launchpad for builders, creators, and degens.',
+  title: `${BRAND.name} - ${BRAND.tagline}`,
+  description: BRAND.description,
+  icons: {
+    icon: [
+      {
+        url: BRAND.assets.favicon,
+        type: 'image/svg+xml',
+      },
+    ],
+  },
+  openGraph: {
+    title: `${BRAND.name} - ${BRAND.tagline}`,
+    description: BRAND.description,
+    images: [
+      {
+        url: BRAND.assets.ogImage,
+        width: 1200,
+        height: 630,
+        alt: BRAND.name,
+      },
+    ],
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: `${BRAND.name} - ${BRAND.tagline}`,
+    description: BRAND.description,
+    images: [BRAND.assets.ogImage],
+  },
 }
 
 export default function RootLayout({

@@ -24,8 +24,8 @@ import {
 } from '@/components/design-system';
 
 // Import new sections
-import { NetworkSection } from '@/app/design-test/sections/NetworkSection';
-import { LiveSection } from '@/app/design-test/sections/LiveSection';
+import { NetworkSection } from '@/components/landing/NetworkSection';
+import { LiveSection } from '@/components/landing/LiveSection';
 
 // Section navigation config
 const navigationSections = [

@@ -275,7 +275,7 @@ export default function CampaignDetailPage() {
   if (loading || !campaign) {
     return (
       <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FFD700]"></div>
       </div>
     )
   }
@@ -296,18 +296,18 @@ export default function CampaignDetailPage() {
           </button>
 
       {/* Hero Section */}
-      <div className="rounded-2xl bg-white/5 border border-white/10 p-6 mb-6 backdrop-blur-xl">
+      <div className="rounded-2xl bg-white/5 border-2 border-white/10 p-6 mb-6 backdrop-blur-xl">
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-2">
-              <div className="px-3 py-1 rounded-lg border bg-fuchsia-500/30 border-fuchsia-400/60 text-fuchsia-200 font-bold text-sm">
+              <div className="px-3 py-1 rounded-lg border-2 bg-[#FFD700]/10 border-[#FFD700]/30 text-[#FFD700] font-bold text-sm">
                 📹 Campaign
               </div>
-              <span className="px-3 py-1 bg-green-500/20 border border-green-500/40 rounded-lg text-sm font-bold text-green-400 uppercase">
+              <span className="px-3 py-1 bg-[#00FF88]/20 border-2 border-[#00FF88]/40 rounded-lg text-sm font-bold text-[#00FF88] uppercase">
                 Live
               </span>
             </div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent mb-2">{campaign.title}</h1>
+            <h1 className="text-3xl font-bold text-[#FFD700] mb-2">{campaign.title}</h1>
             <p className="text-zinc-400">{campaign.description}</p>
           </div>
 
@@ -321,19 +321,19 @@ export default function CampaignDetailPage() {
 
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-          <div className="rounded-xl bg-white/5 border border-white/10 p-3 backdrop-blur-xl">
+          <div className="rounded-xl bg-white/5 border-2 border-white/10 p-3 backdrop-blur-xl">
             <div className="text-xs text-zinc-500 mb-1 uppercase tracking-wide">Prize Pool</div>
-            <div className="text-xl font-bold text-fuchsia-400">${campaign.pool.toLocaleString()} USDC</div>
+            <div className="text-xl font-bold text-[#FFD700]">${campaign.pool.toLocaleString()} USDC</div>
           </div>
-          <div className="rounded-xl bg-white/5 border border-white/10 p-3 backdrop-blur-xl">
+          <div className="rounded-xl bg-white/5 border-2 border-white/10 p-3 backdrop-blur-xl">
             <div className="text-xs text-zinc-500 mb-1 uppercase tracking-wide">Rate</div>
-            <div className="text-xl font-bold text-emerald-400">${campaign.ratePerThousand}/1k views</div>
+            <div className="text-xl font-bold text-[#FFD700]">${campaign.ratePerThousand}/1k views</div>
           </div>
-          <div className="rounded-xl bg-white/5 border border-white/10 p-3 backdrop-blur-xl">
+          <div className="rounded-xl bg-white/5 border-2 border-white/10 p-3 backdrop-blur-xl">
             <div className="text-xs text-zinc-500 mb-1 uppercase tracking-wide">Creators</div>
-            <div className="text-xl font-bold text-cyan-400">{campaign.participants}</div>
+            <div className="text-xl font-bold text-[#FFD700]">{campaign.participants}</div>
           </div>
-          <div className="rounded-xl bg-white/5 border border-white/10 p-3 backdrop-blur-xl">
+          <div className="rounded-xl bg-white/5 border-2 border-white/10 p-3 backdrop-blur-xl">
             <div className="text-xs text-zinc-500 mb-1 uppercase tracking-wide">Views</div>
             <div className="text-xl font-bold text-white">{campaign.views}</div>
           </div>
@@ -347,7 +347,7 @@ export default function CampaignDetailPage() {
           </div>
           <div className="h-2 rounded-full bg-white/10 overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500"
+              className="h-full bg-[#FFD700]"
               style={{ width: `${progressPct}%` }}
             />
           </div>
@@ -357,15 +357,15 @@ export default function CampaignDetailPage() {
         {!hasJoined ? (
           <button
             onClick={() => setHasJoined(true)}
-            className="w-full h-12 rounded-xl bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 hover:from-fuchsia-600 hover:via-purple-600 hover:to-cyan-600 text-white font-bold inline-flex items-center justify-center gap-2 transition-all"
+            className="w-full h-12 rounded-xl bg-[#FFD700] hover:bg-[#FFD700]/90 text-black font-bold inline-flex items-center justify-center gap-2 transition-all"
           >
             <Video className="w-5 h-5" />
             Join Campaign
           </button>
         ) : (
-          <div className="p-4 rounded-xl bg-green-500/20 border border-green-500/40 text-center">
-            <p className="text-green-300 font-semibold">✓ You've joined this campaign!</p>
-            <p className="text-sm text-green-400/80 mt-1">Upload your clips below to start earning</p>
+          <div className="p-4 rounded-xl bg-[#00FF88]/20 border-2 border-[#00FF88]/40 text-center">
+            <p className="text-[#00FF88] font-semibold">✓ You've joined this campaign!</p>
+            <p className="text-sm text-zinc-400 mt-1">Upload your clips below to start earning</p>
           </div>
         )}
       </div>
@@ -391,14 +391,14 @@ export default function CampaignDetailPage() {
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
           {/* Campaign Rules */}
-          <div className="rounded-2xl bg-white/5 border border-white/10 p-6 backdrop-blur-xl">
-            <h2 className="text-xl font-bold bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent mb-4">Campaign Rules</h2>
+          <div className="rounded-2xl bg-white/5 border-2 border-white/10 p-6 backdrop-blur-xl">
+            <h2 className="text-xl font-bold text-[#FFD700] mb-4">Campaign Rules</h2>
             <div className="space-y-4">
               <div>
                 <div className="text-sm text-zinc-500 mb-2 uppercase tracking-wide">Platforms</div>
                 <div className="flex flex-wrap gap-2">
                   {campaign.rules.platforms.map((platform: string, i: number) => (
-                    <span key={i} className="px-3 py-1 rounded-lg bg-fuchsia-500/20 border border-fuchsia-500/40 text-fuchsia-300 text-sm font-medium capitalize">
+                    <span key={i} className="px-3 py-1 rounded-lg bg-[#FFD700]/10 border-2 border-[#FFD700]/30 text-[#FFD700] text-sm font-bold capitalize">
                       {platform}
                     </span>
                   ))}
@@ -414,16 +414,16 @@ export default function CampaignDetailPage() {
               </div>
               <div>
                 <div className="text-sm text-zinc-500 mb-2 uppercase tracking-wide">Payout</div>
-                <span className="text-emerald-400 font-semibold">${campaign.ratePerThousand} USDC per 1,000 verified views</span>
+                <span className="text-[#FFD700] font-bold">${campaign.ratePerThousand} USDC per 1,000 verified views</span>
               </div>
             </div>
           </div>
 
           {/* Upload Clip (only if joined) */}
           {hasJoined && (
-            <div className="rounded-2xl bg-white/5 border border-white/10 p-6 backdrop-blur-xl">
-              <h2 className="text-xl font-bold bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent mb-4 flex items-center gap-2">
-                <Upload className="w-5 h-5 text-fuchsia-400" />
+            <div className="rounded-2xl bg-white/5 border-2 border-white/10 p-6 backdrop-blur-xl">
+              <h2 className="text-xl font-bold text-[#FFD700] mb-4 flex items-center gap-2">
+                <Upload className="w-5 h-5 text-[#FFD700]" />
                 Submit Your Clip
               </h2>
               <div className="space-y-4">
@@ -434,7 +434,7 @@ export default function CampaignDetailPage() {
                   <select
                     value={platform}
                     onChange={(e) => setPlatform(e.target.value)}
-                    className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
+                    className="w-full h-12 px-4 rounded-xl bg-white/5 border-2 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-[#FFD700]/50"
                   >
                     <option value="">Select platform</option>
                     {campaign.rules.platforms.map((p: string) => (
@@ -451,7 +451,7 @@ export default function CampaignDetailPage() {
                     value={videoUrl}
                     onChange={(e) => setVideoUrl(e.target.value)}
                     placeholder="https://youtube.com/watch?v=..."
-                    className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
+                    className="w-full h-12 px-4 rounded-xl bg-white/5 border-2 border-white/10 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#FFD700]/50"
                   />
                   <p className="mt-1 text-xs text-zinc-500">Link to your published video</p>
                 </div>
@@ -464,21 +464,21 @@ export default function CampaignDetailPage() {
                     onChange={(e) => setDescription(e.target.value)}
                     rows={3}
                     placeholder="Tell us about your clip..."
-                    className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80 resize-none"
+                    className="w-full px-4 py-3 rounded-xl bg-white/5 border-2 border-white/10 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#FFD700]/50 resize-none"
                   />
                 </div>
 
                 {/* Success Message */}
                 {submitSuccess && (
-                  <div className="p-4 rounded-xl bg-green-500/20 border border-green-500/40">
-                    <p className="text-green-300 font-semibold">✓ Submission created successfully!</p>
-                    <p className="text-sm text-green-400/80 mt-1">Your clip is pending review</p>
+                  <div className="p-4 rounded-xl bg-[#00FF88]/20 border-2 border-[#00FF88]/40">
+                    <p className="text-[#00FF88] font-semibold">✓ Submission created successfully!</p>
+                    <p className="text-sm text-zinc-400 mt-1">Your clip is pending review</p>
                   </div>
                 )}
 
                 {/* Error Message */}
                 {submitError && (
-                  <div className="p-4 rounded-xl bg-red-500/20 border border-red-500/40">
+                  <div className="p-4 rounded-xl bg-red-500/20 border-2 border-red-500/40">
                     <p className="text-red-300 font-semibold">{submitError}</p>
                   </div>
                 )}
@@ -486,7 +486,7 @@ export default function CampaignDetailPage() {
                 <button
                   onClick={handleSubmit}
                   disabled={submitting}
-                  className="w-full h-12 rounded-xl bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 hover:from-fuchsia-600 hover:via-purple-600 hover:to-cyan-600 text-white font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full h-12 rounded-xl bg-[#FFD700] hover:bg-[#FFD700]/90 text-black font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {submitting ? 'Submitting...' : 'Submit Clip'}
                 </button>
@@ -495,9 +495,9 @@ export default function CampaignDetailPage() {
           )}
 
           {/* Top Clips */}
-          <div className="rounded-2xl bg-white/5 border border-white/10 p-6 backdrop-blur-xl">
-            <h2 className="text-xl font-bold bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent mb-4 flex items-center gap-2">
-              <Eye className="w-5 h-5 text-fuchsia-400" />
+          <div className="rounded-2xl bg-white/5 border-2 border-white/10 p-6 backdrop-blur-xl">
+            <h2 className="text-xl font-bold text-[#FFD700] mb-4 flex items-center gap-2">
+              <Eye className="w-5 h-5 text-[#FFD700]" />
               Top Performing Clips
             </h2>
             <div className="space-y-3">
@@ -510,7 +510,7 @@ export default function CampaignDetailPage() {
                       <div className="text-sm text-zinc-400">{example.views.toLocaleString()} views</div>
                     </div>
                   </div>
-                  <div className="text-emerald-400 font-bold">${example.earned}</div>
+                  <div className="text-[#FFD700] font-bold">${example.earned}</div>
                 </div>
               ))}
             </div>
@@ -518,10 +518,10 @@ export default function CampaignDetailPage() {
 
           {/* Submissions Review Section */}
           {submissions.length > 0 && (
-            <div className="rounded-2xl bg-white/5 border border-white/10 p-6 backdrop-blur-xl">
+            <div className="rounded-2xl bg-white/5 border-2 border-white/10 p-6 backdrop-blur-xl">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent flex items-center gap-2">
-                  <FileCheck className="w-5 h-5 text-fuchsia-400" />
+                <h2 className="text-xl font-bold text-[#FFD700] flex items-center gap-2">
+                  <FileCheck className="w-5 h-5 text-[#FFD700]" />
                   Submissions ({submissions.length})
                 </h2>
               </div>
@@ -532,9 +532,9 @@ export default function CampaignDetailPage() {
                   <button
                     key={tab}
                     onClick={() => setSubmissionsTab(tab)}
-                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                    className={`px-3 py-1.5 rounded-lg text-sm font-bold transition-all ${
                       submissionsTab === tab
-                        ? 'bg-fuchsia-500/20 text-fuchsia-300 border border-fuchsia-500/40'
+                        ? 'bg-[#FFD700]/20 text-[#FFD700] border-2 border-[#FFD700]/40'
                         : 'bg-white/5 text-zinc-400 hover:text-white border border-white/10'
                     }`}
                   >
@@ -580,9 +580,9 @@ export default function CampaignDetailPage() {
         {/* Sidebar */}
         <div className="space-y-6">
           {/* Payout Info */}
-          <div className="rounded-2xl bg-white/5 border border-white/10 p-6 backdrop-blur-xl">
-            <h2 className="text-xl font-bold bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent mb-4 flex items-center gap-2">
-              <DollarSign className="w-5 h-5 text-emerald-400" />
+          <div className="rounded-2xl bg-white/5 border-2 border-white/10 p-6 backdrop-blur-xl">
+            <h2 className="text-xl font-bold text-[#FFD700] mb-4 flex items-center gap-2">
+              <DollarSign className="w-5 h-5 text-[#FFD700]" />
               Earnings
             </h2>
             <div className="space-y-3">
@@ -592,35 +592,35 @@ export default function CampaignDetailPage() {
               </div>
               <div>
                 <div className="text-sm text-zinc-500 mb-1 uppercase tracking-wide">Token</div>
-                <div className="px-3 py-1 rounded-lg bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-sm font-semibold inline-block">
+                <div className="px-3 py-1 rounded-lg bg-[#FFD700]/10 border-2 border-[#FFD700]/30 text-[#FFD700] text-sm font-bold inline-block">
                   USDC
                 </div>
               </div>
               <div className="pt-3 border-t border-white/10">
                 <div className="text-sm text-zinc-500 mb-1 uppercase tracking-wide">Example</div>
                 <div className="text-xs text-zinc-400">
-                  10,000 views = <span className="text-emerald-400 font-semibold">${campaign.ratePerThousand * 10} USDC</span>
+                  10,000 views = <span className="text-[#FFD700] font-bold">${campaign.ratePerThousand * 10} USDC</span>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Timeline */}
-          <div className="rounded-2xl bg-white/5 border border-white/10 p-6 backdrop-blur-xl">
-            <h2 className="text-xl font-bold bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent mb-4 flex items-center gap-2">
-              <Clock className="w-5 h-5 text-orange-400" />
+          <div className="rounded-2xl bg-white/5 border-2 border-white/10 p-6 backdrop-blur-xl">
+            <h2 className="text-xl font-bold text-[#FFD700] mb-4 flex items-center gap-2">
+              <Clock className="w-5 h-5 text-[#FFD700]" />
               Timeline
             </h2>
-            <div className="flex items-center gap-2 text-orange-300">
+            <div className="flex items-center gap-2 text-[#FFD700]">
               <Clock className="w-4 h-4" />
               <span className="font-semibold">{campaign.duration}</span>
             </div>
           </div>
 
           {/* Assets & Links */}
-          <div className="rounded-2xl bg-white/5 border border-white/10 p-6 backdrop-blur-xl">
-            <h2 className="text-xl font-bold bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent mb-4 flex items-center gap-2">
-              <Package className="w-5 h-5 text-purple-400" />
+          <div className="rounded-2xl bg-white/5 border-2 border-white/10 p-6 backdrop-blur-xl">
+            <h2 className="text-xl font-bold text-[#FFD700] mb-4 flex items-center gap-2">
+              <Package className="w-5 h-5 text-[#FFD700]" />
               Assets & Links
             </h2>
             <div className="space-y-3">
@@ -653,11 +653,11 @@ export default function CampaignDetailPage() {
                     href={campaign.driveLink}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex items-center gap-2 p-3 rounded-lg bg-purple-500/10 border border-purple-500/30 hover:bg-purple-500/20 transition-colors group"
+                    className="flex items-center gap-2 p-3 rounded-lg bg-[#FFD700]/10 border-2 border-[#FFD700]/30 hover:bg-[#FFD700]/20 transition-colors group"
                   >
-                    <Package className="w-5 h-5 text-purple-400" />
+                    <Package className="w-5 h-5 text-[#FFD700]" />
                     <div className="flex-1">
-                      <div className="text-sm font-semibold text-purple-300 group-hover:text-purple-200">
+                      <div className="text-sm font-semibold text-[#FFD700]">
                         Download Creator Kit
                       </div>
                       <div className="text-xs text-zinc-500">
@@ -671,9 +671,9 @@ export default function CampaignDetailPage() {
           </div>
 
           {/* Leaderboard */}
-          <div className="rounded-2xl bg-white/5 border border-white/10 p-6 backdrop-blur-xl">
-            <h2 className="text-xl font-bold bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent mb-4 flex items-center gap-2">
-              <Users className="w-5 h-5 text-cyan-400" />
+          <div className="rounded-2xl bg-white/5 border-2 border-white/10 p-6 backdrop-blur-xl">
+            <h2 className="text-xl font-bold text-[#FFD700] mb-4 flex items-center gap-2">
+              <Users className="w-5 h-5 text-[#FFD700]" />
               Top Creators
             </h2>
             <div className="space-y-2">
@@ -683,7 +683,7 @@ export default function CampaignDetailPage() {
                     <span className="text-zinc-400 text-sm">#{i + 1}</span>
                     <span className="text-white text-sm">{creator.creator}</span>
                   </div>
-                  <span className="text-emerald-400 text-sm font-semibold">${creator.earned}</span>
+                  <span className="text-[#FFD700] text-sm font-semibold">${creator.earned}</span>
                 </div>
               ))}
             </div>

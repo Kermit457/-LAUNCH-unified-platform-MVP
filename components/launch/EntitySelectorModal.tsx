@@ -16,12 +16,12 @@ interface EntitySelectorModalProps {
   onClose: () => void
   onSelect: (entity: EntityOption) => void
   onCreateNewProject?: () => void
-  userProfile: {
+  userProfile?: {
     id: string
     name: string
     username?: string
     avatar?: string
-  }
+  } | null
   projects: Array<{
     id: string
     title: string
@@ -41,6 +41,17 @@ export function EntitySelectorModal({
   const [hoveredId, setHoveredId] = useState<string | null>(null)
 
   if (!isOpen) return null
+
+  // Handle missing userProfile
+  if (!userProfile) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+        <div className="bg-design-zinc-900 rounded-2xl p-6 max-w-md w-full mx-4 border border-design-zinc-800">
+          <p className="text-white text-center">Loading profile...</p>
+        </div>
+      </div>
+    )
+  }
 
   const handleSelectUser = () => {
     onSelect({

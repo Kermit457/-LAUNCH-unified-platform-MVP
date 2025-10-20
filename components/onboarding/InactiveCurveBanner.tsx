@@ -70,7 +70,7 @@ export function InactiveCurveBanner({
               {/* CTA Button */}
               <button
                 onClick={onActivate}
-                className="flex-shrink-0 px-6 py-3 rounded-xl bg-gradient-to-r from-green-500 to-emerald-500 text-white font-bold hover:shadow-lg hover:shadow-green-500/30 transition-all flex items-center gap-2"
+                className="flex-shrink-0 px-6 py-3 rounded-xl bg-[#0088FF] text-white font-bold hover:bg-[#0088FF]/90 transition-all flex items-center gap-2"
               >
                 Buy Keys
                 <ArrowRight className="w-4 h-4" />
@@ -88,7 +88,7 @@ export function InactiveCurveBanner({
                   initial={{ width: 0 }}
                   animate={{ width: `${progress}%` }}
                   transition={{ duration: 0.8 }}
-                  className="h-full bg-gradient-to-r from-green-500 to-emerald-500"
+                  className="h-full bg-[#0088FF]"
                 />
               </div>
             </div>
@@ -141,7 +141,7 @@ export function InactiveCurveBannerCompact({
             </p>
             <div className="h-1 bg-zinc-800 rounded-full overflow-hidden mt-1">
               <div
-                className="h-full bg-gradient-to-r from-green-500 to-emerald-500"
+                className="h-full bg-[#0088FF]"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -149,7 +149,7 @@ export function InactiveCurveBannerCompact({
         </div>
         <button
           onClick={onActivate}
-          className="px-4 py-2 rounded-lg bg-gradient-to-r from-green-500 to-emerald-500 text-white text-sm font-bold hover:shadow-lg transition-all flex-shrink-0"
+          className="px-4 py-2 rounded-lg bg-[#0088FF] text-white text-sm font-bold hover:bg-[#0088FF]/90 transition-all flex-shrink-0"
         >
           Buy Keys
         </button>

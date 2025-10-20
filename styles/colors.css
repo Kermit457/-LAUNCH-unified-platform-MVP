@@ -1,0 +1,160 @@
+/**
+ * ICM Motion Color Palette
+ * Design System Colors - 2025
+ */
+
+:root {
+  /* ============================================
+     PRIMARY COLORS
+     ============================================ */
+
+  /* Cyan - Primary brand color, highlights */
+  --primary-cyan: #00FFFF;
+  --primary-cyan-rgb: 0, 255, 255;
+
+  /* Green - Success states, positive actions */
+  --primary-green: #00FF88;
+  --primary-green-rgb: 0, 255, 136;
+
+  /* Yellow - Attention, warnings, energy */
+  --primary-yellow: #FFD700;
+  --primary-yellow-rgb: 255, 215, 0;
+
+  /* ============================================
+     ACCENT COLORS
+     ============================================ */
+
+  /* Red - Errors, urgent actions */
+  --accent-red: #FF0040;
+  --accent-red-rgb: 255, 0, 64;
+
+  /* Orange - Secondary highlights */
+  --accent-orange: #FF8800;
+  --accent-orange-rgb: 255, 136, 0;
+
+  /* Blue - Links, information */
+  --accent-blue: #0088FF;
+  --accent-blue-rgb: 0, 136, 255;
+
+  /* Purple - Premium features */
+  --accent-purple: #8800FF;
+  --accent-purple-rgb: 136, 0, 255;
+
+  /* ============================================
+     GRADIENT COMBINATIONS
+     ============================================ */
+
+  /* Primary Gradients */
+  --gradient-cyan-green: linear-gradient(135deg, #00FFFF, #00FF88);
+  --gradient-green-yellow: linear-gradient(135deg, #00FF88, #FFD700);
+  --gradient-cyan-yellow: linear-gradient(135deg, #00FFFF, #FFD700);
+
+  /* Accent Gradients */
+  --gradient-red-orange: linear-gradient(135deg, #FF0040, #FF8800);
+  --gradient-orange-yellow: linear-gradient(135deg, #FF8800, #FFD700);
+  --gradient-blue-cyan: linear-gradient(135deg, #0088FF, #00FFFF);
+  --gradient-purple-blue: linear-gradient(135deg, #8800FF, #0088FF);
+  --gradient-purple-pink: linear-gradient(135deg, #8800FF, #FF0040);
+
+  /* Rainbow Gradient */
+  --gradient-rainbow: linear-gradient(135deg, #00FFFF, #00FF88, #FFD700, #FF8800, #FF0040);
+
+  /* Premium Gradient (Cyan to Purple) */
+  --gradient-premium: linear-gradient(135deg, #00FFFF, #8800FF);
+
+  /* ============================================
+     CONTEXTUAL COLORS
+     ============================================ */
+
+  /* Success (Green) */
+  --color-success: var(--primary-green);
+  --color-success-bg: rgba(0, 255, 136, 0.1);
+  --color-success-border: rgba(0, 255, 136, 0.3);
+
+  /* Warning (Yellow) */
+  --color-warning: var(--primary-yellow);
+  --color-warning-bg: rgba(255, 215, 0, 0.1);
+  --color-warning-border: rgba(255, 215, 0, 0.3);
+
+  /* Error (Red) */
+  --color-error: var(--accent-red);
+  --color-error-bg: rgba(255, 0, 64, 0.1);
+  --color-error-border: rgba(255, 0, 64, 0.3);
+
+  /* Info (Blue) */
+  --color-info: var(--accent-blue);
+  --color-info-bg: rgba(0, 136, 255, 0.1);
+  --color-info-border: rgba(0, 136, 255, 0.3);
+
+  /* Premium (Purple) */
+  --color-premium: var(--accent-purple);
+  --color-premium-bg: rgba(136, 0, 255, 0.1);
+  --color-premium-border: rgba(136, 0, 255, 0.3);
+
+  /* ============================================
+     TAILWIND COMPATIBILITY
+     ============================================ */
+
+  /* Map to Tailwind custom colors */
+  --tw-primary-cyan: #00FFFF;
+  --tw-primary-green: #00FF88;
+  --tw-primary-yellow: #FFD700;
+  --tw-accent-red: #FF0040;
+  --tw-accent-orange: #FF8800;
+  --tw-accent-blue: #0088FF;
+  --tw-accent-purple: #8800FF;
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+
+.text-primary-cyan { color: var(--primary-cyan); }
+.text-primary-green { color: var(--primary-green); }
+.text-primary-yellow { color: var(--primary-yellow); }
+.text-accent-red { color: var(--accent-red); }
+.text-accent-orange { color: var(--accent-orange); }
+.text-accent-blue { color: var(--accent-blue); }
+.text-accent-purple { color: var(--accent-purple); }
+
+.bg-primary-cyan { background-color: var(--primary-cyan); }
+.bg-primary-green { background-color: var(--primary-green); }
+.bg-primary-yellow { background-color: var(--primary-yellow); }
+.bg-accent-red { background-color: var(--accent-red); }
+.bg-accent-orange { background-color: var(--accent-orange); }
+.bg-accent-blue { background-color: var(--accent-blue); }
+.bg-accent-purple { background-color: var(--accent-purple); }
+
+/* Gradient backgrounds */
+.bg-gradient-cyan-green { background: var(--gradient-cyan-green); }
+.bg-gradient-green-yellow { background: var(--gradient-green-yellow); }
+.bg-gradient-cyan-yellow { background: var(--gradient-cyan-yellow); }
+.bg-gradient-red-orange { background: var(--gradient-red-orange); }
+.bg-gradient-orange-yellow { background: var(--gradient-orange-yellow); }
+.bg-gradient-blue-cyan { background: var(--gradient-blue-cyan); }
+.bg-gradient-purple-blue { background: var(--gradient-purple-blue); }
+.bg-gradient-purple-pink { background: var(--gradient-purple-pink); }
+.bg-gradient-rainbow { background: var(--gradient-rainbow); }
+.bg-gradient-premium { background: var(--gradient-premium); }
+
+/* Gradient text */
+.text-gradient-cyan-green {
+  background: var(--gradient-cyan-green);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-premium {
+  background: var(--gradient-premium);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-rainbow {
+  background: var(--gradient-rainbow);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

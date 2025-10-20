@@ -11,18 +11,33 @@ const config: Config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
-        // LaunchOS Design System v2.0
+
+        // ICM Motion Color Palette 2025
+        primary: {
+          cyan: '#00FFFF',
+          green: '#00FF88',
+          yellow: '#FFD700',
+        },
+        accent: {
+          red: '#FF0040',
+          orange: '#FF8800',
+          blue: '#0088FF',
+          purple: '#8800FF',
+        },
+
+        // Base colors
         base: {
           black: '#0a0a0c',
           darker: '#0f0f12',
           dark: '#18181b',
           card: '#1a1a1f',
         },
-        // Legacy brand colors (keeping for compatibility)
+
+        // Legacy (keeping for compatibility)
         'launchos-fuchsia': '#E700FF',
         'launchos-violet': '#5A00FF',
         'launchos-cyan': '#00F0FF',
-        // New Design System Colors
+
         'design': {
           violet: {
             400: '#a78bfa',
@@ -51,6 +66,19 @@ const config: Config = {
         body: ['Inter Tight', 'Inter', 'sans-serif'],
       },
       backgroundImage: {
+        // ICM Motion Gradients
+        'gradient-cyan-green': 'linear-gradient(135deg, #00FFFF, #00FF88)',
+        'gradient-green-yellow': 'linear-gradient(135deg, #00FF88, #FFD700)',
+        'gradient-cyan-yellow': 'linear-gradient(135deg, #00FFFF, #FFD700)',
+        'gradient-red-orange': 'linear-gradient(135deg, #FF0040, #FF8800)',
+        'gradient-orange-yellow': 'linear-gradient(135deg, #FF8800, #FFD700)',
+        'gradient-blue-cyan': 'linear-gradient(135deg, #0088FF, #00FFFF)',
+        'gradient-purple-blue': 'linear-gradient(135deg, #8800FF, #0088FF)',
+        'gradient-purple-pink': 'linear-gradient(135deg, #8800FF, #FF0040)',
+        'gradient-rainbow': 'linear-gradient(135deg, #00FFFF, #00FF88, #FFD700, #FF8800, #FF0040)',
+        'gradient-premium': 'linear-gradient(135deg, #00FFFF, #8800FF)',
+
+        // Legacy (keeping for compatibility)
         'gradient-primary': 'linear-gradient(135deg, #E700FF 0%, #5A00FF 100%)',
         'gradient-accent': 'linear-gradient(135deg, #5A00FF 0%, #00F0FF 100%)',
         'gradient-full': 'linear-gradient(135deg, #E700FF 0%, #5A00FF 50%, #00F0FF 100%)',

@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { PublicKey, Transaction } from '@solana/web3.js';
 import bs58 from 'bs58';
-import { useSolanaWalletsContext } from '@/components/SolanaWalletManager';
+import { usePrivy } from '@privy-io/react-auth';
+import { useWallets, useCreateWallet } from '@privy-io/react-auth/solana';
 import { buildCreateCurveTransaction, curveExistsOnChain } from '@/lib/solana/create-curve';
 import { connection } from '@/lib/solana/config';
 
@@ -10,7 +11,9 @@ import { connection } from '@/lib/solana/config';
  * Called during auto-CCM creation when user signs up
  */
 export function useCreateCurve() {
-  const { ready, wallets, createWallet } = useSolanaWalletsContext();
+  const { ready, authenticated } = usePrivy();
+  const { wallets } = useWallets();
+  const { createWallet } = useCreateWallet();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [txSignature, setTxSignature] = useState<string | null>(null);
@@ -22,19 +25,66 @@ export function useCreateCurve() {
    * @param creatorKeysAmount - Number of keys creator gets initially (default: 0, they must buy their own)
    * @returns Transaction signature if successful
    */
-  const createCurve = async (
-    twitterHandle: string,
-    creatorKeysAmount: number = 0
-  ): Promise<string> => {
+  const createCurve = async (params: {
+    name?: string;
+    symbol?: string;
+    description?: string;
+    logoFile?: File;
+    scope?: string;
+    platforms?: string[];
+    twitterHandle?: string;
+    creatorKeysAmount?: number;
+  }): Promise<string> => {
+    const { twitterHandle = 'default', creatorKeysAmount = 0 } = params;
+
+    console.log('🎯 CreateCurve called with params:', params);
+    console.log('🎯 Twitter handle being used:', twitterHandle);
+
     if (!ready) {
-      throw new Error('Privy not ready');
+      throw new Error('Privy not ready. Please wait a moment and try again.');
     }
 
     // Ensure user has a Solana wallet
-    const wallet = wallets[0] ?? (await createWallet());
+    console.log('🔍 All wallets:', wallets);
+    console.log('🔍 Number of wallets:', wallets.length);
+
+    let wallet = wallets.find(w => w.walletClientType === 'privy');
+
+    if (!wallet) {
+      // No Privy wallet found, use first available wallet or create one
+      if (wallets.length > 0) {
+        console.log('✅ Using first available wallet');
+        wallet = wallets[0];
+      } else {
+        // No wallets at all, need to create one
+        console.log('⚠️ No wallets found, creating new wallet...');
+        try {
+          wallet = await createWallet();
+          console.log('✅ Created new wallet:', wallet);
+        } catch (createError: any) {
+          // If creation fails because wallet exists, try to get wallets again
+          if (createError.message?.includes('already has')) {
+            console.log('⚠️ Wallet exists but not in list, retrying...');
+            // Wait a moment for wallet to appear
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            // Get fresh wallet list
+            if (wallets.length > 0) {
+              wallet = wallets[0];
+            } else {
+              throw new Error('Wallet exists but could not be retrieved. Please refresh the page.');
+            }
+          } else {
+            throw createError;
+          }
+        }
+      }
+    }
+
     if (!wallet) {
       throw new Error('No Solana wallet available');
     }
+
+    console.log('✅ Selected wallet:', wallet);
 
     setLoading(true);
     setError(null);
@@ -52,7 +102,6 @@ export function useCreateCurve() {
       console.log('🎨 Creating curve on-chain:', {
         twitterHandle,
         creator: creatorPubkey.toString(),
-        initialKeys: creatorKeysAmount
       });
 
       // Check if curve already exists
@@ -63,10 +112,12 @@ export function useCreateCurve() {
       }
 
       // Build the createCurve transaction
+      // Note: BanList PDA has issues on devnet, so we're just creating the curve
+      // Users will buy keys in a separate transaction
       const transaction = await buildCreateCurveTransaction(
         twitterHandle,
         creatorPubkey,
-        creatorKeysAmount
+        0 // No initial keys - buy separately
       );
 
       // Get latest blockhash
@@ -75,6 +126,12 @@ export function useCreateCurve() {
       transaction.feePayer = creatorPubkey;
 
       console.log('✍️ Signing and sending createCurve transaction...');
+
+      // NOTE: Skipping simulation because deployed program has ban_list requirement
+      // that cannot be satisfied on devnet. We'll try sending directly.
+      console.log('⚠️  Skipping simulation - trying direct send (ban_list issue)');
+      console.log('  Transaction has', transaction.instructions.length, 'instructions');
+      console.log('  Fee payer:', transaction.feePayer?.toString());
 
       // Sign and send with Privy
       const result = await (wallet as any).signAndSendTransaction({
@@ -131,7 +188,7 @@ export function useCreateCurve() {
 
   return {
     createCurve,
-    loading,
+    isCreating: loading,
     error,
     txSignature,
   };

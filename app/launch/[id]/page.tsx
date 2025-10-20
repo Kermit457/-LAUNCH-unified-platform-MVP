@@ -6,6 +6,7 @@ import { LaunchHeaderCompact } from '@/components/launch/LaunchHeaderCompact'
 import { ChartTabs } from '@/components/launch/ChartTabs'
 import { TokenStatsCompact } from '@/components/launch/TokenStatsCompact'
 import { AboutCollapse } from '@/components/launch/AboutCollapse'
+import { TradingPanel } from '@/components/trading/TradingPanel'
 import { useState, useEffect } from 'react'
 import { useTokenData } from '@/lib/tokenData'
 import { generateMockCandles, generateMockActivity } from '@/lib/mockChartData'
@@ -329,15 +330,29 @@ export default function LaunchDetailPage() {
           </Card>
         )}
 
-        {/* CHART TABS - Only for LIVE tokens with dexPairId */}
-        {launch.status === "LIVE" && launch.dexPairId && (
-          <ChartTabs
-            pairId={launch.dexPairId}
-            candles={chartData.candles}
-            activity={chartData.activity}
-            className="mb-4"
-          />
-        )}
+        {/* CHART + TRADING PANEL - Two Column Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
+          {/* Chart - Takes 2 columns on desktop */}
+          <div className="lg:col-span-2">
+            {launch.status === "LIVE" && launch.dexPairId && (
+              <ChartTabs
+                pairId={launch.dexPairId}
+                candles={chartData.candles}
+                activity={chartData.activity}
+              />
+            )}
+          </div>
+
+          {/* Trading Panel - Takes 1 column on desktop */}
+          <div className="lg:col-span-1">
+            <TradingPanel
+              curveId={launchId}
+              currentPrice={0.0001234}
+              userBalance={1250.50}
+              symbol={launch.mint || launch.title}
+            />
+          </div>
+        </div>
 
         {/* TOKEN STATS GRID - Compact Cards */}
         {isICM && launch.mint && hasTokenData && !tokenLoading && (

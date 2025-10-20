@@ -51,17 +51,23 @@ function generateMetrics(
 
   const mult = baseMultiplier * typeMultiplier
 
+  // Use deterministic values based on ageHours to avoid hydration mismatches
+  const seed = ageHours % 100
+
+  // Use a fixed base timestamp instead of Date.now() to avoid server/client mismatches
+  const BASE_TIMESTAMP = 1734595200000 // Fixed timestamp: 2024-12-19
+
   return {
     graduationPercent: Math.min(98, (ageHours / 72) * 100 * (mult / 10)),
     marketCap: Math.floor((10000 + ageHours * 500) * mult),
     volume24h: Math.floor((2000 + ageHours * 100) * mult),
     txCount24h: Math.floor((50 + ageHours * 10) * mult),
-    createdAt: Date.now() - ageHours * 60 * 60 * 1000,
-    top10HoldersPct: Math.min(95, 40 + Math.random() * 30),
-    creatorHeldPct: Math.min(40, 10 + Math.random() * 20),
-    snipersPct: Math.min(30, 5 + Math.random() * 15),
-    telegram: Math.random() > 0.5 ? 'https://t.me/example' : undefined,
-    website: Math.random() > 0.3 ? 'https://example.com' : undefined,
+    createdAt: BASE_TIMESTAMP - ageHours * 60 * 60 * 1000,
+    top10HoldersPct: Math.min(95, 40 + (seed % 30)),
+    creatorHeldPct: Math.min(40, 10 + (seed % 20)),
+    snipersPct: Math.min(30, 5 + (seed % 15)),
+    telegram: seed > 50 ? 'https://t.me/example' : undefined,
+    website: seed > 30 ? 'https://example.com' : undefined,
   }
 }
 

@@ -66,19 +66,19 @@ export function CounterCard({ value, label, prefix = '', suffix = '', icon }: Co
   return (
     <div
       ref={ref}
-      className="relative rounded-2xl bg-white/5 border border-white/10 p-6 backdrop-blur-xl hover:border-fuchsia-500/50 transition-all group"
+      className="relative rounded-2xl bg-white/5 border border-white/10 p-6 backdrop-blur-xl hover:border-[#00FFFF]/50 transition-all group"
     >
       {/* Glow effect */}
-      <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-fuchsia-500/0 via-purple-500/0 to-cyan-500/0 group-hover:from-fuchsia-500/10 group-hover:via-purple-500/10 group-hover:to-cyan-500/10 transition-all" />
+      <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-[#00FFFF]/0 via-[#00FF88]/0 to-[#FFD700]/0 group-hover:from-[#00FFFF]/10 group-hover:via-[#00FF88]/10 group-hover:to-[#FFD700]/10 transition-all" />
 
       <div className="relative">
         {/* Icon */}
-        <div className="mb-4 text-fuchsia-400">
+        <div className="mb-4 text-[#00FFFF]">
           {icon}
         </div>
 
         {/* Counter */}
-        <div className="text-4xl font-bold bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent mb-2">
+        <div className="text-4xl font-bold bg-gradient-to-r from-[#00FFFF] via-[#00FF88] to-[#FFD700] bg-clip-text text-transparent mb-2" suppressHydrationWarning>
           {prefix}{formatNumber(count)}{suffix}
         </div>
 
@@ -88,7 +88,7 @@ export function CounterCard({ value, label, prefix = '', suffix = '', icon }: Co
         </div>
 
         {/* Pulse indicator */}
-        <div className="absolute -top-2 -right-2 w-3 h-3 bg-emerald-400 rounded-full animate-pulse" />
+        <div className="absolute -top-2 -right-2 w-3 h-3 bg-[#00FF88] rounded-full animate-pulse" />
       </div>
     </div>
   )

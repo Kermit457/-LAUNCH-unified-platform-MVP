@@ -64,28 +64,28 @@ function TableRow({
   const [hasVoted, setHasVoted] = useState(listing.hasVoted || false)
   const [upvotes, setUpvotes] = useState(listing.upvotes)
 
-  // Type-based styling
+  // Type-based styling - ICM Motion Color Palette
   const typeColors = {
     icm: {
-      bg: 'from-green-500/10 to-emerald-500/5',
-      border: 'border-green-500/30',
-      text: 'text-green-400',
-      glow: 'shadow-green-500/20',
-      badge: 'bg-green-500/20 text-green-400 border-green-500/30'
+      bg: 'from-[#00FF88]/10 to-[#00FF88]/5',
+      border: 'border-[#00FF88]/30',
+      text: 'text-[#00FF88]',
+      glow: 'shadow-[#00FF88]/20',
+      badge: 'bg-[#00FF88]/20 text-[#00FF88] border-[#00FF88]/30'
     },
     ccm: {
-      bg: 'from-purple-500/10 to-violet-500/5',
-      border: 'border-purple-500/30',
-      text: 'text-purple-400',
-      glow: 'shadow-purple-500/20',
-      badge: 'bg-purple-500/20 text-purple-400 border-purple-500/30'
+      bg: 'from-[#00FFFF]/10 to-[#00FFFF]/5',
+      border: 'border-[#00FFFF]/30',
+      text: 'text-[#00FFFF]',
+      glow: 'shadow-[#00FFFF]/20',
+      badge: 'bg-[#00FFFF]/20 text-[#00FFFF] border-[#00FFFF]/30'
     },
     meme: {
-      bg: 'from-orange-500/10 to-red-500/5',
-      border: 'border-orange-500/30',
-      text: 'text-orange-400',
-      glow: 'shadow-orange-500/20',
-      badge: 'bg-orange-500/20 text-orange-400 border-orange-500/30'
+      bg: 'from-[#FFD700]/10 to-[#FFD700]/5',
+      border: 'border-[#FFD700]/30',
+      text: 'text-[#FFD700]',
+      glow: 'shadow-[#FFD700]/20',
+      badge: 'bg-[#FFD700]/20 text-[#FFD700] border-[#FFD700]/30'
     }
   }
 
@@ -101,14 +101,14 @@ function TableRow({
     setUpvotes(prev => hasVoted ? prev - 1 : prev + 1)
   }
 
-  // Status badge colors
+  // Status badge colors - ICM Motion Palette
   const statusColors = {
-    live: 'bg-red-500/20 text-red-400 border-red-500/40',
-    active: 'bg-green-500/20 text-green-400 border-green-500/40',
-    upcoming: 'bg-blue-500/20 text-blue-400 border-blue-500/40',
-    frozen: 'bg-zinc-500/20 text-zinc-400 border-zinc-500/40',
-    ended: 'bg-zinc-600/20 text-zinc-500 border-zinc-600/40',
-    launched: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/40'
+    live: 'bg-[#FF0040]/20 text-[#FF0040] border-[#FF0040]/40',        // Red
+    active: 'bg-[#00FF88]/20 text-[#00FF88] border-[#00FF88]/40',      // Green
+    upcoming: 'bg-[#0088FF]/20 text-[#0088FF] border-[#0088FF]/40',    // Blue
+    frozen: 'bg-[#00FFFF]/20 text-[#00FFFF] border-[#00FFFF]/40',      // Cyan
+    ended: 'bg-zinc-500/20 text-zinc-400 border-zinc-500/40',          // Zinc (neutral)
+    launched: 'bg-[#FFD700]/20 text-[#FFD700] border-[#FFD700]/40'     // Yellow
   }
 
   return (
@@ -229,10 +229,10 @@ function TableRow({
               animate={{ width: `${listing.beliefScore}%` }}
               transition={{ duration: 0.8, delay: index * 0.02 }}
               className={cn(
-                "h-full rounded-full bg-gradient-to-r",
-                listing.type === 'icm' && "from-green-500 to-emerald-400",
-                listing.type === 'ccm' && "from-purple-500 to-violet-400",
-                listing.type === 'meme' && "from-orange-500 to-red-400"
+                "h-full rounded-full",
+                listing.type === 'icm' && "bg-[#00FF88]",
+                listing.type === 'ccm' && "bg-[#00FFFF]",
+                listing.type === 'meme' && "bg-[#FFD700]"
               )}
             />
           </div>
@@ -285,7 +285,7 @@ function TableRow({
       <td className="px-4 py-3 border-b border-zinc-800/50 text-center">
         <div className="flex items-center justify-center gap-1">
           <Users className="w-3.5 h-3.5 text-zinc-500" />
-          <span className="text-sm font-medium text-white">
+          <span className="text-sm font-medium text-white" suppressHydrationWarning>
             {listing.holders?.toLocaleString() || '0'}
           </span>
         </div>
@@ -335,18 +335,33 @@ function TableRow({
       {/* Actions Column */}
       <td className="px-4 py-3 border-b border-zinc-800/50">
         <div className="flex flex-col gap-2">
-          <button
-            onClick={() => onBuyClick?.(listing, 0.1)}
-            className={cn(
-              "px-4 py-2 rounded-lg font-bold text-sm transition-all",
-              "bg-gradient-to-r hover:scale-105 text-white",
-              listing.type === 'icm' && "from-green-500 to-emerald-500",
-              listing.type === 'ccm' && "from-purple-500 to-violet-500",
-              listing.type === 'meme' && "from-orange-500 to-red-500"
-            )}
-          >
-            Buy Keys
-          </button>
+          <div className="flex items-stretch gap-2">
+            <button
+              onClick={() => onBuyClick?.(listing, 0.1)}
+              className={cn(
+                "px-4 py-2 rounded-lg font-bold text-sm transition-all whitespace-nowrap hover:scale-105",
+                listing.type === 'icm' && "bg-[#00FF88] text-black",
+                listing.type === 'ccm' && "bg-[#00FFFF] text-black",
+                listing.type === 'meme' && "bg-[#FFD700] text-black"
+              )}
+            >
+              Buy Keys
+            </button>
+
+            {/* Collaborate / DM Icon Button */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                // TODO: Implement DM/Collaborate modal
+                console.log('Opening DM with', listing.metrics.creatorName)
+              }}
+              className="px-2 py-2 rounded-lg transition-all bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 hover:border-[#8800FF]/50 text-zinc-400 hover:text-[#8800FF] flex items-center justify-center"
+              title="Collaborate"
+            >
+              <MessageCircle className="w-4 h-4" />
+            </button>
+          </div>
+
           {listing.myKeys && listing.myKeys > 0 && (
             <div className="text-xs text-center">
               <span className={cn("font-medium", colors.text)}>

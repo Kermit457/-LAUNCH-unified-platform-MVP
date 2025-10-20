@@ -24,40 +24,40 @@ const formatNumber = (num: number) => {
   return new Intl.NumberFormat('en-US').format(num)
 }
 
-// Color schemes for each type
+// Color schemes for each type - ICM Motion Color Palette
 const colorSchemes = {
   icm: {
     name: 'Project',
     emoji: '💼',
     icon: Coins,
-    badge: 'bg-green-500/20 text-green-400 border-green-500/30',
-    border: 'border-green-500/60',
-    gradient: 'from-green-500 to-emerald-500',
-    glow: 'shadow-green-500/30',
-    ring: 'text-green-500',
-    buttonHover: 'hover:from-green-400 hover:to-emerald-400'
+    badge: 'bg-[#00FF88]/20 text-[#00FF88] border-[#00FF88]/30',
+    border: 'border-[#00FF88]/60',
+    gradient: 'bg-[#00FF88]', // Green (Success, positive actions)
+    glow: 'shadow-[#00FF88]/50',
+    ring: 'text-[#00FF88]',
+    buttonHover: 'hover:bg-[#00FF88]/90 hover:scale-105'
   },
   ccm: {
     name: 'Creator',
     emoji: '🎥',
     icon: Video,
-    badge: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
-    border: 'border-purple-500/60',
-    gradient: 'from-purple-500 to-violet-500',
-    glow: 'shadow-purple-500/30',
-    ring: 'text-purple-500',
-    buttonHover: 'hover:from-purple-400 hover:to-violet-400'
+    badge: 'bg-[#00FFFF]/20 text-[#00FFFF] border-[#00FFFF]/30',
+    border: 'border-[#00FFFF]/60',
+    gradient: 'bg-[#00FFFF]', // Cyan (Primary brand, highlights)
+    glow: 'shadow-[#00FFFF]/50',
+    ring: 'text-[#00FFFF]',
+    buttonHover: 'hover:bg-[#00FFFF]/90 hover:scale-105'
   },
   meme: {
     name: 'Meme',
     emoji: '🔥',
     icon: Flame,
-    badge: 'bg-orange-500/20 text-orange-400 border-orange-500/30',
-    border: 'border-orange-500/60',
-    gradient: 'from-orange-500 to-amber-500',
-    glow: 'shadow-orange-500/30',
-    ring: 'text-orange-500',
-    buttonHover: 'hover:from-orange-400 hover:to-amber-400'
+    badge: 'bg-[#FFD700]/20 text-[#FFD700] border-[#FFD700]/30',
+    border: 'border-[#FFD700]/60',
+    gradient: 'bg-[#FFD700]', // Yellow (Attention, warnings, energy)
+    glow: 'shadow-[#FFD700]/50',
+    ring: 'text-[#FFD700]',
+    buttonHover: 'hover:bg-[#FFD700]/90 hover:scale-105'
   }
 } as const
 
@@ -226,7 +226,7 @@ export function UnifiedCard({ data }: { data: UnifiedCardData }) {
             className={cn(
               'flex flex-col items-center justify-center w-14 h-14 rounded-xl font-bold text-lg transition-all relative',
               data.hasVoted
-                ? `bg-gradient-to-br ${scheme.gradient} text-white shadow-lg ${scheme.glow}`
+                ? `${scheme.gradient} text-black`
                 : 'bg-zinc-800/80 hover:bg-zinc-700 border border-zinc-700/50 hover:border-zinc-600 text-zinc-300 hover:text-white hover:scale-105',
               data.isVoting && 'opacity-50 cursor-not-allowed'
             )}
@@ -435,7 +435,7 @@ export function UnifiedCard({ data }: { data: UnifiedCardData }) {
 
               {/* Ownership Pill */}
               {hasPos && (
-                <div className={cn("flex items-center gap-1.5 px-3 py-1.5 rounded-lg border-2 bg-gradient-to-r shadow-lg", scheme.border, `${scheme.gradient.split(' ')[0]}/20 via-${scheme.gradient.split(' ')[1]}/20 to-${scheme.gradient.split(' ')[0]}/20`, scheme.glow)}>
+                <div className={cn("flex items-center gap-1.5 px-3 py-1.5 rounded-lg border-2", scheme.border, scheme.badge)}>
                   <div className={cn("w-1.5 h-1.5 rounded-full animate-pulse", scheme.badge.split(' ')[1])} />
                   <span className={cn("text-xs font-bold", scheme.badge.split(' ')[1])}>Holding {formatNumber(data.myKeys!)}</span>
                   <span className="text-[10px] font-semibold opacity-70">({shareDisplay}%)</span>
@@ -490,9 +490,8 @@ export function UnifiedCard({ data }: { data: UnifiedCardData }) {
             <div className="h-2.5 rounded-full bg-zinc-800 overflow-hidden border border-zinc-700/50 relative group cursor-help">
               <div
                 className={cn(
-                  "h-full transition-all duration-500 relative bg-gradient-to-r",
-                  scheme.gradient,
-                  scheme.glow
+                  "h-full transition-all duration-500 relative",
+                  scheme.gradient
                 )}
                 style={{ width: `${Math.max(0, Math.min(100, data.beliefScore))}%` }}
               />
@@ -506,11 +505,10 @@ export function UnifiedCard({ data }: { data: UnifiedCardData }) {
               onClick={handleBuyOrManage}
               data-cta={hasPos ? 'manage' : 'buy'}
               className={cn(
-                'flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all bg-gradient-to-r shadow-lg',
+                'flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all',
                 scheme.gradient,
-                scheme.glow,
                 scheme.buttonHover,
-                'text-white hover:shadow-xl hover:scale-[1.02]'
+                'text-black hover:scale-[1.02]'
               )}
             >
               {hasPos ? (

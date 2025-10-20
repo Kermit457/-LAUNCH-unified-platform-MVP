@@ -4,6 +4,7 @@ import { useUser } from './useUser'
 import { getUserProfile, createUserProfile, updateUserProfile } from '@/lib/appwrite/services/users'
 import { CurveService } from '@/lib/appwrite/services/curves'
 import { useCreateCurve } from './useCreateCurve'
+import { authenticateWithAppwrite } from '@/lib/appwrite/auth'
 
 /**
  * Syncs Privy user data to Appwrite user profile
@@ -18,6 +19,14 @@ export function useSyncPrivyToAppwrite() {
   useEffect(() => {
     async function syncUser() {
       if (!isAuthenticated || !userId) return
+
+      // 🔐 Authenticate with Appwrite first
+      try {
+        await authenticateWithAppwrite(userId)
+      } catch (error) {
+        console.error('❌ Failed to authenticate with Appwrite:', error)
+        return // Don't proceed if auth fails
+      }
 
       // Debug: Log what we got from Privy
       console.log('🔐 Privy user data:', {

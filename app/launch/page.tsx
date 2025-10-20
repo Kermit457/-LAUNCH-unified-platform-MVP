@@ -2,87 +2,44 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Rocket, Coins, Video, Flame, ArrowRight, TrendingUp, Users, Network, Trophy } from 'lucide-react'
+import {
+  Rocket, Shield, Users, Network, TrendingUp, Target,
+  CheckCircle2, ArrowRight, Lightbulb, Lock
+} from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { SubmitLaunchDrawer } from '@/components/launch/SubmitLaunchDrawer'
+import { useCreateCurve } from '@/hooks/useCreateCurve'
+import { useRouter } from 'next/navigation'
+import { useUser } from '@/hooks/useUser'
 
 export default function LaunchPage() {
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const { createCurve, isCreating, error } = useCreateCurve()
+  const { username } = useUser()
+  const router = useRouter()
 
-  // Example successful projects
-  const showcaseProjects = [
-    {
-      id: 'showcase-1',
-      type: 'icm' as const,
-      title: 'DeFi Analytics Platform',
-      subtitle: 'Real-time on-chain analytics and trading signals',
-      ticker: '$DEFA',
-      logoUrl: 'https://api.dicebear.com/7.x/shapes/svg?seed=DEFA&backgroundColor=10b981',
-      status: 'active' as const,
-      beliefScore: 89,
-      upvotes: 342,
-      commentsCount: 87,
-      viewCount: 12400,
-      holders: 1240,
-      priceChange24h: 45.2,
-      currentPrice: 0.12,
-      twitterUrl: 'https://twitter.com/example',
-      metrics: {
-        raised: '$48K',
-        holders: 1240,
-        successRate: '94%'
+  const handleSubmit = async (data: any) => {
+    try {
+      console.log('Launch submitted:', data)
+
+      const curveId = await createCurve({
+        name: data.title,
+        symbol: data.subtitle,
+        description: data.description,
+        logoFile: data.logoFile,
+        scope: data.scope,
+        platforms: data.platforms,
+        twitterHandle: username || 'default',
+      })
+
+      setDrawerOpen(false)
+
+      if (curveId) {
+        router.push(`/launch/${curveId}`)
       }
-    },
-    {
-      id: 'showcase-2',
-      type: 'ccm' as const,
-      title: '@TechInfluencer',
-      subtitle: 'Crypto educator & market analyst',
-      ticker: '$TECH',
-      logoUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=TechInfluencer',
-      status: 'live' as const,
-      beliefScore: 92,
-      upvotes: 567,
-      commentsCount: 134,
-      viewCount: 28900,
-      holders: 2100,
-      priceChange24h: 32.8,
-      currentPrice: 0.24,
-      twitterUrl: 'https://twitter.com/example',
-      metrics: {
-        raised: '$92K',
-        holders: 2100,
-        successRate: '97%'
-      }
-    },
-    {
-      id: 'showcase-3',
-      type: 'meme' as const,
-      title: 'Solana Doge',
-      subtitle: 'The goodest boi on Solana',
-      ticker: '$SDOGE',
-      logoUrl: 'https://api.dicebear.com/7.x/bottts/svg?seed=SDOGE&backgroundColor=f97316',
-      status: 'live' as const,
-      beliefScore: 78,
-      upvotes: 1240,
-      commentsCount: 423,
-      viewCount: 84200,
-      holders: 8400,
-      priceChange24h: 156.7,
-      currentPrice: 0.0089,
-      twitterUrl: 'https://twitter.com/example',
-      metrics: {
-        raised: '$156K',
-        holders: 8400,
-        successRate: '99%'
-      }
+    } catch (err) {
+      console.error('Error creating curve:', err)
     }
-  ]
-
-  const handleSubmit = (data: any) => {
-    console.log('Launch submitted:', data)
-    setDrawerOpen(false)
-    // TODO: Handle submission
   }
 
   return (
@@ -94,11 +51,11 @@ export default function LaunchPage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-green-500/10 via-purple-500/10 to-orange-500/10 border border-white/10 text-sm font-medium mb-6"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#00FF88]/10 border-2 border-[#00FF88]/30 text-sm font-bold mb-6"
           >
-            <Rocket className="w-4 h-4 text-purple-400" />
-            <span className="bg-gradient-to-r from-green-400 via-purple-400 to-orange-400 bg-clip-text text-transparent">
-              Launch Your Project
+            <Rocket className="w-5 h-5 text-[#00FF88]" />
+            <span className="text-[#00FF88]">
+              Pre-Launch Protocol for Pump.fun
             </span>
           </motion.div>
 
@@ -106,19 +63,27 @@ export default function LaunchPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-5xl sm:text-7xl font-black bg-gradient-to-r from-green-400 via-purple-400 to-orange-400 bg-clip-text text-transparent mb-6"
+            className="text-5xl sm:text-7xl font-black text-[#00FF88] mb-6"
           >
-            Turn Ideas Into Value
+            20x Higher Launch Success
           </motion.h1>
 
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-xl sm:text-2xl text-zinc-400 max-w-3xl mx-auto mb-12"
+            className="text-xl sm:text-2xl text-zinc-300 max-w-3xl mx-auto mb-4"
           >
-            Launch projects, creator curves, or meme coins with built-in community, networking, and contribution rewards.
-            <span className="block mt-2 text-lg text-zinc-500">Higher success chance through collaboration.</span>
+            Sniper and bundle proof. Community first.
+          </motion.p>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.25 }}
+            className="text-lg text-zinc-400 max-w-2xl mx-auto mb-12"
+          >
+            ICM Network = Find the perfect team. Incubation, platform acceleration, launch advisory. Building in public.
           </motion.p>
 
           {/* CTA Button */}
@@ -127,7 +92,7 @@ export default function LaunchPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
             onClick={() => setDrawerOpen(true)}
-            className="inline-flex items-center gap-3 px-8 py-4 rounded-xl text-white font-bold text-lg transition-all bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40 hover:scale-105"
+            className="inline-flex items-center gap-3 px-8 py-4 rounded-xl text-black font-bold text-lg transition-all bg-[#00FF88] hover:bg-[#00FFFF] hover:scale-105"
           >
             <Rocket className="w-6 h-6" />
             Start Your Launch
@@ -135,168 +100,178 @@ export default function LaunchPage() {
           </motion.button>
         </div>
 
-        {/* Value Props - Why Launch Here */}
+        {/* Core Features - 2x3 Grid */}
         <div className="mb-20">
-          <h2 className="text-3xl font-bold text-center mb-12 bg-gradient-to-r from-white to-zinc-400 bg-clip-text text-transparent">
-            Why Launch on Our Platform?
+          <h2 className="text-3xl font-bold text-center mb-12 text-white">
+            Why Our Pre-Launch Protocol
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <ValuePropCard
-              icon={TrendingUp}
-              title="Higher Success Rate"
-              description="94% of projects reach their funding goals through community backing"
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <FeatureCard
+              icon={Shield}
+              title="Sniper & Bundle Proof"
+              description="Advanced anti-bot protection ensures fair distribution and organic price discovery"
+              color="cyan"
+            />
+            <FeatureCard
+              icon={Users}
+              title="Community First"
+              description="Build engaged community before launch through collaborative token rewards"
               color="green"
             />
-            <ValuePropCard
+            <FeatureCard
               icon={Network}
-              title="Built-in Network"
-              description="Instant access to engaged investors and contributors from day one"
-              color="purple"
+              title="ICM Network"
+              description="Find the perfect team from our network of builders, marketers, and contributors"
+              color="yellow"
             />
-            <ValuePropCard
-              icon={Users}
-              title="Contribution Rewards"
-              description="Contributors earn tokens for helping projects succeed"
+            <FeatureCard
+              icon={Target}
+              title="Incubation Support"
+              description="Platform acceleration and dedicated launch advisory from experienced teams"
               color="blue"
             />
-            <ValuePropCard
-              icon={Trophy}
-              title="Anti-Sniper Protection"
-              description="Fair launch mechanics ensure organic community growth"
+            <FeatureCard
+              icon={Lightbulb}
+              title="Building in Public"
+              description="Transparent development increases trust and attracts early supporters"
+              color="purple"
+            />
+            <FeatureCard
+              icon={TrendingUp}
+              title="20x Success Rate"
+              description="Proven protocol with significantly higher success rate vs traditional launches"
               color="orange"
             />
           </div>
         </div>
 
-        {/* Success Metrics */}
+        {/* Success Stats */}
         <div className="mb-20">
-          <div className="bg-gradient-to-br from-purple-900/20 via-zinc-900/40 to-pink-900/20 backdrop-blur-xl rounded-3xl border border-white/10 p-12">
-            <h3 className="text-2xl font-bold text-center mb-10 text-white">Platform Success Metrics</h3>
+          <div className="bg-zinc-900/50 backdrop-blur-xl rounded-3xl border-2 border-[#00FFFF]/20 p-12">
+            <h3 className="text-3xl font-bold text-center mb-10 text-white">Launch Success Metrics</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-              <MetricCard
-                value="$12.4M"
-                label="Total Raised"
+              <StatCard
+                value="20x"
+                label="Higher Success"
+                color="cyan"
+              />
+              <StatCard
+                value="94%"
+                label="Community Retention"
                 color="green"
               />
-              <MetricCard
+              <StatCard
+                value="$12.4M"
+                label="Total Raised"
+                color="yellow"
+              />
+              <StatCard
                 value="248"
                 label="Projects Launched"
                 color="purple"
-              />
-              <MetricCard
-                value="94%"
-                label="Success Rate"
-                color="blue"
-              />
-              <MetricCard
-                value="42K+"
-                label="Active Users"
-                color="orange"
               />
             </div>
           </div>
         </div>
 
-        {/* Showcase Projects */}
-        <div className="mb-16">
+        {/* How It Works - 4 Steps */}
+        <div className="mb-20">
           <h2 className="text-3xl font-bold text-center mb-4 text-white">
-            Featured Launches
+            Launch Protocol Steps
           </h2>
-          <p className="text-center text-zinc-400 mb-12 text-lg">
-            Real projects that launched successfully on our platform
+          <p className="text-center text-zinc-400 mb-12 text-lg max-w-2xl mx-auto">
+            Our proven 4-step process ensures maximum success and community engagement
           </p>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {showcaseProjects.map((project, index) => (
-              <motion.div
-                key={project.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <ShowcaseCard project={project} />
-              </motion.div>
-            ))}
-          </div>
-        </div>
-
-        {/* How It Works */}
-        <div className="mb-16">
-          <h2 className="text-3xl font-bold text-center mb-12 text-white">
-            How It Works
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <StepCard
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <ProcessStep
               step={1}
-              icon={Coins}
-              title="Choose Your Type"
-              description="Select Project (ICM), Creator (CCM), or Meme coin launch"
+              icon={Users}
+              title="Build Your Team"
+              description="Use ICM Network to find perfect co-founders, developers, marketers, and community managers"
+              color="cyan"
+            />
+            <ProcessStep
+              step={2}
+              icon={Lightbulb}
+              title="Incubation Phase"
+              description="Get platform acceleration, launch advisory, and strategic guidance from experienced teams"
               color="green"
             />
-            <StepCard
-              step={2}
-              icon={Rocket}
-              title="Launch with Community"
-              description="Contributors help market, build, and grow your project for token rewards"
-              color="purple"
-            />
-            <StepCard
+            <ProcessStep
               step={3}
-              icon={TrendingUp}
-              title="Reach DEX Launch"
-              description="Hit bonding curve target → Auto LP creation → Trade on DEX"
-              color="orange"
+              icon={Shield}
+              title="Protected Pre-Launch"
+              description="Build in public with community rewards. Anti-sniper protection ensures fair distribution"
+              color="yellow"
+            />
+            <ProcessStep
+              step={4}
+              icon={Rocket}
+              title="Pump.fun Launch"
+              description="Graduate to Pump.fun with engaged community, proven traction, and anti-bundle protection"
+              color="purple"
             />
           </div>
         </div>
 
-        {/* Launch Types */}
-        <div className="mb-16">
+        {/* Protection Features */}
+        <div className="mb-20">
           <h2 className="text-3xl font-bold text-center mb-12 text-white">
-            Choose Your Launch Type
+            Anti-Sniper Protection
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <LaunchTypeCard
-              type="icm"
-              icon={Coins}
-              emoji="💼"
-              name="Project Launch"
-              description="Launch tokens for startups, protocols, DAOs, or dApps"
-              examples={['DeFi Protocol', 'AI Platform', 'GameFi']}
+            <ProtectionCard
+              icon={Lock}
+              title="Bundle Prevention"
+              description="Advanced detection prevents multi-wallet bundle attacks"
             />
-            <LaunchTypeCard
-              type="ccm"
-              icon={Video}
-              emoji="🎥"
-              name="Creator Curve"
-              description="Monetize your personal brand, content, or influence"
-              examples={['YouTubers', 'Influencers', 'Educators']}
+            <ProtectionCard
+              icon={Shield}
+              title="Fair Launch"
+              description="Progressive unlock ensures organic price discovery"
             />
-            <LaunchTypeCard
-              type="meme"
-              icon={Flame}
-              emoji="🔥"
-              name="Meme Coin"
-              description="Launch community-driven meme tokens with viral potential"
-              examples={['$DEGEN', '$PEPE', '$BONK']}
+            <ProtectionCard
+              icon={CheckCircle2}
+              title="Verified Humans"
+              description="Community verification reduces bot participation"
             />
+          </div>
+        </div>
+
+        {/* Benefits List */}
+        <div className="mb-20">
+          <div className="bg-gradient-to-br from-[#00FFFF]/5 via-[#00FF88]/5 to-[#FFD700]/5 rounded-3xl border-2 border-[#00FFFF]/20 p-12">
+            <h2 className="text-3xl font-bold text-center mb-12 text-white">
+              What You Get
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+              <BenefitItem text="Access to ICM Network talent pool" />
+              <BenefitItem text="Dedicated launch advisory team" />
+              <BenefitItem text="Platform acceleration program" />
+              <BenefitItem text="Community building tools" />
+              <BenefitItem text="Anti-sniper smart contracts" />
+              <BenefitItem text="Marketing & growth support" />
+              <BenefitItem text="Token economics guidance" />
+              <BenefitItem text="Post-launch monitoring" />
+            </div>
           </div>
         </div>
 
         {/* Final CTA */}
         <div className="text-center">
-          <div className="inline-block p-12 rounded-3xl bg-gradient-to-br from-purple-900/30 via-zinc-900/50 to-pink-900/30 border border-white/10 backdrop-blur-xl">
+          <div className="inline-block p-12 rounded-3xl bg-zinc-900/80 border-2 border-[#00FFFF]/30 backdrop-blur-xl max-w-3xl">
             <h3 className="text-3xl font-bold text-white mb-4">
-              Ready to Launch?
+              Ready to Launch Successfully?
             </h3>
-            <p className="text-lg text-zinc-400 mb-8 max-w-xl">
-              Join 248+ projects that have successfully launched on our platform
+            <p className="text-lg text-zinc-300 mb-8">
+              Join 248+ projects that achieved 20x higher success rate through our protocol
             </p>
             <button
               onClick={() => setDrawerOpen(true)}
-              className="inline-flex items-center gap-3 px-10 py-5 rounded-xl text-white font-bold text-xl transition-all bg-gradient-to-r from-green-500 via-purple-500 to-orange-500 shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40 hover:scale-105"
+              className="inline-flex items-center gap-3 px-10 py-5 rounded-xl text-black font-bold text-xl transition-all bg-[#00FFFF] hover:bg-[#00FF88] hover:scale-105"
             >
               <Rocket className="w-6 h-6" />
-              Launch Your Project Now
+              Start Pre-Launch Protocol
               <ArrowRight className="w-6 h-6" />
             </button>
           </div>
@@ -309,13 +284,15 @@ export default function LaunchPage() {
         isOpen={drawerOpen}
         onClose={() => setDrawerOpen(false)}
         onSubmit={handleSubmit}
+        isLoading={isCreating}
+        error={error}
       />
     </div>
   )
 }
 
-// Value Proposition Card
-function ValuePropCard({
+// Feature Card Component
+function FeatureCard({
   icon: Icon,
   title,
   description,
@@ -324,112 +301,87 @@ function ValuePropCard({
   icon: any
   title: string
   description: string
-  color: 'green' | 'purple' | 'blue' | 'orange'
+  color: 'cyan' | 'green' | 'yellow' | 'blue' | 'purple' | 'orange'
 }) {
   const colors = {
-    green: 'from-green-500/20 to-emerald-500/10 border-green-500/30 text-green-400',
-    purple: 'from-purple-500/20 to-violet-500/10 border-purple-500/30 text-purple-400',
-    blue: 'from-blue-500/20 to-cyan-500/10 border-blue-500/30 text-blue-400',
-    orange: 'from-orange-500/20 to-amber-500/10 border-orange-500/30 text-orange-400'
+    cyan: {
+      bg: 'from-[#00FFFF]/10 to-[#00FFFF]/5',
+      border: 'border-[#00FFFF]/30',
+      icon: 'text-[#00FFFF]'
+    },
+    green: {
+      bg: 'from-[#00FF88]/10 to-[#00FF88]/5',
+      border: 'border-[#00FF88]/30',
+      icon: 'text-[#00FF88]'
+    },
+    yellow: {
+      bg: 'from-[#FFD700]/10 to-[#FFD700]/5',
+      border: 'border-[#FFD700]/30',
+      icon: 'text-[#FFD700]'
+    },
+    blue: {
+      bg: 'from-[#0088FF]/10 to-[#0088FF]/5',
+      border: 'border-[#0088FF]/30',
+      icon: 'text-[#0088FF]'
+    },
+    purple: {
+      bg: 'from-[#8800FF]/10 to-[#8800FF]/5',
+      border: 'border-[#8800FF]/30',
+      icon: 'text-[#8800FF]'
+    },
+    orange: {
+      bg: 'from-[#FF8800]/10 to-[#FF8800]/5',
+      border: 'border-[#FF8800]/30',
+      icon: 'text-[#FF8800]'
+    }
   }
+
+  const scheme = colors[color]
 
   return (
     <div className={cn(
-      "p-6 rounded-2xl border bg-gradient-to-br backdrop-blur-sm transition-all hover:scale-105",
-      colors[color]
+      "p-6 rounded-2xl border-2 bg-gradient-to-br backdrop-blur-sm transition-all hover:scale-105",
+      scheme.bg,
+      scheme.border
     )}>
-      <Icon className="w-10 h-10 mb-4" />
-      <h3 className="text-lg font-bold text-white mb-2">{title}</h3>
-      <p className="text-sm text-zinc-400">{description}</p>
+      <Icon className={cn("w-12 h-12 mb-4", scheme.icon)} />
+      <h3 className="text-xl font-bold text-white mb-3">{title}</h3>
+      <p className="text-sm text-zinc-400 leading-relaxed">{description}</p>
     </div>
   )
 }
 
-// Metric Card
-function MetricCard({
+// Stat Card Component
+function StatCard({
   value,
   label,
   color
 }: {
   value: string
   label: string
-  color: 'green' | 'purple' | 'blue' | 'orange'
+  color: 'cyan' | 'green' | 'yellow' | 'purple'
 }) {
   const colors = {
-    green: 'text-green-400',
-    purple: 'text-purple-400',
-    blue: 'text-blue-400',
-    orange: 'text-orange-400'
+    cyan: 'text-[#00FFFF]',
+    green: 'text-[#00FF88]',
+    yellow: 'text-[#FFD700]',
+    purple: 'text-[#8800FF]'
   }
 
   return (
     <div className="text-center">
-      <div className={cn("text-4xl sm:text-5xl font-black mb-2", colors[color])}>
+      <div className={cn("text-5xl sm:text-6xl font-black mb-3", colors[color])}>
         {value}
       </div>
-      <div className="text-sm text-zinc-500 uppercase tracking-wider">
+      <div className="text-sm text-zinc-400 uppercase tracking-wider font-bold">
         {label}
       </div>
     </div>
   )
 }
 
-// Showcase Card
-function ShowcaseCard({ project }: { project: any }) {
-  const typeColors = {
-    icm: { border: 'border-green-500/50', badge: 'bg-green-500/20 text-green-400' },
-    ccm: { border: 'border-purple-500/50', badge: 'bg-purple-500/20 text-purple-400' },
-    meme: { border: 'border-orange-500/50', badge: 'bg-orange-500/20 text-orange-400' }
-  } as const
-
-  const colors = typeColors[project.type as keyof typeof typeColors]
-
-  return (
-    <div className={cn(
-      "p-6 rounded-2xl border-2 bg-zinc-900/50 backdrop-blur-sm hover:scale-105 transition-all",
-      colors.border
-    )}>
-      {/* Logo + Title */}
-      <div className="flex items-center gap-4 mb-4">
-        <img
-          src={project.logoUrl}
-          alt={project.title}
-          className="w-16 h-16 rounded-xl"
-        />
-        <div className="flex-1 min-w-0">
-          <h3 className="font-bold text-white text-lg truncate">{project.title}</h3>
-          <p className="text-sm text-zinc-400 truncate">{project.subtitle}</p>
-        </div>
-      </div>
-
-      {/* Metrics */}
-      <div className="grid grid-cols-3 gap-3 mb-4">
-        <div>
-          <div className="text-xs text-zinc-500 mb-1">Raised</div>
-          <div className="font-bold text-white">{project.metrics.raised}</div>
-        </div>
-        <div>
-          <div className="text-xs text-zinc-500 mb-1">Holders</div>
-          <div className="font-bold text-white">{project.metrics.holders}</div>
-        </div>
-        <div>
-          <div className="text-xs text-zinc-500 mb-1">Success</div>
-          <div className="font-bold text-green-400">{project.metrics.successRate}</div>
-        </div>
-      </div>
-
-      {/* Badge */}
-      <div className={cn("inline-flex px-3 py-1 rounded-lg text-xs font-medium", colors.badge)}>
-        {project.type === 'icm' && '💼 Project'}
-        {project.type === 'ccm' && '🎥 Creator'}
-        {project.type === 'meme' && '🔥 Meme'}
-      </div>
-    </div>
-  )
-}
-
-// Step Card
-function StepCard({
+// Process Step Component
+function ProcessStep({
   step,
   icon: Icon,
   title,
@@ -440,94 +392,81 @@ function StepCard({
   icon: any
   title: string
   description: string
-  color: 'green' | 'purple' | 'orange'
+  color: 'cyan' | 'green' | 'yellow' | 'purple'
 }) {
   const colors = {
-    green: 'from-green-500 to-emerald-500',
-    purple: 'from-purple-500 to-violet-500',
-    orange: 'from-orange-500 to-amber-500'
+    cyan: {
+      number: 'bg-[#00FFFF] text-black',
+      icon: 'bg-[#00FFFF]/20 border-[#00FFFF]/30 text-[#00FFFF]'
+    },
+    green: {
+      number: 'bg-[#00FF88] text-black',
+      icon: 'bg-[#00FF88]/20 border-[#00FF88]/30 text-[#00FF88]'
+    },
+    yellow: {
+      number: 'bg-[#FFD700] text-black',
+      icon: 'bg-[#FFD700]/20 border-[#FFD700]/30 text-[#FFD700]'
+    },
+    purple: {
+      number: 'bg-[#8800FF] text-white',
+      icon: 'bg-[#8800FF]/20 border-[#8800FF]/30 text-[#8800FF]'
+    }
   }
 
+  const scheme = colors[color]
+
   return (
-    <div className="relative p-6 rounded-2xl bg-zinc-900/50 border border-zinc-800 hover:border-zinc-700 transition-all">
+    <div className="relative p-8 rounded-2xl bg-zinc-900/50 border-2 border-zinc-800 hover:border-zinc-700 transition-all">
       {/* Step Number */}
       <div className={cn(
-        "absolute -top-4 -left-4 w-12 h-12 rounded-full flex items-center justify-center text-white font-black text-xl bg-gradient-to-r shadow-lg",
-        colors[color]
+        "absolute -top-5 -left-5 w-14 h-14 rounded-full flex items-center justify-center font-black text-2xl",
+        scheme.number
       )}>
         {step}
       </div>
 
       {/* Icon */}
       <div className={cn(
-        "w-14 h-14 rounded-xl flex items-center justify-center mb-4 bg-gradient-to-br mt-4",
-        colors[color]
+        "w-16 h-16 rounded-xl flex items-center justify-center mb-5 border-2 mt-4",
+        scheme.icon
       )}>
-        <Icon className="w-7 h-7 text-white" />
+        <Icon className="w-8 h-8" />
       </div>
 
       {/* Content */}
-      <h3 className="text-xl font-bold text-white mb-2">{title}</h3>
-      <p className="text-sm text-zinc-400">{description}</p>
+      <h3 className="text-2xl font-bold text-white mb-3">{title}</h3>
+      <p className="text-base text-zinc-400 leading-relaxed">{description}</p>
     </div>
   )
 }
 
-// Launch Type Card
-function LaunchTypeCard({
-  type,
+// Protection Card Component
+function ProtectionCard({
   icon: Icon,
-  emoji,
-  name,
-  description,
-  examples
+  title,
+  description
 }: {
-  type: 'icm' | 'ccm' | 'meme'
   icon: any
-  emoji: string
-  name: string
+  title: string
   description: string
-  examples: string[]
 }) {
-  const colors = {
-    icm: { gradient: 'from-green-500 to-emerald-500', border: 'border-green-500/50', bg: 'bg-green-500/10' },
-    ccm: { gradient: 'from-purple-500 to-violet-500', border: 'border-purple-500/50', bg: 'bg-purple-500/10' },
-    meme: { gradient: 'from-orange-500 to-amber-500', border: 'border-orange-500/50', bg: 'bg-orange-500/10' }
-  }
-
-  const color = colors[type]
-
   return (
-    <div className={cn(
-      "p-6 rounded-2xl border-2 transition-all hover:scale-105",
-      color.border,
-      color.bg
-    )}>
-      {/* Icon */}
-      <div className={cn(
-        "w-16 h-16 rounded-xl flex items-center justify-center mb-4 bg-gradient-to-br",
-        color.gradient
-      )}>
-        <Icon className="w-8 h-8 text-white" />
+    <div className="p-6 rounded-2xl bg-zinc-900/50 border-2 border-[#FF0040]/20 hover:border-[#FF0040]/40 transition-all">
+      <div className="w-14 h-14 rounded-xl bg-[#FF0040]/20 border-2 border-[#FF0040]/30 flex items-center justify-center mb-4">
+        <Icon className="w-7 h-7 text-[#FF0040]" />
       </div>
+      <h3 className="text-xl font-bold text-white mb-3">{title}</h3>
+      <p className="text-sm text-zinc-400 leading-relaxed">{description}</p>
+    </div>
+  )
+}
 
-      {/* Content */}
-      <h3 className="text-xl font-bold text-white mb-2 flex items-center gap-2">
-        {emoji} {name}
-      </h3>
-      <p className="text-sm text-zinc-400 mb-4">{description}</p>
-
-      {/* Examples */}
-      <div className="flex flex-wrap gap-2">
-        {examples.map((example, i) => (
-          <span
-            key={i}
-            className="px-2 py-1 rounded-lg bg-zinc-800 text-xs text-zinc-400"
-          >
-            {example}
-          </span>
-        ))}
-      </div>
+// Benefit Item Component
+function BenefitItem({ text }: { text: string }) {
+  return (
+    <div className="flex items-start gap-3">
+      <CheckCircle2 className="w-6 h-6 text-[#00FF88] flex-shrink-0 mt-0.5" />
+      <span className="text-base text-zinc-300">{text}</span>
     </div>
   )
 }

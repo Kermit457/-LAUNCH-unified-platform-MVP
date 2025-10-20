@@ -1,6 +1,12 @@
 import { create } from 'zustand'
 import type { Invite, Connection, Thread, Message } from '@/lib/types'
-import { mockInvites, mockConnections, mockThreads, mockMessages } from '@/lib/mockNetworkData'
+
+// Mock data removed - using empty defaults
+// Real data will be fetched from Appwrite
+const mockInvites: Invite[] = []
+const mockConnections: Connection[] = []
+const mockThreads: Thread[] = []
+const mockMessages: Message[] = []
 
 interface NetworkStore {
   invites: Invite[]

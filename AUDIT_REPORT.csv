@@ -1,0 +1,8 @@
+Type,File,Status,References,ImportedBy
+Mock,lib/dashboardMockData.ts,USED,1,"components\dashboard\NetWorthHero.tsx"
+Mock,lib/livePitchMockData.ts,USED,1,"app\live\page.tsx"
+Mock,lib/unifiedMockData.ts,USED,1,"app\discover\page.tsx"
+Mock,lib/advancedTradingData.ts,USED,2,"app\discover\page.tsx; components\AdvancedTableView.tsx"
+Mock,lib/mockChartData.ts,USED,1,"app\launch\[id]\page.tsx"
+Mock,lib/leaderboardData.ts,USED,2,"app\community\page.tsx; components\LeaderboardTable.tsx"
+Mock,lib/landingData.ts,USED,8,"components\landing\FinalCTA.tsx; components\landing\HeroSection.tsx; components\landing\ICMCCMExplainer.tsx; components\landing\NetworkSection.tsx; components\landing\PlatformFeatures.tsx; components\landing\SocialProofBar.tsx; components\landing\SuccessStories.tsx; components\landing\Testimonials.tsx"

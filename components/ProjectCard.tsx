@@ -6,7 +6,6 @@ import { Heart, Share2, Eye, Clock, Users, MessageCircle, Zap, Bookmark, DollarS
 import { cn } from '@/lib/cn';
 import type { Project, Comment } from '@/types';
 import { VoteButton } from './VoteButton';
-import { BoostButton } from './BoostButton';
 import { CommentsDrawer } from './CommentsDrawer';
 import { BeliefScore } from './BeliefScore';
 import { useRealtimeVotes } from '@/hooks/useRealtimeVotes';
@@ -39,16 +38,6 @@ export function ProjectCard(props: ProjectCardProps) {
     const updated = {
       ...project,
       comments: [comment, ...(project.comments || [])],
-    };
-    setProject(updated);
-    if (onUpdateProject) onUpdateProject(updated);
-  };
-
-  const handleBoost = () => {
-    const updated = {
-      ...project,
-      boosted: true,
-      boostCount: (project.boostCount || 0) + 1,
     };
     setProject(updated);
     if (onUpdateProject) onUpdateProject(updated);
@@ -259,19 +248,6 @@ export function ProjectCard(props: ProjectCardProps) {
                 {/* Actions */}
                 <div className="mt-auto pt-2.5 flex items-center gap-2">
                   <button
-                    onClick={handleBoost}
-                    className={cn(
-                      "px-2.5 h-9 rounded-xl font-medium inline-flex items-center gap-1.5 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-neutral-950 text-xs whitespace-nowrap",
-                      isCCM
-                        ? "bg-purple-500 hover:bg-purple-400 text-white focus:ring-purple-400"
-                        : "bg-yellow-500 hover:bg-yellow-400 text-black focus:ring-yellow-400"
-                    )}
-                  >
-                    <Rocket className="w-3.5 h-3.5" />
-                    Boost (10 $LAUNCH)
-                  </button>
-
-                  <button
                     className={cn("px-3 h-9 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-xs transition-colors focus:outline-none focus:ring-2 whitespace-nowrap", focusRing)}
                   >
                     Follow
@@ -280,7 +256,7 @@ export function ProjectCard(props: ProjectCardProps) {
                   <button
                     onClick={() => router.push(`/launch/${project.id}`)}
                     className={cn(
-                      "px-3 h-9 rounded-xl bg-gradient-to-r inline-flex items-center gap-1.5 text-xs font-medium transition-colors focus:outline-none focus:ring-2 whitespace-nowrap",
+                      "flex-1 px-3 h-9 rounded-xl bg-gradient-to-r inline-flex items-center justify-center gap-1.5 text-xs font-medium transition-colors focus:outline-none focus:ring-2 whitespace-nowrap",
                       isCCM
                         ? "from-purple-500 to-fuchsia-500 hover:from-purple-400 hover:to-fuchsia-400 focus:ring-purple-400"
                         : "from-sky-500 to-blue-500 hover:from-sky-400 hover:to-blue-400 focus:ring-blue-400"
@@ -488,14 +464,7 @@ export function ProjectCard(props: ProjectCardProps) {
         </div>
       )}
 
-      {/* Boost Button */}
-      <div className="mb-4">
-        <BoostButton
-          projectId={project.id}
-          onBoost={handleBoost}
-          size="sm"
-        />
-      </div>
+      {/* Boost functionality removed - was not in core features */}
 
       {/* Actions */}
       <div className="flex gap-2">

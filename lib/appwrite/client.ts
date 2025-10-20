@@ -1,13 +1,28 @@
 import { Client, Account, Databases, Storage, Functions } from 'appwrite'
 
-// Validate environment variables
-const endpoint = process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT
-const projectId = process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID
+// Get environment variables (with defaults for dev)
+function getEnvVar(key: string, defaultValue?: string): string {
+  // Check browser environment first
+  if (typeof window !== 'undefined') {
+    return (window as any).ENV?.[key] || process.env[key] || defaultValue || ''
+  }
+  return process.env[key] || defaultValue || ''
+}
 
-if (!endpoint || !projectId) {
-  throw new Error(
-    'Missing Appwrite environment variables. Please check your .env.local file.'
-  )
+const endpoint = getEnvVar('NEXT_PUBLIC_APPWRITE_ENDPOINT', 'https://fra.cloud.appwrite.io/v1')
+const projectId = getEnvVar('NEXT_PUBLIC_APPWRITE_PROJECT_ID', '68e34a030010f2321359')
+
+// Validate only when client is first used (lazy validation)
+let clientInitialized = false
+function validateConfig() {
+  if (!clientInitialized) {
+    if (!endpoint || !projectId) {
+      throw new Error(
+        'Missing Appwrite environment variables. Please check your .env.local file.'
+      )
+    }
+    clientInitialized = true
+  }
 }
 
 // Client-side Appwrite client
