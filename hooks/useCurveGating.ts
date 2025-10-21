@@ -22,7 +22,9 @@ export function useCurveGating(
   requiredCurveId: string | null,
   minimumKeys = 1
 ): GatingCheck {
-  const { isActivated, curveId: userCurveId } = useCurveActivation()
+  const { isActivated, progress } = useCurveActivation()
+  // Note: CurveActivationContext doesn't expose curveId, using twitterHandle as identifier
+  const userCurveId = progress.twitterHandle
   const [check, setCheck] = useState<GatingCheck>({
     canAccess: false,
     loading: true,

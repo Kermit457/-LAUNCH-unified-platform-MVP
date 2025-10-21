@@ -145,7 +145,15 @@ export function useRealtimeMessages(
 
     try {
       const data = await getThreadMessages(threadId, limit)
-      setMessages(data)
+      // Transform Message[] to FormattedMessage[]
+      const formatted: FormattedMessage[] = data.map((msg) => ({
+        id: msg.$id,
+        threadId: msg.threadId,
+        fromUserId: msg.senderId,
+        content: msg.text,
+        sentAt: new Date(msg.$createdAt).getTime(),
+      }))
+      setMessages(formatted)
       setError(null)
     } catch (err: any) {
       console.error('Failed to refresh messages:', err)

@@ -10,7 +10,7 @@ interface InviteTreeProps {
 
 export function InviteTree({ compact = false }: InviteTreeProps) {
   const [copied, setCopied] = useState(false)
-  const totalInvited = 12
+  const totalInvited: number = 12 // Type annotation to allow comparison
   const totalEarnings = '$480'
 
   // Mock referral link (replace with actual user's link)
