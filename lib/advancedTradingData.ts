@@ -8,8 +8,15 @@ export interface TradingMetrics {
   graduationPercent: number // 0-100, progress toward Pump.fun launch
   marketCap: number // in SOL
   volume24h: number // in SOL
+  volumeTotal: number // Total all-time volume
   txCount24h: number // number of transactions
   createdAt: number // timestamp
+  holders: number
+  supply: number
+  price: number
+  priceChange24h: number
+  liquidity: number
+  lastActivity: number
 
   // Distribution metrics (from pump.fun screenshots)
   top10HoldersPct: number // % held by top 10
@@ -26,7 +33,10 @@ export interface TradingMetrics {
   creatorWallet: string
 }
 
-export type AdvancedListingData = UnifiedCardData & { metrics: TradingMetrics }
+export type AdvancedListingData = UnifiedCardData & {
+  metrics: TradingMetrics
+  creatorId?: string // Creator user ID for invites
+}
 
 /**
  * Generate realistic trading metrics based on project age and type

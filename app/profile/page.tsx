@@ -1,11 +1,23 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { DollarSign, ArrowDownToLine, ArrowUpFromLine, Share2, Image as ImageIcon, Twitter, Globe, Send, Plus, X, Users2, Rocket } from 'lucide-react'
 import { usePrivy } from '@privy-io/react-auth'
+import { useToast } from '@/hooks/useToast'
+import { useRouter } from 'next/navigation'
+import { getUserProfile, updateUserProfile, createUserProfile } from '@/lib/appwrite/services/users'
+import { getNetworkInvites } from '@/lib/appwrite/services/network'
+import { CurveService } from '@/lib/appwrite/services/curves'
+import { useSolanaBalance } from '@/hooks/useSolanaBalance'
+import { databases, DB_ID, COLLECTIONS } from '@/lib/appwrite/client'
+import { Query } from 'appwrite'
 
 export default function ProfilePage() {
   const { user } = usePrivy()
+  const { success, error: showError } = useToast()
+  const router = useRouter()
+  const { balance: solBalance, isLoading: isLoadingBalance } = useSolanaBalance()
+
   const [showProfileEditor, setShowProfileEditor] = useState(false)
   const [displayNameInput, setDisplayNameInput] = useState('')
   const [bio, setBio] = useState('')
@@ -18,6 +30,20 @@ export default function ProfilePage() {
   const [twitter, setTwitter] = useState('')
   const [telegram, setTelegram] = useState('')
   const [uploadedImages, setUploadedImages] = useState<string[]>([])
+  const [profileId, setProfileId] = useState<string | null>(null)
+  const [isSaving, setIsSaving] = useState(false)
+  const [showReceiveModal, setShowReceiveModal] = useState(false)
+  const [showSendModal, setShowSendModal] = useState(false)
+
+  // Real stats from Appwrite
+  const [stats, setStats] = useState({
+    totalValue: 0,
+    solBalance: 0,
+    keyHolders: 0,
+    yourHoldings: 0,
+    networkConnections: 0,
+    collaborations: 0,
+  })
 
   const skills = [
     { id: 'trader', label: 'Trader', color: 'from-green-500 to-emerald-500' },
@@ -46,20 +72,166 @@ export default function ProfilePage() {
     )
   }
 
+  // Load user profile and stats from Appwrite
+  useEffect(() => {
+    if (!user?.id) return
+
+    async function loadProfileData() {
+      const userId = user?.id
+      if (!userId) return
+
+      try {
+        // Load user profile
+        const profile = await getUserProfile(userId)
+        if (profile) {
+          setProfileId(profile.$id)
+          setDisplayNameInput(profile.displayName || '')
+          setBio(profile.bio || '')
+          setWebsite(profile.website || '')
+          setTwitter(profile.twitter || '')
+        }
+
+        // Load network stats
+        const invites = await getNetworkInvites({
+          userId,
+          status: 'accepted'
+        })
+
+        // Load curve stats
+        const curve = await CurveService.getCurveByOwner('user', userId)
+
+        // Query user's holdings from CURVE_HOLDERS
+        let yourHoldingsValue = 0
+        try {
+          const holdingsResponse = await databases.listDocuments(
+            DB_ID,
+            COLLECTIONS.CURVE_HOLDERS,
+            [
+              Query.equal('userId', userId),
+              Query.greaterThan('balance', 0),
+              Query.limit(100)
+            ]
+          )
+
+          for (const holding of holdingsResponse.documents) {
+            const holdingCurve = await CurveService.getCurveById(holding.curveId as string)
+            if (holdingCurve) {
+              yourHoldingsValue += (holding.balance as number) * holdingCurve.price
+            }
+          }
+        } catch (error) {
+          console.error('Failed to load holdings:', error)
+        }
+
+        setStats({
+          totalValue: yourHoldingsValue + solBalance,
+          solBalance: solBalance,
+          keyHolders: curve?.holders || 0,
+          yourHoldings: yourHoldingsValue,
+          networkConnections: invites.length,
+          collaborations: invites.length,
+        })
+      } catch (error) {
+        console.error('Failed to load profile data:', error)
+      }
+    }
+
+    loadProfileData()
+  }, [user?.id, solBalance])
+
+  // Save profile handler
+  const handleSaveProfile = async () => {
+    if (!user?.id) {
+      showError('Not Authenticated', 'Please log in to save your profile')
+      return
+    }
+
+    setIsSaving(true)
+    try {
+      if (profileId) {
+        // Update existing profile
+        await updateUserProfile(profileId, {
+          displayName: displayNameInput,
+          bio,
+          website,
+          twitter,
+        })
+        success('Profile Saved!', 'Your profile has been updated')
+      } else {
+        // Create new profile
+        const newProfile = await createUserProfile({
+          userId: user.id,
+          username: user.twitter?.username || user.id.slice(0, 8),
+          displayName: displayNameInput,
+          bio,
+          website,
+          twitter,
+          verified: false,
+          conviction: 0,
+          totalEarnings: 0,
+          roles: [],
+        })
+        if (newProfile) {
+          setProfileId(newProfile.$id)
+          success('Profile Created!', 'Your profile has been created')
+        }
+      }
+      setShowProfileEditor(false)
+    } catch (error: any) {
+      showError('Save Failed', error.message || 'Failed to save profile')
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  // Action button handlers
+  const handleReceive = () => {
+    if (!user?.wallet?.address) {
+      showError('No Wallet', 'Please connect a wallet first')
+      return
+    }
+    setShowReceiveModal(true)
+  }
+
+  const handleSend = () => {
+    if (!user?.wallet?.address) {
+      showError('No Wallet', 'Please connect a wallet first')
+      return
+    }
+    setShowSendModal(true)
+  }
+
+  const handleDeposit = () => {
+    success('Coming Soon', 'Fiat on-ramp integration launching soon!')
+  }
+
+  const handleShare = async () => {
+    const profileUrl = `${window.location.origin}/profile/${user?.twitter?.username || user?.id}`
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `${displayName} on LaunchOS`,
+          text: 'Check out my profile on LaunchOS!',
+          url: profileUrl,
+        })
+      } catch (error) {
+        // User cancelled
+      }
+    } else {
+      navigator.clipboard.writeText(profileUrl)
+      success('Link Copied!', 'Profile link copied to clipboard')
+    }
+  }
+
+  const handleExport = () => {
+    success('Coming Soon', 'Transaction export feature launching soon!')
+  }
+
   // Get Twitter profile pic from Privy
   const twitterAccount = user?.twitter
   const profilePicture = twitterAccount?.profilePictureUrl || 'https://api.dicebear.com/7.x/avataaars/svg?seed=default'
   const displayName = user?.twitter?.username || 'Anonymous'
-  const walletAddress = user?.wallet?.address || 'Not connected'
-
-  const stats = {
-    totalValue: 81.26,
-    solBalance: 0.439,
-    keyHolders: 0,
-    yourHoldings: 0,
-    networkConnections: 0,
-    collaborations: 0,
-  }
 
   const referralStats = {
     totalReferrals: 12,
@@ -159,31 +331,46 @@ export default function ProfilePage() {
         {/* Action Buttons */}
         <div className="mb-3 grid grid-cols-5 gap-1.5">
           <div className="flex flex-col items-center gap-1">
-            <button className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-[#00FF88] flex items-center justify-center hover:scale-105 transition-transform">
+            <button
+              onClick={handleReceive}
+              className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-[#00FF88] flex items-center justify-center hover:scale-105 transition-transform"
+            >
               <ArrowDownToLine className="w-5 h-5 md:w-7 md:h-7 text-black" />
             </button>
             <span className="text-[9px] md:text-xs text-white font-medium">Receive</span>
           </div>
           <div className="flex flex-col items-center gap-1">
-            <button className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-zinc-800 flex items-center justify-center hover:scale-105 transition-transform">
+            <button
+              onClick={handleSend}
+              className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-zinc-800 flex items-center justify-center hover:scale-105 transition-transform"
+            >
               <ArrowUpFromLine className="w-5 h-5 md:w-7 md:h-7 text-white" />
             </button>
             <span className="text-[9px] md:text-xs text-white font-medium">Send</span>
           </div>
           <div className="flex flex-col items-center gap-1">
-            <button className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-zinc-800 flex items-center justify-center hover:scale-105 transition-transform">
+            <button
+              onClick={handleDeposit}
+              className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-zinc-800 flex items-center justify-center hover:scale-105 transition-transform"
+            >
               <DollarSign className="w-5 h-5 md:w-7 md:h-7 text-white" />
             </button>
             <span className="text-[9px] md:text-xs text-white font-medium">Deposit</span>
           </div>
           <div className="flex flex-col items-center gap-1">
-            <button className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-zinc-800 flex items-center justify-center hover:scale-105 transition-transform">
+            <button
+              onClick={handleShare}
+              className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-zinc-800 flex items-center justify-center hover:scale-105 transition-transform"
+            >
               <Share2 className="w-5 h-5 md:w-7 md:h-7 text-white" />
             </button>
             <span className="text-[9px] md:text-xs text-white font-medium">Share</span>
           </div>
           <div className="flex flex-col items-center gap-1">
-            <button className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-zinc-800 flex items-center justify-center hover:scale-105 transition-transform">
+            <button
+              onClick={handleExport}
+              className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-zinc-800 flex items-center justify-center hover:scale-105 transition-transform"
+            >
               <svg className="w-5 h-5 md:w-7 md:h-7 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                 <polyline points="7 10 12 15 17 10" />
@@ -522,8 +709,12 @@ export default function ProfilePage() {
                   </div>
 
                   {/* Save Button */}
-                  <button className="w-full px-6 py-4 rounded-lg bg-gradient-to-r from-[#00FF88] to-[#00FFFF] text-black font-bold hover:opacity-90 transition-all text-sm">
-                    Save Profile
+                  <button
+                    onClick={handleSaveProfile}
+                    disabled={isSaving}
+                    className="w-full px-6 py-4 rounded-lg bg-gradient-to-r from-[#00FF88] to-[#00FFFF] text-black font-bold hover:opacity-90 transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isSaving ? 'Saving...' : 'Save Profile'}
                   </button>
                 </div>
               </div>

@@ -101,6 +101,9 @@ export type UnifiedCardData = {
   // Socials
   twitterUrl?: string
 
+  // Creator info
+  creatorId?: string
+
   // State handlers
   hasVoted?: boolean
   isVoting?: boolean

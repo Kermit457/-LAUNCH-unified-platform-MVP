@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { UnifiedCard } from '@/components/UnifiedCard'
 import { AdvancedTableView } from '@/components/AdvancedTableView'
 import { CommentsDrawer } from '@/components/CommentsDrawer'
@@ -9,18 +9,22 @@ import { LaunchDetailsModal } from '@/components/launch/LaunchDetailsModal'
 import { SubmitLaunchDrawer } from '@/components/launch/SubmitLaunchDrawer'
 import { CoinListItem } from '@/components/mobile/CoinListItem'
 import { ActivityFeed } from '@/components/discover/ActivityFeed'
-import { unifiedListings, filterByType, filterByStatus, sortListings, getMyHoldings, getMyCurves } from '@/lib/unifiedMockData'
-import { advancedListings, type AdvancedListingData } from '@/lib/advancedTradingData'
-import type { CurveType } from '@/components/UnifiedCard'
+import { type UnifiedCardData, type CurveType } from '@/components/UnifiedCard'
+import { type AdvancedListingData } from '@/lib/advancedTradingData'
 import { Search, TrendingUp, DollarSign, Users, Zap, LayoutGrid, Table, Rocket } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { useToast } from '@/hooks/useToast'
 import { usePrivy } from '@privy-io/react-auth'
 import { addVote, removeVote } from '@/lib/appwrite/services/votes'
+import { sendNetworkInvite } from '@/lib/appwrite/services/network'
+import { getDiscoverListings, getUserHoldings } from '@/lib/appwrite/services/discover'
+import { useCurveTrade } from '@/hooks/useCurveTrade'
+import { createLaunchDocument } from '@/lib/appwrite/services/launches'
 
 export default function DiscoverPage() {
   const { success, info, error: showError, warning } = useToast()
   const { authenticated, user } = usePrivy()
+  const { buyKeys, sellKeys, isProcessing: isTrading } = useCurveTrade()
 
   const [typeFilter, setTypeFilter] = useState<'all' | CurveType>('all')
   const [viewFilter, setViewFilter] = useState<'trending' | 'my-holdings' | 'my-curves' | 'following'>('trending')
@@ -33,28 +37,43 @@ export default function DiscoverPage() {
   const [detailsModalListing, setDetailsModalListing] = useState<AdvancedListingData | null>(null)
   const [showSubmitDrawer, setShowSubmitDrawer] = useState(false)
 
-  // Get base listings based on view filter - use advancedListings for table view
-  let baseListings: AdvancedListingData[] = advancedListings
+  // Real data from Appwrite
+  const [unifiedListings, setUnifiedListings] = useState<UnifiedCardData[]>([])
+  const [advancedListings, setAdvancedListings] = useState<AdvancedListingData[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [userHoldingsValue, setUserHoldingsValue] = useState(0)
 
-  // Apply type filter
-  let filtered = baseListings
-  if (typeFilter !== 'all') {
-    filtered = filtered.filter(item => item.type === typeFilter)
-  }
+  // Load listings from Appwrite
+  useEffect(() => {
+    async function loadListings() {
+      setIsLoading(true)
+      try {
+        const data = await getDiscoverListings({
+          type: typeFilter,
+          status: statusFilter,
+          sortBy,
+          searchQuery: searchQuery || undefined,
+        })
+        setUnifiedListings(data.unified)
+        setAdvancedListings(data.advanced)
 
-  // Apply status filter
-  if (statusFilter !== 'all') {
-    filtered = filtered.filter(item => item.status === statusFilter)
-  }
+        // Load user holdings if authenticated
+        if (user?.id) {
+          const holdings = await getUserHoldings(user.id)
+          setUserHoldingsValue(holdings.totalValue)
+        }
+      } catch (error) {
+        console.error('Failed to load discover listings:', error)
+        showError('Failed to Load', 'Could not load listings')
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    loadListings()
+  }, [typeFilter, statusFilter, sortBy, searchQuery, user?.id])
 
-  // Apply search
-  if (searchQuery) {
-    filtered = filtered.filter(item =>
-      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.subtitle?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.ticker?.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-  }
+  // Use advancedListings as base for filtering
+  let filtered = advancedListings
 
   // Apply sort (with merged status filters)
   filtered = [...filtered].sort((a, b) => {
@@ -88,10 +107,9 @@ export default function DiscoverPage() {
 
   // Calculate stats for logged-in user
   const myHoldings = filtered.filter(item => (item.myKeys || 0) > 0)
-  const totalValue = myHoldings.reduce((sum, item) => {
-    return sum + (item.myKeys || 0) * (item.currentPrice || 0)
-  }, 0)
+  const totalValue = userHoldingsValue
   const totalCurves = filtered.filter(item => item.mySharePct && item.mySharePct > 10).length
+  const baseListings = advancedListings
 
   return (
     <div className="min-h-screen bg-black pb-24 md:pb-6">
@@ -437,8 +455,14 @@ export default function DiscoverPage() {
           </div>
         </div>
 
-        {/* Display Content Based on Mode */}
-        {filtered.length > 0 ? (
+        {/* Loading State */}
+        {isLoading ? (
+          <div className="text-center py-20">
+            <div className="text-7xl mb-6">⏳</div>
+            <h3 className="text-2xl font-bold text-white mb-2">Loading listings...</h3>
+            <p className="text-zinc-400">Fetching data from Appwrite</p>
+          </div>
+        ) : filtered.length > 0 ? (
           <div>
             {/* Mobile List View - Always shown on mobile */}
             <div className="md:hidden flex flex-col gap-1.5">
@@ -513,8 +537,32 @@ export default function DiscoverPage() {
                     onBuyClick={(listing, amount) => {
                       setBuyModalListing(listing)
                     }}
-                    onCollaborateClick={(listing) => {
-                      info('Collaborate', 'Send invite to collaborate on ' + listing.title)
+                    onCollaborateClick={async (listing) => {
+                      if (!user?.id) {
+                        showError('Not Authenticated', 'Please log in to send collaboration invites')
+                        return
+                      }
+
+                      if (!listing.creatorId) {
+                        showError('Invalid Listing', 'Cannot find project creator')
+                        return
+                      }
+
+                      try {
+                        const invite = await sendNetworkInvite({
+                          senderId: user.id,
+                          receiverId: listing.creatorId,
+                          message: `Interested in collaborating on ${listing.title}!`
+                        })
+
+                        if (invite) {
+                          success('Invite Sent!', `Collaboration invite sent for ${listing.title}`)
+                        } else {
+                          warning('Already Sent', 'You may have already sent an invite to this user')
+                        }
+                      } catch (error: any) {
+                        showError('Failed to Send Invite', error.message)
+                      }
                     }}
                     onCommentClick={(listing) => {
                       setCommentDrawerListing(listing)
@@ -558,8 +606,32 @@ export default function DiscoverPage() {
                         onComment: () => {
                           setCommentDrawerListing(listing)
                         },
-                        onCollaborate: () => {
-                          info('Collaborate', 'Send invite to collaborate on ' + listing.title)
+                        onCollaborate: async () => {
+                          if (!user?.id) {
+                            showError('Not Authenticated', 'Please log in to send collaboration invites')
+                            return
+                          }
+
+                          if (!listing.creatorId) {
+                            showError('Invalid Listing', 'Cannot find project creator')
+                            return
+                          }
+
+                          try {
+                            const invite = await sendNetworkInvite({
+                              senderId: user.id,
+                              receiverId: listing.creatorId,
+                              message: `Interested in collaborating on ${listing.title}!`
+                            })
+
+                            if (invite) {
+                              success('Invite Sent!', `Collaboration invite sent for ${listing.title}`)
+                            } else {
+                              warning('Already Sent', 'You may have already sent an invite to this user')
+                            }
+                          } catch (error: any) {
+                            showError('Failed to Send Invite', error.message)
+                          }
                         },
                         onDetails: () => {
                           setDetailsModalListing(listing)
@@ -657,12 +729,52 @@ export default function DiscoverPage() {
             estLaunchTokens: null,
           }}
           onBuy={async (amount) => {
-            success('Buy', `Buying ${amount} keys...`)
-            // TODO: Wire to actual buy function
+            if (!buyModalListing.id) {
+              showError('Invalid Listing', 'Cannot find project ID')
+              return
+            }
+
+            const result = await buyKeys(buyModalListing.id, amount, undefined)
+
+            if (result.success) {
+              success('Keys Purchased!', result.message || `Bought ${amount} SOL worth of keys`)
+              setBuyModalListing(null)
+              // Refresh listings
+              const data = await getDiscoverListings({
+                type: typeFilter,
+                status: statusFilter,
+                sortBy,
+                searchQuery: searchQuery || undefined,
+              })
+              setAdvancedListings(data.advanced)
+              setUnifiedListings(data.unified)
+            } else {
+              showError('Purchase Failed', result.error || 'Failed to buy keys')
+            }
           }}
-          onSell={async (amount) => {
-            success('Sell', `Selling ${amount} keys...`)
-            // TODO: Wire to actual sell function
+          onSell={async (keysToSell) => {
+            if (!buyModalListing.id) {
+              showError('Invalid Listing', 'Cannot find project ID')
+              return
+            }
+
+            const result = await sellKeys(buyModalListing.id, keysToSell)
+
+            if (result.success) {
+              success('Keys Sold!', result.message || `Sold ${keysToSell} keys`)
+              setBuyModalListing(null)
+              // Refresh listings
+              const data = await getDiscoverListings({
+                type: typeFilter,
+                status: statusFilter,
+                sortBy,
+                searchQuery: searchQuery || undefined,
+              })
+              setAdvancedListings(data.advanced)
+              setUnifiedListings(data.unified)
+            } else {
+              showError('Sell Failed', result.error || 'Failed to sell keys')
+            }
           }}
         />
       )}
@@ -681,11 +793,48 @@ export default function DiscoverPage() {
       <SubmitLaunchDrawer
         isOpen={showSubmitDrawer}
         onClose={() => setShowSubmitDrawer(false)}
-        onSubmit={(data) => {
-          console.log('Launch submitted:', data)
-          success('Launch submitted successfully!')
-          setShowSubmitDrawer(false)
-          // TODO: Send to backend API
+        onSubmit={async (data) => {
+          if (!user?.id) {
+            showError('Not Authenticated', 'Please log in to create a launch')
+            return
+          }
+
+          try {
+            // TODO: Upload logoFile to storage and get URL
+            const logoUrl = '' // Placeholder until file upload is wired
+
+            // Create launch in Appwrite
+            const launch = await createLaunchDocument({
+              launchId: `launch_${Date.now()}`,
+              scope: data.scope === 'MEME' ? 'CCM' : data.scope, // Map MEME to CCM
+              title: data.title,
+              subtitle: data.subtitle || data.description,
+              logoUrl: logoUrl,
+              description: data.description,
+              createdBy: user.id,
+              convictionPct: 0,
+              commentsCount: 0,
+              upvotes: 0,
+              status: data.status === 'Live' ? 'live' : 'upcoming'
+            })
+
+            if (launch) {
+              success('Launch Created!', `${data.title} has been submitted`)
+              setShowSubmitDrawer(false)
+
+              // Refresh listings to show new launch
+              const newListings = await getDiscoverListings({
+                type: typeFilter,
+                status: statusFilter,
+                sortBy,
+                searchQuery: searchQuery || undefined,
+              })
+              setAdvancedListings(newListings.advanced)
+              setUnifiedListings(newListings.unified)
+            }
+          } catch (error: any) {
+            showError('Submission Failed', error.message || 'Failed to create launch')
+          }
         }}
       />
       </div>

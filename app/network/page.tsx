@@ -9,24 +9,62 @@ import { NetworkTicker } from '@/components/network/NetworkTicker'
 import { DealflowModal, DealflowSubmission } from '@/components/network/DealflowModal'
 import { useCurveActivation } from '@/contexts/CurveActivationContext'
 import { useToast } from '@/hooks/useToast'
+import { usePrivy } from '@privy-io/react-auth'
+import { createDealflow } from '@/lib/appwrite/services/dealflow'
+import { getNetworkInvites } from '@/lib/appwrite/services/network'
+import { CurveService } from '@/lib/appwrite/services/curves'
+import { useEffect } from 'react'
 
 export default function NetworkPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [mobileView, setMobileView] = useState<'users' | 'dealflow'>('users')
   const [showDealflowModal, setShowDealflowModal] = useState(false)
   const { isActivated } = useCurveActivation()
-  const { success } = useToast()
+  const { user } = usePrivy()
+  const { success, error: showError } = useToast()
 
-  // Mock metrics (replace with real data)
-  const metrics = {
-    onlineNow: 234,
-    openTasks: 45,
+  // Real metrics from Appwrite
+  const [metrics, setMetrics] = useState({
+    onlineNow: 0,
+    openTasks: 0,
     holders: 0,
     collaborations: 0,
-  }
+  })
 
-  // Mock referral link
-  const referralLink = `${typeof window !== 'undefined' ? window.location.origin : ''}/ref/user123`
+  // Real referral link with user ID
+  const referralLink = `${typeof window !== 'undefined' ? window.location.origin : ''}/ref/${user?.id || 'signup'}`
+
+  // Load metrics from Appwrite
+  useEffect(() => {
+    if (!user?.id) return
+
+    async function loadMetrics() {
+      const userId = user?.id
+      if (!userId) return
+
+      try {
+        // Get network connections
+        const invites = await getNetworkInvites({
+          userId,
+          status: 'accepted'
+        })
+
+        // Get user's curve holders
+        const curve = await CurveService.getCurveByOwner('user', userId)
+
+        setMetrics({
+          onlineNow: 0, // TODO: Implement real-time presence tracking
+          openTasks: 0, // TODO: Connect to quests/tasks system
+          holders: curve?.holders || 0,
+          collaborations: invites.length,
+        })
+      } catch (error) {
+        console.error('Failed to load network metrics:', error)
+      }
+    }
+
+    loadMetrics()
+  }, [user?.id])
 
   const handleCopyRefLink = () => {
     navigator.clipboard.writeText(referralLink)
@@ -50,10 +88,18 @@ export default function NetworkPage() {
   }
 
   const handleDealflowSubmit = async (data: DealflowSubmission) => {
-    // TODO: Wire to backend API
-    console.log('Dealflow submission:', data)
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    if (!user?.id) {
+      throw new Error('Please log in to submit dealflow')
+    }
+
+    try {
+      await createDealflow({
+        userId: user.id,
+        ...data
+      })
+    } catch (error: any) {
+      throw new Error(error.message || 'Failed to submit dealflow')
+    }
   }
 
   return (

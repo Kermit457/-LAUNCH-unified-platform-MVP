@@ -98,7 +98,7 @@ export function Dealflow() {
                 <div className="flex items-center gap-2 mb-1">
                   <h3 className="font-bold text-white text-sm leading-tight">{deal.title}</h3>
                   {deal.verified && (
-                    <CheckCircle2 className="w-3.5 h-3.5 text-[#00FF88] flex-shrink-0" title="Verified" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[#00FF88] flex-shrink-0" />
                   )}
                 </div>
                 <div className="flex items-center gap-2 text-xs text-zinc-500">

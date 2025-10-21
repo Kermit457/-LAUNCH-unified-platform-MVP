@@ -6,6 +6,10 @@ import { MessageCircle, UserPlus, Send, Gift, Info, MoreHorizontal, ShoppingCart
 import { useCurveActivation } from '@/contexts/CurveActivationContext'
 import { SimpleBuySellModal } from '@/components/curve/SimpleBuySellModal'
 import { useToast } from '@/hooks/useToast'
+import { usePrivy } from '@privy-io/react-auth'
+import { useRouter } from 'next/navigation'
+import { createDMThread } from '@/lib/appwrite/services/messages'
+import { sendNetworkInvite } from '@/lib/appwrite/services/network'
 
 export interface UserCardProps {
   user: {
@@ -37,12 +41,15 @@ export function UserCard({
   compact = false
 }: UserCardProps) {
   const { isActivated } = useCurveActivation()
+  const { user: privyUser } = usePrivy()
+  const router = useRouter()
   const { success, error: showError } = useToast()
   const [showInfoPopup, setShowInfoPopup] = useState(false)
   const [showBuyKeyModal, setShowBuyKeyModal] = useState(false)
   const [buyKeyAction, setBuyKeyAction] = useState<'connect' | 'invite' | 'message' | null>(null)
+  const [isProcessing, setIsProcessing] = useState(false)
 
-  // Mock data for SimpleBuySellModal - replace with real data
+  // Mock data for SimpleBuySellModal - TODO: Replace with real curve data from Appwrite
   const userBalance = 10 // SOL
   const userKeys = 0 // Keys owned of this user
 
@@ -56,24 +63,68 @@ export function UserCard({
     onConnect?.(user.id)
   }
 
-  const handleInvite = (e: React.MouseEvent) => {
+  const handleInvite = async (e: React.MouseEvent) => {
     e.stopPropagation()
+
+    if (!privyUser?.id) {
+      showError('Not Authenticated', 'Please log in to send invites')
+      return
+    }
+
     if (!isActivated) {
       setBuyKeyAction('invite')
       setShowBuyKeyModal(true)
       return
     }
-    onInvite?.(user.id)
+
+    // Send network invite
+    setIsProcessing(true)
+    try {
+      const invite = await sendNetworkInvite({
+        senderId: privyUser.id,
+        receiverId: user.id,
+        message: `Let's collaborate!`
+      })
+
+      if (invite) {
+        success('Invite Sent!', `Network invite sent to @${user.handle}`)
+        onInvite?.(user.id)
+      } else {
+        showError('Invite Failed', 'You may have already sent an invite to this user')
+      }
+    } catch (error: any) {
+      showError('Failed to Send Invite', error.message)
+    } finally {
+      setIsProcessing(false)
+    }
   }
 
-  const handleMessage = (e: React.MouseEvent) => {
+  const handleMessage = async (e: React.MouseEvent) => {
     e.stopPropagation()
+
+    if (!privyUser?.id) {
+      showError('Not Authenticated', 'Please log in to send messages')
+      return
+    }
+
     if (!isActivated) {
       setBuyKeyAction('message')
       setShowBuyKeyModal(true)
       return
     }
-    onMessage?.(user.id)
+
+    // Create DM thread and navigate to chat
+    setIsProcessing(true)
+    try {
+      const thread = await createDMThread(privyUser.id, user.id)
+      success('Opening Chat', `Starting conversation with @${user.handle}`)
+      router.push(`/chat?thread=${thread.$id}`)
+      onMessage?.(user.id)
+    } catch (error: any) {
+      showError('Failed to Open Chat', error.message)
+    } finally {
+      setIsProcessing(false)
+    }
   }
 
   const handleBuyKey = (e: React.MouseEvent) => {
@@ -133,13 +184,15 @@ export function UserCard({
         <div className="grid grid-cols-2 gap-0.5 md:gap-1">
           <button
             onClick={handleMessage}
-            className="px-1.5 md:px-2 py-1 md:py-1.5 rounded-md md:rounded-lg font-bold text-[9px] md:text-xs transition-all flex items-center justify-center gap-0.5 md:gap-1 bg-zinc-800 hover:bg-zinc-700 text-white"
+            disabled={isProcessing}
+            className="px-1.5 md:px-2 py-1 md:py-1.5 rounded-md md:rounded-lg font-bold text-[9px] md:text-xs transition-all flex items-center justify-center gap-0.5 md:gap-1 bg-zinc-800 hover:bg-zinc-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <MessageCircle className="w-2.5 h-2.5 md:w-3 md:h-3" />
           </button>
           <button
             onClick={handleInvite}
-            className="px-1.5 md:px-2 py-1 md:py-1.5 rounded-md md:rounded-lg font-bold text-[9px] md:text-xs transition-all flex items-center justify-center gap-0.5 md:gap-1 bg-zinc-800 hover:bg-zinc-700 text-white"
+            disabled={isProcessing}
+            className="px-1.5 md:px-2 py-1 md:py-1.5 rounded-md md:rounded-lg font-bold text-[9px] md:text-xs transition-all flex items-center justify-center gap-0.5 md:gap-1 bg-zinc-800 hover:bg-zinc-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <UserPlus className="w-2.5 h-2.5 md:w-3 md:h-3" />
           </button>
@@ -305,13 +358,15 @@ export function UserCard({
         <div className="grid grid-cols-2 gap-1.5 md:gap-2">
           <button
             onClick={handleMessage}
-            className="px-2 md:px-3 py-1.5 md:py-2 rounded-md md:rounded-lg font-bold text-[9px] md:text-xs transition-all flex items-center justify-center gap-0.5 md:gap-1 bg-zinc-800 hover:bg-zinc-700 text-white"
+            disabled={isProcessing}
+            className="px-2 md:px-3 py-1.5 md:py-2 rounded-md md:rounded-lg font-bold text-[9px] md:text-xs transition-all flex items-center justify-center gap-0.5 md:gap-1 bg-zinc-800 hover:bg-zinc-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <MessageCircle className="w-2.5 h-2.5 md:w-3.5 md:h-3.5" />
           </button>
           <button
             onClick={handleInvite}
-            className="px-2 md:px-3 py-1.5 md:py-2 rounded-md md:rounded-lg font-bold text-[9px] md:text-xs transition-all flex items-center justify-center gap-0.5 md:gap-1 bg-zinc-800 hover:bg-zinc-700 text-white"
+            disabled={isProcessing}
+            className="px-2 md:px-3 py-1.5 md:py-2 rounded-md md:rounded-lg font-bold text-[9px] md:text-xs transition-all flex items-center justify-center gap-0.5 md:gap-1 bg-zinc-800 hover:bg-zinc-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <UserPlus className="w-2.5 h-2.5 md:w-3.5 md:h-3.5" />
           </button>
