@@ -1,0 +1,17 @@
+.mobileNav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 56px;
+  background-color: #000000;
+  border-top: 2px solid #27272a;
+  z-index: 9999;
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .mobileNav {
+    display: none;
+  }
+}

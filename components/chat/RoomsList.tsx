@@ -1,13 +1,13 @@
 'use client'
 
-import { Thread } from '@/lib/types'
-import { Hash, Users, Pin } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { useState, useEffect } from 'react'
+import { getUserThreads, type Thread as AppwriteThread } from '@/lib/appwrite/services/messages'
+import { Hash, Users, MessageCircle } from 'lucide-react'
+import { useWallet } from '@/contexts/WalletContext'
 
 interface RoomsListProps {
-  rooms: Thread[]
-  onSelectRoom: (roomId: string) => void
-  selectedRoomId?: string
+  onThreadClick: (threadId: string) => void
+  filterType?: 'dm' | 'group'
 }
 
 function timeAgo(timestamp: number): string {
@@ -19,101 +19,129 @@ function timeAgo(timestamp: number): string {
   return `${Math.floor(seconds / 604800)}w ago`
 }
 
-export function RoomsList({ rooms, onSelectRoom, selectedRoomId }: RoomsListProps) {
-  const groupRooms = rooms.filter(r => r.type === 'group')
+export function RoomsList({ onThreadClick, filterType }: RoomsListProps) {
+  const { address } = useWallet()
+  const [threads, setThreads] = useState<AppwriteThread[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  // Sort: pinned first, then by last message time
-  const sortedRooms = [...groupRooms].sort((a, b) => {
-    if (a.pinned && !b.pinned) return -1
-    if (!a.pinned && b.pinned) return 1
-    return b.lastMsgAt - a.lastMsgAt
-  })
+  useEffect(() => {
+    async function fetchThreads() {
+      if (!address) {
+        setLoading(false)
+        setError('Please connect your wallet')
+        return
+      }
 
-  if (sortedRooms.length === 0) {
+      try {
+        setLoading(true)
+        setError(null)
+        const data = await getUserThreads(address)
+        setThreads(data)
+      } catch (err: any) {
+        console.error('Failed to fetch threads:', err)
+        setError(err.message || 'Failed to load conversations')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchThreads()
+  }, [address])
+
+  // Filter by type if specified
+  const filteredThreads = filterType
+    ? threads.filter(t => t.type === filterType)
+    : threads
+
+  if (loading) {
     return (
-      <div className="rounded-2xl bg-white/5 border border-white/10 backdrop-blur p-6">
-        <h2 className="text-lg font-bold text-white mb-4">Rooms</h2>
-        <div className="text-center py-12">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-white/5 flex items-center justify-center">
-            <Users className="w-8 h-8 text-white/30" />
-          </div>
-          <p className="text-white/60 text-sm">No rooms. Start a group with your connections.</p>
+      <div className="text-center py-8 md:py-12">
+        <div className="w-6 h-6 md:w-8 md:h-8 border-3 md:border-4 border-[#8800FF] border-t-transparent rounded-full animate-spin mx-auto mb-2 md:mb-4" />
+        <p className="text-xs md:text-base text-zinc-400">Loading conversations...</p>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-8 md:py-12">
+        <div className="w-10 h-10 md:w-16 md:h-16 mx-auto mb-2 md:mb-4 rounded-full bg-red-500/10 flex items-center justify-center">
+          <MessageCircle className="w-5 h-5 md:w-8 md:h-8 text-red-400" />
         </div>
+        <p className="text-red-400 text-xs md:text-sm font-medium mb-1 md:mb-2">{error}</p>
+        <p className="text-[9px] md:text-xs text-zinc-600">Please connect your wallet and try again</p>
+      </div>
+    )
+  }
+
+  if (filteredThreads.length === 0) {
+    return (
+      <div className="text-center py-8 md:py-12">
+        <div className="w-10 h-10 md:w-16 md:h-16 mx-auto mb-2 md:mb-4 rounded-full bg-zinc-800/50 flex items-center justify-center">
+          <MessageCircle className="w-5 h-5 md:w-8 md:h-8 text-zinc-600" />
+        </div>
+        <p className="text-zinc-400 text-xs md:text-sm">No conversations yet</p>
+        <p className="text-[9px] md:text-xs text-zinc-600 mt-1 md:mt-2">Start a new chat to get started</p>
       </div>
     )
   }
 
   return (
-    <div className="rounded-2xl bg-white/5 border border-white/10 backdrop-blur p-6">
-      <h2 className="text-lg font-bold text-white mb-4">Rooms</h2>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-4">
+      {filteredThreads.map(thread => {
+        const lastMessageTime = thread.lastMessageAt
+          ? new Date(thread.lastMessageAt).getTime()
+          : Date.now()
 
-      <div className="space-y-2">
-        {sortedRooms.map(room => (
+        return (
           <div
-            key={room.id}
-            onClick={() => onSelectRoom(room.id)}
-            className={cn(
-              'p-3 rounded-lg border transition-colors cursor-pointer',
-              selectedRoomId === room.id
-                ? 'bg-purple-500/20 border-purple-500/50'
-                : 'bg-white/5 border-white/10 hover:bg-white/10'
-            )}
+            key={thread.$id}
+            onClick={() => onThreadClick(thread.$id)}
+            className="p-2 md:p-4 rounded-lg md:rounded-xl bg-zinc-900/50 border border-zinc-800 hover:border-[#8800FF]/50 transition-all cursor-pointer active:scale-98"
           >
-            <div className="flex items-center gap-3">
-              {/* Room icon */}
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-fuchsia-500/20 via-purple-500/20 to-cyan-500/20 border border-white/10 flex items-center justify-center flex-shrink-0">
-                <Hash className="w-5 h-5 text-fuchsia-400" />
+            <div className="flex items-center gap-2 md:gap-3">
+              {/* Icon - Mobile Optimized */}
+              <div className="w-8 h-8 md:w-12 md:h-12 rounded-md md:rounded-lg bg-gradient-to-br from-[#8800FF]/20 to-[#00FFFF]/20 border border-[#8800FF]/30 flex items-center justify-center flex-shrink-0">
+                {thread.type === 'dm' ? (
+                  <MessageCircle className="w-4 h-4 md:w-6 md:h-6 text-[#8800FF]" />
+                ) : (
+                  <Hash className="w-4 h-4 md:w-6 md:h-6 text-[#00FFFF]" />
+                )}
               </div>
 
-              {/* Room info */}
+              {/* Info - Mobile Optimized */}
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="font-medium text-white text-sm truncate">
-                    {room.name || 'Unnamed Room'}
-                  </span>
-                  {room.pinned && (
-                    <Pin className="w-3 h-3 text-fuchsia-400 fill-fuchsia-400 flex-shrink-0" />
-                  )}
+                <div className="font-medium text-white text-xs md:text-sm truncate mb-0.5 md:mb-1">
+                  {thread.name || (thread.type === 'dm' ? 'Direct Message' : 'Group Chat')}
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="flex items-center gap-1 text-xs text-white/50">
-                    <Users className="w-3 h-3" />
-                    {room.participantUserIds.length}
-                  </div>
-                  <span className="text-xs text-white/40">
-                    {timeAgo(room.lastMsgAt)}
-                  </span>
+                <div className="flex items-center gap-1 md:gap-2 text-[9px] md:text-xs text-zinc-500">
+                  <Users className="w-2.5 h-2.5 md:w-3 md:h-3" />
+                  {thread.participantIds.length} members
+                  <span>•</span>
+                  <span>{timeAgo(lastMessageTime)}</span>
                 </div>
               </div>
-
-              {/* Unread badge */}
-              {room.unread > 0 && (
-                <div className="w-5 h-5 rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 flex items-center justify-center flex-shrink-0">
-                  <span className="text-xs font-bold text-white">
-                    {room.unread > 9 ? '9+' : room.unread}
-                  </span>
-                </div>
-              )}
             </div>
 
-            {/* Project/Campaign tags */}
-            {(room.projectId || room.campaignId) && (
-              <div className="mt-2 flex items-center gap-2">
-                {room.projectId && (
-                  <span className="px-2 py-0.5 rounded-full text-xs bg-orange-500/20 text-orange-300 border border-orange-500/30">
+            {/* Tags - Mobile Optimized */}
+            {(thread.projectId || thread.campaignId) && (
+              <div className="mt-1.5 md:mt-3 flex gap-1 md:gap-2">
+                {thread.projectId && (
+                  <span className="px-1.5 py-0.5 md:px-2 rounded-full text-[9px] md:text-xs bg-orange-500/20 text-orange-300 border border-orange-500/30">
                     Project
                   </span>
                 )}
-                {room.campaignId && (
-                  <span className="px-2 py-0.5 rounded-full text-xs bg-green-500/20 text-green-300 border border-green-500/30">
+                {thread.campaignId && (
+                  <span className="px-1.5 py-0.5 md:px-2 rounded-full text-[9px] md:text-xs bg-green-500/20 text-green-300 border border-green-500/30">
                     Campaign
                   </span>
                 )}
               </div>
             )}
           </div>
-        ))}
-      </div>
+        )
+      })}
     </div>
   )
 }

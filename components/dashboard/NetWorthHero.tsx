@@ -54,9 +54,9 @@ export function NetWorthHero({
   }
 
   return (
-    <div className="mb-4 md:mb-8">
-      {/* Referral Network + Network + Net Worth Cards Grid - Compact on Mobile */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 md:gap-6 mb-3 md:mb-6">
+    <div className="mb-4 md:mb-6">
+      {/* Referral Network + Net Worth Cards Grid - 2 Column Layout */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 mb-3 md:mb-4">
         {/* Referral Network Card - Super Compact Mobile */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -129,79 +129,7 @@ export function NetWorthHero({
           </div>
         </motion.div>
 
-        {/* Network Card - Blue Gradient */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="relative overflow-hidden rounded-xl md:rounded-3xl bg-gradient-to-br from-[#0088FF]/20 via-zinc-900/60 to-[#0044FF]/20 border md:border-2 border-[#0088FF]/30 p-4 md:p-8"
-        >
-          {/* Animated Background */}
-          <div className="absolute inset-0 -z-10">
-            <motion.div
-              animate={{
-                scale: [1, 1.2, 1],
-                opacity: [0.3, 0.5, 0.3]
-              }}
-              transition={{ duration: 8, repeat: Infinity }}
-              className="absolute top-0 right-0 w-96 h-96 bg-[#0088FF]/20 rounded-full blur-3xl"
-            />
-            <motion.div
-              animate={{
-                scale: [1, 1.1, 1],
-                opacity: [0.2, 0.4, 0.2]
-              }}
-              transition={{ duration: 10, repeat: Infinity }}
-              className="absolute bottom-0 left-0 w-96 h-96 bg-[#0044FF]/20 rounded-full blur-3xl"
-            />
-          </div>
-
-          {/* Content */}
-          <div className="relative z-10">
-            <div className="flex items-center gap-2 md:gap-3 mb-3 md:mb-6">
-              <div className="p-2 md:p-3 rounded-lg md:rounded-2xl bg-gradient-to-br from-[#0088FF] to-[#0044FF]">
-                <Users2 className="w-4 h-4 md:w-7 md:h-7 text-white font-bold" />
-              </div>
-              <div>
-                <h1 className="text-base md:text-2xl font-bold text-white">Network</h1>
-                <p className="text-zinc-400 text-xs md:text-sm">Your total reach</p>
-              </div>
-            </div>
-
-            {/* Main Value */}
-            <div className="mb-3 md:mb-4">
-              <div className="text-2xl md:text-6xl font-bold bg-gradient-to-r from-[#0088FF] via-[#00AAFF] to-[#00DDFF] bg-clip-text text-transparent mb-1 md:mb-2" suppressHydrationWarning>
-                {networkSize.toLocaleString()}
-              </div>
-              <div className="text-sm md:text-2xl text-zinc-400">
-                Total connections
-              </div>
-            </div>
-
-            {/* Network Stats */}
-            <div className="grid grid-cols-2 gap-2 md:gap-3">
-              <div className="flex items-center gap-1.5 md:gap-2 px-2 md:px-4 py-1.5 md:py-2 rounded-lg md:rounded-xl bg-[#0088FF]/20 border border-[#0088FF]/30">
-                <Users2 className="w-4 h-4 md:w-5 md:h-5 text-[#0088FF]" />
-                <div>
-                  <div className="text-[10px] md:text-xs text-zinc-500">Holders</div>
-                  <div className="font-bold text-sm md:text-base text-white" suppressHydrationWarning>
-                    {holdingsCount.toLocaleString()}
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center gap-1.5 md:gap-2 px-2 md:px-4 py-1.5 md:py-2 rounded-lg md:rounded-xl bg-[#00AAFF]/20 border border-[#00AAFF]/30">
-                <Rocket className="w-4 h-4 md:w-5 md:h-5 text-[#00AAFF]" />
-                <div>
-                  <div className="text-[10px] md:text-xs text-zinc-500">Collaborations</div>
-                  <div className="font-bold text-sm md:text-base text-white" suppressHydrationWarning>
-                    {collaborationsCount.toLocaleString()}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Net Worth Card - Green/Yellow Gradient (moved to right) */}
+        {/* Net Worth Card - Green/Yellow Gradient */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

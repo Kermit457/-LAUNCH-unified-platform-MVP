@@ -4,63 +4,44 @@ import { useEffect, useState } from 'react'
 import { X, Users, Hash } from 'lucide-react'
 import { MessageList } from './MessageList'
 import { MessageInput } from './MessageInput'
-import { useNetworkStore } from '@/lib/stores/useNetworkStore'
-import { useUser } from '@/hooks/useUser'
-import { getThreadMessages, sendMessage, markThreadAsRead as markThreadRead } from '@/lib/appwrite/services/messages'
-import type { Message as AppwriteMessage } from '@/lib/appwrite/services/messages'
+import { useRealtimeMessages } from '@/hooks/useRealtimeMessages'
+import { sendMessage, markThreadAsRead as markThreadRead, getUserThreads, type Thread } from '@/lib/appwrite/services/messages'
+import { useWallet } from '@/contexts/WalletContext'
 
 interface ChatDrawerProps {
+  threadId: string
   isOpen: boolean
   onClose: () => void
 }
 
-export function ChatDrawer({ isOpen, onClose }: ChatDrawerProps) {
-  const { userId } = useUser()
-  const activeThreadId = useNetworkStore(state => state.activeThreadId)
-  const getThreadById = useNetworkStore(state => state.getThreadById)
-  const connections = useNetworkStore(state => state.connections)
+export function ChatDrawer({ threadId, isOpen, onClose }: ChatDrawerProps) {
+  const { address } = useWallet()
+  const { messages, loading, error } = useRealtimeMessages(threadId)
+  const [thread, setThread] = useState<Thread | null>(null)
 
-  const [messages, setMessages] = useState<Array<{ id: string; threadId: string; fromUserId: string; fromHandle: string; content: string; sentAt: number }>>([])
-  const [loading, setLoading] = useState(false)
-
-  const thread = activeThreadId ? getThreadById(activeThreadId) : null
-
-  // Fetch messages from Appwrite when thread changes
+  // Fetch thread data
   useEffect(() => {
-    async function fetchMessages() {
-      if (!activeThreadId) return
+    async function fetchThread() {
+      if (!threadId || !address) return
 
       try {
-        setLoading(true)
-        const appwriteMessages = await getThreadMessages(activeThreadId)
-
-        // Convert to component format
-        const formattedMessages = appwriteMessages.map(m => ({
-          id: m.$id,
-          threadId: m.threadId,
-          fromUserId: m.senderId,
-          fromHandle: '@user', // TODO: Fetch user details
-          content: m.content,
-          sentAt: new Date(m.$createdAt).getTime()
-        }))
-
-        setMessages(formattedMessages)
+        const threads = await getUserThreads(address)
+        const currentThread = threads.find(t => t.$id === threadId)
+        if (currentThread) setThread(currentThread)
       } catch (error) {
-        console.error('Failed to fetch messages:', error)
-      } finally {
-        setLoading(false)
+        console.error('Failed to fetch thread:', error)
       }
     }
 
-    fetchMessages()
-  }, [activeThreadId])
+    fetchThread()
+  }, [threadId, address])
 
   // Mark thread as read when opened
   useEffect(() => {
     async function markAsRead() {
-      if (isOpen && activeThreadId && userId) {
+      if (isOpen && threadId && address) {
         try {
-          await markThreadRead(activeThreadId, userId)
+          await markThreadRead(threadId, address)
         } catch (error) {
           console.error('Failed to mark thread as read:', error)
         }
@@ -68,87 +49,62 @@ export function ChatDrawer({ isOpen, onClose }: ChatDrawerProps) {
     }
 
     markAsRead()
-  }, [isOpen, activeThreadId, userId])
+  }, [isOpen, threadId, address])
 
   const handleSend = async (content: string) => {
-    if (!activeThreadId || !userId) return
+    if (!threadId || !address || !thread) return
 
     try {
-      const message = await sendMessage({
-        threadId: activeThreadId,
-        senderId: userId,
-        content
+      // Determine receiverId from thread participants
+      const receiverId = thread.participantIds.find(id => id !== address) || thread.participantIds[0]
+
+      await sendMessage({
+        threadId,
+        senderId: address,
+        receiverId,
+        text: content
       })
-
-      // Add to local state optimistically
-      const newMessage = {
-        id: message.$id,
-        threadId: message.threadId,
-        fromUserId: message.senderId,
-        fromHandle: '@you',
-        content: message.content,
-        sentAt: new Date(message.$createdAt).getTime()
-      }
-
-      setMessages(prev => [...prev, newMessage])
+      // Realtime hook will automatically update messages
     } catch (error) {
       console.error('Failed to send message:', error)
     }
   }
 
-  if (!isOpen || !thread) return null
+  if (!isOpen) return null
 
-  // Get thread display name
-  let threadName = ''
-  if (thread.type === 'group') {
-    threadName = thread.name || 'Unnamed Room'
-  } else {
-    // For DM, show the other user's name
-    const otherUserId = thread.participantUserIds[0]
-    const otherUser = connections.find(c => c.userId === otherUserId)
-    threadName = otherUser?.handle || 'Direct Message'
-  }
-
-  // Get participant count
-  const participantCount = thread.type === 'group' ? thread.participantUserIds.length + 1 : 2
+  // Format messages for MessageList component
+  const formattedMessages = messages.map(m => ({
+    id: m.id,
+    threadId: m.threadId,
+    fromUserId: m.fromUserId,
+    fromHandle: m.fromHandle || '@user',
+    content: m.content,
+    sentAt: m.sentAt,
+  }))
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
-      <div className="w-full max-w-4xl h-[80vh] bg-[#0B0F1A] rounded-2xl border border-white/10 flex flex-col overflow-hidden shadow-2xl">
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
-          <div className="flex items-center gap-3">
+    <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/90 md:bg-black/80 backdrop-blur-sm">
+      <div className="w-full md:max-w-4xl h-[95vh] md:h-[80vh] bg-black md:bg-zinc-900 rounded-t-2xl md:rounded-2xl border-t border-zinc-800 md:border flex flex-col overflow-hidden shadow-2xl">
+        {/* Header - Mobile Optimized */}
+        <div className="flex items-center justify-between px-3 py-2.5 md:px-6 md:py-4 border-b border-zinc-800 bg-zinc-900/50 backdrop-blur-xl">
+          <div className="flex items-center gap-2 md:gap-3">
             {/* Icon */}
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-fuchsia-500/20 via-purple-500/20 to-cyan-500/20 border border-white/10 flex items-center justify-center">
-              {thread.type === 'group' ? (
-                <Hash className="w-5 h-5 text-fuchsia-400" />
+            <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-gradient-to-br from-[#8800FF]/20 to-[#00FFFF]/20 border border-[#8800FF]/30 flex items-center justify-center">
+              {thread?.type === 'dm' ? (
+                <Hash className="w-4 h-4 md:w-5 md:h-5 text-[#8800FF]" />
               ) : (
-                <Users className="w-5 h-5 text-fuchsia-400" />
+                <Hash className="w-4 h-4 md:w-5 md:h-5 text-[#00FFFF]" />
               )}
             </div>
 
             {/* Thread info */}
             <div>
-              <h2 className="text-lg font-bold text-white">{threadName}</h2>
-              <div className="flex items-center gap-2 text-xs text-white/50">
-                <Users className="w-3 h-3" />
-                <span>{participantCount} participants</span>
-                {thread.projectId && (
-                  <>
-                    <span>·</span>
-                    <span className="px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-300 border border-orange-500/30">
-                      Project
-                    </span>
-                  </>
-                )}
-                {thread.campaignId && (
-                  <>
-                    <span>·</span>
-                    <span className="px-2 py-0.5 rounded-full bg-green-500/20 text-green-300 border border-green-500/30">
-                      Campaign
-                    </span>
-                  </>
-                )}
+              <h2 className="text-sm md:text-lg font-bold text-white">
+                {thread?.name || (thread?.type === 'dm' ? 'Direct Message' : 'Chat Room')}
+              </h2>
+              <div className="flex items-center gap-1.5 md:gap-2 text-[10px] md:text-xs text-zinc-500">
+                <Users className="w-2.5 h-2.5 md:w-3 md:h-3" />
+                <span>{thread?.type === 'dm' ? 'Direct message' : 'Group conversation'}</span>
               </div>
             </div>
           </div>
@@ -156,14 +112,14 @@ export function ChatDrawer({ isOpen, onClose }: ChatDrawerProps) {
           {/* Close button */}
           <button
             onClick={onClose}
-            className="p-2 rounded-lg hover:bg-white/10 text-white/70 hover:text-white transition-all"
+            className="p-1.5 md:p-2 rounded-lg hover:bg-zinc-800 text-zinc-400 hover:text-white transition-all active:scale-95"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5 md:w-6 md:h-6" />
           </button>
         </div>
 
         {/* Messages */}
-        <MessageList messages={messages} currentUserId="current_user" />
+        <MessageList messages={formattedMessages} currentUserId={address || 'current_user'} />
 
         {/* Input */}
         <MessageInput onSend={handleSend} />

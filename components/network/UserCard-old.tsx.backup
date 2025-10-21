@@ -1,0 +1,247 @@
+"use client"
+
+import { motion } from 'framer-motion'
+import {
+  MessageCircle, Send, UserPlus, Eye, Briefcase, Award, TrendingUp, Gift, Star
+} from 'lucide-react'
+import { useCurveActivation } from '@/contexts/CurveActivationContext'
+
+export interface UserCardProps {
+  user: {
+    id: string
+    handle: string
+    avatar?: string
+    xpTier: 'bronze' | 'silver' | 'gold' | 'platinum'
+    badges: string[]
+    verified: boolean
+    projectsHelped: number
+    earned: string
+    invites: number
+    skills?: string[]
+    online?: boolean
+    mutualProjects?: number
+  }
+  compact?: boolean
+  onConnect?: (userId: string) => void
+  onInvite?: (userId: string) => void
+  onMessage?: (userId: string) => void
+  onTip?: (userId: string) => void
+  onFollow?: (userId: string) => void
+  onViewProfile?: (userId: string) => void
+}
+
+const tierColors = {
+  bronze: 'from-[#CD7F32] to-[#B87333]',
+  silver: 'from-[#C0C0C0] to-[#A8A8A8]',
+  gold: 'from-[#FFD700] to-[#FFC700]',
+  platinum: 'from-[#E5E4E2] to-[#D1D0CE]'
+}
+
+const tierBorderColors = {
+  bronze: 'border-[#CD7F32]/30',
+  silver: 'border-[#C0C0C0]/30',
+  gold: 'border-[#FFD700]/30',
+  platinum: 'border-[#E5E4E2]/30'
+}
+
+export function UserCard({
+  user,
+  compact = true,
+  onConnect,
+  onInvite,
+  onMessage,
+  onTip,
+  onFollow,
+  onViewProfile
+}: UserCardProps) {
+  const { isActivated } = useCurveActivation()
+
+  const handleConnect = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (!isActivated) {
+      // TODO: Show modal: "Activate your curve to connect with builders"
+      console.log('Curve required to connect')
+      return
+    }
+    onConnect?.(user.id)
+  }
+
+  const handleInvite = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (!isActivated) {
+      // TODO: Show modal: "Activate your curve to invite builders"
+      console.log('Curve required to invite')
+      return
+    }
+    onInvite?.(user.id)
+  }
+
+  const handleMessage = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (!isActivated) {
+      // TODO: Show modal: "Activate your curve to send DMs"
+      console.log('Curve required to DM')
+      return
+    }
+    onMessage?.(user.id)
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      whileHover={{ scale: 1.02 }}
+      className={`
+        p-4 rounded-xl border backdrop-blur-sm transition-all cursor-pointer
+        bg-zinc-900/50 hover:bg-zinc-800/50
+        ${tierBorderColors[user.xpTier]}
+      `}
+      onClick={() => onViewProfile?.(user.id)}
+    >
+      {/* Header */}
+      <div className="flex items-start gap-3 mb-3">
+        {/* Avatar */}
+        <div className="relative">
+          <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${tierColors[user.xpTier]} p-0.5`}>
+            <div className="w-full h-full rounded-xl bg-zinc-900 flex items-center justify-center text-white font-bold">
+              {user.avatar || user.handle.slice(0, 2).toUpperCase()}
+            </div>
+          </div>
+          {user.online && (
+            <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-zinc-900" />
+          )}
+        </div>
+
+        {/* Name & Tier */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-1">
+            <h3 className="font-bold text-white truncate">@{user.handle}</h3>
+            {user.verified && (
+              <div className="w-4 h-4 bg-[#00FFFF] rounded-full flex items-center justify-center flex-shrink-0">
+                <span className="text-black text-[10px]">✓</span>
+              </div>
+            )}
+          </div>
+          <div className="flex items-center gap-2">
+            <span className={`text-xs font-bold bg-gradient-to-r ${tierColors[user.xpTier]} text-transparent bg-clip-text`}>
+              {user.xpTier.toUpperCase()}
+            </span>
+            {user.badges.slice(0, 3).map((badge, i) => (
+              <span key={i} className="text-xs">
+                {badge}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Mini Stats */}
+      <div className="grid grid-cols-3 gap-2 mb-3 text-center">
+        <div className="p-2 rounded-lg bg-zinc-800/50">
+          <div className="text-xs text-zinc-500 mb-0.5">Projects helped</div>
+          <div className="text-sm font-bold text-white">{user.projectsHelped}</div>
+        </div>
+        <div className="p-2 rounded-lg bg-zinc-800/50">
+          <div className="text-xs text-zinc-500 mb-0.5">Earned</div>
+          <div className="text-sm font-bold text-[#00FF88]">{user.earned}</div>
+        </div>
+        <div className="p-2 rounded-lg bg-zinc-800/50">
+          <div className="text-xs text-zinc-500 mb-0.5">Invites</div>
+          <div className="text-sm font-bold text-[#FFD700]">{user.invites}</div>
+        </div>
+      </div>
+
+      {/* Skills */}
+      {user.skills && user.skills.length > 0 && (
+        <div className="flex flex-wrap gap-1 mb-3">
+          {user.skills.slice(0, 3).map((skill, i) => (
+            <span
+              key={i}
+              className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-zinc-800/50 text-zinc-400 border border-zinc-700"
+            >
+              {skill}
+            </span>
+          ))}
+          {user.skills.length > 3 && (
+            <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-zinc-800/50 text-zinc-400">
+              +{user.skills.length - 3}
+            </span>
+          )}
+        </div>
+      )}
+
+      {/* Primary CTAs */}
+      <div className="grid grid-cols-2 gap-2 mb-2">
+        <button
+          onClick={handleConnect}
+          className={`px-3 py-2 rounded-lg font-bold text-xs transition-all flex items-center justify-center gap-1 ${
+            isActivated
+              ? 'bg-[#8800FF] hover:bg-[#9910FF] text-white'
+              : 'bg-zinc-800/50 text-zinc-500 cursor-not-allowed'
+          }`}
+          disabled={!isActivated}
+          title={!isActivated ? 'Activate your curve to connect' : 'Connect'}
+        >
+          <UserPlus className="w-3.5 h-3.5" />
+          Connect
+        </button>
+        <button
+          onClick={handleMessage}
+          className={`px-3 py-2 rounded-lg font-bold text-xs transition-all flex items-center justify-center gap-1 ${
+            isActivated
+              ? 'bg-zinc-800 hover:bg-zinc-700 text-white'
+              : 'bg-zinc-800/50 text-zinc-500 cursor-not-allowed'
+          }`}
+          disabled={!isActivated}
+          title={!isActivated ? 'Activate your curve to DM' : 'Send DM'}
+        >
+          <MessageCircle className="w-3.5 h-3.5" />
+          DM
+        </button>
+      </div>
+
+      {/* Secondary Actions */}
+      <div className="grid grid-cols-3 gap-1">
+        <button
+          onClick={handleInvite}
+          className={`px-2 py-1.5 rounded-lg text-xs transition-all flex items-center justify-center gap-1 ${
+            isActivated
+              ? 'bg-zinc-800/50 hover:bg-zinc-700/50 text-zinc-400 hover:text-white'
+              : 'bg-zinc-800/30 text-zinc-600 cursor-not-allowed'
+          }`}
+          disabled={!isActivated}
+          title={!isActivated ? 'Activate your curve to invite' : 'Invite to Project'}
+        >
+          <Send className="w-3 h-3" />
+        </button>
+        <button
+          onClick={(e) => {
+            e.stopPropagation()
+            onTip?.(user.id)
+          }}
+          className="px-2 py-1.5 rounded-lg bg-zinc-800/50 hover:bg-zinc-700/50 text-zinc-400 hover:text-white text-xs transition-all flex items-center justify-center gap-1"
+          title="Tip/Reward"
+        >
+          <Gift className="w-3 h-3" />
+        </button>
+        <button
+          onClick={(e) => {
+            e.stopPropagation()
+            onFollow?.(user.id)
+          }}
+          className="px-2 py-1.5 rounded-lg bg-zinc-800/50 hover:bg-zinc-700/50 text-zinc-400 hover:text-white text-xs transition-all flex items-center justify-center gap-1"
+          title="Follow"
+        >
+          <Star className="w-3 h-3" />
+        </button>
+      </div>
+
+      {/* Mutual Projects Indicator */}
+      {user.mutualProjects && user.mutualProjects > 0 && (
+        <div className="mt-2 text-xs text-zinc-500 text-center">
+          {user.mutualProjects} mutual {user.mutualProjects === 1 ? 'project' : 'projects'}
+        </div>
+      )}
+    </motion.div>
+  )
+}

@@ -38,7 +38,7 @@ export function MessageList({ messages, currentUserId = 'current_user' }: Messag
   }
 
   return (
-    <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4">
+    <div ref={scrollRef} className="flex-1 overflow-y-auto p-2 md:p-4 space-y-2 md:space-y-3 pb-safe">
       {messages.map((message, index) => {
         const isOwn = message.fromUserId === currentUserId
         const prevMessage = index > 0 ? messages[index - 1] : null
@@ -48,28 +48,28 @@ export function MessageList({ messages, currentUserId = 'current_user' }: Messag
           <div
             key={message.id}
             className={cn(
-              'flex gap-3',
+              'flex gap-2 md:gap-3',
               isOwn ? 'flex-row-reverse' : 'flex-row',
-              !showAvatar && 'ml-12'
+              !showAvatar && 'ml-8 md:ml-11'
             )}
           >
             {/* Avatar */}
             {showAvatar && (
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-fuchsia-500 via-purple-500 to-cyan-500 flex items-center justify-center text-white font-bold text-xs flex-shrink-0">
-                {message.fromHandle?.slice(1, 3).toUpperCase() || 'U'}
+              <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-gradient-to-br from-[#8800FF] via-purple-500 to-[#00FFFF] flex items-center justify-center text-white font-bold text-xs flex-shrink-0">
+                {message.fromHandle?.slice(1, 3).toUpperCase() || 'US'}
               </div>
             )}
 
             {/* Message bubble */}
-            <div className={cn('flex-1 max-w-[70%]', isOwn && 'flex justify-end')}>
+            <div className={cn('flex-1 max-w-[75%] md:max-w-[70%]', isOwn && 'flex justify-end')}>
               <div>
                 {/* Header (only on first message in group) */}
                 {showAvatar && !isOwn && (
-                  <div className="flex items-center gap-2 mb-1 px-1">
-                    <span className="text-xs font-medium text-white/80">
-                      {message.fromHandle || 'Unknown'}
+                  <div className="flex items-center gap-1.5 md:gap-2 mb-0.5 md:mb-1 px-1">
+                    <span className="text-[10px] md:text-xs font-medium text-zinc-300">
+                      {message.fromHandle || '@user'}
                     </span>
-                    <span className="text-xs text-white/40">
+                    <span className="text-[9px] md:text-xs text-zinc-500">
                       {timeAgo(message.sentAt)}
                     </span>
                   </div>
@@ -78,20 +78,20 @@ export function MessageList({ messages, currentUserId = 'current_user' }: Messag
                 {/* Content */}
                 <div
                   className={cn(
-                    'rounded-2xl px-4 py-2.5',
+                    'rounded-2xl px-3 py-2 md:px-4 md:py-2.5',
                     isOwn
-                      ? 'bg-gradient-to-r from-fuchsia-500/20 via-purple-500/20 to-cyan-500/20 border border-fuchsia-500/30'
-                      : 'bg-white/5 border border-white/10'
+                      ? 'bg-gradient-to-r from-[#8800FF]/30 via-purple-500/20 to-[#00FFFF]/20 border border-[#8800FF]/40'
+                      : 'bg-zinc-800/60 border border-zinc-700/50'
                   )}
                 >
-                  <p className="text-sm text-white whitespace-pre-wrap break-words">
+                  <p className="text-xs md:text-sm text-white whitespace-pre-wrap break-words leading-relaxed">
                     {message.content}
                   </p>
                 </div>
 
                 {/* Timestamp for own messages */}
                 {isOwn && showAvatar && (
-                  <div className="text-xs text-white/40 text-right mt-1 px-1">
+                  <div className="text-[9px] md:text-xs text-zinc-500 text-right mt-0.5 md:mt-1 px-1">
                     {timeAgo(message.sentAt)}
                   </div>
                 )}

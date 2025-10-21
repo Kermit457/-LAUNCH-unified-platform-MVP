@@ -8,6 +8,7 @@ import {
   DollarSign,
   User,
   Users,
+  MessageCircle,
   type LucideIcon
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -26,21 +27,7 @@ const tabs: NavTab[] = [
     label: 'Discover',
     icon: Search,
     path: '/discover',
-    activePattern: /^\/(discover)?$/
-  },
-  {
-    id: 'launch',
-    label: 'Launch',
-    icon: PlusCircle,
-    path: '/launch',
-    activePattern: /^\/launch/
-  },
-  {
-    id: 'earn',
-    label: 'Earn',
-    icon: DollarSign,
-    path: '/earn',
-    activePattern: /^\/earn/
+    activePattern: /^\/discover/
   },
   {
     id: 'network',
@@ -50,11 +37,25 @@ const tabs: NavTab[] = [
     activePattern: /^\/network/
   },
   {
+    id: 'launch',
+    label: 'Launch',
+    icon: PlusCircle,
+    path: '/launch',
+    activePattern: /^\/launch/
+  },
+  {
+    id: 'chat',
+    label: 'Chat',
+    icon: MessageCircle,
+    path: '/chat',
+    activePattern: /^\/chat/
+  },
+  {
     id: 'profile',
     label: 'Profile',
     icon: User,
-    path: '/dashboard/profile',
-    activePattern: /^\/dashboard/
+    path: '/profile',
+    activePattern: /^\/profile/
   },
 ]
 
@@ -72,12 +73,12 @@ export function BottomNav() {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-50 border-t border-zinc-800/50 bg-black/95 backdrop-blur-xl md:hidden"
+      className="md:hidden fixed bottom-0 left-0 right-0 z-50 border-t-2 border-zinc-800 bg-black backdrop-blur-xl shadow-[0_-4px_20px_rgba(0,0,0,0.8)]"
       style={{
         paddingBottom: 'env(safe-area-inset-bottom)',
       }}
     >
-      <div className="flex items-center justify-around h-16">
+      <div className="flex items-center justify-around h-14">
         {tabs.map((tab) => {
           const Icon = tab.icon
           const active = isActive(tab)

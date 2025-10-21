@@ -14,7 +14,7 @@ import { GlobalActivationModal } from '@/components/GlobalActivationModal'
 import { DebugPanel } from '@/components/DebugPanel'
 import { CurveActivationProvider } from '@/contexts/CurveActivationContext'
 import { PWAInitializer } from '@/components/PWAInitializer'
-import { BottomNav } from '@/components/mobile/BottomNav'
+import MobileTabBar from '@/components/MobileTabBar'
 import { BRAND } from '@/lib/brand'
 
 export const metadata: Metadata = {
@@ -95,15 +95,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="smooth-scroll">
-      <body className="min-h-screen bg-black text-white antialiased">
-        {/* Premium background gradient */}
-        <div className="fixed inset-0 -z-10 overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-violet-900/20 via-black to-black"></div>
-          <div className="absolute top-0 -left-4 w-96 h-96 bg-violet-500/10 rounded-full blur-3xl animate-blob"></div>
-          <div className="absolute top-0 -right-4 w-96 h-96 bg-fuchsia-500/10 rounded-full blur-3xl animate-blob animation-delay-2000"></div>
-          <div className="absolute -bottom-8 left-20 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-blob animation-delay-4000"></div>
-        </div>
-
+      <body className="antialiased bg-black">
         <PrivyProviderWrapper>
           <PrivySyncWrapper>
             <AuthProvider>
@@ -117,10 +109,10 @@ export default function RootLayout({
                         <GlobalActivationModal />
                         <DebugPanel />
                         <TopNav />
-                        <main className="relative pb-16 md:pb-0">
+                        <main className="text-white pb-[calc(64px+env(safe-area-inset-bottom))] md:pb-0">
                           {children}
                         </main>
-                        <BottomNav />
+                        <MobileTabBar />
                       </ToastProvider>
                     </CurveActivationProvider>
                   </NetworkProvider>

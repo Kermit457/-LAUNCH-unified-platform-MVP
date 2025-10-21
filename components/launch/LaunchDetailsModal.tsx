@@ -162,21 +162,21 @@ export function LaunchDetailsModal({ open, onClose, launchId, listing }: LaunchD
 
       {/* Modal */}
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
-        <div className="w-full max-w-5xl max-h-[90vh] overflow-y-auto bg-gradient-to-br from-black via-purple-950/20 to-black backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl pointer-events-auto animate-in zoom-in-95 duration-200">
+        <div className="w-full max-w-5xl max-h-[90vh] overflow-y-auto bg-gradient-to-br from-zinc-950 via-zinc-900/80 to-zinc-950 backdrop-blur-xl rounded-2xl border border-zinc-800 shadow-2xl pointer-events-auto animate-in zoom-in-95 duration-200">
           {/* Close Button */}
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors z-10"
+            className="absolute top-4 right-4 p-2 rounded-lg bg-zinc-800/50 hover:bg-zinc-700 transition-colors z-10"
           >
-            <X className="w-5 h-5 text-white/70" />
+            <X className="w-5 h-5 text-zinc-300" />
           </button>
 
           {loading || !launch ? (
             <div className="p-8 text-center">
               <div className="animate-pulse space-y-4">
-                <div className="h-8 bg-white/10 rounded w-1/3 mx-auto"></div>
-                <div className="h-4 bg-white/10 rounded w-2/3 mx-auto"></div>
-                <div className="h-64 bg-white/10 rounded"></div>
+                <div className="h-8 bg-zinc-800/50 rounded w-1/3 mx-auto"></div>
+                <div className="h-4 bg-zinc-800/50 rounded w-2/3 mx-auto"></div>
+                <div className="h-64 bg-zinc-800/50 rounded"></div>
               </div>
             </div>
           ) : (
@@ -213,41 +213,41 @@ export function LaunchDetailsModal({ open, onClose, launchId, listing }: LaunchD
                       disabled={isVoting}
                       className={`flex flex-col items-center gap-2 p-3 rounded-xl transition-all ${
                         hasVoted
-                          ? 'bg-fuchsia-500/20 border border-fuchsia-500/40'
-                          : 'bg-white/5 hover:bg-white/10 border border-white/10 hover:border-fuchsia-500/40'
+                          ? 'bg-[#00FF88]/10 border border-[#00FF88]/40'
+                          : 'bg-zinc-800/30 hover:bg-zinc-800/50 border border-zinc-700 hover:border-[#00FF88]/40'
                       } ${isVoting ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'} ${voteFlash ? 'animate-flash' : ''}`}
                     >
-                      <ArrowBigUp className={`w-6 h-6 ${hasVoted ? 'text-fuchsia-400 fill-fuchsia-400' : 'text-white/70'}`} />
+                      <ArrowBigUp className={`w-6 h-6 ${hasVoted ? 'text-[#00FF88] fill-[#00FF88]' : 'text-zinc-400'}`} />
                       <div className="text-center">
-                        <div className={`text-xl font-bold ${hasVoted ? 'text-fuchsia-400' : 'text-white'}`}>{voteCount}</div>
-                        <div className="text-xs text-white/60">Upvotes</div>
+                        <div className={`text-xl font-bold ${hasVoted ? 'text-[#00FF88]' : 'text-white'}`}>{voteCount}</div>
+                        <div className="text-xs text-zinc-500">Upvotes</div>
                       </div>
                     </button>
 
                     {/* Comments */}
-                    <div className="flex flex-col items-center gap-2 p-3 rounded-xl bg-white/5 border border-white/10">
-                      <MessageCircle className="w-6 h-6 text-cyan-400" />
+                    <div className="flex flex-col items-center gap-2 p-3 rounded-xl bg-zinc-800/30 border border-zinc-700">
+                      <MessageCircle className="w-6 h-6 text-[#00FFFF]" />
                       <div className="text-center">
                         <div className="text-xl font-bold text-white">{comments.length}</div>
-                        <div className="text-xs text-white/60">Comments</div>
+                        <div className="text-xs text-zinc-500">Comments</div>
                       </div>
                     </div>
 
                     {/* Contributors */}
-                    <div className="flex flex-col items-center gap-2 p-3 rounded-xl bg-white/5 border border-white/10">
-                      <Users className="w-6 h-6 text-purple-400" />
+                    <div className="flex flex-col items-center gap-2 p-3 rounded-xl bg-zinc-800/30 border border-zinc-700">
+                      <Users className="w-6 h-6 text-[#8800FF]" />
                       <div className="text-center">
                         <div className="text-xl font-bold text-white">{launch.contributors?.length || 0}</div>
-                        <div className="text-xs text-white/60">Contributors</div>
+                        <div className="text-xs text-zinc-500">Contributors</div>
                       </div>
                     </div>
 
                     {/* Views */}
-                    <div className="flex flex-col items-center gap-2 p-3 rounded-xl bg-white/5 border border-white/10">
-                      <Eye className="w-6 h-6 text-green-400" />
+                    <div className="flex flex-col items-center gap-2 p-3 rounded-xl bg-zinc-800/30 border border-zinc-700">
+                      <Eye className="w-6 h-6 text-[#FFD700]" />
                       <div className="text-center">
                         <div className="text-xl font-bold text-white">{viewCount}</div>
-                        <div className="text-xs text-white/60">Views</div>
+                        <div className="text-xs text-zinc-500">Views</div>
                       </div>
                     </div>
                   </div>
@@ -260,31 +260,31 @@ export function LaunchDetailsModal({ open, onClose, launchId, listing }: LaunchD
                 launch.tgeDate) && (
                 <Card variant="default" hover={false}>
                   <div className="p-4">
-                    <h3 className="text-sm font-semibold text-white/60 mb-3">Launch Details</h3>
+                    <h3 className="text-sm font-semibold text-zinc-400 mb-3">Launch Details</h3>
                     <div className="flex flex-wrap gap-3">
                       {launch.contributionPoolPct && launch.contributionPoolPct > 0 && (
-                        <div className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30">
-                          <Coins className="w-5 h-5 text-emerald-400" />
+                        <div className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-[#00FF88]/10 border border-[#00FF88]/30">
+                          <Coins className="w-5 h-5 text-[#00FF88]" />
                           <div>
-                            <div className="text-sm font-semibold text-emerald-300">{launch.contributionPoolPct}% Total Supply</div>
-                            <div className="text-xs text-emerald-400/60">Contribution Pool</div>
+                            <div className="text-sm font-semibold text-[#00FF88]">{launch.contributionPoolPct}% Total Supply</div>
+                            <div className="text-xs text-zinc-500">Contribution Pool</div>
                           </div>
                         </div>
                       )}
                       {launch.feesSharePct && launch.feesSharePct > 0 && (
-                        <div className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-amber-500/10 border border-amber-500/30">
-                          <TrendingUp className="w-5 h-5 text-amber-400" />
+                        <div className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-[#FFD700]/10 border border-[#FFD700]/30">
+                          <TrendingUp className="w-5 h-5 text-[#FFD700]" />
                           <div>
-                            <div className="text-sm font-semibold text-amber-300">{launch.feesSharePct}% Fees Share</div>
-                            <div className="text-xs text-amber-400/60">Revenue Split</div>
+                            <div className="text-sm font-semibold text-[#FFD700]">{launch.feesSharePct}% Fees Share</div>
+                            <div className="text-xs text-zinc-500">Revenue Split</div>
                           </div>
                         </div>
                       )}
                       {launch.tgeDate && (
-                        <div className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-cyan-500/10 border border-cyan-500/30">
-                          <Clock className="w-5 h-5 text-cyan-400" />
+                        <div className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-[#00FFFF]/10 border border-[#00FFFF]/30">
+                          <Clock className="w-5 h-5 text-[#00FFFF]" />
                           <div>
-                            <div className="text-sm font-semibold text-cyan-300">
+                            <div className="text-sm font-semibold text-[#00FFFF]">
                               {new Date(launch.tgeDate).toLocaleDateString('en-US', {
                                 month: 'short',
                                 day: 'numeric',
@@ -293,7 +293,7 @@ export function LaunchDetailsModal({ open, onClose, launchId, listing }: LaunchD
                                 minute: '2-digit'
                               })}
                             </div>
-                            <div className="text-xs text-cyan-400/60">TGE Date</div>
+                            <div className="text-xs text-zinc-500">TGE Date</div>
                           </div>
                         </div>
                       )}
@@ -320,12 +320,12 @@ export function LaunchDetailsModal({ open, onClose, launchId, listing }: LaunchD
                   <Card variant="default" hover={false} className="h-full">
                     <div className="p-6 flex flex-col items-center justify-center gap-4 h-full">
                       <div className="text-center">
-                        <div className="text-sm text-white/60 mb-2">Current Price</div>
+                        <div className="text-sm text-zinc-500 mb-2">Current Price</div>
                         <div className="text-3xl font-bold text-white">◎ 0.0001234</div>
                       </div>
                       <Button
                         onClick={() => setTradingModalOpen(true)}
-                        className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700"
+                        className="w-full bg-gradient-to-r from-[#00FF88] to-[#00DD77] hover:from-[#00DD77] hover:to-[#00FF88] text-black font-bold"
                       >
                         Buy / Sell Keys
                       </Button>
@@ -348,10 +348,10 @@ export function LaunchDetailsModal({ open, onClose, launchId, listing }: LaunchD
                     <h3 className="text-lg font-bold text-white flex items-center gap-2">
                       <MessageCircle className="w-5 h-5" />
                       Comments
-                      <span className="text-sm text-white/40">({comments.length})</span>
+                      <span className="text-sm text-zinc-500">({comments.length})</span>
                     </h3>
-                    <div className="flex items-center gap-1 text-xs text-green-400">
-                      <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                    <div className="flex items-center gap-1 text-xs text-[#00FF88]">
+                      <span className="w-2 h-2 bg-[#00FF88] rounded-full animate-pulse"></span>
                       LIVE
                     </div>
                   </div>
@@ -375,7 +375,7 @@ export function LaunchDetailsModal({ open, onClose, launchId, listing }: LaunchD
                           }
                         }}
                         placeholder="Add a comment..."
-                        className="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white placeholder:text-white/40 focus:outline-none focus:border-fuchsia-500/50"
+                        className="flex-1 bg-zinc-800/30 border border-zinc-700 rounded-lg px-4 py-2 text-white placeholder:text-zinc-500 focus:outline-none focus:border-[#00FFFF]/50"
                       />
                       <Button
                         onClick={async () => {
@@ -399,11 +399,11 @@ export function LaunchDetailsModal({ open, onClose, launchId, listing }: LaunchD
 
                   {/* Comments List */}
                   {commentsLoading ? (
-                    <div className="text-center py-8 text-white/40">
+                    <div className="text-center py-8 text-zinc-500">
                       Loading comments...
                     </div>
                   ) : comments.length === 0 ? (
-                    <div className="text-center py-8 text-white/40">
+                    <div className="text-center py-8 text-zinc-500">
                       No comments yet. Be the first to comment!
                     </div>
                   ) : (
@@ -418,14 +418,14 @@ export function LaunchDetailsModal({ open, onClose, launchId, listing }: LaunchD
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
                               <span className="font-semibold text-white text-sm">{comment.author}</span>
-                              <span className="text-xs text-white/40">
+                              <span className="text-xs text-zinc-500">
                                 {new Date(comment.timestamp).toLocaleDateString()}
                               </span>
                             </div>
-                            <p className="text-white/80 text-sm mb-2">{comment.text}</p>
+                            <p className="text-zinc-300 text-sm mb-2">{comment.text}</p>
                             <button
                               onClick={() => upvoteComment(comment.id)}
-                              className="flex items-center gap-1 text-xs text-white/60 hover:text-fuchsia-400 transition-colors"
+                              className="flex items-center gap-1 text-xs text-zinc-500 hover:text-[#00FF88] transition-colors"
                             >
                               <TrendingUp className="w-3 h-3" />
                               {comment.upvotes || 0}
@@ -451,7 +451,7 @@ export function LaunchDetailsModal({ open, onClose, launchId, listing }: LaunchD
                     }
                   }}
                   disabled={isBoosting}
-                  className="flex-1 gap-2"
+                  className="flex-1 gap-2 bg-gradient-to-r from-[#FFD700]/20 to-[#FFA500]/20 hover:from-[#FFD700]/30 hover:to-[#FFA500]/30 border border-[#FFD700]/30 text-[#FFD700]"
                 >
                   <TrendingUp className="w-5 h-5" />
                   Boost {boostCount > 0 && `(${boostCount})`}

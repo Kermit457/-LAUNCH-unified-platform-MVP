@@ -6,7 +6,8 @@ export interface Message {
   messageId: string
   threadId: string
   senderId: string
-  content: string
+  receiverId: string
+  text: string
   read: boolean
   $createdAt: string
 }
@@ -67,7 +68,8 @@ export async function getThreadMessages(threadId: string, limit = 100) {
 export async function sendMessage(data: {
   threadId: string
   senderId: string
-  content: string
+  receiverId: string
+  text: string
 }) {
   const message = await databases.createDocument(
     DB_ID,
@@ -75,7 +77,10 @@ export async function sendMessage(data: {
     ID.unique(),
     {
       messageId: `msg_${Date.now()}`,
-      ...data,
+      threadId: data.threadId,
+      senderId: data.senderId,
+      receiverId: data.receiverId,
+      text: data.text,
       read: false
     }
   )

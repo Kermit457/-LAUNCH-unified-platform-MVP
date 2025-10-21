@@ -3,7 +3,7 @@
  * Single source of truth for all navigation items
  */
 
-import { LucideIcon, Search, Rocket, Coins, Radio, Users } from 'lucide-react'
+import { LucideIcon, Search, Rocket, Coins, Radio, Users, MessageCircle, User } from 'lucide-react'
 import { FLAGS } from '@/lib/flags'
 
 export interface NavItem {
@@ -53,8 +53,17 @@ export const NAV_ITEMS: NavItem[] = [
     href: '/earn',
     icon: Coins,
     color: 'text-[#FFD700]', // Yellow
-    showInNav: true,
+    showInNav: false, // Hidden from nav, route still accessible
     featureFlag: 'ENABLE_EARN',
+  },
+  {
+    label: 'Chat',
+    href: '/chat',
+    icon: MessageCircle,
+    color: 'text-[#8800FF]', // Purple
+    showInNav: true,
+    requiresAuth: true,
+    featureFlag: 'ENABLE_CHAT',
   },
   {
     label: 'Live',
@@ -72,6 +81,14 @@ export const NAV_ITEMS: NavItem[] = [
     showInNav: true,
     requiresAuth: true,
     featureFlag: 'ENABLE_NETWORK',
+  },
+  {
+    label: 'Profile',
+    href: '/profile',
+    icon: User,
+    color: 'text-[#FF6B00]', // Orange
+    showInNav: true,
+    requiresAuth: true,
   },
 ]
 

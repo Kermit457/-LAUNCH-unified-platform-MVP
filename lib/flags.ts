@@ -19,6 +19,9 @@ export const FLAGS = {
   /** Enable Network/social features */
   ENABLE_NETWORK: ENV.features.enableNetwork,
 
+  /** Enable Chat features */
+  ENABLE_CHAT: true,
+
   /** Enable trading features */
   ENABLE_TRADING: true,
 

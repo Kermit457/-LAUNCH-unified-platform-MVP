@@ -8,7 +8,6 @@ import { BuySellModal } from '@/components/launch/BuySellModal'
 import { LaunchDetailsModal } from '@/components/launch/LaunchDetailsModal'
 import { SubmitLaunchDrawer } from '@/components/launch/SubmitLaunchDrawer'
 import { CoinListItem } from '@/components/mobile/CoinListItem'
-import { ActivityFeed } from '@/components/discover/ActivityFeed'
 import { unifiedListings, filterByType, filterByStatus, sortListings, getMyHoldings, getMyCurves } from '@/lib/unifiedMockData'
 import { advancedListings, type AdvancedListingData } from '@/lib/advancedTradingData'
 import type { CurveType } from '@/components/UnifiedCard'
@@ -94,134 +93,101 @@ export default function DiscoverPage() {
   const totalCurves = filtered.filter(item => item.mySharePct && item.mySharePct > 10).length
 
   return (
-    <div className="min-h-screen bg-black pb-24 md:pb-6">
-      {/* Sticky Header - Mobile */}
-      <div className="md:hidden sticky top-0 z-40 bg-black/95 backdrop-blur-xl border-b border-zinc-800">
-        <div className="px-3 py-2 flex items-center justify-between">
-          <h1 className="text-base font-black text-[#00FFFF]">
-            Discover
-          </h1>
-          <button
-            onClick={() => setShowSubmitDrawer(true)}
-            className="px-2.5 py-1.5 rounded-lg bg-gradient-to-r from-[#FFD700] to-[#FFC700] hover:from-[#FFE700] hover:to-[#FFD700] text-black font-bold transition-all flex items-center gap-1 text-[10px]"
-          >
-            <Rocket className="w-3 h-3" />
-            <span>Create</span>
-          </button>
-        </div>
-      </div>
-
+    <div className="min-h-screen bg-black pb-20">
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 md:py-8">
 
-        {/* Header - Desktop Only */}
-        <div className="hidden md:block mb-8">
+        {/* Header - Super Compact on Mobile */}
+        <div className="mb-3 md:mb-8">
           {/* Title Row - Horizontal on mobile */}
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-3 md:mb-6">
             <div>
-              <h1 className="text-4xl lg:text-5xl font-black text-[#00FFFF] mb-3">
+              <h1 className="text-xl md:text-4xl lg:text-5xl font-black text-[#00FFFF] mb-1 md:mb-3">
                 Discover
               </h1>
-              <p className="text-lg text-zinc-400">
+              <p className="text-xs md:text-lg text-zinc-400 hidden md:block">
                 Markets for ideas, creators, and memes
               </p>
             </div>
 
-            {/* Create Button - Desktop */}
+            {/* Create Button - Always visible, compact on mobile */}
             <button
               onClick={() => setShowSubmitDrawer(true)}
-              className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-[#FFD700] to-[#FFC700] hover:from-[#FFE700] hover:to-[#FFD700] text-black font-bold transition-all hover:scale-105 flex items-center gap-2 text-base"
+              className="px-3 py-2 md:px-6 md:py-3.5 rounded-lg md:rounded-xl bg-gradient-to-r from-[#FFD700] to-[#FFC700] hover:from-[#FFE700] hover:to-[#FFD700] text-black font-bold transition-all hover:scale-105 flex items-center gap-1.5 md:gap-2 text-xs md:text-base"
             >
-              <Rocket className="w-5 h-5" />
+              <Rocket className="w-3.5 h-3.5 md:w-5 md:h-5" />
               <span>Create</span>
             </button>
           </div>
 
-          {/* View Toggle & Stats - Combined Row */}
-          <div className="hidden md:flex items-center justify-between gap-6">
-            {/* View Toggle */}
-            <div className="flex items-center gap-3 bg-zinc-900/80 backdrop-blur-xl rounded-2xl p-2 border-2 border-zinc-800/80 shadow-2xl">
-              <button
-                onClick={() => setDisplayMode('cards')}
-                className={cn(
-                  "px-6 py-3.5 rounded-xl font-bold text-base transition-all flex items-center justify-center gap-3",
-                  displayMode === 'cards'
-                    ? "bg-[#00FFFF] text-black"
-                    : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"
-                )}
-              >
-                <LayoutGrid className="w-5 h-5" />
-                Cards
-              </button>
-              <button
-                onClick={() => setDisplayMode('table')}
-                className={cn(
-                  "px-6 py-3.5 rounded-xl font-bold text-base transition-all flex items-center justify-center gap-3",
-                  displayMode === 'table'
-                    ? "bg-[#00FFFF] text-black"
-                    : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"
-                )}
-              >
-                <Table className="w-5 h-5" />
-                Table
-              </button>
-            </div>
-
-            {/* Compact Stats */}
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-br from-green-500/10 to-green-600/5 border border-green-500/20">
-                <DollarSign className="w-4 h-4 text-green-400" />
-                <div>
-                  <div className="text-[10px] text-zinc-500">Holdings</div>
-                  <div className="text-sm font-bold text-white">{totalValue.toFixed(2)} SOL</div>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-br from-blue-500/10 to-blue-600/5 border border-blue-500/20">
-                <Users className="w-4 h-4 text-blue-400" />
-                <div>
-                  <div className="text-[10px] text-zinc-500">Network</div>
-                  <div className="text-sm font-bold text-white">248</div>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-br from-orange-500/10 to-orange-600/5 border border-orange-500/20">
-                <Zap className="w-4 h-4 text-orange-400" />
-                <div>
-                  <div className="text-[10px] text-zinc-500">Referral</div>
-                  <div className="text-sm font-bold text-white">1,240</div>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-br from-green-500/10 to-green-600/5 border border-green-500/20">
-                <DollarSign className="w-4 h-4 text-green-400" />
-                <div>
-                  <div className="text-[10px] text-zinc-500">Earnings</div>
-                  <div className="text-sm font-bold text-white">3.45 SOL</div>
-                </div>
-              </div>
-            </div>
+          {/* Desktop view toggle - hidden on mobile */}
+          <div className="hidden md:flex items-center gap-3 bg-zinc-900/80 backdrop-blur-xl rounded-2xl p-2 border-2 border-zinc-800/80 shadow-2xl max-w-md">
+            <button
+              onClick={() => setDisplayMode('cards')}
+              className={cn(
+                "flex-1 px-6 py-3.5 rounded-xl font-bold text-base transition-all flex items-center justify-center gap-3",
+                displayMode === 'cards'
+                  ? "bg-[#00FFFF] text-black"
+                  : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"
+              )}
+            >
+              <LayoutGrid className="w-5 h-5" />
+              Cards
+            </button>
+            <button
+              onClick={() => setDisplayMode('table')}
+              className={cn(
+                "flex-1 px-6 py-3.5 rounded-xl font-bold text-base transition-all flex items-center justify-center gap-3",
+                displayMode === 'table'
+                  ? "bg-[#00FFFF] text-black"
+                  : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"
+              )}
+            >
+              <Table className="w-5 h-5" />
+              Table
+            </button>
           </div>
         </div>
 
-        {/* Balance Display - Mobile Only, Above Bottom Nav */}
-        <div className="md:hidden fixed bottom-16 left-0 right-0 z-30 px-3 pb-2">
-          <div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-zinc-900/90 backdrop-blur-xl border border-zinc-800 shadow-lg">
-            <div className="flex items-center gap-1.5">
-              <DollarSign className="w-3.5 h-3.5 text-[#00FF88]" />
-              <span className="text-[10px] text-zinc-400 font-medium">Balances</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-bold text-white">${(totalValue * 0.1).toFixed(2)}</span>
-              <button
-                onClick={() => {/* Handle deposit */}}
-                className="px-2 py-0.5 rounded bg-[#00FF88]/15 border border-[#00FF88]/40 text-[9px] font-bold text-[#00FF88] active:scale-95 transition-all"
-              >
-                Deposit
-              </button>
-            </div>
-          </div>
+        {/* Stats Strip - Hidden on mobile, compact grid on tablet */}
+        <div className="hidden sm:grid sm:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4 mb-4 md:mb-8">
+          <StatCard
+            icon={DollarSign}
+            label="Holdings Value"
+            value={`${totalValue.toFixed(2)} SOL`}
+            change="+12.5%"
+            color="green"
+          />
+          <StatCard
+            icon={TrendingUp}
+            label="Curves Created"
+            value={totalCurves.toString()}
+            color="purple"
+          />
+          <StatCard
+            icon={Users}
+            label="Network Size"
+            value="248"
+            color="blue"
+          />
+          <StatCard
+            icon={Zap}
+            label="Referral XP"
+            value="1,240"
+            color="orange"
+          />
+          <StatCard
+            icon={DollarSign}
+            label="Referral Earnings"
+            value="3.45 SOL"
+            color="green"
+          />
+          <StatCard
+            icon={Users}
+            label="Total Referrals"
+            value="12"
+            color="blue"
+          />
         </div>
-
-
-        {/* Live Activity Feed */}
-        <ActivityFeed />
 
         {/* Search Bar - Compact on mobile */}
         <div className="mb-3 md:mb-8">
@@ -237,115 +203,12 @@ export default function DiscoverPage() {
           </div>
         </div>
 
-        {/* Filters - Everything on One Line Mobile */}
-        <div className="bg-zinc-900/30 backdrop-blur-xl rounded-md md:rounded-2xl border border-zinc-800/50 p-1.5 md:p-8 mb-2 md:mb-8">
-          {/* Desktop Version - Single Row */}
-          <div className="hidden md:block">
-            <div className="flex items-center gap-8 mb-6">
-              {/* Type Filters */}
-              <div className="flex items-center gap-3">
-                <label className="text-sm font-bold text-white uppercase tracking-wider whitespace-nowrap">Type</label>
-                <div className="flex gap-3">
-                  <FilterPill
-                    active={typeFilter === 'all'}
-                    onClick={() => setTypeFilter('all')}
-                    className="data-[active]:bg-zinc-800/50 data-[active]:border-zinc-700 data-[active]:text-white"
-                  >
-                    All
-                  </FilterPill>
-                  <FilterPill
-                    active={typeFilter === 'icm'}
-                    onClick={() => setTypeFilter('icm')}
-                    className="data-[active]:bg-[#00FF88]/20 data-[active]:border-[#00FF88] data-[active]:text-white"
-                  >
-                    ICM
-                  </FilterPill>
-                  <FilterPill
-                    active={typeFilter === 'ccm'}
-                    onClick={() => setTypeFilter('ccm')}
-                    className="data-[active]:bg-[#00FFFF]/20 data-[active]:border-[#00FFFF] data-[active]:text-white"
-                  >
-                    CCM
-                  </FilterPill>
-                  <FilterPill
-                    active={typeFilter === 'meme'}
-                    onClick={() => setTypeFilter('meme')}
-                    className="data-[active]:bg-[#FFD700]/20 data-[active]:border-[#FFD700] data-[active]:text-white"
-                  >
-                    CULT
-                  </FilterPill>
-                </div>
-              </div>
-
-              {/* Divider */}
-              <div className="w-px h-8 bg-zinc-700"></div>
-
-              {/* Sort Filters */}
-              <div className="flex items-center gap-3">
-                <label className="text-sm font-bold text-white uppercase tracking-wider whitespace-nowrap">Sort</label>
-                <div className="flex gap-3">
-                  <FilterPill
-                    active={sortBy === 'trending'}
-                    onClick={() => setSortBy('trending')}
-                    small
-                    className="data-[active]:bg-[#FF0040]/20 data-[active]:border-[#FF0040] data-[active]:text-white"
-                  >
-                    Trending
-                  </FilterPill>
-                  <FilterPill
-                    active={sortBy === 'active'}
-                    onClick={() => setSortBy('active')}
-                    small
-                    className="data-[active]:bg-[#00FF88]/20 data-[active]:border-[#00FF88] data-[active]:text-white"
-                  >
-                    Active
-                  </FilterPill>
-                  <FilterPill
-                    active={sortBy === 'live'}
-                    onClick={() => setSortBy('live')}
-                    small
-                    className="data-[active]:bg-[#FF0040]/20 data-[active]:border-[#FF0040] data-[active]:text-white"
-                  >
-                    Live
-                  </FilterPill>
-                  <FilterPill
-                    active={sortBy === 'conviction'}
-                    onClick={() => setSortBy('conviction')}
-                    small
-                    className="data-[active]:bg-[#8800FF]/20 data-[active]:border-[#8800FF] data-[active]:text-white"
-                  >
-                    Conviction
-                  </FilterPill>
-                  <FilterPill
-                    active={sortBy === 'volume'}
-                    onClick={() => setSortBy('volume')}
-                    small
-                    className="data-[active]:bg-[#0088FF]/20 data-[active]:border-[#0088FF] data-[active]:text-white"
-                  >
-                    Volume
-                  </FilterPill>
-                  <FilterPill
-                    active={sortBy === 'new'}
-                    onClick={() => setSortBy('new')}
-                    small
-                    className="data-[active]:bg-[#FFD700]/20 data-[active]:border-[#FFD700] data-[active]:text-white"
-                  >
-                    New
-                  </FilterPill>
-                </div>
-              </div>
-            </div>
-            <div className="pt-6 border-t border-zinc-800/50 text-sm text-zinc-500">
-              Showing <span className="text-[#00FFFF] font-bold">{filtered.length}</span> of{' '}
-              <span className="text-white font-medium">{baseListings.length}</span> listings
-            </div>
-          </div>
-
-          {/* Mobile Version - Single Row */}
-          <div className="md:hidden">
-            <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide">
-              {/* Type Section */}
-              <span className="text-[8px] font-bold text-zinc-500 uppercase flex-shrink-0">Type:</span>
+        {/* Filters - Ultra Compact on Mobile */}
+        <div className="bg-zinc-900/30 backdrop-blur-xl rounded-md md:rounded-2xl border border-zinc-800/50 p-2 md:p-8 mb-2 md:mb-8">
+          {/* Type Filter */}
+          <div className="mb-2 md:mb-8">
+            <label className="text-[10px] md:text-sm font-bold text-white mb-1 md:mb-4 block uppercase tracking-wider">Type</label>
+            <div className="flex flex-wrap gap-1 md:gap-3">
               <FilterPill
                 active={typeFilter === 'all'}
                 onClick={() => setTypeFilter('all')}
@@ -358,35 +221,36 @@ export default function DiscoverPage() {
                 onClick={() => setTypeFilter('icm')}
                 className="data-[active]:bg-[#00FF88]/20 data-[active]:border-[#00FF88] data-[active]:text-white"
               >
-                ICM
+                💼 Projects
               </FilterPill>
               <FilterPill
                 active={typeFilter === 'ccm'}
                 onClick={() => setTypeFilter('ccm')}
                 className="data-[active]:bg-[#00FFFF]/20 data-[active]:border-[#00FFFF] data-[active]:text-white"
               >
-                CCM
+                🎥 Creators
               </FilterPill>
               <FilterPill
                 active={typeFilter === 'meme'}
                 onClick={() => setTypeFilter('meme')}
                 className="data-[active]:bg-[#FFD700]/20 data-[active]:border-[#FFD700] data-[active]:text-white"
               >
-                CULT
+                🔥 Memes
               </FilterPill>
+            </div>
+          </div>
 
-              {/* Divider */}
-              <div className="w-px h-4 bg-zinc-700 flex-shrink-0 mx-0.5"></div>
-
-              {/* Sort Section */}
-              <span className="text-[8px] font-bold text-zinc-500 uppercase flex-shrink-0">Sort:</span>
+          {/* Sort - Now includes Active and Life */}
+          <div>
+            <label className="text-[10px] md:text-sm font-bold text-white mb-1 md:mb-4 block uppercase tracking-wider">Sort</label>
+            <div className="flex flex-wrap gap-1 md:gap-3">
               <FilterPill
                 active={sortBy === 'trending'}
                 onClick={() => setSortBy('trending')}
                 small
                 className="data-[active]:bg-[#FF0040]/20 data-[active]:border-[#FF0040] data-[active]:text-white"
               >
-                Trend
+                Trending
               </FilterPill>
               <FilterPill
                 active={sortBy === 'active'}
@@ -410,7 +274,7 @@ export default function DiscoverPage() {
                 small
                 className="data-[active]:bg-[#8800FF]/20 data-[active]:border-[#8800FF] data-[active]:text-white"
               >
-                Conv
+                Conviction
               </FilterPill>
               <FilterPill
                 active={sortBy === 'volume'}
@@ -418,7 +282,7 @@ export default function DiscoverPage() {
                 small
                 className="data-[active]:bg-[#0088FF]/20 data-[active]:border-[#0088FF] data-[active]:text-white"
               >
-                Vol
+                Volume
               </FilterPill>
               <FilterPill
                 active={sortBy === 'new'}
@@ -429,17 +293,18 @@ export default function DiscoverPage() {
                 New
               </FilterPill>
             </div>
+          </div>
 
-            {/* Results Count - Mobile */}
-            <div className="mt-1 pt-1 border-t border-zinc-800/50 text-[8px] text-zinc-500">
-              Showing <span className="text-[#00FFFF] font-bold">{filtered.length}</span> of {baseListings.length}
-            </div>
+          {/* Results Count */}
+          <div className="mt-2 md:mt-6 pt-2 md:pt-6 border-t border-zinc-800/50 text-[10px] md:text-sm text-zinc-500">
+            Showing <span className="text-[#00FFFF] font-bold">{filtered.length}</span> of{' '}
+            <span className="text-white font-medium">{baseListings.length}</span> listings
           </div>
         </div>
 
         {/* Display Content Based on Mode */}
         {filtered.length > 0 ? (
-          <div>
+          <>
             {/* Mobile List View - Always shown on mobile */}
             <div className="md:hidden flex flex-col gap-1.5">
               {filtered.map(listing => (
@@ -450,7 +315,6 @@ export default function DiscoverPage() {
                   ticker={listing.ticker || ''}
                   logoUrl={listing.logoUrl}
                   status={listing.status}
-                  type={listing.type as 'icm' | 'ccm' | 'meme'}
                   age={listing.metrics?.createdAt ? getTimeAgo(listing.metrics.createdAt) : '0d ago'}
                   motion={listing.metrics?.graduationPercent || 0}
                   upvotes={listing.upvotes || 0}
@@ -594,7 +458,7 @@ export default function DiscoverPage() {
                 </div>
               )}
             </div>
-          </div>
+          </>
         ) : (
           // Empty State
           <div className="text-center py-20">
@@ -752,8 +616,8 @@ function FilterPill({
       onClick={onClick}
       data-active={active}
       className={cn(
-        "rounded md:rounded-lg md:rounded-xl font-bold transition-all border md:border-2 whitespace-nowrap flex-shrink-0",
-        small ? "px-1 py-0.5 text-[8px] md:px-4 md:py-2 md:text-sm" : "px-1.5 py-0.5 text-[8px] md:px-5 md:py-2.5 md:text-base",
+        "rounded md:rounded-lg md:rounded-xl font-bold transition-all border md:border-2",
+        small ? "px-1.5 py-0.5 text-[10px] md:px-4 md:py-2 md:text-sm" : "px-2 py-1 text-[10px] md:px-5 md:py-2.5 md:text-base",
         active
           ? cn("scale-105", className) // Apply custom color classes only when active
           : "bg-zinc-800/50 border-zinc-700/50 text-white hover:bg-zinc-800 hover:border-zinc-600 hover:scale-105"
