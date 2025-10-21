@@ -67,12 +67,24 @@ function generateMetrics(
   // Use a fixed base timestamp instead of Date.now() to avoid server/client mismatches
   const BASE_TIMESTAMP = 1734595200000 // Fixed timestamp: 2024-12-19
 
+  const marketCap = Math.floor((10000 + ageHours * 500) * mult)
+  const price = 0.01 + (mult * 0.001)
+  const holders = Math.floor((10 + ageHours * 2) * mult)
+  const supply = Math.floor(marketCap / price)
+
   return {
     graduationPercent: Math.min(98, (ageHours / 72) * 100 * (mult / 10)),
-    marketCap: Math.floor((10000 + ageHours * 500) * mult),
+    marketCap,
     volume24h: Math.floor((2000 + ageHours * 100) * mult),
+    volumeTotal: Math.floor((2000 + ageHours * 100) * mult * 10),
     txCount24h: Math.floor((50 + ageHours * 10) * mult),
     createdAt: BASE_TIMESTAMP - ageHours * 60 * 60 * 1000,
+    holders,
+    supply,
+    price,
+    priceChange24h: ((seed % 40) - 20),  // -20% to +20%
+    liquidity: marketCap * 0.8,
+    lastActivity: BASE_TIMESTAMP - (seed * 60 * 1000),  // Last activity in minutes
     top10HoldersPct: Math.min(95, 40 + (seed % 30)),
     creatorHeldPct: Math.min(40, 10 + (seed % 20)),
     snipersPct: Math.min(30, 5 + (seed % 15)),

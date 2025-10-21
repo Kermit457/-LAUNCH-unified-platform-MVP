@@ -17,7 +17,7 @@ export interface Launch {
   tgeDate?: string
   boostCount?: number
   viewCount?: number
-  status: 'live' | 'upcoming' | 'ended'
+  status: 'live' | 'active' | 'ended'
   $createdAt: string
 
   // Optional fields for token data (populated when token is live)
@@ -284,7 +284,7 @@ export async function createLaunchDocument(data: {
   upvotes?: number
   contributionPoolPct?: number
   feesSharePct?: number
-  status?: 'live' | 'upcoming' | 'ended'
+  status?: 'live' | 'active' | 'ended'
 }) {
   const response = await databases.createDocument(
     DB_ID,
@@ -313,7 +313,7 @@ export async function createLaunchDocument(data: {
       upvotes: data.upvotes || 0,
       contributionPoolPct: data.contributionPoolPct,
       feesSharePct: data.feesSharePct,
-      status: data.status || 'upcoming',
+      status: data.status || 'active',
     }
   )
 

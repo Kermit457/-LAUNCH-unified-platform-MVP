@@ -67,7 +67,7 @@ export default function LaunchDetailPage() {
           subtitle: data.description || data.subtitle || '',
           logoUrl: data.tokenImage || data.logoUrl,
           scope: data.scope || ((data.tags && data.tags.includes('ICM')) ? 'ICM' : 'CCM'),
-          status: data.status === 'live' ? 'LIVE' : data.status === 'upcoming' ? 'UPCOMING' : 'ENDED',
+          status: data.status === 'live' ? 'LIVE' : data.status === 'active' ? 'ACTIVE' : 'ENDED',
           mint: data.tokenSymbol || '',
           dexPairId: data.launchId || data.$id,
           convictionPct: data.convictionPct || 0,

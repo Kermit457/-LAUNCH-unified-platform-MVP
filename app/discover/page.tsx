@@ -28,7 +28,7 @@ export default function DiscoverPage() {
 
   const [typeFilter, setTypeFilter] = useState<'all' | CurveType>('all')
   const [viewFilter, setViewFilter] = useState<'trending' | 'my-holdings' | 'my-curves' | 'following'>('trending')
-  const [statusFilter, setStatusFilter] = useState<'all' | 'live' | 'active' | 'upcoming' | 'frozen'>('all')
+  const [statusFilter, setStatusFilter] = useState<'all' | 'live' | 'active' | 'frozen'>('all')
   const [sortBy, setSortBy] = useState<'trending' | 'new' | 'volume' | 'conviction' | 'active' | 'live'>('trending')
   const [searchQuery, setSearchQuery] = useState('')
   const [displayMode, setDisplayMode] = useState<'cards' | 'table'>('table') // Default to table view
@@ -531,7 +531,7 @@ export default function DiscoverPage() {
             <div className="hidden md:block">
               {displayMode === 'table' ? (
                 // Table View
-                <div className="bg-zinc-900/20 backdrop-blur-xl rounded-2xl border border-zinc-800/50">
+                <div className="bg-zinc-900/20 backdrop-blur-xl rounded-2xl border border-zinc-800/50 overflow-x-auto custom-scrollbar">
                   <AdvancedTableView
                     listings={filtered}
                     onBuyClick={(listing, amount) => {
@@ -815,7 +815,7 @@ export default function DiscoverPage() {
               convictionPct: 0,
               commentsCount: 0,
               upvotes: 0,
-              status: data.status === 'Live' ? 'live' : 'upcoming'
+              status: data.status === 'Live' ? 'live' : 'active'
             })
 
             if (launch) {

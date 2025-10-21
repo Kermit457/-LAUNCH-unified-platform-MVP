@@ -39,7 +39,7 @@ function transformToUnifiedCard(
     subtitle: launch.subtitle || launch.description || '',
     ticker: launch.tokenSymbol || '',
     logoUrl: launch.logoUrl || launch.tokenImage || `https://api.dicebear.com/7.x/shapes/svg?seed=${launch.title}&backgroundColor=10b981`,
-    status: launch.status as 'live' | 'upcoming' | 'ended',
+    status: launch.status,
     beliefScore: Math.round(launch.convictionPct || 0),
     upvotes: launch.upvotes || 0,
     commentsCount: launch.commentsCount || 0,
@@ -79,7 +79,7 @@ function transformToAdvancedListing(
     subtitle: launch.subtitle || launch.description,
     ticker: launch.tokenSymbol,
     logoUrl: launch.logoUrl || launch.tokenImage || `https://api.dicebear.com/7.x/shapes/svg?seed=${launch.title}`,
-    status: launch.status as 'live' | 'active' | 'upcoming' | 'frozen',
+    status: launch.status,
 
     // Metrics
     currentPrice: curve?.price || 0.01,
@@ -108,7 +108,12 @@ function transformToAdvancedListing(
       lastActivity: curve?.updatedAt ? new Date(curve.updatedAt).getTime() : new Date(launch.$createdAt).getTime(),
       creatorName: userProfile?.displayName || userProfile?.username || 'Anonymous',
       creatorAvatar: userProfile?.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${launch.createdBy}`,
+      creatorWallet: launch.createdBy,
       graduationPercent: Math.min(100, ((curve?.marketCap || 0) / 69000) * 100), // $69k graduation target
+      txCount24h: 0, // TODO: Track transactions
+      top10HoldersPct: 0, // TODO: Calculate from holders
+      creatorHeldPct: 0, // TODO: Calculate from holder data
+      snipersPct: 0, // TODO: Calculate early buyers
     },
 
     hasVoted: false, // TODO: Check VOTES collection

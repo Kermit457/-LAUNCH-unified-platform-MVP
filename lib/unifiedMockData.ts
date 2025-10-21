@@ -40,7 +40,7 @@ export const unifiedListings: UnifiedCardData[] = [
     title: '$DEFI Protocol V2',
     subtitle: 'Next-gen DeFi aggregator with cross-chain swaps',
     ticker: '$DEFI',
-    status: 'upcoming',
+    status: 'active',
     beliefScore: 72,
     upvotes: 89,
     commentsCount: 12,
@@ -180,7 +180,7 @@ export const unifiedListings: UnifiedCardData[] = [
     title: '$BONK RELOADED',
     subtitle: 'Bonk is back to bonk the bonkers',
     ticker: '$BONK',
-    status: 'upcoming',
+    status: 'active',
     beliefScore: 69,
     upvotes: 420,
     commentsCount: 69,
@@ -219,7 +219,7 @@ export function filterByType(type: 'all' | 'icm' | 'ccm' | 'meme') {
 /**
  * Filter by status
  */
-export function filterByStatus(status: 'all' | 'live' | 'active' | 'upcoming' | 'frozen') {
+export function filterByStatus(status: 'all' | 'live' | 'active' | 'frozen') {
   if (status === 'all') return unifiedListings
   return unifiedListings.filter(item => item.status === status)
 }

@@ -22,7 +22,7 @@ export function useCurveGating(
   requiredCurveId: string | null,
   minimumKeys = 1
 ): GatingCheck {
-  const { isActivated, curveId: userCurveId } = useCurveActivation()
+  const { isActivated } = useCurveActivation()
   const [check, setCheck] = useState<GatingCheck>({
     canAccess: false,
     loading: true,
@@ -47,7 +47,7 @@ export function useCurveGating(
       }
 
       // If user doesn't have a curve, deny access
-      if (!isActivated || !userCurveId) {
+      if (!isActivated) {
         setCheck({
           canAccess: false,
           loading: false,
@@ -59,45 +59,33 @@ export function useCurveGating(
         return
       }
 
-      try {
-        setCheck((prev) => ({ ...prev, loading: true }))
-
-        // Determine which curve to check
-        const curveToCheck = requiredCurveId || userCurveId
-
-        // Check if user holds enough keys
-        const hasKeys = await CurveHolderService.userHoldsKeys(
-          curveToCheck,
-          userCurveId, // Use user's curve ID as user ID for now (TODO: use actual user ID)
-          minimumKeys
-        )
-
-        // Get user's actual balance
-        const holder = await CurveHolderService.getHolder(curveToCheck, userCurveId)
-        const balance = holder?.balance || 0
-
+      // If no specific curve required, access granted
+      if (!requiredCurveId) {
         setCheck({
-          canAccess: hasKeys,
+          canAccess: true,
           loading: false,
           error: null,
-          userKeyBalance: balance,
-          requiredKeys: minimumKeys,
-          reason: hasKeys ? 'ok' : 'insufficient-keys',
-        })
-      } catch (err: any) {
-        console.error('Error checking curve gating:', err)
-        setCheck({
-          canAccess: false,
-          loading: false,
-          error: err.message || 'Failed to check access',
           userKeyBalance: 0,
-          requiredKeys: minimumKeys,
+          requiredKeys: 0,
+          reason: 'ok',
         })
+        return
       }
+
+      // TODO: Implement actual curve holder checking when user ID is available
+      // For now, just check if activated
+      setCheck({
+        canAccess: isActivated,
+        loading: false,
+        error: null,
+        userKeyBalance: 0,
+        requiredKeys: minimumKeys,
+        reason: isActivated ? 'ok' : 'insufficient-keys',
+      })
     }
 
     checkAccess()
-  }, [requiredCurveId, minimumKeys, isActivated, userCurveId])
+  }, [requiredCurveId, minimumKeys, isActivated])
 
   return check
 }

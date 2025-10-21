@@ -71,7 +71,7 @@ export type UnifiedCardData = {
   subtitle?: string
   logoUrl?: string
   ticker?: string
-  status: 'live' | 'upcoming' | 'ended' | 'active' | 'frozen' | 'launched'
+  status: 'live' | 'active' | 'ended' | 'frozen' | 'launched'
   beliefScore: number // 0-100 conviction
   upvotes: number
   commentsCount: number
@@ -147,8 +147,7 @@ export function UnifiedCard({ data }: { data: UnifiedCardData }) {
   // Status badge color
   const statusColors = {
     live: 'bg-green-500/20 text-green-400 border-green-500/30',
-    active: 'bg-green-500/20 text-green-400 border-green-500/30',
-    upcoming: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
+    active: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
     frozen: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
     ended: 'bg-zinc-500/20 text-zinc-400 border-zinc-500/30',
     launched: 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30'

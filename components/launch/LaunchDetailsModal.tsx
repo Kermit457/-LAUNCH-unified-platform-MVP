@@ -115,7 +115,7 @@ export function LaunchDetailsModal({ open, onClose, launchId, listing }: LaunchD
           subtitle: data.description || data.subtitle || '',
           logoUrl: data.tokenImage || data.logoUrl,
           scope: data.scope || ((data.tags && data.tags.includes('ICM')) ? 'ICM' : 'CCM'),
-          status: data.status === 'live' ? 'LIVE' : data.status === 'upcoming' ? 'UPCOMING' : 'ENDED',
+          status: data.status === 'live' ? 'LIVE' : data.status === 'active' ? 'ACTIVE' : 'ENDED',
           mint: data.tokenSymbol || '',
           dexPairId: data.launchId || data.$id,
           convictionPct: data.convictionPct || 0,
@@ -162,7 +162,7 @@ export function LaunchDetailsModal({ open, onClose, launchId, listing }: LaunchD
 
       {/* Modal */}
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
-        <div className="w-full max-w-5xl max-h-[90vh] overflow-y-auto bg-gradient-to-br from-zinc-950 via-zinc-900/80 to-zinc-950 backdrop-blur-xl rounded-2xl border border-zinc-800 shadow-2xl pointer-events-auto animate-in zoom-in-95 duration-200">
+        <div className="w-full max-w-5xl max-h-[90vh] overflow-y-auto custom-scrollbar bg-gradient-to-br from-zinc-950 via-zinc-900/80 to-zinc-950 backdrop-blur-xl rounded-2xl border border-zinc-800 shadow-2xl pointer-events-auto animate-in zoom-in-95 duration-200">
           {/* Close Button */}
           <button
             onClick={onClose}
@@ -318,17 +318,58 @@ export function LaunchDetailsModal({ open, onClose, launchId, listing }: LaunchD
                 {/* Buy/Sell Action Card */}
                 <div className="lg:col-span-1">
                   <Card variant="default" hover={false} className="h-full">
-                    <div className="p-6 flex flex-col items-center justify-center gap-4 h-full">
+                    <div className="p-6 flex flex-col gap-4 h-full">
                       <div className="text-center">
-                        <div className="text-sm text-zinc-500 mb-2">Current Price</div>
-                        <div className="text-3xl font-bold text-white">◎ 0.0001234</div>
+                        <div className="text-sm text-zinc-500 mb-1">Current Price</div>
+                        <div className="text-3xl font-bold text-white mb-1">◎ 0.0001234</div>
+                        <div className="text-xs text-[#00FF88]">+12.5% (24h)</div>
                       </div>
-                      <Button
-                        onClick={() => setTradingModalOpen(true)}
-                        className="w-full bg-gradient-to-r from-[#00FF88] to-[#00DD77] hover:from-[#00DD77] hover:to-[#00FF88] text-black font-bold"
-                      >
-                        Buy / Sell Keys
-                      </Button>
+
+                      {/* Quick Stats */}
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="bg-zinc-800/30 rounded-lg p-2 text-center">
+                          <div className="text-xs text-zinc-500">Market Cap</div>
+                          <div className="text-sm font-semibold text-white">◎ 42.5K</div>
+                        </div>
+                        <div className="bg-zinc-800/30 rounded-lg p-2 text-center">
+                          <div className="text-xs text-zinc-500">24h Volume</div>
+                          <div className="text-sm font-semibold text-white">◎ 8.2K</div>
+                        </div>
+                      </div>
+
+                      {/* Trading Input */}
+                      <div className="space-y-2">
+                        <label className="text-xs text-zinc-400">Amount (SOL)</label>
+                        <input
+                          type="number"
+                          placeholder="0.0"
+                          className="w-full bg-zinc-800/50 border border-zinc-700 rounded-lg px-4 py-3 text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#00FFFF]/50"
+                        />
+                        <div className="text-xs text-zinc-500">≈ 0 keys</div>
+                      </div>
+
+                      {/* Buy/Sell Buttons */}
+                      <div className="grid grid-cols-2 gap-2 mt-auto">
+                        <Button
+                          onClick={() => setTradingModalOpen(true)}
+                          className="w-full bg-gradient-to-r from-[#00FF88] to-[#00DD77] hover:from-[#00DD77] hover:to-[#00FF88] text-black font-bold"
+                        >
+                          Buy
+                        </Button>
+                        <Button
+                          onClick={() => setTradingModalOpen(true)}
+                          className="w-full bg-zinc-800 hover:bg-zinc-700 text-white font-bold border border-zinc-700"
+                        >
+                          Sell
+                        </Button>
+                      </div>
+
+                      {/* Your Holdings */}
+                      <div className="bg-[#00FF88]/5 border border-[#00FF88]/20 rounded-lg p-3">
+                        <div className="text-xs text-zinc-400 mb-1">Your Holdings</div>
+                        <div className="text-lg font-bold text-white">0 keys</div>
+                        <div className="text-xs text-zinc-500">≈ ◎ 0.00</div>
+                      </div>
                     </div>
                   </Card>
                 </div>
@@ -438,25 +479,6 @@ export function LaunchDetailsModal({ open, onClose, launchId, listing }: LaunchD
                 </div>
               </Card>
 
-              {/* ACTIONS */}
-              <div className="flex gap-2 pt-4">
-                <Button
-                  variant="boost"
-                  onClick={async () => {
-                    try {
-                      await boost()
-                      success('Boosted!', `This launch now has ${boostCount + 1} boosts`)
-                    } catch (error: any) {
-                      showError('Boost failed', error.message)
-                    }
-                  }}
-                  disabled={isBoosting}
-                  className="flex-1 gap-2 bg-gradient-to-r from-[#FFD700]/20 to-[#FFA500]/20 hover:from-[#FFD700]/30 hover:to-[#FFA500]/30 border border-[#FFD700]/30 text-[#FFD700]"
-                >
-                  <TrendingUp className="w-5 h-5" />
-                  Boost {boostCount > 0 && `(${boostCount})`}
-                </Button>
-              </div>
             </div>
           )}
         </div>

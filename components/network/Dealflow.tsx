@@ -2,6 +2,10 @@
 
 import { motion } from 'framer-motion'
 import { TrendingUp, Clock, CheckCircle2, Share2, Flame, DollarSign } from 'lucide-react'
+import { useCurveActivation } from '@/contexts/CurveActivationContext'
+import { useToast } from '@/hooks/useToast'
+import { usePrivy } from '@privy-io/react-auth'
+import { useState } from 'react'
 
 const mockDeals = [
   {
@@ -47,15 +51,53 @@ const mockDeals = [
 ]
 
 export function Dealflow() {
+  const { isActivated } = useCurveActivation()
+  const { user } = usePrivy()
+  const { success, error: showError, warning } = useToast()
+  const [isProcessing, setIsProcessing] = useState(false)
+
   const handleApply = (dealId: string) => {
+    if (!user?.id) {
+      showError('Not Authenticated', 'Please log in to apply for deals')
+      return
+    }
+
+    if (!isActivated) {
+      warning('Keys Required', 'You need to own keys to apply for deals. Buy keys to unlock access.')
+      return
+    }
+
+    // TODO: Wire to Appwrite dealflow application
+    success('Applied!', 'Your application has been submitted')
     console.log('Apply to deal:', dealId)
   }
 
   const handleJoinRoom = (dealId: string) => {
+    if (!user?.id) {
+      showError('Not Authenticated', 'Please log in to join rooms')
+      return
+    }
+
+    if (!isActivated) {
+      warning('Keys Required', 'You need to own keys to join deal rooms. Buy keys to unlock access.')
+      return
+    }
+
+    // TODO: Wire to chat room creation
+    success('Joining Room', 'Opening deal discussion room...')
     console.log('Join room:', dealId)
   }
 
   const handleShare = (dealId: string) => {
+    if (navigator.share) {
+      navigator.share({
+        title: 'Check out this deal on LaunchOS',
+        url: `${window.location.origin}/dealflow/${dealId}`,
+      }).catch(() => {})
+    } else {
+      navigator.clipboard.writeText(`${window.location.origin}/dealflow/${dealId}`)
+      success('Link Copied', 'Deal link copied to clipboard')
+    }
     console.log('Share deal:', dealId)
   }
 

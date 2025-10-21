@@ -104,9 +104,6 @@ export default function NetworkPage() {
 
   return (
     <div className="min-h-screen bg-black text-white pb-20 md:pb-6">
-      {/* Network Activity Ticker */}
-      <NetworkTicker />
-
       {/* Header - Ultra Compact Mobile */}
       <div className="px-2 sm:px-6 lg:px-8 pt-2 md:pt-6 pb-2 md:pb-3">
         <div className="max-w-7xl mx-auto">
