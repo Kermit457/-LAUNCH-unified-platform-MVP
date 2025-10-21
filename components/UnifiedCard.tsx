@@ -186,7 +186,7 @@ export function UnifiedCard({ data }: { data: UnifiedCardData }) {
   }
 
   return (
-    <div className="relative rounded-2xl bg-[rgba(255,255,255,0.06)] backdrop-blur-[8px] ring-1 ring-[rgba(255,255,255,0.10)] shadow-[0_0_0_1px_rgba(255,255,255,0.05),0_20px_60px_rgba(0,0,0,0.35)] p-4 hover:ring-[rgba(255,255,255,0.15)] transition-all group">
+    <div className="relative rounded-2xl bg-[rgba(255,255,255,0.06)] backdrop-blur-[8px] ring-1 ring-[rgba(255,255,255,0.10)] shadow-[0_0_0_1px_rgba(255,255,255,0.05),0_20px_60px_rgba(0,0,0,0.35)] p-6 hover:ring-2 hover:ring-[rgba(255,255,255,0.20)] hover:shadow-[0_0_0_1px_rgba(255,255,255,0.08),0_24px_80px_rgba(0,0,0,0.45)] hover:-translate-y-0.5 transition-all group">
 
       {/* Token Claim Banner */}
       {hasUnclaimedAirdrop && (
@@ -360,16 +360,16 @@ export function UnifiedCard({ data }: { data: UnifiedCardData }) {
             {/* Title + Badges */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap mb-1">
-                <h3 className="text-lg font-bold text-white">{data.title}</h3>
-                <span className={cn('px-2 py-0.5 rounded border text-[10px] font-bold uppercase', statusColor)}>
+                <h3 className="text-xl font-bold text-white tracking-tight">{data.title}</h3>
+                <span className={cn('px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider shadow-sm backdrop-blur-sm', statusColor)}>
                   {statusLabel}
                 </span>
-                <span className={cn('px-2 py-0.5 rounded border text-[10px] font-bold uppercase flex items-center gap-1', scheme.badge)}>
+                <span className={cn('px-2.5 py-1 rounded-md border text-xs font-semibold uppercase tracking-wide flex items-center gap-1', scheme.badge)}>
                   <IconComponent className="w-3 h-3" />
                   {scheme.name}
                 </span>
               </div>
-              {data.subtitle && <p className="text-sm text-zinc-400 line-clamp-1">{data.subtitle}</p>}
+              {data.subtitle && <p className="text-sm text-zinc-500 line-clamp-2 leading-relaxed">{data.subtitle}</p>}
             </div>
 
             {/* Action Icons + Contributors + Ownership Pill */}
@@ -503,7 +503,7 @@ export function UnifiedCard({ data }: { data: UnifiedCardData }) {
               onClick={handleBuyOrManage}
               data-cta={hasPos ? 'manage' : 'buy'}
               className={cn(
-                'flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all',
+                'flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-base font-semibold transition-all active:scale-95',
                 scheme.gradient,
                 scheme.buttonHover,
                 'text-black hover:scale-[1.02]'
@@ -518,15 +518,15 @@ export function UnifiedCard({ data }: { data: UnifiedCardData }) {
             {/* Secondary Actions */}
             <button
               onClick={data.onCollaborate}
-              className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-zinc-800/80 hover:bg-zinc-700 border border-zinc-700/50 hover:border-zinc-600 text-zinc-300 text-sm font-medium transition-all"
+              className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-zinc-800/80 hover:bg-zinc-700 border border-zinc-700/50 hover:border-zinc-600 text-zinc-300 text-sm font-medium transition-all active:scale-95"
             >
-              <Users className="w-4 h-4" />
+              <Users className="w-5 h-5" />
               <span className="hidden sm:inline">Collaborate</span>
             </button>
 
             <button
               onClick={data.onDetails || (() => router.push(`/curve/${data.id}`))}
-              className="px-4 py-2.5 rounded-xl bg-zinc-800/80 hover:bg-zinc-700 border border-zinc-700/50 hover:border-zinc-600 text-zinc-300 text-sm font-medium transition-all"
+              className="px-5 py-3 rounded-xl bg-zinc-800/80 hover:bg-zinc-700 border border-zinc-700/50 hover:border-zinc-600 text-zinc-300 text-sm font-medium transition-all active:scale-95"
             >
               Details
             </button>
