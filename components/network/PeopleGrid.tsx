@@ -136,7 +136,10 @@ export function PeopleGrid({ searchQuery, limit = 20, horizontal = false }: Peop
     <div>
       {horizontal ? (
         // Horizontal scroll row for top performers
-        <div className="flex gap-1.5 md:gap-3 overflow-x-auto pb-2 scrollbar-hide">
+        <div
+          className="flex gap-1.5 md:gap-3 overflow-x-auto pb-2 scrollbar-hide"
+          style={{ WebkitOverflowScrolling: 'touch' }}
+        >
           {filteredUsers.map((user) => (
             <div key={user.id} className="flex-shrink-0 w-24 md:w-48">
               <UserCard

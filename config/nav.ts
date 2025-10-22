@@ -3,7 +3,7 @@
  * Single source of truth for all navigation items
  */
 
-import { LucideIcon, Search, Rocket, Coins, Radio, Users, MessageCircle, User } from 'lucide-react'
+import { LucideIcon, Search, Rocket, Coins, Radio, Users, MessageCircle, User, Scissors } from 'lucide-react'
 import { FLAGS } from '@/lib/flags'
 
 export interface NavItem {
@@ -46,6 +46,13 @@ export const NAV_ITEMS: NavItem[] = [
     href: '/launch',
     icon: Rocket,
     color: 'text-[#00FF88]', // Green
+    showInNav: true,
+  },
+  {
+    label: 'Clip',
+    href: '/clip',
+    icon: Scissors,
+    color: 'text-[#E700FF]', // Fuchsia
     showInNav: true,
   },
   {

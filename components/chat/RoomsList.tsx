@@ -98,7 +98,7 @@ export function RoomsList({ onThreadClick, filterType }: RoomsListProps) {
           <div
             key={thread.$id}
             onClick={() => onThreadClick(thread.$id)}
-            className="p-2 md:p-4 rounded-lg md:rounded-xl bg-zinc-900/50 border border-zinc-800 hover:border-[#8800FF]/50 transition-all cursor-pointer active:scale-98"
+            className="p-3 md:p-4 min-h-[64px] rounded-lg md:rounded-xl bg-zinc-900/50 border border-zinc-800 hover:border-[#8800FF]/50 active:scale-[0.98] transition-all cursor-pointer"
           >
             <div className="flex items-center gap-2 md:gap-3">
               {/* Icon - Mobile Optimized */}

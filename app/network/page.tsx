@@ -121,13 +121,13 @@ export default function NetworkPage() {
           <div className="flex gap-1.5 md:gap-3 mb-2 md:mb-3">
             {/* Compact Search */}
             <div className="relative flex-1">
-              <Search className="absolute left-2 md:left-3 top-1/2 -translate-y-1/2 w-3 h-3 md:w-4 md:h-4 text-zinc-500" />
+              <Search className="absolute left-2 md:left-3 top-1/2 -translate-y-1/2 w-5 h-5 md:w-6 md:h-6 text-zinc-500" />
               <input
                 type="text"
                 placeholder="Search..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-7 md:pl-9 pr-2 md:pr-3 py-1.5 md:py-2 rounded-md md:rounded-lg bg-zinc-900 border border-zinc-800 text-white text-xs md:text-sm placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#8800FF]/50"
+                className="w-full pl-7 md:pl-9 pr-2 md:pr-3 py-3 min-h-[48px] rounded-md md:rounded-lg bg-zinc-900 border border-zinc-800 text-white text-base placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#8800FF]/50"
               />
             </div>
 
@@ -140,15 +140,15 @@ export default function NetworkPage() {
             {/* Add Dealflow Button - Larger */}
             <button
               onClick={() => setShowDealflowModal(true)}
-              className="px-4 md:px-5 py-1.5 md:py-2 rounded-md md:rounded-lg bg-[#00FF88] hover:bg-[#00DD77] text-black font-bold transition-all flex items-center gap-1 md:gap-1.5 whitespace-nowrap text-xs md:text-sm"
+              className="px-6 py-3 min-h-[48px] rounded-xl bg-[#00FF88] hover:bg-[#00DD77] active:scale-95 text-black font-bold transition-all flex items-center gap-2 whitespace-nowrap text-sm"
             >
-              <Plus className="w-3.5 h-3.5 md:w-4 md:h-4" />
+              <Plus className="w-5 h-5" />
               <span>Dealflow</span>
             </button>
 
             {/* Invite Button - Compact */}
-            <button className="px-2 md:px-4 py-1.5 md:py-2 rounded-md md:rounded-lg bg-[#8800FF] hover:bg-[#9910FF] text-white font-bold transition-all flex items-center gap-1 md:gap-1.5 whitespace-nowrap text-[10px] md:text-sm">
-              <UserPlus className="w-3 h-3 md:w-4 md:h-4" />
+            <button className="px-5 py-2.5 min-h-[44px] rounded-lg bg-[#8800FF] hover:bg-[#9910FF] active:scale-95 text-white font-bold transition-all flex items-center gap-2 whitespace-nowrap text-sm">
+              <UserPlus className="w-5 h-5" />
               <span className="hidden sm:inline">Invite</span>
             </button>
           </div>
@@ -165,16 +165,16 @@ export default function NetworkPage() {
                 <div className="flex gap-1 md:gap-2">
                   <button
                     onClick={handleCopyRefLink}
-                    className="px-2 md:px-3 py-1.5 md:py-2 rounded-md md:rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white font-bold transition-all flex items-center gap-1 text-[9px] md:text-xs"
+                    className="px-5 py-2.5 min-h-[44px] rounded-lg bg-zinc-800 hover:bg-zinc-700 active:scale-95 text-white font-bold transition-all flex items-center gap-2 text-sm"
                   >
-                    <Copy className="w-3 h-3 md:w-3.5 md:h-3.5" />
+                    <Copy className="w-5 h-5" />
                     <span className="hidden sm:inline">Copy</span>
                   </button>
                   <button
                     onClick={handleShareRefLink}
-                    className="px-2 md:px-3 py-1.5 md:py-2 rounded-md md:rounded-lg bg-[#00FFFF] hover:bg-[#00DDDD] text-black font-bold transition-all flex items-center gap-1 text-[9px] md:text-xs"
+                    className="px-5 py-2.5 min-h-[44px] rounded-lg bg-[#00FFFF] hover:bg-[#00DDDD] active:scale-95 text-black font-bold transition-all flex items-center gap-2 text-sm"
                   >
-                    <Share2 className="w-3 h-3 md:w-3.5 md:h-3.5" />
+                    <Share2 className="w-5 h-5" />
                     <span className="hidden sm:inline">Share</span>
                   </button>
                 </div>
@@ -258,7 +258,7 @@ export default function NetworkPage() {
         <div className="md:hidden mb-2 flex gap-1 p-0.5 rounded-lg bg-zinc-900 border border-zinc-800">
           <button
             onClick={() => setMobileView('users')}
-            className={`flex-1 px-3 py-1.5 rounded-md font-bold text-xs transition-all ${
+            className={`flex-1 px-3 py-2.5 min-h-[44px] rounded-md font-bold text-sm active:scale-95 transition-all ${
               mobileView === 'users'
                 ? 'bg-[#8800FF] text-white'
                 : 'text-zinc-400'
@@ -268,7 +268,7 @@ export default function NetworkPage() {
           </button>
           <button
             onClick={() => setMobileView('dealflow')}
-            className={`flex-1 px-3 py-1.5 rounded-md font-bold text-xs transition-all ${
+            className={`flex-1 px-3 py-2.5 min-h-[44px] rounded-md font-bold text-sm active:scale-95 transition-all ${
               mobileView === 'dealflow'
                 ? 'bg-[#8800FF] text-white'
                 : 'text-zinc-400'

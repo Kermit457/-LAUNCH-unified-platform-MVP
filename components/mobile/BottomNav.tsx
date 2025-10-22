@@ -9,6 +9,7 @@ import {
   User,
   Users,
   MessageCircle,
+  Scissors,
   type LucideIcon
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -30,13 +31,6 @@ const tabs: NavTab[] = [
     activePattern: /^\/discover/
   },
   {
-    id: 'network',
-    label: 'Network',
-    icon: Users,
-    path: '/network',
-    activePattern: /^\/network/
-  },
-  {
     id: 'launch',
     label: 'Launch',
     icon: PlusCircle,
@@ -44,11 +38,18 @@ const tabs: NavTab[] = [
     activePattern: /^\/launch/
   },
   {
-    id: 'chat',
-    label: 'Chat',
-    icon: MessageCircle,
-    path: '/chat',
-    activePattern: /^\/chat/
+    id: 'clip',
+    label: 'Clip',
+    icon: Scissors,
+    path: '/clip',
+    activePattern: /^\/clip/
+  },
+  {
+    id: 'network',
+    label: 'Network',
+    icon: Users,
+    path: '/network',
+    activePattern: /^\/network/
   },
   {
     id: 'profile',

@@ -121,9 +121,9 @@ export default function DiscoverPage() {
           </h1>
           <button
             onClick={() => setShowSubmitDrawer(true)}
-            className="px-2.5 py-1.5 rounded-lg bg-gradient-to-r from-[#FFD700] to-[#FFC700] hover:from-[#FFE700] hover:to-[#FFD700] text-black font-bold transition-all flex items-center gap-1 text-[10px]"
+            className="px-6 py-3 min-h-[48px] rounded-xl bg-gradient-to-r from-[#FFD700] to-[#FFC700] hover:from-[#FFE700] hover:to-[#FFD700] active:scale-95 text-black font-bold transition-all flex items-center gap-2 text-sm"
           >
-            <Rocket className="w-3 h-3" />
+            <Rocket className="w-5 h-5" />
             <span>Create</span>
           </button>
         </div>
@@ -147,7 +147,7 @@ export default function DiscoverPage() {
             {/* Create Button - Desktop */}
             <button
               onClick={() => setShowSubmitDrawer(true)}
-              className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-[#FFD700] to-[#FFC700] hover:from-[#FFE700] hover:to-[#FFD700] text-black font-bold transition-all hover:scale-105 flex items-center gap-2 text-base"
+              className="px-6 py-3 min-h-[48px] rounded-xl bg-gradient-to-r from-[#FFD700] to-[#FFC700] hover:from-[#FFE700] hover:to-[#FFD700] text-black font-bold transition-all hover:scale-105 flex items-center gap-2 text-sm"
             >
               <Rocket className="w-5 h-5" />
               <span>Create</span>
@@ -229,7 +229,7 @@ export default function DiscoverPage() {
               <span className="text-xs font-bold text-white">${(totalValue * 0.1).toFixed(2)}</span>
               <button
                 onClick={() => {/* Handle deposit */}}
-                className="px-2 py-0.5 rounded bg-[#00FF88]/15 border border-[#00FF88]/40 text-[9px] font-bold text-[#00FF88] active:scale-95 transition-all"
+                className="px-3 py-1.5 min-h-[36px] rounded bg-[#00FF88]/15 border border-[#00FF88]/40 text-xs font-bold text-[#00FF88] active:scale-95 transition-all"
               >
                 Deposit
               </button>
@@ -250,7 +250,7 @@ export default function DiscoverPage() {
               placeholder="Search..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 md:pl-14 pr-3 md:pr-5 py-2.5 md:py-4 rounded-lg md:rounded-2xl bg-zinc-900/80 border border-zinc-800 md:border-2 text-sm md:text-base text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#00FFFF]/50 focus:border-[#00FFFF] transition-all font-medium"
+              className="w-full pl-10 md:pl-14 pr-3 md:pr-5 py-3 min-h-[48px] rounded-lg md:rounded-2xl bg-zinc-900/80 border border-zinc-800 md:border-2 text-base text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#00FFFF]/50 focus:border-[#00FFFF] transition-all font-medium"
             />
           </div>
         </div>
@@ -361,7 +361,7 @@ export default function DiscoverPage() {
 
           {/* Mobile Version - Single Row */}
           <div className="md:hidden">
-            <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide">
+            <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide" style={{ WebkitOverflowScrolling: 'touch' }}>
               {/* Type Section */}
               <span className="text-[8px] font-bold text-zinc-500 uppercase flex-shrink-0">Type:</span>
               <FilterPill

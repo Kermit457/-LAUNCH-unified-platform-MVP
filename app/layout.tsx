@@ -16,6 +16,7 @@ import { CurveActivationProvider } from '@/contexts/CurveActivationContext'
 import { PWAInitializer } from '@/components/PWAInitializer'
 import MobileTabBar from '@/components/MobileTabBar'
 import { BRAND } from '@/lib/brand'
+import { Toaster } from 'sonner'
 
 export const metadata: Metadata = {
   title: `${BRAND.name} - ${BRAND.tagline}`,
@@ -104,6 +105,7 @@ export default function RootLayout({
                   <NetworkProvider>
                     <CurveActivationProvider>
                       <ToastProvider>
+                        <Toaster position="top-center" theme="dark" richColors />
                         <PWAInitializer />
                         <ReferralTracker />
                         <GlobalActivationModal />

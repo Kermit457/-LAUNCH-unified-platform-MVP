@@ -63,7 +63,7 @@ export default function ChatPage() {
           {/* CTA */}
           <button
             onClick={() => window.location.href = '/launch'}
-            className="px-8 py-4 rounded-xl bg-gradient-to-r from-[#8800FF] to-[#9910FF] hover:from-[#9910FF] hover:to-[#AA20FF] text-white font-bold transition-all hover:scale-105 flex items-center gap-3 mx-auto"
+            className="px-6 py-3 min-h-[48px] rounded-xl bg-gradient-to-r from-[#8800FF] to-[#9910FF] hover:from-[#9910FF] hover:to-[#AA20FF] active:scale-95 text-white font-bold transition-all flex items-center gap-2 mx-auto text-sm"
           >
             <Zap className="w-5 h-5" />
             Activate Curve
@@ -94,7 +94,7 @@ export default function ChatPage() {
           </div>
 
           {/* Tabs - Mobile Optimized */}
-          <div className="flex gap-1 md:gap-2 mt-2 md:mt-4 overflow-x-auto scrollbar-hide">
+          <div className="flex gap-1.5 md:gap-2 mt-2 md:mt-4 overflow-x-auto scrollbar-hide">
             {[
               { id: 'all', label: 'All', icon: MessageCircle },
               { id: 'dms', label: 'DMs', icon: MessageCircle },
@@ -107,13 +107,13 @@ export default function ChatPage() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as any)}
-                  className={`relative px-2 py-1.5 md:px-4 md:py-2 rounded-lg font-bold text-xs md:text-sm transition-all flex items-center gap-1 md:gap-2 whitespace-nowrap ${
+                  className={`relative px-3 py-2.5 md:px-4 md:py-2 min-h-[44px] rounded-lg font-bold text-sm active:scale-95 transition-all flex items-center gap-1.5 md:gap-2 whitespace-nowrap ${
                     active
                       ? 'text-[#8800FF] bg-[#8800FF]/10 border border-[#8800FF]/30'
                       : 'text-zinc-400 hover:text-white hover:bg-zinc-800/50'
                   }`}
                 >
-                  <Icon className="w-3 h-3 md:w-4 md:h-4" />
+                  <Icon className="w-5 h-5 md:w-6 md:h-6" />
                   {tab.label}
                   {active && (
                     <motion.div

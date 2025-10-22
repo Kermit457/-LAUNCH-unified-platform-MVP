@@ -18,6 +18,10 @@ const withPWA = require('next-pwa')({
   ],
 })
 
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+})
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   eslint: {
@@ -57,10 +61,62 @@ const nextConfig = {
         tls: false,
         crypto: false,
       };
+
+      // Aggressive code splitting for performance
+      config.optimization.splitChunks = {
+        chunks: 'all',
+        cacheGroups: {
+          // Privy authentication library
+          privy: {
+            test: /[\\/]node_modules[\\/]@privy-io/,
+            name: 'privy',
+            priority: 20,
+            reuseExistingChunk: true,
+          },
+          // Reown/WalletConnect (6.6MB bloat)
+          reown: {
+            test: /[\\/]node_modules[\\/](@reown|@walletconnect)/,
+            name: 'reown',
+            priority: 20,
+            reuseExistingChunk: true,
+          },
+          // Solana dependencies
+          solana: {
+            test: /[\\/]node_modules[\\/](@solana|@coral-xyz|@pump-fun)/,
+            name: 'solana',
+            priority: 15,
+            reuseExistingChunk: true,
+          },
+          // UI libraries
+          ui: {
+            test: /[\\/]node_modules[\\/](@radix-ui|framer-motion|recharts)/,
+            name: 'ui',
+            priority: 10,
+            reuseExistingChunk: true,
+          },
+          // Generic vendor chunks
+          vendors: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendors',
+            priority: 5,
+            reuseExistingChunk: true,
+          },
+        },
+      };
     }
 
     return config;
   },
+  // Performance budgets - enforce PWA targets
+  performance: {
+    maxAssetSize: 250000,      // 250KB per asset
+    maxEntrypointSize: 400000, // 400KB total entry
+    hints: process.env.NODE_ENV === 'production' ? 'warning' : false,
+  },
+  // Optimize package imports
+  experimental: {
+    optimizePackageImports: ['@privy-io/react-auth', 'lucide-react'],
+  },
 };
 
-module.exports = withPWA(nextConfig);
+module.exports = withBundleAnalyzer(withPWA(nextConfig));

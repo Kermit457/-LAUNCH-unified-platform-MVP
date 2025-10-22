@@ -181,20 +181,20 @@ export function UserCard({
         </div>
 
         {/* Compact CTAs - DM & Invite */}
-        <div className="grid grid-cols-2 gap-0.5 md:gap-1">
+        <div className="grid grid-cols-2 gap-1 md:gap-1">
           <button
             onClick={handleMessage}
             disabled={isProcessing}
-            className="px-1.5 md:px-2 py-1 md:py-1.5 rounded-md md:rounded-lg font-bold text-[9px] md:text-xs transition-all flex items-center justify-center gap-0.5 md:gap-1 bg-zinc-800 hover:bg-zinc-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-2 md:px-2 py-2 md:py-1.5 min-h-[40px] rounded-md md:rounded-lg font-bold text-xs md:text-xs active:scale-95 transition-all flex items-center justify-center gap-1 md:gap-1 bg-zinc-800 hover:bg-zinc-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <MessageCircle className="w-2.5 h-2.5 md:w-3 md:h-3" />
+            <MessageCircle className="w-4 h-4 md:w-3 md:h-3" />
           </button>
           <button
             onClick={handleInvite}
             disabled={isProcessing}
-            className="px-1.5 md:px-2 py-1 md:py-1.5 rounded-md md:rounded-lg font-bold text-[9px] md:text-xs transition-all flex items-center justify-center gap-0.5 md:gap-1 bg-zinc-800 hover:bg-zinc-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-2 md:px-2 py-2 md:py-1.5 min-h-[40px] rounded-md md:rounded-lg font-bold text-xs md:text-xs active:scale-95 transition-all flex items-center justify-center gap-1 md:gap-1 bg-zinc-800 hover:bg-zinc-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <UserPlus className="w-2.5 h-2.5 md:w-3 md:h-3" />
+            <UserPlus className="w-4 h-4 md:w-3 md:h-3" />
           </button>
         </div>
       </motion.div>
@@ -355,20 +355,20 @@ export function UserCard({
         )}
 
         {/* Action Buttons */}
-        <div className="grid grid-cols-2 gap-1.5 md:gap-2">
+        <div className="grid grid-cols-2 gap-2 md:gap-2">
           <button
             onClick={handleMessage}
             disabled={isProcessing}
-            className="px-2 md:px-3 py-1.5 md:py-2 rounded-md md:rounded-lg font-bold text-[9px] md:text-xs transition-all flex items-center justify-center gap-0.5 md:gap-1 bg-zinc-800 hover:bg-zinc-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-3 md:px-3 py-2.5 md:py-2 min-h-[44px] rounded-md md:rounded-lg font-bold text-sm md:text-xs active:scale-95 transition-all flex items-center justify-center gap-1.5 md:gap-1 bg-zinc-800 hover:bg-zinc-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <MessageCircle className="w-2.5 h-2.5 md:w-3.5 md:h-3.5" />
+            <MessageCircle className="w-4 h-4 md:w-3.5 md:h-3.5" />
           </button>
           <button
             onClick={handleInvite}
             disabled={isProcessing}
-            className="px-2 md:px-3 py-1.5 md:py-2 rounded-md md:rounded-lg font-bold text-[9px] md:text-xs transition-all flex items-center justify-center gap-0.5 md:gap-1 bg-zinc-800 hover:bg-zinc-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-3 md:px-3 py-2.5 md:py-2 min-h-[44px] rounded-md md:rounded-lg font-bold text-sm md:text-xs active:scale-95 transition-all flex items-center justify-center gap-1.5 md:gap-1 bg-zinc-800 hover:bg-zinc-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <UserPlus className="w-2.5 h-2.5 md:w-3.5 md:h-3.5" />
+            <UserPlus className="w-4 h-4 md:w-3.5 md:h-3.5" />
           </button>
         </div>
       </motion.div>

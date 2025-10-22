@@ -7,6 +7,7 @@ interface WalletContextType {
   connected: boolean
   address: string | null
   userId: string | null
+  user: any
   userInfo: any
   connect: () => Promise<void>
   disconnect: () => Promise<void>
@@ -70,7 +71,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <WalletContext.Provider value={{ connected, address, userId, userInfo, connect, disconnect }}>
+    <WalletContext.Provider value={{ connected, address, userId, user, userInfo, connect, disconnect }}>
       {children}
     </WalletContext.Provider>
   )

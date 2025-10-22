@@ -333,51 +333,51 @@ export default function ProfilePage() {
           <div className="flex flex-col items-center gap-1">
             <button
               onClick={handleReceive}
-              className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-[#00FF88] flex items-center justify-center hover:scale-105 transition-transform"
+              className="w-14 h-14 md:w-16 md:h-16 min-h-[56px] rounded-full bg-[#00FF88] flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
             >
-              <ArrowDownToLine className="w-5 h-5 md:w-7 md:h-7 text-black" />
+              <ArrowDownToLine className="w-7 h-7 text-black" />
             </button>
-            <span className="text-[9px] md:text-xs text-white font-medium">Receive</span>
+            <span className="text-sm text-white font-medium">Receive</span>
           </div>
           <div className="flex flex-col items-center gap-1">
             <button
               onClick={handleSend}
-              className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-zinc-800 flex items-center justify-center hover:scale-105 transition-transform"
+              className="w-14 h-14 md:w-16 md:h-16 min-h-[56px] rounded-full bg-zinc-800 flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
             >
-              <ArrowUpFromLine className="w-5 h-5 md:w-7 md:h-7 text-white" />
+              <ArrowUpFromLine className="w-7 h-7 text-white" />
             </button>
-            <span className="text-[9px] md:text-xs text-white font-medium">Send</span>
+            <span className="text-sm text-white font-medium">Send</span>
           </div>
           <div className="flex flex-col items-center gap-1">
             <button
               onClick={handleDeposit}
-              className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-zinc-800 flex items-center justify-center hover:scale-105 transition-transform"
+              className="w-14 h-14 md:w-16 md:h-16 min-h-[56px] rounded-full bg-zinc-800 flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
             >
-              <DollarSign className="w-5 h-5 md:w-7 md:h-7 text-white" />
+              <DollarSign className="w-7 h-7 text-white" />
             </button>
-            <span className="text-[9px] md:text-xs text-white font-medium">Deposit</span>
+            <span className="text-sm text-white font-medium">Deposit</span>
           </div>
           <div className="flex flex-col items-center gap-1">
             <button
               onClick={handleShare}
-              className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-zinc-800 flex items-center justify-center hover:scale-105 transition-transform"
+              className="w-14 h-14 md:w-16 md:h-16 min-h-[56px] rounded-full bg-zinc-800 flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
             >
-              <Share2 className="w-5 h-5 md:w-7 md:h-7 text-white" />
+              <Share2 className="w-7 h-7 text-white" />
             </button>
-            <span className="text-[9px] md:text-xs text-white font-medium">Share</span>
+            <span className="text-sm text-white font-medium">Share</span>
           </div>
           <div className="flex flex-col items-center gap-1">
             <button
               onClick={handleExport}
-              className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-zinc-800 flex items-center justify-center hover:scale-105 transition-transform"
+              className="w-14 h-14 md:w-16 md:h-16 min-h-[56px] rounded-full bg-zinc-800 flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
             >
-              <svg className="w-5 h-5 md:w-7 md:h-7 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg className="w-7 h-7 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                 <polyline points="7 10 12 15 17 10" />
                 <line x1="12" y1="15" x2="12" y2="3" />
               </svg>
             </button>
-            <span className="text-[9px] md:text-xs text-white font-medium">Export</span>
+            <span className="text-sm text-white font-medium">Export</span>
           </div>
         </div>
 
@@ -401,13 +401,13 @@ export default function ProfilePage() {
             <input
               readOnly
               value={referralStats.referralLink}
-              className="flex-1 px-2.5 py-1.5 rounded-lg bg-zinc-800 border border-zinc-700 text-zinc-300 text-[10px] font-mono"
+              className="flex-1 px-3 py-2.5 min-h-[44px] rounded-lg bg-zinc-800 border border-zinc-700 text-zinc-300 text-sm font-mono"
             />
             <button
               onClick={() => {
                 navigator.clipboard.writeText(`https://${referralStats.referralLink}`)
               }}
-              className="px-3 py-1.5 rounded-lg bg-[#00FF88] hover:bg-[#00FFFF] text-black text-[10px] font-bold transition-all"
+              className="px-6 py-3 min-h-[48px] rounded-xl bg-[#00FF88] hover:bg-[#00FFFF] active:scale-95 text-black text-sm font-bold transition-all"
             >
               Copy
             </button>
@@ -432,14 +432,14 @@ export default function ProfilePage() {
               </p>
             </div>
           </div>
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex flex-wrap gap-2">
             {skills.map((skill) => (
               <button
                 key={skill.id}
                 onClick={() => toggleSkill(skill.id)}
-                className={`px-2.5 py-1.5 rounded-lg font-bold text-[10px] transition-all ${
+                className={`px-6 py-3 min-h-[48px] rounded-xl font-bold text-sm active:scale-95 transition-all ${
                   selectedSkills.includes(skill.id)
-                    ? `bg-gradient-to-r ${skill.color} text-white border-2 border-white/20 scale-105`
+                    ? `bg-gradient-to-r ${skill.color} text-white border-2 border-white/20`
                     : 'bg-zinc-800 border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-600'
                 }`}
               >
@@ -559,7 +559,7 @@ export default function ProfilePage() {
                           value={displayNameInput}
                           onChange={(e) => setDisplayNameInput(e.target.value)}
                           placeholder={displayName}
-                          className="w-full px-4 py-3 rounded-lg bg-zinc-800 border border-zinc-700 text-white text-sm focus:outline-none focus:border-[#00FFFF]"
+                          className="w-full px-4 py-3 min-h-[44px] rounded-lg bg-zinc-800 border border-zinc-700 text-white text-base focus:outline-none focus:border-[#00FFFF]"
                         />
                       </div>
 
@@ -569,7 +569,7 @@ export default function ProfilePage() {
                           value={bio}
                           onChange={(e) => setBio(e.target.value)}
                           placeholder="Tell us about yourself..."
-                          className="w-full px-4 py-3 rounded-lg bg-zinc-800 border border-zinc-700 text-white text-sm focus:outline-none focus:border-[#00FFFF] resize-none h-24"
+                          className="w-full px-4 py-3 rounded-lg bg-zinc-800 border border-zinc-700 text-white text-base focus:outline-none focus:border-[#00FFFF] resize-none h-24"
                         />
                       </div>
 
@@ -585,7 +585,7 @@ export default function ProfilePage() {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             placeholder="No email connected"
-                            className="w-full pl-10 pr-4 py-3 rounded-lg bg-zinc-800 border border-zinc-700 text-white text-sm focus:outline-none focus:border-[#00FFFF] placeholder:text-zinc-500"
+                            className="w-full pl-10 pr-4 py-3 min-h-[44px] rounded-lg bg-zinc-800 border border-zinc-700 text-white text-base focus:outline-none focus:border-[#00FFFF] placeholder:text-zinc-500"
                           />
                         </div>
                       </div>
@@ -614,7 +614,7 @@ export default function ProfilePage() {
                             value={tokenName}
                             onChange={(e) => setTokenName(e.target.value)}
                             placeholder="e.g., My Token"
-                            className="w-full px-4 py-3 rounded-lg bg-zinc-800 border border-zinc-700 text-white text-sm focus:outline-none focus:border-[#FFD700]"
+                            className="w-full px-4 py-3 min-h-[44px] rounded-lg bg-zinc-800 border border-zinc-700 text-white text-base focus:outline-none focus:border-[#FFD700]"
                           />
                         </div>
                         <div>
@@ -624,7 +624,7 @@ export default function ProfilePage() {
                             value={tokenTicker}
                             onChange={(e) => setTokenTicker(e.target.value.toUpperCase())}
                             placeholder="e.g., MTK"
-                            className="w-full px-4 py-3 rounded-lg bg-zinc-800 border border-zinc-700 text-white text-sm focus:outline-none focus:border-[#FFD700]"
+                            className="w-full px-4 py-3 min-h-[44px] rounded-lg bg-zinc-800 border border-zinc-700 text-white text-base focus:outline-none focus:border-[#FFD700]"
                           />
                         </div>
                       </div>
@@ -636,7 +636,7 @@ export default function ProfilePage() {
                           value={description}
                           onChange={(e) => setDescription(e.target.value)}
                           placeholder="Tell us about your token..."
-                          className="w-full px-4 py-3 rounded-lg bg-zinc-800 border border-zinc-700 text-white text-sm focus:outline-none focus:border-[#FFD700] resize-none h-24"
+                          className="w-full px-4 py-3 rounded-lg bg-zinc-800 border border-zinc-700 text-white text-base focus:outline-none focus:border-[#FFD700] resize-none h-24"
                         />
                       </div>
 
@@ -651,7 +651,7 @@ export default function ProfilePage() {
                             value={website}
                             onChange={(e) => setWebsite(e.target.value)}
                             placeholder="https://..."
-                            className="w-full px-4 py-3 rounded-lg bg-zinc-800 border border-zinc-700 text-white text-sm focus:outline-none focus:border-[#FFD700]"
+                            className="w-full px-4 py-3 min-h-[44px] rounded-lg bg-zinc-800 border border-zinc-700 text-white text-base focus:outline-none focus:border-[#FFD700]"
                           />
                         </div>
                         <div>
@@ -663,7 +663,7 @@ export default function ProfilePage() {
                             value={twitter}
                             onChange={(e) => setTwitter(e.target.value)}
                             placeholder="@username"
-                            className="w-full px-4 py-3 rounded-lg bg-zinc-800 border border-zinc-700 text-white text-sm focus:outline-none focus:border-[#FFD700]"
+                            className="w-full px-4 py-3 min-h-[44px] rounded-lg bg-zinc-800 border border-zinc-700 text-white text-base focus:outline-none focus:border-[#FFD700]"
                           />
                         </div>
                         <div>
@@ -675,7 +675,7 @@ export default function ProfilePage() {
                             value={telegram}
                             onChange={(e) => setTelegram(e.target.value)}
                             placeholder="https://t.me/..."
-                            className="w-full px-4 py-3 rounded-lg bg-zinc-800 border border-zinc-700 text-white text-sm focus:outline-none focus:border-[#FFD700]"
+                            className="w-full px-4 py-3 min-h-[44px] rounded-lg bg-zinc-800 border border-zinc-700 text-white text-base focus:outline-none focus:border-[#FFD700]"
                           />
                         </div>
                       </div>
@@ -712,7 +712,7 @@ export default function ProfilePage() {
                   <button
                     onClick={handleSaveProfile}
                     disabled={isSaving}
-                    className="w-full px-6 py-4 rounded-lg bg-gradient-to-r from-[#00FF88] to-[#00FFFF] text-black font-bold hover:opacity-90 transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full px-6 py-3 min-h-[48px] rounded-xl bg-gradient-to-r from-[#00FF88] to-[#00FFFF] text-black font-bold hover:opacity-90 active:scale-95 transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isSaving ? 'Saving...' : 'Save Profile'}
                   </button>

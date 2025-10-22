@@ -17,26 +17,28 @@ interface AdvancedTableViewProps {
 
 export function AdvancedTableView({ listings, onBuyClick, onCollaborateClick, onCommentClick, onRowClick }: AdvancedTableViewProps) {
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full border-separate border-spacing-0">
+    <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0 custom-scrollbar">
+      <table className="w-full min-w-[600px] md:min-w-[900px] border-separate border-spacing-0">
         <thead>
-          <tr className="text-xs font-medium text-zinc-400 uppercase tracking-wider">
-            <th className="sticky left-0 z-10 bg-black/90 backdrop-blur-xl px-4 py-3 text-left border-b border-zinc-800">
+          <tr className="text-[10px] md:text-xs font-medium text-zinc-400 uppercase tracking-wider">
+            <th className="sticky left-0 z-10 bg-black/90 backdrop-blur-xl px-2 md:px-4 py-2 md:py-3 text-left border-b border-zinc-800 min-w-[140px] md:min-w-[280px]">
               Token
             </th>
-            <th className="px-4 py-3 text-left border-b border-zinc-800">Age</th>
-            <th className="px-4 py-3 text-center border-b border-zinc-800">Motion</th>
-            <th className="px-4 py-3 text-center border-b border-zinc-800">Upvotes</th>
-            <th className="px-4 py-3 text-center border-b border-zinc-800">
+            <th className="px-2 md:px-4 py-2 md:py-3 text-left border-b border-zinc-800 min-w-[50px] md:min-w-[80px]">Age</th>
+            <th className="px-2 md:px-4 py-2 md:py-3 text-center border-b border-zinc-800 min-w-[70px] md:min-w-[100px]">Motion</th>
+            <th className="px-2 md:px-4 py-2 md:py-3 text-center border-b border-zinc-800 min-w-[60px] md:min-w-[100px]">
+              <ArrowUp className="w-3 h-3 md:w-4 md:h-4 mx-auto" />
+            </th>
+            <th className="hidden md:table-cell px-4 py-3 text-center border-b border-zinc-800 min-w-[80px]">
               <Eye className="w-4 h-4 mx-auto" />
             </th>
-            <th className="px-4 py-3 text-center border-b border-zinc-800">
+            <th className="hidden md:table-cell px-4 py-3 text-center border-b border-zinc-800 min-w-[80px]">
               <MessageSquare className="w-4 h-4 mx-auto" />
             </th>
-            <th className="px-4 py-3 text-center border-b border-zinc-800">Holders</th>
-            <th className="px-4 py-3 text-right border-b border-zinc-800">Price</th>
-            <th className="px-4 py-3 text-left border-b border-zinc-800">Creator</th>
-            <th className="px-4 py-3 text-center border-b border-zinc-800">Actions</th>
+            <th className="hidden md:table-cell px-4 py-3 text-center border-b border-zinc-800 min-w-[100px]">Holders</th>
+            <th className="px-2 md:px-4 py-2 md:py-3 text-right border-b border-zinc-800 min-w-[80px] md:min-w-[120px]">Price</th>
+            <th className="hidden sm:table-cell px-2 md:px-4 py-2 md:py-3 text-left border-b border-zinc-800 min-w-[100px] md:min-w-[150px]">Creator</th>
+            <th className="px-2 md:px-4 py-2 md:py-3 text-center border-b border-zinc-800 min-w-[100px] md:min-w-[150px]">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -138,13 +140,13 @@ function TableRow({
     >
       {/* Token Column */}
       <td className={cn(
-        "sticky left-0 z-10 px-4 py-3 border-b border-zinc-800/50",
+        "sticky left-0 z-10 px-2 md:px-4 py-3 border-b border-zinc-800/50",
         isHovered ? "bg-zinc-900/90 backdrop-blur-xl" : "bg-black/90 backdrop-blur-xl"
       )}>
-        <div className="flex items-center gap-3 min-w-[280px]">
+        <div className="flex items-center gap-2 md:gap-3 min-w-[180px] md:min-w-[280px]">
           {/* Token Icon */}
           <div className={cn(
-            "relative w-12 h-12 rounded-xl border-2 flex-shrink-0 overflow-hidden",
+            "relative w-10 h-10 md:w-12 md:h-12 rounded-lg md:rounded-xl border-2 flex-shrink-0 overflow-hidden",
             colors.border,
             colors.glow
           )}>
@@ -156,7 +158,7 @@ function TableRow({
               />
             ) : (
               <div className={cn(
-                "w-full h-full flex items-center justify-center bg-gradient-to-br text-xl font-bold",
+                "w-full h-full flex items-center justify-center bg-gradient-to-br text-lg md:text-xl font-bold",
                 colors.bg,
                 colors.text
               )}>
@@ -167,19 +169,19 @@ function TableRow({
 
           {/* Token Info */}
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1">
-              <h3 className="font-bold text-white text-sm truncate">
+            <div className="flex items-center gap-1 md:gap-2 mb-0.5 md:mb-1">
+              <h3 className="font-bold text-white text-xs md:text-sm truncate">
                 {listing.title}
               </h3>
-              <span className={cn("text-xs font-mono", colors.text)}>
+              <span className={cn("text-[10px] md:text-xs font-mono", colors.text)}>
                 {listing.ticker}
               </span>
             </div>
 
             {/* Status Badge + Social Links */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 md:gap-2">
               <span className={cn(
-                "px-2 py-0.5 rounded text-xs font-medium border",
+                "px-1.5 md:px-2 py-0.5 rounded text-[10px] md:text-xs font-medium border",
                 statusColors[listing.status || 'active']
               )}>
                 {(listing.status || 'ACTIVE').toUpperCase()}
@@ -190,7 +192,7 @@ function TableRow({
                   href={listing.twitterUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-zinc-500 hover:text-blue-400 transition-colors"
+                  className="text-zinc-500 hover:text-blue-400 transition-colors hidden md:inline-block"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <Twitter className="w-3.5 h-3.5" />
@@ -201,7 +203,7 @@ function TableRow({
                   href={listing.metrics.telegram}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-zinc-500 hover:text-blue-400 transition-colors"
+                  className="text-zinc-500 hover:text-blue-400 transition-colors hidden md:inline-block"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <MessageCircle className="w-3.5 h-3.5" />
@@ -212,7 +214,7 @@ function TableRow({
                   href={listing.metrics.website}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-zinc-500 hover:text-blue-400 transition-colors"
+                  className="text-zinc-500 hover:text-blue-400 transition-colors hidden md:inline-block"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <Globe className="w-3.5 h-3.5" />
@@ -224,19 +226,19 @@ function TableRow({
       </td>
 
       {/* Age Column */}
-      <td className="px-4 py-3 border-b border-zinc-800/50">
-        <div className="text-sm font-medium text-zinc-300">
+      <td className="px-2 md:px-4 py-3 border-b border-zinc-800/50">
+        <div className="text-xs md:text-sm font-medium text-zinc-300 whitespace-nowrap">
           {timeAgo}
         </div>
       </td>
 
       {/* Belief Score Column */}
-      <td className="px-4 py-3 border-b border-zinc-800/50">
-        <div className="flex flex-col items-center gap-1">
-          <div className={cn("text-2xl font-bold", colors.text)}>
+      <td className="px-2 md:px-4 py-3 border-b border-zinc-800/50">
+        <div className="flex flex-col items-center gap-0.5 md:gap-1">
+          <div className={cn("text-lg md:text-2xl font-bold", colors.text)}>
             {listing.beliefScore}
           </div>
-          <div className="w-16 h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+          <div className="w-12 md:w-16 h-1 md:h-1.5 bg-zinc-800 rounded-full overflow-hidden">
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${listing.beliefScore}%` }}
@@ -253,7 +255,7 @@ function TableRow({
       </td>
 
       {/* Upvotes Column with Button - Toggles Vote */}
-      <td className="px-4 py-3 border-b border-zinc-800/50">
+      <td className="px-2 md:px-4 py-3 border-b border-zinc-800/50">
         <button
           onClick={(e) => {
             e.stopPropagation()
@@ -261,18 +263,18 @@ function TableRow({
             setUpvotes(hasVoted ? upvotes - 1 : upvotes + 1)
           }}
           className={cn(
-            "flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-all group/vote mx-auto cursor-pointer",
+            "flex flex-col items-center gap-0.5 md:gap-1 px-2 md:px-3 py-1.5 md:py-2 rounded-lg transition-all group/vote mx-auto cursor-pointer",
             hasVoted
               ? cn("bg-gradient-to-br", colors.bg, colors.border, "border")
               : "bg-zinc-800/50 hover:bg-zinc-800 border border-zinc-700"
           )}
         >
           <ArrowUp className={cn(
-            "w-4 h-4 transition-all",
+            "w-3 h-3 md:w-4 md:h-4 transition-all",
             hasVoted ? colors.text : "text-zinc-400 group-hover/vote:text-white group-hover/vote:-translate-y-0.5"
           )} />
           <span className={cn(
-            "text-sm font-bold",
+            "text-xs md:text-sm font-bold",
             hasVoted ? colors.text : "text-white"
           )}>
             {upvotes}
@@ -315,20 +317,20 @@ function TableRow({
       </td>
 
       {/* Price Column */}
-      <td className="px-4 py-3 border-b border-zinc-800/50 text-right">
+      <td className="px-2 md:px-4 py-3 border-b border-zinc-800/50 text-right">
         <div className="space-y-0.5">
-          <div className="font-semibold text-white text-sm">
+          <div className="font-semibold text-white text-xs md:text-sm">
             {formatSOL(listing.currentPrice || 0)}
           </div>
           {listing.priceChange24h !== undefined && (
             <div className={cn(
-              "flex items-center justify-end gap-1 text-xs font-medium",
+              "flex items-center justify-end gap-0.5 md:gap-1 text-[10px] md:text-xs font-medium",
               isPositive ? "text-green-400" : "text-red-400"
             )}>
               {isPositive ? (
-                <TrendingUp className="w-3 h-3" />
+                <TrendingUp className="w-2.5 h-2.5 md:w-3 md:h-3" />
               ) : (
-                <TrendingDown className="w-3 h-3" />
+                <TrendingDown className="w-2.5 h-2.5 md:w-3 md:h-3" />
               )}
               {isPositive ? '+' : ''}{listing.priceChange24h.toFixed(1)}%
             </div>
@@ -337,18 +339,18 @@ function TableRow({
       </td>
 
       {/* Creator Column */}
-      <td className="px-4 py-3 border-b border-zinc-800/50">
-        <div className="flex items-center gap-2">
+      <td className="px-2 md:px-4 py-3 border-b border-zinc-800/50">
+        <div className="flex items-center gap-1.5 md:gap-2">
           <img
             src={listing.metrics.creatorAvatar}
             alt={listing.metrics.creatorName}
-            className="w-8 h-8 rounded-full"
+            className="w-6 h-6 md:w-8 md:h-8 rounded-full"
           />
           <div className="min-w-0">
-            <div className="text-sm font-medium text-white truncate">
+            <div className="text-xs md:text-sm font-medium text-white truncate">
               {listing.metrics.creatorName}
             </div>
-            <div className="text-xs text-zinc-500 font-mono">
+            <div className="text-[10px] md:text-xs text-zinc-500 font-mono truncate hidden md:block">
               {listing.metrics.creatorWallet}
             </div>
           </div>
@@ -356,16 +358,16 @@ function TableRow({
       </td>
 
       {/* Actions Column */}
-      <td className="px-4 py-3 border-b border-zinc-800/50">
-        <div className="flex flex-col gap-2">
-          <div className="flex items-stretch gap-2">
+      <td className="px-2 md:px-4 py-3 border-b border-zinc-800/50">
+        <div className="flex flex-col gap-1 md:gap-2">
+          <div className="flex items-stretch gap-1 md:gap-2">
             <button
               onClick={(e) => {
                 e.stopPropagation()
                 onBuyClick?.(listing, 0.1)
               }}
               className={cn(
-                "px-4 py-2 rounded-lg font-bold text-sm transition-all whitespace-nowrap hover:scale-105",
+                "px-2 md:px-4 py-1.5 md:py-2 rounded-lg font-bold text-[11px] md:text-sm transition-all whitespace-nowrap hover:scale-105",
                 listing.type === 'icm' && "bg-[#00FF88] text-black",
                 listing.type === 'ccm' && "bg-[#00FFFF] text-black",
                 listing.type === 'meme' && "bg-[#FFD700] text-black"

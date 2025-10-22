@@ -2,6 +2,9 @@
 > streamwidgets@0.1.0 build
 > next build
 
+ ⚠ Invalid next.config.js options detected: 
+ ⚠     Unrecognized key(s) in object: 'performance'
+ ⚠ See more info here: https://nextjs.org/docs/messages/invalid-next-config
   ▲ Next.js 14.2.33
   - Environments: .env.local, .env
 
@@ -13,19 +16,487 @@
 > [PWA] Service worker: c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\public\sw.js
 > [PWA]   url: /sw.js
 > [PWA]   scope: /
- ✓ Compiled successfully
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving '../../../typescript/lib/typescript' in c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build for build dependencies doesn't lead to expected result 'C:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\typescript\lib\typescript.js', but to 'c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\typescript\lib\typescript.js' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ../../../typescript/lib/typescript (expected C:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\typescript\lib\typescript.js)
+<w>  at file dependencies c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\load-jsconfig.js
+<w>  at file c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\load-jsconfig.js
+<w>  at file dependencies c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\webpack-config.js
+<w>  at file c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\webpack-config.js
+<w>  at file dependencies c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at file c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at resolve commonjs c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving '../../../typescript/lib/typescript' in c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build for build dependencies doesn't lead to expected result 'C:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\typescript\lib\typescript.js', but to 'c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\typescript\lib\typescript.js' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ../../../typescript/lib/typescript (expected C:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\typescript\lib\typescript.js)
+<w>  at file dependencies c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\load-jsconfig.js
+<w>  at file c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\load-jsconfig.js
+<w>  at file dependencies c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\webpack-config.js
+<w>  at file c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\webpack-config.js
+<w>  at file dependencies c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\handle-externals.js
+<w>  at file c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\handle-externals.js
+<w>  at file dependencies c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at file c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at file dependencies c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\compiled\loader-runner\LoaderRunner.js
+<w>  at file c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\compiled\loader-runner\LoaderRunner.js
+<w>  at file dependencies c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\compiled\webpack\bundle5.js
+<w>  at file c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\compiled\webpack\bundle5.js
+<w>  at file dependencies c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\compiled\webpack\webpack.js
+<w>  at file c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\compiled\webpack\webpack.js
+<w>  at file dependencies c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\compiled\webpack\webpack-lib.js
+<w>  at file c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\compiled\webpack\webpack-lib.js
+<w>  at file dependencies c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next-pwa\build-fallback-worker.js
+<w>  at file c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next-pwa\build-fallback-worker.js
+<w>  at file dependencies c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next-pwa\index.js
+<w>  at file c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next-pwa\index.js
+<w>  at file dependencies c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\next.config.js
+<w>  at file c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\next.config.js
+<w>  at resolve commonjs c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\next.config.js
+
+
+Source path: c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\app\globals.css
+Setting up new context...
+Finding changed files: 21.419ms
+
+
+Source path: c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\styles\tokens.css
+JIT TOTAL: 158.693ms
+
+
+(node:54832) Warning: Label 'JIT TOTAL' already exists for console.time()
+(Use `node --trace-warnings ...` to show where the warning was created)
+Reading changed files: 463.999ms
+Sorting candidates: 13.775ms
+Generate rules: 370.404ms
+Build stylesheet: 6.486ms
+Potential classes:  16624
+Active contexts:  1
+
+
+(node:54832) Warning: No such label 'JIT TOTAL' for console.timeEnd()
+
+
+Source path: c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\styles\colors.css
+JIT TOTAL: 1.247ms
+
+
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving '../../../typescript/lib/typescript' in c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build for build dependencies doesn't lead to expected result 'C:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\typescript\lib\typescript.js', but to 'c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\typescript\lib\typescript.js' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ../../../typescript/lib/typescript (expected C:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\typescript\lib\typescript.js)
+<w>  at file dependencies c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\load-jsconfig.js
+<w>  at file c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\load-jsconfig.js
+<w>  at file dependencies c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\webpack-config.js
+<w>  at file c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\webpack-config.js
+<w>  at file dependencies c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\handle-externals.js
+<w>  at file c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\handle-externals.js
+<w>  at file dependencies c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at file c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at resolve commonjs c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+ ⚠ Compiled with warnings
+
+/_next/static/chunks/vendors-f208d4efac10ff3c.js is 2.41 MB, and won't be precached. Configure maximumFileSizeToCacheInBytes to change this limit.
+
    Skipping linting
    Checking validity of types ...
-Failed to compile.
+   Collecting page data ...
+   Generating static pages (0/47) ...
+Test launch error: B [Error]: Dynamic server usage: Route /api/test-launch couldn't be rendered statically because it used `nextUrl.searchParams`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at V (c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\compiled\next-server\app-route.runtime.prod.js:6:21778)
+    at Object.get (c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\compiled\next-server\app-route.runtime.prod.js:6:29137)
+    at i (c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\.next\server\app\api\test-launch\route.js:1:530)
+    at c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\compiled\next-server\app-route.runtime.prod.js:6:38417
+    at c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\server\lib\trace\tracer.js:140:36
+    at NoopContextManager.with (c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:7062)
+    at ContextAPI.with (c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:518)
+    at NoopTracer.startActiveSpan (c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:18093)
+    at ProxyTracer.startActiveSpan (c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:18854)
+    at c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\server\lib\trace\tracer.js:122:103 {
+  description: "Route /api/test-launch couldn't be rendered statically because it used `nextUrl.searchParams`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
+Error fetching referral leaderboard: B [Error]: Dynamic server usage: Route /api/referral/leaderboard couldn't be rendered statically because it used `nextUrl.searchParams`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at V (c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\compiled\next-server\app-route.runtime.prod.js:6:21778)
+    at Object.get (c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\compiled\next-server\app-route.runtime.prod.js:6:29137)
+    at R (c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\.next\server\app\api\referral\leaderboard\route.js:1:941)
+    at c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\compiled\next-server\app-route.runtime.prod.js:6:38417
+    at c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\server\lib\trace\tracer.js:140:36
+    at NoopContextManager.with (c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:7062)
+    at ContextAPI.with (c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:518)
+    at NoopTracer.startActiveSpan (c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:18093)
+    at ProxyTracer.startActiveSpan (c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:18854)
+    at c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\server\lib\trace\tracer.js:122:103 {
+  description: "Route /api/referral/leaderboard couldn't be rendered statically because it used `nextUrl.searchParams`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
+   Generating static pages (11/47) 
+ ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /clip. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /clip. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /clip. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /clip. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /dashboard/earnings. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/earnings. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /dashboard/earnings. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/earnings. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /chat. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /chat. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /chat. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /chat. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /dashboard/network. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/network. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /dashboard/network. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/network. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /_not-found. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /_not-found. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /_not-found. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /_not-found. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /control/social. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /control/social. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /control/social. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /control/social. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /dashboard/analytics. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/analytics. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /dashboard/analytics. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/analytics. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /dashboard/submissions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/submissions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /dashboard/submissions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/submissions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /dashboard/campaigns. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/campaigns. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /dashboard/campaigns. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/campaigns. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /dashboard/profile. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/profile. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /dashboard/profile. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/profile. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+Get curve by owner error: B [Error]: Dynamic server usage: Route /api/curve/owner couldn't be rendered statically because it used `nextUrl.searchParams`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at V (c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\compiled\next-server\app-route.runtime.prod.js:6:21778)
+    at Object.get (c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\compiled\next-server\app-route.runtime.prod.js:6:29137)
+    at p (c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\.next\server\app\api\curve\owner\route.js:1:1803)
+    at c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\compiled\next-server\app-route.runtime.prod.js:6:38417
+    at c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\server\lib\trace\tracer.js:140:36
+    at NoopContextManager.with (c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:7062)
+    at ContextAPI.with (c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:518)
+    at NoopTracer.startActiveSpan (c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:18093)
+    at ProxyTracer.startActiveSpan (c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:18854)
+    at c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\server\lib\trace\tracer.js:122:103 {
+  description: "Route /api/curve/owner couldn't be rendered statically because it used `nextUrl.searchParams`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
+   Generating static pages (23/47) 
+🔧 Initializing Privy with app ID: cmfsej8w7013cle0df5ottcj6
+🔧 Initializing Privy with app ID: cmfsej8w7013cle0df5ottcj6
+🔧 Initializing Privy with app ID: cmfsej8w7013cle0df5ottcj6
+🔧 Initializing Privy with app ID: cmfsej8w7013cle0df5ottcj6
+🔧 Initializing Privy with app ID: cmfsej8w7013cle0df5ottcj6
+🔧 Initializing Privy with app ID: cmfsej8w7013cle0df5ottcj6
+🔧 Initializing Privy with app ID: cmfsej8w7013cle0df5ottcj6
+🔧 Initializing Privy with app ID: cmfsej8w7013cle0df5ottcj6
+🔧 Initializing Privy with app ID: cmfsej8w7013cle0df5ottcj6
+🔧 Initializing Privy with app ID: cmfsej8w7013cle0df5ottcj6
+ ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /signup. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /signup. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /signup. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /signup. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /live. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /live. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /live. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /live. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /profile. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /profile. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /profile. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /profile. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /network. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /network. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /network. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /network. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /login. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /login. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /login. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /login. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /control/predictions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /control/predictions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /control/predictions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /control/predictions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /dashboard. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /dashboard. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /dashboard. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /dashboard. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /landing. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /landing. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /landing. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /landing. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /earn. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /earn. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /earn. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /earn. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /launch. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /launch. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /launch. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /launch. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /discover. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /discover. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /dashboard/settings. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/settings. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔧 Initializing Privy with app ID: cmfsej8w7013cle0df5ottcj6
+🔧 Initializing Privy with app ID: cmfsej8w7013cle0df5ottcj6
+🔧 Initializing Privy with app ID: cmfsej8w7013cle0df5ottcj6
+🔧 Initializing Privy with app ID: cmfsej8w7013cle0df5ottcj6
+🔧 Initializing Privy with app ID: cmfsej8w7013cle0df5ottcj6
+🔧 Initializing Privy with app ID: cmfsej8w7013cle0df5ottcj6
+🔧 Initializing Privy with app ID: cmfsej8w7013cle0df5ottcj6
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /discover. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /discover. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔧 Initializing Privy with app ID: cmfsej8w7013cle0df5ottcj6
+📊 Sell calculation: {
+  curveSupply: 100,
+  keysToSell: 5,
+  userKeys: 0,
+  solReceived: 0.38703440373910003,
+  currentSharePct: 0
+}
+📊 Sell calculation: {
+  curveSupply: 100,
+  keysToSell: 5,
+  userKeys: 0,
+  solReceived: 0.38703440373910003,
+  currentSharePct: 0
+}
+📊 Sell calculation: {
+  curveSupply: 100,
+  keysToSell: 5,
+  userKeys: 0,
+  solReceived: 0.38703440373910003,
+  currentSharePct: 0
+}
+📊 Sell calculation: {
+  curveSupply: 100,
+  keysToSell: 5,
+  userKeys: 0,
+  solReceived: 0.38703440373910003,
+  currentSharePct: 0
+}
+📊 Sell calculation: {
+  curveSupply: 100,
+  keysToSell: 5,
+  userKeys: 0,
+  solReceived: 0.38703440373910003,
+  currentSharePct: 0
+}
+🔧 Initializing Privy with app ID: cmfsej8w7013cle0df5ottcj6
+🔧 Initializing Privy with app ID: cmfsej8w7013cle0df5ottcj6
+🔧 Initializing Privy with app ID: cmfsej8w7013cle0df5ottcj6
+🔧 Initializing Privy with app ID: cmfsej8w7013cle0df5ottcj6
+   Generating static pages (35/47) 
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /dashboard/settings. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/settings. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔧 Initializing Privy with app ID: cmfsej8w7013cle0df5ottcj6
+ ✓ Generating static pages (47/47)
+   Finalizing page optimization ...
+   Collecting build traces ...
 
-./app/api/referral/track/route.ts:63:9
-Type error: Object literal may only specify known properties, and 'userId' does not exist in type 'Omit<ReferralReward, "id" | "createdAt" | "claimedAt">'.
+Route (app)                             Size     First Load JS
+┌ ○ /                                   138 B           750 kB
+├ ○ /_not-found                         189 B           750 kB
+├ ƒ /api/activities                     0 B                0 B
+├ ƒ /api/campaigns                      0 B                0 B
+├ ƒ /api/campaigns/[id]                 0 B                0 B
+├ ƒ /api/campaigns/[id]/stats           0 B                0 B
+├ ƒ /api/curve/[id]                     0 B                0 B
+├ ƒ /api/curve/[id]/airdrop/claim       0 B                0 B
+├ ƒ /api/curve/[id]/buy                 0 B                0 B
+├ ƒ /api/curve/[id]/freeze              0 B                0 B
+├ ƒ /api/curve/[id]/holder/[userId]     0 B                0 B
+├ ƒ /api/curve/[id]/holdings            0 B                0 B
+├ ƒ /api/curve/[id]/launch              0 B                0 B
+├ ƒ /api/curve/[id]/price-change        0 B                0 B
+├ ƒ /api/curve/[id]/sell                0 B                0 B
+├ ƒ /api/curve/create                   0 B                0 B
+├ ƒ /api/curve/launch                   0 B                0 B
+├ ○ /api/curve/list                     0 B                0 B
+├ ƒ /api/curve/owner                    0 B                0 B
+├ ƒ /api/curve/test                     0 B                0 B
+├ ƒ /api/dex/candles                    0 B                0 B
+├ ƒ /api/dex/token                      0 B                0 B
+├ ƒ /api/events/emit                    0 B                0 B
+├ ƒ /api/fetch-clip-metrics             0 B                0 B
+├ ƒ /api/launches                       0 B                0 B
+├ ƒ /api/launches/[id]                  0 B                0 B
+├ ƒ /api/launches/[id]/contributors     0 B                0 B
+├ ƒ /api/launches/[id]/follow           0 B                0 B
+├ ƒ /api/launches/[id]/upvote           0 B                0 B
+├ ƒ /api/leaderboard                    0 B                0 B
+├ ƒ /api/mock-launch                    0 B                0 B
+├ ƒ /api/network/invites                0 B                0 B
+├ ƒ /api/network/invites/[id]/accept    0 B                0 B
+├ ƒ /api/network/invites/[id]/reject    0 B                0 B
+├ ƒ /api/notifications/toggle           0 B                0 B
+├ ƒ /api/payouts                        0 B                0 B
+├ ƒ /api/payouts/[id]/claim             0 B                0 B
+├ ƒ /api/referral/leaderboard           0 B                0 B
+├ ƒ /api/referral/track                 0 B                0 B
+├ ƒ /api/submissions                    0 B                0 B
+├ ƒ /api/submissions/[id]/approve       0 B                0 B
+├ ƒ /api/test-launch                    0 B                0 B
+├ ƒ /api/users/[id]/earnings            0 B                0 B
+├ ƒ /bounties/[id]                      4.63 kB        1.33 MB
+├ ƒ /campaign/[id]                      6.25 kB        1.36 MB
+├ ○ /chat                               7.11 kB        1.41 MB
+├ ○ /clip                               13.5 kB        1.34 MB
+├ ○ /control/predictions                1.56 kB         751 kB
+├ ○ /control/social                     1.47 kB         751 kB
+├ ○ /dashboard                          3.77 kB        1.42 MB
+├ ○ /dashboard/analytics                4.84 kB        1.42 MB
+├ ○ /dashboard/campaigns                3.37 kB        1.42 MB
+├ ƒ /dashboard/campaigns/[id]/review    4.51 kB        1.33 MB
+├ ○ /dashboard/earnings                 3.48 kB        1.36 MB
+├ ○ /dashboard/network                  3.2 kB         1.42 MB
+├ ○ /dashboard/profile                  8.2 kB         1.36 MB
+├ ○ /dashboard/settings                 2.64 kB        1.42 MB
+├ ○ /dashboard/submissions              6.38 kB        1.36 MB
+├ ○ /discover                           21.2 kB        1.45 MB
+├ ○ /earn                               11.4 kB        1.43 MB
+├ ○ /landing                            6 kB            756 kB
+├ ○ /launch                             5.74 kB        1.36 MB
+├ ƒ /launch/[id]                        7.13 kB        1.43 MB
+├ ○ /live                               6.8 kB         1.42 MB
+├ ○ /login                              3.08 kB         779 kB
+├ ○ /network                            11.3 kB        1.42 MB
+├ ○ /profile                            8.14 kB        1.39 MB
+├ ƒ /profile/[handle]                   1.55 kB         751 kB
+├ ƒ /quest/[id]                         576 B           750 kB
+├ ƒ /raids/[id]                         4.58 kB        1.33 MB
+└ ○ /signup                             3.87 kB         779 kB
++ First Load JS shared by all           750 kB
+  └ chunks/vendors-f208d4efac10ff3c.js  748 kB
+  └ other shared chunks (total)         2.29 kB
 
-[0m [90m 61 |[39m     [36mif[39m (referrerId [33m&&[39m split[33m.[39mreferral [33m>[39m [35m0[39m) {[0m
-[0m [90m 62 |[39m       [36mawait[39m [33mReferralRewardService[39m[33m.[39mcreateReward({[0m
-[0m[31m[1m>[22m[39m[90m 63 |[39m         userId[33m:[39m referrerId[33m,[39m[0m
-[0m [90m    |[39m         [31m[1m^[22m[39m[0m
-[0m [90m 64 |[39m         referralId[33m:[39m referral[33m.[39mid[33m,[39m[0m
-[0m [90m 65 |[39m         amount[33m:[39m split[33m.[39mreferral[33m,[39m[0m
-[0m [90m 66 |[39m         type[33m:[39m [32m'referral_fee'[39m[33m,[39m[0m
-Next.js build worker exited with code: 1 and signal: null
+Route (pages)                           Size     First Load JS
+─ ○ /design-test-old                    239 B           750 kB
++ First Load JS shared by all           750 kB
+  ├ chunks/vendors-f208d4efac10ff3c.js  748 kB
+  └ other shared chunks (total)         2.44 kB
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
