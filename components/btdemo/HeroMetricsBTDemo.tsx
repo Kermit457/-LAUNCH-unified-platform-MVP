@@ -20,27 +20,27 @@ export function HeroMetricsBTDemo({
   clipViews = 588600
 }: HeroMetricsProps): JSX.Element {
   /**
-   * Format large numbers to abbreviated form (e.g., 2.4M, 45M)
+   * Format large numbers to abbreviated form (e.g., 2M, 45M)
    */
   const formatLargeNumber = (num: number): string => {
     if (num >= 1_000_000) {
-      return `$${(num / 1_000_000).toFixed(1)}M`
+      return `$${(num / 1_000_000).toFixed(0)}M`
     }
     if (num >= 1_000) {
-      return `$${(num / 1_000).toFixed(1)}K`
+      return `$${(num / 1_000).toFixed(0)}K`
     }
     return `$${num.toFixed(0)}`
   }
 
   /**
-   * Format views count (e.g., 588.6K)
+   * Format views count (e.g., 589K)
    */
   const formatViews = (num: number): string => {
     if (num >= 1_000_000) {
-      return `${(num / 1_000_000).toFixed(1)}M`
+      return `${(num / 1_000_000).toFixed(0)}M`
     }
     if (num >= 1_000) {
-      return `${(num / 1_000).toFixed(1)}K`
+      return `${(num / 1_000).toFixed(0)}K`
     }
     return num.toString()
   }
@@ -50,12 +50,13 @@ export function HeroMetricsBTDemo({
    */
   const formatPercentage = (num: number): string => {
     const sign = num >= 0 ? '+' : ''
-    return `${sign}${num.toFixed(1)}%`
+    return `${sign}${num.toFixed(0)}%`
   }
 
   return (
     <section className="container mx-auto px-4 py-4 md:py-6">
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
+      {/* Mobile: Horizontal scroll, Desktop: Grid */}
+      <div className="flex overflow-x-auto gap-3 md:gap-4 md:grid md:grid-cols-3 lg:grid-cols-5 snap-x snap-mandatory pb-2 -mx-4 px-4 md:mx-0 md:px-0" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
         <HeroMetricCard
           icon={Lock}
           label="Vault TVL"

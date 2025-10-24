@@ -1,9 +1,9 @@
 'use client'
 
-import { DollarSign, Rocket, ArrowUp, MessageSquare, Trophy, Video } from 'lucide-react'
+import { DollarSign, Rocket, ArrowUp, MessageSquare, Trophy, Video, TrendingDown, Users, Star, TrendingUp, UserPlus, Mail } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
-type ActivityType = 'buy' | 'launch' | 'vote' | 'comment' | 'milestone' | 'clip'
+type ActivityType = 'buy' | 'sell' | 'launch' | 'vote' | 'comment' | 'milestone' | 'clip' | 'collab' | 'network' | 'curator' | 'motion' | 'holders' | 'dm'
 
 interface Activity {
   id: string
@@ -33,11 +33,18 @@ export function ActivityStreamBTDemo({ activities }: ActivityStreamBTDemoProps):
   const getActivityIcon = (type: ActivityType) => {
     const icons = {
       buy: DollarSign,
+      sell: TrendingDown,
       launch: Rocket,
       vote: ArrowUp,
       comment: MessageSquare,
       milestone: Trophy,
-      clip: Video
+      clip: Video,
+      collab: Users,
+      network: UserPlus,
+      curator: Star,
+      motion: TrendingUp,
+      holders: Users,
+      dm: Mail
     }
     return icons[type]
   }
@@ -45,11 +52,18 @@ export function ActivityStreamBTDemo({ activities }: ActivityStreamBTDemoProps):
   const getActivityColor = (type: ActivityType): string => {
     const colors = {
       buy: 'text-[#00FF88] bg-[#00FF88]/10 border-[#00FF88]/30',
+      sell: 'text-red-400 bg-red-400/10 border-red-400/30',
       launch: 'text-[#FFD700] bg-[#FFD700]/10 border-[#FFD700]/30',
       vote: 'text-[#00FFFF] bg-[#00FFFF]/10 border-[#00FFFF]/30',
       comment: 'text-blue-400 bg-blue-400/10 border-blue-400/30',
       milestone: 'text-[#D1FD0A] bg-[#D1FD0A]/10 border-[#D1FD0A]/30',
-      clip: 'text-pink-400 bg-pink-400/10 border-pink-400/30'
+      clip: 'text-pink-400 bg-pink-400/10 border-pink-400/30',
+      collab: 'text-purple-400 bg-purple-400/10 border-purple-400/30',
+      network: 'text-[#D1FD0A] bg-[#D1FD0A]/10 border-[#D1FD0A]/30',
+      curator: 'text-yellow-400 bg-yellow-400/10 border-yellow-400/30',
+      motion: 'text-[#D1FD0A] bg-[#D1FD0A]/10 border-[#D1FD0A]/30',
+      holders: 'text-cyan-400 bg-cyan-400/10 border-cyan-400/30',
+      dm: 'text-indigo-400 bg-indigo-400/10 border-indigo-400/30'
     }
     return colors[type]
   }
@@ -60,7 +74,17 @@ export function ActivityStreamBTDemo({ activities }: ActivityStreamBTDemoProps):
         return (
           <>
             bought{' '}
-            <span className="font-bold font-led-16 text-[#00FF88]">
+            <span className="font-bold font-led-dot text-[#00FF88]">
+              ◎{activity.amount?.toFixed(1)}
+            </span>{' '}
+            of <span className="font-bold">{activity.project?.name}</span>
+          </>
+        )
+      case 'sell':
+        return (
+          <>
+            sold{' '}
+            <span className="font-bold font-led-dot text-red-400">
               ◎{activity.amount?.toFixed(1)}
             </span>{' '}
             of <span className="font-bold">{activity.project?.name}</span>
@@ -96,6 +120,42 @@ export function ActivityStreamBTDemo({ activities }: ActivityStreamBTDemoProps):
             commented on <span className="font-bold">{activity.project?.name}</span>
           </>
         )
+      case 'collab':
+        return (
+          <>
+            started collaborating on <span className="font-bold">{activity.project?.name}</span>
+          </>
+        )
+      case 'network':
+        return (
+          <>
+            joined the network
+          </>
+        )
+      case 'curator':
+        return (
+          <>
+            became a curator
+          </>
+        )
+      case 'motion':
+        return (
+          <>
+            <span className="font-bold">{activity.project?.name}</span> motion score increased
+          </>
+        )
+      case 'holders':
+        return (
+          <>
+            <span className="font-bold">{activity.project?.name}</span> reached {activity.amount} holders
+          </>
+        )
+      case 'dm':
+        return (
+          <>
+            sent you a message
+          </>
+        )
     }
   }
 
@@ -113,56 +173,38 @@ export function ActivityStreamBTDemo({ activities }: ActivityStreamBTDemoProps):
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ type: 'spring', stiffness: 300, damping: 24 }}
-              className="glass-premium p-3 rounded-xl border border-zinc-800 hover:border-opacity-100 transition-all cursor-pointer"
+              className="glass-premium p-2 rounded-lg border border-zinc-800 hover:border-[#D1FD0A]/30 transition-all cursor-pointer"
             >
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 {/* Activity Icon */}
-                <div className={`w-10 h-10 rounded-lg border flex items-center justify-center flex-shrink-0 ${colorClass}`}>
-                  <Icon className="w-5 h-5" />
+                <div className={`w-8 h-8 rounded-md border flex items-center justify-center flex-shrink-0 ${colorClass}`}>
+                  <Icon className="w-4 h-4" />
                 </div>
 
                 {/* Content */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <img
-                      src={activity.user.avatar}
-                      alt={activity.user.name}
-                      className="w-5 h-5 rounded-full"
-                    />
-                    <span className="text-sm font-medium text-white truncate">
-                      {activity.user.name}
-                    </span>
-                    <span className="text-xs text-zinc-500 whitespace-nowrap ml-auto font-led-16">
-                      {formatTimeAgo(activity.timestamp)}
-                    </span>
-                  </div>
-
-                  <p className="text-sm text-zinc-300">
+                <div className="flex-1 min-w-0 flex items-center gap-2">
+                  <img
+                    src={activity.user.avatar}
+                    alt={activity.user.name}
+                    className="w-4 h-4 rounded-full flex-shrink-0"
+                  />
+                  <span className="text-xs font-medium text-white truncate">
+                    {activity.user.name}
+                  </span>
+                  <p className="text-xs text-zinc-400 truncate">
                     {getActivityText(activity)}
                   </p>
-
-                  {activity.project && activity.value && (
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="text-xs px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 font-mono">
-                        ${activity.project.ticker}
-                      </span>
-                      <span className="text-xs text-zinc-500 font-led-16">
-                        ~${activity.value.toLocaleString('en-US')}
-                      </span>
-                    </div>
-                  )}
                 </div>
+
+                {/* Timestamp */}
+                <span className="text-[10px] text-zinc-600 whitespace-nowrap flex-shrink-0 font-led-dot">
+                  {formatTimeAgo(activity.timestamp)}
+                </span>
               </div>
             </motion.div>
           )
         })}
       </AnimatePresence>
-
-      {/* Live indicator */}
-      <div className="flex items-center justify-center gap-2 py-4">
-        <div className="w-2 h-2 rounded-full bg-[#00FF88] animate-pulse" />
-        <span className="text-xs text-zinc-500 font-medium">Live updates</span>
-      </div>
     </div>
   )
 }

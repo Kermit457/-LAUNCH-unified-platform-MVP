@@ -7,8 +7,7 @@ import { CommentsDrawer } from '@/components/CommentsDrawer'
 import { BuySellModal } from '@/components/launch/BuySellModal'
 import { LaunchDetailsModal } from '@/components/launch/LaunchDetailsModal'
 import { SubmitLaunchDrawer } from '@/components/launch/SubmitLaunchDrawer'
-import { CoinListItem } from '@/components/mobile/CoinListItem'
-import { LiveTicker } from '@/components/LiveTicker'
+import { TokenLaunchPreview } from '@/components/launch/TokenLaunchPreview'
 import { type UnifiedCardData, type CurveType } from '@/components/UnifiedCard'
 import { type AdvancedListingData } from '@/lib/advancedTradingData'
 import { LayoutGrid, Table } from 'lucide-react'
@@ -114,49 +113,18 @@ export default function DiscoverPage() {
 
   return (
     <div className="min-h-screen bg-black pb-24 md:pb-6">
-      {/* Live Ticker */}
-      <LiveTicker />
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2 md:py-4">
 
-      {/* Sticky Header - Mobile */}
-      <div className="md:hidden sticky top-0 z-40 bg-black/95 backdrop-blur-xl border-b border-zinc-800">
-        <div className="px-3 py-2 flex items-center justify-between">
-          <h1 className="text-base font-black text-[#D1FD0A]">
-            Discover
-          </h1>
-          <button
-            onClick={() => setShowSubmitDrawer(true)}
-            className="px-6 py-3 min-h-[48px] rounded-xl bg-gradient-to-r from-[#FFD700] to-[#FFC700] hover:from-[#FFE700] hover:to-[#FFD700] active:scale-95 text-black font-bold transition-all flex items-center gap-2 text-sm"
-          >
-            <IconRocket size={20} />
-            <span>Create</span>
-          </button>
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 md:py-8">
+        {/* Token Launch Preview */}
+        <TokenLaunchPreview
+          onLaunch={(data) => {
+            console.log('Token launch data:', data)
+            setShowSubmitDrawer(true)
+          }}
+        />
 
         {/* Header - Desktop Only */}
-        <div className="hidden md:block mb-8">
-          {/* Title Row - Horizontal on mobile */}
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="text-4xl lg:text-5xl font-black text-[#D1FD0A] mb-3">
-                Discover
-              </h1>
-              <p className="text-lg text-zinc-400">
-                Markets for ideas, creators, and memes
-              </p>
-            </div>
-
-            {/* Create Button - Desktop */}
-            <button
-              onClick={() => setShowSubmitDrawer(true)}
-              className="px-6 py-3 min-h-[48px] rounded-xl bg-gradient-to-r from-[#FFD700] to-[#FFC700] hover:from-[#FFE700] hover:to-[#FFD700] text-black font-bold transition-all hover:scale-105 flex items-center gap-2 text-sm"
-            >
-              <IconRocket size={20} />
-              <span>Create</span>
-            </button>
-          </div>
+        <div className="hidden md:block mb-4">
 
           {/* View Toggle & Stats - Combined Row */}
           <div className="hidden md:flex items-center justify-between gap-6">
@@ -194,28 +162,28 @@ export default function DiscoverPage() {
                 <IconCash size={20} className="text-[#D1FD0A]" />
                 <div>
                   <div className="text-xs text-zinc-400">Holdings</div>
-                  <div className="text-xl font-bold text-[#D1FD0A] font-led-dot">{totalValue.toFixed(2)} SOL</div>
+                  <div className="text-xl font-bold text-white font-led-dot">{totalValue.toFixed(2)}</div>
                 </div>
               </div>
               <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-[#D1FD0A]/10 border-2 border-[#D1FD0A]/30 hover:border-[#D1FD0A]/50 transition-all">
                 <IconNetwork size={20} className="text-[#D1FD0A]" />
                 <div>
                   <div className="text-xs text-zinc-400">Network</div>
-                  <div className="text-xl font-bold text-[#D1FD0A] font-led-dot">248</div>
+                  <div className="text-xl font-bold text-white font-led-dot">248</div>
                 </div>
               </div>
               <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-[#D1FD0A]/10 border-2 border-[#D1FD0A]/30 hover:border-[#D1FD0A]/50 transition-all">
                 <IconLightning size={20} className="text-[#D1FD0A]" />
                 <div>
                   <div className="text-xs text-zinc-400">Referral</div>
-                  <div className="text-xl font-bold text-[#D1FD0A] font-led-dot">1,240</div>
+                  <div className="text-xl font-bold text-white font-led-dot">1,240</div>
                 </div>
               </div>
               <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-[#D1FD0A]/10 border-2 border-[#D1FD0A]/30 hover:border-[#D1FD0A]/50 transition-all">
                 <IconCash size={20} className="text-[#D1FD0A]" />
                 <div>
                   <div className="text-xs text-zinc-400">Earnings</div>
-                  <div className="text-xl font-bold text-[#D1FD0A] font-led-dot">3.45 SOL</div>
+                  <div className="text-xl font-bold text-white font-led-dot">3.45</div>
                 </div>
               </div>
             </div>
@@ -242,7 +210,7 @@ export default function DiscoverPage() {
         </div>
 
         {/* Search Bar - Compact on mobile */}
-        <div className="mb-3 md:mb-8">
+        <div className="mb-2 md:mb-4">
           <div className="relative">
             <IconSearch size={20} className="absolute left-3 md:left-5 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-[#D1FD0A]" />
             <input
@@ -250,20 +218,20 @@ export default function DiscoverPage() {
               placeholder="Search..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 md:pl-14 pr-3 md:pr-5 py-3 min-h-[48px] rounded-lg md:rounded-2xl bg-zinc-900/80 border border-zinc-800 md:border-2 text-base text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50 focus:border-[#D1FD0A] transition-all font-medium"
+              className="w-full pl-10 md:pl-14 pr-3 md:pr-5 py-2 min-h-[40px] md:py-3 md:min-h-[48px] rounded-lg md:rounded-2xl bg-zinc-900/80 border border-zinc-800 md:border-2 text-base text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50 focus:border-[#D1FD0A] transition-all font-medium"
             />
           </div>
         </div>
 
         {/* Filters - Everything on One Line Mobile */}
-        <div className="glass-premium rounded-md md:rounded-2xl border-2 border-[#D1FD0A]/20 p-1.5 md:p-8 mb-2 md:mb-8">
+        <div className="glass-premium rounded-md md:rounded-2xl border-2 border-[#D1FD0A]/20 p-1.5 md:p-4 lg:p-5 mb-2 md:mb-4">
           {/* Desktop Version - Single Row */}
           <div className="hidden md:block">
-            <div className="flex items-center gap-8 mb-6">
+            <div className="flex items-center gap-2 md:gap-3 lg:gap-4 mb-2 flex-wrap">
               {/* Type Filters */}
-              <div className="flex items-center gap-3">
-                <label className="text-sm font-bold text-white uppercase tracking-wider whitespace-nowrap">Type</label>
-                <div className="flex gap-3">
+              <div className="flex items-center gap-1.5 md:gap-2">
+                <label className="text-xs md:text-sm font-bold text-white uppercase tracking-wider whitespace-nowrap">Type</label>
+                <div className="flex gap-1 md:gap-1.5">
                   <FilterPill
                     active={typeFilter === 'all'}
                     onClick={() => setTypeFilter('all')}
@@ -296,16 +264,15 @@ export default function DiscoverPage() {
               </div>
 
               {/* Divider */}
-              <div className="w-px h-8 bg-zinc-700"></div>
+              <div className="w-px h-6 md:h-8 bg-zinc-700 hidden md:block"></div>
 
               {/* Sort Filters */}
-              <div className="flex items-center gap-3">
-                <label className="text-sm font-bold text-white uppercase tracking-wider whitespace-nowrap">Sort</label>
-                <div className="flex gap-3">
+              <div className="flex items-center gap-1.5 md:gap-2">
+                <label className="text-xs md:text-sm font-bold text-white uppercase tracking-wider whitespace-nowrap">Sort</label>
+                <div className="flex gap-1 md:gap-1.5 flex-wrap">
                   <FilterPill
                     active={sortBy === 'trending'}
                     onClick={() => setSortBy('trending')}
-                    small
                     className="data-[active]:bg-[#D1FD0A]/20 data-[active]:border-[#D1FD0A] data-[active]:text-white"
                   >
                     Trending
@@ -313,7 +280,6 @@ export default function DiscoverPage() {
                   <FilterPill
                     active={sortBy === 'active'}
                     onClick={() => setSortBy('active')}
-                    small
                     className="data-[active]:bg-[#D1FD0A]/20 data-[active]:border-[#D1FD0A] data-[active]:text-white"
                   >
                     Active
@@ -321,7 +287,6 @@ export default function DiscoverPage() {
                   <FilterPill
                     active={sortBy === 'live'}
                     onClick={() => setSortBy('live')}
-                    small
                     className="data-[active]:bg-[#D1FD0A]/20 data-[active]:border-[#D1FD0A] data-[active]:text-white"
                   >
                     Live
@@ -329,7 +294,6 @@ export default function DiscoverPage() {
                   <FilterPill
                     active={sortBy === 'conviction'}
                     onClick={() => setSortBy('conviction')}
-                    small
                     className="data-[active]:bg-[#D1FD0A]/20 data-[active]:border-[#D1FD0A] data-[active]:text-white"
                   >
                     Conviction
@@ -337,7 +301,6 @@ export default function DiscoverPage() {
                   <FilterPill
                     active={sortBy === 'volume'}
                     onClick={() => setSortBy('volume')}
-                    small
                     className="data-[active]:bg-[#D1FD0A]/20 data-[active]:border-[#D1FD0A] data-[active]:text-white"
                   >
                     Volume
@@ -345,7 +308,6 @@ export default function DiscoverPage() {
                   <FilterPill
                     active={sortBy === 'new'}
                     onClick={() => setSortBy('new')}
-                    small
                     className="data-[active]:bg-[#FFD700]/20 data-[active]:border-[#FFD700] data-[active]:text-white"
                   >
                     New
@@ -353,7 +315,7 @@ export default function DiscoverPage() {
                 </div>
               </div>
             </div>
-            <div className="pt-6 border-t border-zinc-800/50 text-sm text-zinc-500">
+            <div className="pt-2 border-t border-zinc-800/50 text-sm text-zinc-500">
               Showing <span className="text-[#D1FD0A] font-bold font-led-dot">{filtered.length}</span> of{' '}
               <span className="text-white font-medium font-led-dot">{baseListings.length}</span> listings
             </div>
@@ -401,7 +363,6 @@ export default function DiscoverPage() {
               <FilterPill
                 active={sortBy === 'trending'}
                 onClick={() => setSortBy('trending')}
-                small
                 className="data-[active]:bg-[#D1FD0A]/20 data-[active]:border-[#D1FD0A] data-[active]:text-white"
               >
                 Trend
@@ -409,7 +370,6 @@ export default function DiscoverPage() {
               <FilterPill
                 active={sortBy === 'active'}
                 onClick={() => setSortBy('active')}
-                small
                 className="data-[active]:bg-[#D1FD0A]/20 data-[active]:border-[#D1FD0A] data-[active]:text-white"
               >
                 Active
@@ -417,7 +377,6 @@ export default function DiscoverPage() {
               <FilterPill
                 active={sortBy === 'live'}
                 onClick={() => setSortBy('live')}
-                small
                 className="data-[active]:bg-[#D1FD0A]/20 data-[active]:border-[#D1FD0A] data-[active]:text-white"
               >
                 Live
@@ -425,7 +384,6 @@ export default function DiscoverPage() {
               <FilterPill
                 active={sortBy === 'conviction'}
                 onClick={() => setSortBy('conviction')}
-                small
                 className="data-[active]:bg-[#D1FD0A]/20 data-[active]:border-[#D1FD0A] data-[active]:text-white"
               >
                 Conv
@@ -433,7 +391,6 @@ export default function DiscoverPage() {
               <FilterPill
                 active={sortBy === 'volume'}
                 onClick={() => setSortBy('volume')}
-                small
                 className="data-[active]:bg-[#D1FD0A]/20 data-[active]:border-[#D1FD0A] data-[active]:text-white"
               >
                 Vol
@@ -441,7 +398,6 @@ export default function DiscoverPage() {
               <FilterPill
                 active={sortBy === 'new'}
                 onClick={() => setSortBy('new')}
-                small
                 className="data-[active]:bg-[#FFD700]/20 data-[active]:border-[#FFD700] data-[active]:text-white"
               >
                 New
@@ -464,64 +420,84 @@ export default function DiscoverPage() {
           </div>
         ) : filtered.length > 0 ? (
           <div>
-            {/* Mobile List View - Always shown on mobile */}
-            <div className="md:hidden flex flex-col gap-1.5 overflow-y-auto custom-scrollbar">
+            {/* Mobile Card View - Optimized UnifiedCard */}
+            <div className="md:hidden space-y-2 p-2">
               {filtered.map(listing => (
-                <CoinListItem
+                <UnifiedCard
                   key={listing.id}
-                  id={listing.id}
-                  name={listing.title}
-                  ticker={listing.ticker || ''}
-                  logoUrl={listing.logoUrl}
-                  status={listing.status}
-                  type={listing.type as 'icm' | 'ccm' | 'meme'}
-                  age={listing.metrics?.createdAt ? getTimeAgo(listing.metrics.createdAt) : '0d ago'}
-                  motion={listing.metrics?.graduationPercent || 0}
-                  upvotes={listing.upvotes || 0}
-                  comments={listing.commentsCount || 0}
-                  views={listing.viewCount}
-                  price={listing.currentPrice || 0}
-                  priceChange={listing.priceChange24h}
-                  holders={listing.holders || 0}
-                  creatorName={listing.metrics?.creatorName || 'Anonymous'}
-                  creatorAvatar={listing.metrics?.creatorAvatar || 'https://api.dicebear.com/7.x/avataaars/svg?seed=default'}
-                  href={`/launch/${listing.id}`}
-                  onBuy={() => setBuyModalListing(listing)}
-                  onInvite={() => info('Invite', 'Invite to collaborate on ' + listing.title)}
-                  onUpvote={async () => {
-                    if (!authenticated || !user?.id) {
-                      warning('Authentication Required', 'Please connect your wallet to vote')
-                      return
-                    }
-                    try {
-                      if (listing.hasVoted) {
-                        await removeVote(listing.id, user.id)
-                        listing.hasVoted = false
-                        listing.upvotes = Math.max(0, (listing.upvotes || 0) - 1)
-                        success('Vote Removed', 'Your vote has been removed')
-                      } else {
-                        await addVote(listing.id, user.id)
-                        listing.hasVoted = true
-                        listing.upvotes = (listing.upvotes || 0) + 1
-                        success('Voted!', 'Your vote has been recorded')
+                  data={{
+                    ...listing,
+                    keyHolders: [],
+                    contributors: listing.metrics?.contributors || [],
+                    contributorsCount: listing.metrics?.contributorsCount || 0,
+                    onVote: async () => {
+                      if (!authenticated || !user?.id) {
+                        warning('Authentication Required', 'Please connect your wallet to vote')
+                        return
                       }
-                    } catch (error: any) {
-                      showError('Vote Failed', error.message || 'Failed to vote')
-                    }
-                  }}
-                  onComment={() => setCommentDrawerListing(listing)}
-                  onNotify={() => success('Notifications', 'Notifications toggled for ' + listing.title)}
-                  onShare={() => {
-                    if (navigator.share) {
-                      navigator.share({
-                        title: listing.title,
-                        text: listing.subtitle || '',
-                        url: window.location.origin + `/launch/${listing.id}`,
-                      })
-                    } else {
-                      navigator.clipboard.writeText(window.location.origin + `/launch/${listing.id}`)
-                      success('Link Copied', 'Launch link copied to clipboard')
-                    }
+                      try {
+                        if (listing.hasVoted) {
+                          await removeVote(listing.id, user.id)
+                          listing.hasVoted = false
+                          listing.upvotes = Math.max(0, (listing.upvotes || 0) - 1)
+                          success('Vote Removed', 'Your vote has been removed')
+                        } else {
+                          await addVote(listing.id, user.id)
+                          listing.hasVoted = true
+                          listing.upvotes = (listing.upvotes || 0) + 1
+                          success('Voted!', 'Your vote has been recorded')
+                        }
+                      } catch (error: any) {
+                        showError('Vote Failed', error.message || 'Failed to vote')
+                      }
+                    },
+                    onComment: () => setCommentDrawerListing(listing),
+                    onCommentsClick: () => setCommentDrawerListing(listing),
+                    onCollaborate: async () => {
+                      if (!user?.id) {
+                        showError('Not Authenticated', 'Please log in to send collaboration invites')
+                        return
+                      }
+                      if (!listing.creatorId) {
+                        showError('Invalid Listing', 'Cannot find project creator')
+                        return
+                      }
+                      try {
+                        const invite = await sendNetworkInvite({
+                          senderId: user.id,
+                          receiverId: listing.creatorId,
+                          message: `Interested in collaborating on ${listing.title}!`
+                        })
+                        if (invite) {
+                          success('Invite Sent!', `Collaboration invite sent for ${listing.title}`)
+                        } else {
+                          warning('Already Sent', 'You may have already sent an invite to this user')
+                        }
+                      } catch (error: any) {
+                        showError('Failed to Send Invite', error.message)
+                      }
+                    },
+                    onBuyKeys: () => setBuyModalListing(listing),
+                    onClipClick: () => info('Create Clip', `Create a clip for ${listing.title}`),
+                    onDetails: () => setDetailsModalListing(listing),
+                    onNotificationToggle: () => {
+                      listing.notificationEnabled = !listing.notificationEnabled
+                      success('Notifications', listing.notificationEnabled ? 'Enabled for ' + listing.title : 'Disabled for ' + listing.title)
+                    },
+                    onShare: () => {
+                      if (navigator.share) {
+                        navigator.share({
+                          title: listing.title,
+                          text: listing.subtitle || '',
+                          url: window.location.origin + `/launch/${listing.id}`,
+                        })
+                      } else {
+                        navigator.clipboard.writeText(window.location.origin + `/launch/${listing.id}`)
+                        success('Link Copied', 'Launch link copied to clipboard')
+                      }
+                    },
+                    myKeys: 0,
+                    mySharePct: 0
                   }}
                 />
               ))}
@@ -643,7 +619,8 @@ export default function DiscoverPage() {
                           info('Airdrop Claim', 'Airdrop claiming coming soon!')
                         },
                         onNotificationToggle: () => {
-                          success('Notifications', 'Notifications toggled')
+                          listing.notificationEnabled = !listing.notificationEnabled
+                          success('Notifications', listing.notificationEnabled ? 'Enabled for ' + listing.title : 'Disabled for ' + listing.title)
                         },
                         onShare: () => {
                           if (navigator.share) {
@@ -901,8 +878,10 @@ function FilterPill({
       onClick={onClick}
       data-active={active}
       className={cn(
-        "rounded md:rounded-lg md:rounded-xl font-bold transition-all border md:border-2 whitespace-nowrap flex-shrink-0",
-        small ? "px-1 py-0.5 text-[8px] md:px-4 md:py-2 md:text-sm" : "px-1.5 py-0.5 text-[8px] md:px-5 md:py-2.5 md:text-base",
+        "rounded md:rounded-lg lg:rounded-xl font-bold transition-all border md:border-2 whitespace-nowrap flex-shrink-0",
+        small
+          ? "px-1.5 py-0.5 text-[9px] md:px-3 md:py-1.5 md:text-xs lg:px-4 lg:py-2 lg:text-sm"
+          : "px-2 py-1 text-[10px] md:px-4 md:py-2 md:text-sm lg:px-5 lg:py-2.5 lg:text-base",
         active
           ? cn("scale-105", className) // Apply custom color classes only when active
           : "bg-zinc-800/50 border-zinc-700/50 text-white hover:bg-zinc-800 hover:border-zinc-600 hover:scale-105"

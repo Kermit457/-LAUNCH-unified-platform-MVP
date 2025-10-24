@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Video, X, Upload, DollarSign, Calendar, Target, Youtube, Twitter as TwitterIcon } from 'lucide-react'
+import { Video, X, Upload, DollarSign, Calendar, Target, Youtube, Twitter as TwitterIcon, Instagram as InstagramIcon } from 'lucide-react'
 import { PremiumButton, Input, Label } from '../design-system'
 import { type CampaignFormData } from '@/lib/validations/clip'
 
@@ -21,6 +21,7 @@ const PLATFORMS = [
   { value: 'youtube', label: 'YouTube', icon: Youtube },
   { value: 'twitter', label: 'Twitter/X', icon: TwitterIcon },
   { value: 'tiktok', label: 'TikTok', icon: Video },
+  { value: 'instagram', label: 'Instagram', icon: InstagramIcon },
 ]
 
 const SOL_TO_USD = 140 // Mock exchange rate, should be fetched from API
@@ -40,6 +41,8 @@ export function CreateCampaignModal({ open, onClose, onSubmit }: CreateCampaignM
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [budgetInUSD, setBudgetInUSD] = useState(0)
   const [newRequirement, setNewRequirement] = useState('')
+  const [logoFile, setLogoFile] = useState<File | null>(null)
+  const [logoPreview, setLogoPreview] = useState<string | null>(null)
 
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
@@ -103,6 +106,30 @@ export function CreateCampaignModal({ open, onClose, onSubmit }: CreateCampaignM
     }))
   }
 
+  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) { // 2MB limit
+        setErrors(prev => ({ ...prev, logo: 'Logo must be less than 2MB' }))
+        return
+      }
+      setLogoFile(file)
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setLogoPreview(reader.result as string)
+      }
+      reader.readAsDataURL(file)
+      if (errors.logo) {
+        setErrors(prev => ({ ...prev, logo: '' }))
+      }
+    }
+  }
+
+  const removeLogo = () => {
+    setLogoFile(null)
+    setLogoPreview(null)
+  }
+
   const validate = () => {
     const newErrors: Record<string, string> = {}
     if (!formData.title.trim()) newErrors.title = 'Title is required'
@@ -133,6 +160,8 @@ export function CreateCampaignModal({ open, onClose, onSubmit }: CreateCampaignM
     setErrors({})
     setBudgetInUSD(0)
     setNewRequirement('')
+    setLogoFile(null)
+    setLogoPreview(null)
     onClose()
   }
 
@@ -140,39 +169,24 @@ export function CreateCampaignModal({ open, onClose, onSubmit }: CreateCampaignM
 
   return (
     <>
-      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50" onClick={handleClose} />
+      <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50" onClick={handleClose} />
       <div className="fixed inset-0 z-50 flex items-center justify-center p-3 md:p-4 pointer-events-none overflow-y-auto custom-scrollbar">
-        <div className="w-full max-w-md bg-design-zinc-950/95 backdrop-blur-xl rounded-xl md:rounded-2xl border border-design-zinc-800 shadow-2xl pointer-events-auto animate-in zoom-in-95 duration-200 my-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
+        <div className="w-full max-w-md glass-premium rounded-xl md:rounded-2xl border-2 border-[#D1FD0A]/20 shadow-2xl pointer-events-auto animate-in zoom-in-95 duration-200 my-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
           {/* Header */}
-          <div className="border-b border-design-zinc-800 p-4">
+          <div className="border-b border-[#D1FD0A]/20 p-4 md:p-5">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Video className="w-5 h-5 text-[#D1FD0A]" />
-                <h2 className="text-lg font-bold text-white">Create Campaign</h2>
+                <h2 className="text-lg md:text-xl font-bold text-[#D1FD0A]">Create Campaign</h2>
               </div>
-              <button onClick={handleClose} className="p-2 hover:bg-design-zinc-800/50 rounded-lg transition-colors">
-                <X className="w-4 h-4 text-design-zinc-400" />
+              <button onClick={handleClose} className="p-2 hover:bg-zinc-800 rounded-lg transition-colors">
+                <X className="w-4 h-4 text-zinc-400 hover:text-white" />
               </button>
             </div>
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="p-4 space-y-3">
-            {/* Type */}
-            <div>
-              <Label htmlFor="type">Type <span className="text-red-400">*</span></Label>
-              <select
-                id="type"
-                value={formData.type}
-                onChange={(e) => handleInputChange('type', e.target.value)}
-                className="w-full px-3 py-2 rounded-lg bg-design-zinc-900/50 border border-design-zinc-800 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50"
-              >
-                {CAMPAIGN_TYPES.map((type) => (
-                  <option key={type.value} value={type.value}>{type.label}</option>
-                ))}
-              </select>
-            </div>
-
+          <form onSubmit={handleSubmit} className="p-4 md:p-5 space-y-3 md:space-y-4">
             {/* Title */}
             <div>
               <Label htmlFor="title">Title <span className="text-red-400">*</span></Label>
@@ -186,11 +200,47 @@ export function CreateCampaignModal({ open, onClose, onSubmit }: CreateCampaignM
               {errors.title && <span className="text-red-400 text-xs">{errors.title}</span>}
             </div>
 
+            {/* Logo Upload */}
+            <div>
+              <Label>Campaign Logo <span className="text-white/40 text-xs">(optional)</span></Label>
+              {logoPreview ? (
+                <div className="flex items-center gap-3 p-3 rounded-lg glass-premium border border-[#D1FD0A]/20">
+                  <img src={logoPreview} alt="Logo preview" className="w-16 h-16 rounded-lg object-cover" />
+                  <div className="flex-1">
+                    <p className="text-sm text-white">{logoFile?.name}</p>
+                    <p className="text-xs text-zinc-400 mt-0.5">{(logoFile!.size / 1024).toFixed(1)} KB</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={removeLogo}
+                    className="p-2 hover:bg-zinc-800 rounded-lg transition"
+                  >
+                    <X className="w-4 h-4 text-zinc-400 hover:text-white" />
+                  </button>
+                </div>
+              ) : (
+                <label className="block cursor-pointer">
+                  <div className="p-6 rounded-lg glass-premium border-2 border-dashed border-[#D1FD0A]/20 hover:border-[#D1FD0A]/50 transition-colors text-center">
+                    <Upload className="w-8 h-8 mx-auto mb-2 text-zinc-400" />
+                    <p className="text-sm text-white mb-1">Upload campaign logo</p>
+                    <p className="text-xs text-zinc-400">PNG, JPG or GIF (max. 2MB)</p>
+                  </div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleLogoUpload}
+                    className="hidden"
+                  />
+                </label>
+              )}
+              {errors.logo && <span className="text-red-400 text-xs mt-1">{errors.logo}</span>}
+            </div>
+
             {/* Budget (SOL) with USD Calculator */}
             <div>
               <Label htmlFor="budget">Budget (SOL) <span className="text-red-400">*</span></Label>
               <div className="relative">
-                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-design-zinc-400" />
+                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
                 <Input
                   id="budget"
                   type="number"
@@ -202,7 +252,7 @@ export function CreateCampaignModal({ open, onClose, onSubmit }: CreateCampaignM
                 />
               </div>
               {budgetInUSD > 0 && (
-                <p className="text-xs text-design-zinc-400 mt-1 font-led-dot">
+                <p className="text-xs text-zinc-400 mt-1 font-led-dot">
                   ≈ ${budgetInUSD.toFixed(2)} USD
                 </p>
               )}
@@ -213,7 +263,7 @@ export function CreateCampaignModal({ open, onClose, onSubmit }: CreateCampaignM
             <div>
               <Label htmlFor="ratePerThousand">Rate per 1000 Views ($)</Label>
               <div className="relative">
-                <Target className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-design-zinc-400" />
+                <Target className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
                 <Input
                   id="ratePerThousand"
                   type="number"
@@ -224,7 +274,7 @@ export function CreateCampaignModal({ open, onClose, onSubmit }: CreateCampaignM
                   className="pl-10"
                 />
               </div>
-              <p className="text-xs text-design-zinc-400 mt-1">
+              <p className="text-xs text-zinc-400 mt-1">
                 Creators earn this rate per 1,000 views
               </p>
             </div>
@@ -232,7 +282,7 @@ export function CreateCampaignModal({ open, onClose, onSubmit }: CreateCampaignM
             {/* Platform Multi-Select */}
             <div>
               <Label>Platforms <span className="text-red-400">*</span></Label>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                 {PLATFORMS.map((platform) => {
                   const Icon = platform.icon
                   const isSelected = formData.platforms.includes(platform.value)
@@ -241,10 +291,10 @@ export function CreateCampaignModal({ open, onClose, onSubmit }: CreateCampaignM
                       key={platform.value}
                       type="button"
                       onClick={() => togglePlatform(platform.value)}
-                      className={`p-2.5 rounded-lg border transition-all text-sm flex items-center justify-center gap-1.5 ${
+                      className={`p-2.5 rounded-lg border transition-all text-sm flex items-center justify-center gap-1.5 font-semibold ${
                         isSelected
-                          ? 'bg-[#D1FD0A]/20 border-[#D1FD0A] text-white'
-                          : 'bg-design-zinc-900/50 border-design-zinc-800 text-design-zinc-400 hover:border-[#D1FD0A]/50'
+                          ? 'bg-[#D1FD0A]/20 border-[#D1FD0A] text-[#D1FD0A]'
+                          : 'glass-premium border-[#D1FD0A]/20 text-zinc-400 hover:border-[#D1FD0A]/50 hover:text-white'
                       }`}
                     >
                       <Icon className="w-4 h-4" />
@@ -259,13 +309,13 @@ export function CreateCampaignModal({ open, onClose, onSubmit }: CreateCampaignM
             <div>
               <Label htmlFor="duration">Duration <span className="text-red-400">*</span></Label>
               <div className="relative">
-                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-design-zinc-400" />
+                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
                 <select
                   id="duration"
                   value={formData.duration}
                   onChange={(e) => handleInputChange('duration', e.target.value)}
-                  className={`w-full pl-10 px-3 py-2 rounded-lg bg-design-zinc-900/50 border border-design-zinc-800 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50 ${
-                    errors.duration ? 'border-red-500' : ''
+                  className={`w-full pl-10 px-3 py-2.5 rounded-lg glass-premium border text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50 focus:border-[#D1FD0A] ${
+                    errors.duration ? 'border-red-500' : 'border-[#D1FD0A]/20'
                   }`}
                 >
                   <option value="">Select duration</option>
@@ -280,16 +330,16 @@ export function CreateCampaignModal({ open, onClose, onSubmit }: CreateCampaignM
               {errors.duration && <span className="text-red-400 text-xs">{errors.duration}</span>}
             </div>
 
-            {/* Description */}
+            {/* Campaign Conditions */}
             <div>
-              <Label htmlFor="description">Description (optional)</Label>
+              <Label htmlFor="description">Campaign Conditions <span className="text-white/40 text-xs">(optional)</span></Label>
               <textarea
                 id="description"
                 value={formData.description}
                 onChange={(e) => handleInputChange('description', e.target.value)}
                 placeholder="Campaign details, goals, and guidelines..."
                 rows={3}
-                className="w-full px-3 py-2 rounded-lg bg-design-zinc-900/50 border border-design-zinc-800 text-white text-sm placeholder:text-design-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50"
+                className="w-full px-3 py-2.5 rounded-lg glass-premium border border-[#D1FD0A]/20 text-white text-sm placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50 focus:border-[#D1FD0A]"
               />
             </div>
 
@@ -309,30 +359,30 @@ export function CreateCampaignModal({ open, onClose, onSubmit }: CreateCampaignM
                       }
                     }}
                     placeholder="e.g., Minimum 10 seconds"
-                    className="flex-1 px-3 py-2 rounded-lg bg-design-zinc-900/50 border border-design-zinc-800 text-white text-sm placeholder:text-design-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50"
+                    className="flex-1 px-3 py-2.5 rounded-lg glass-premium border border-[#D1FD0A]/20 text-white text-sm placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50 focus:border-[#D1FD0A]"
                   />
                   <button
                     type="button"
                     onClick={addRequirement}
-                    className="px-3 py-2 rounded-lg bg-[#D1FD0A] text-black text-sm hover:bg-[#B8E008] transition font-semibold"
+                    className="px-4 py-2.5 rounded-lg bg-[#D1FD0A] text-black text-sm hover:bg-[#B8E309] transition-all font-bold hover:scale-105"
                   >
                     Add
                   </button>
                 </div>
                 {formData.requirements.length > 0 && (
-                  <div className="space-y-1">
+                  <div className="space-y-1.5">
                     {formData.requirements.map((req, index) => (
                       <div
                         key={index}
-                        className="flex items-center gap-2 p-2 rounded-lg bg-design-zinc-900/50 border border-design-zinc-800"
+                        className="flex items-center gap-2 p-2.5 rounded-lg glass-premium border border-[#D1FD0A]/10 hover:border-[#D1FD0A]/30 transition-colors"
                       >
                         <span className="flex-1 text-sm text-white">{req}</span>
                         <button
                           type="button"
                           onClick={() => removeRequirement(index)}
-                          className="p-1 hover:bg-design-zinc-800 rounded transition"
+                          className="p-1 hover:bg-zinc-800 rounded transition"
                         >
-                          <X className="w-4 h-4 text-design-zinc-400" />
+                          <X className="w-4 h-4 text-zinc-400 hover:text-white" />
                         </button>
                       </div>
                     ))}
@@ -343,13 +393,19 @@ export function CreateCampaignModal({ open, onClose, onSubmit }: CreateCampaignM
 
             {/* Actions */}
             <div className="flex gap-3 pt-2">
-              <PremiumButton type="button" variant="ghost" onClick={handleClose} className="flex-1">
+              <button
+                type="button"
+                onClick={handleClose}
+                className="flex-1 px-4 py-3 rounded-xl glass-premium border border-[#D1FD0A]/20 text-white text-sm font-bold hover:bg-white/5 transition-all"
+              >
                 Cancel
-              </PremiumButton>
-              <PremiumButton type="submit" variant="primary" className="flex-1">
-                <Video size={16} />
-                Create Campaign
-              </PremiumButton>
+              </button>
+              <button
+                type="submit"
+                className="flex-1 px-4 py-3 rounded-xl bg-[#D1FD0A] text-black text-sm font-bold hover:bg-[#B8E309] transition-all hover:scale-105 active:scale-95"
+              >
+                Create
+              </button>
             </div>
           </form>
         </div>

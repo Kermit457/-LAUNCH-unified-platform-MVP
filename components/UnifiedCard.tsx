@@ -10,7 +10,8 @@ import {
   Film,
   Globe,
   Github,
-  Star
+  Star,
+  MessageSquare
 } from 'lucide-react'
 import {
   IconUpvote,
@@ -235,7 +236,7 @@ export function UnifiedCard({ data }: { data: UnifiedCardData }) {
   }
 
   return (
-    <div className="glass-premium p-6 rounded-3xl group hover:shadow-xl hover:shadow-primary/50 transition-all border-2 border-primary/50 hover:border-primary">
+    <div className="glass-premium p-2 md:p-6 rounded-xl md:rounded-3xl group hover:shadow-xl hover:shadow-primary/50 transition-all border md:border-2 border-primary/50 hover:border-primary">
 
       {/* Token Claim Banner */}
       {hasUnclaimedAirdrop && (
@@ -263,34 +264,34 @@ export function UnifiedCard({ data }: { data: UnifiedCardData }) {
         </div>
       )}
 
-      <div className="flex gap-4">
+      <div className="flex gap-1.5 md:gap-4">
         {/* Left Column: Voting + Actions */}
-        <div className="flex flex-col items-center gap-2">
+        <div className="flex flex-col items-center gap-1 md:gap-2">
           {/* Upvote */}
           <button
             onClick={handleVote}
             disabled={data.isVoting}
             className={cn(
-              'flex flex-col items-center justify-center w-16 h-16 rounded-xl font-bold text-lg transition-all relative',
+              'flex flex-col items-center justify-center w-10 h-10 md:w-16 md:h-16 rounded-md md:rounded-xl font-bold text-lg transition-all relative border',
               data.hasVoted
-                ? `${scheme.gradient} text-black`
-                : 'bg-zinc-800/80 hover:bg-zinc-700 border border-zinc-700/50 hover:border-zinc-600 text-zinc-300 hover:text-white hover:scale-105',
+                ? 'bg-[#D1FD0A]/20 border-[#D1FD0A]'
+                : 'bg-zinc-800/80 hover:bg-zinc-700 border-zinc-700/50 hover:border-zinc-600 hover:scale-105',
               data.isVoting && 'opacity-50 cursor-not-allowed'
             )}
             aria-label="Upvote"
           >
-            <IconUpvote className="w-6 h-6 mb-0.5 icon-primary" />
-            <span className="font-led-dot text-xl text-primary">{data.upvotes}</span>
+            <IconUpvote className="w-2.5 h-2.5 md:w-4 md:h-4 mb-0.5 text-white" />
+            <span className="font-led-dot text-sm md:text-xl text-white font-normal">{data.upvotes}</span>
           </button>
 
           {/* Comments */}
           <button
             onClick={data.onCommentsClick}
-            className="flex flex-col items-center justify-center w-16 h-16 rounded-xl bg-zinc-800/80 hover:bg-zinc-700 border border-zinc-700/50 hover:border-zinc-600 transition-all text-zinc-400 hover:text-white"
+            className="flex flex-col items-center justify-center w-10 h-10 md:w-16 md:h-16 rounded-md md:rounded-xl bg-zinc-800/80 hover:bg-zinc-700 border border-zinc-700/50 hover:border-zinc-600 transition-all text-white hover:text-white"
             aria-label="Comments"
           >
-            <IconMessage className="w-5 h-5 mb-0.5" />
-            <span className="text-xs font-medium">{data.comments}</span>
+            <MessageSquare className="w-3.5 h-3.5 md:w-5 md:h-5 mb-0.5" />
+            <span className="font-led-dot text-sm md:text-xl text-white">{data.commentsCount}</span>
           </button>
 
           {/* Twitter */}
@@ -300,10 +301,10 @@ export function UnifiedCard({ data }: { data: UnifiedCardData }) {
               target="_blank"
               rel="noreferrer"
               onClick={data.onTwitterClick}
-              className="flex items-center justify-center w-16 h-16 rounded-xl bg-zinc-800/80 hover:bg-[#D1FD0A]/20 border border-zinc-700/50 hover:border-[#D1FD0A]/40 transition-all group/twitter"
+              className="flex items-center justify-center w-10 h-10 md:w-16 md:h-16 rounded-md md:rounded-xl bg-zinc-800/80 hover:bg-[#D1FD0A]/20 border border-zinc-700/50 hover:border-[#D1FD0A]/40 transition-all group/twitter"
               aria-label="Twitter"
             >
-              <IconTwitter className="w-5 h-5 text-zinc-400 group-hover/twitter:text-[#D1FD0A] transition-colors" />
+              <IconTwitter className="w-3.5 h-3.5 md:w-5 md:h-5 text-zinc-400 group-hover/twitter:text-[#D1FD0A] transition-colors" />
             </a>
           )}
         </div>
@@ -311,11 +312,11 @@ export function UnifiedCard({ data }: { data: UnifiedCardData }) {
         {/* Right: Main Content */}
         <div className="flex-1 min-w-0">
           {/* Header Row */}
-          <div className="flex items-start gap-3 mb-3">
+          <div className="flex items-start gap-1.5 md:gap-3 mb-1.5 md:mb-3">
             {/* Avatar with Ownership Ring + Type-Colored Border */}
             <div className="relative flex-shrink-0">
               <div
-                className="relative w-20 h-20 cursor-pointer"
+                className="relative w-12 h-12 md:w-20 md:h-20 cursor-pointer"
                 tabIndex={0}
                 role="button"
                 aria-label={hasPos ? `Your share: ${shareDisplay}%` : 'No ownership yet'}
@@ -359,16 +360,16 @@ export function UnifiedCard({ data }: { data: UnifiedCardData }) {
                 {/* Avatar Image with TYPE-COLORED BORDER */}
                 <div
                   className={cn(
-                    'relative z-10 w-20 h-20 rounded-xl bg-gradient-to-br from-purple-500 to-blue-600 flex items-center justify-center overflow-hidden transition-all',
+                    'relative z-10 w-12 h-12 md:w-20 md:h-20 rounded-lg md:rounded-xl bg-gradient-to-br from-purple-500 to-blue-600 flex items-center justify-center overflow-hidden transition-all',
                     hasPos
-                      ? `border-[3px] ${scheme.border}`
-                      : 'border-2 border-zinc-800'
+                      ? `border md:border-[3px] ${scheme.border}`
+                      : 'border border-zinc-800 md:border-2'
                   )}
                 >
                   {data.logoUrl ? (
                     <img src={data.logoUrl} alt={data.title} className="w-full h-full object-cover" />
                   ) : (
-                    <span className="text-white text-xl font-bold">{data.title.slice(0, 2).toUpperCase()}</span>
+                    <span className="text-white text-xs md:text-xl font-bold">{data.title.slice(0, 2).toUpperCase()}</span>
                   )}
                 </div>
 
@@ -384,16 +385,16 @@ export function UnifiedCard({ data }: { data: UnifiedCardData }) {
                         <>
                           <div className="flex items-center gap-2">
                             <span className="text-zinc-400">Share:</span>
-                            <span className="font-bold">{shareDisplay}%</span>
+                            <span className="font-bold font-led-dot">{shareDisplay}%</span>
                           </div>
                           <div className="flex items-center gap-2">
                             <span className="text-zinc-400">Keys:</span>
-                            <span className="font-bold">{formatNumber(data.myKeys!)}</span>
+                            <span className="font-bold font-led-dot">{formatNumber(data.myKeys!)}</span>
                           </div>
                           {data.estLaunchTokens != null && (
                             <div className="flex items-center gap-2 mt-1 pt-1 border-t border-zinc-700">
                               <span className="text-zinc-400">Est. tokens:</span>
-                              <span className="font-bold text-green-400">{formatNumber(data.estLaunchTokens)}</span>
+                              <span className="font-bold font-led-dot text-green-400">{formatNumber(data.estLaunchTokens)}</span>
                             </div>
                           )}
                         </>
@@ -408,46 +409,44 @@ export function UnifiedCard({ data }: { data: UnifiedCardData }) {
 
             {/* Title + Badges */}
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 flex-wrap mb-1">
-                <h3 className="text-xl font-bold text-white tracking-tight">{data.title}</h3>
+              <div className="flex items-baseline gap-1 md:gap-2 flex-wrap mb-0.5">
+                <h3 className="text-sm md:text-xl font-bold text-white tracking-tight">{data.title}</h3>
                 {data.ticker && (
-                  <span className="font-led-dot text-sm md:text-base text-[#D1FD0A] tracking-wider">${data.ticker}</span>
+                  <span className="font-led-dot text-[10px] md:text-sm text-[#D1FD0A] tracking-wider">${data.ticker}</span>
                 )}
-                <IconLab className="w-5 h-5 text-[#D1FD0A]" title="Verified Project" />
-                <IconTopPerformer className="w-5 h-5 text-[#D1FD0A]" title="Top Performer" />
               </div>
-              <div className="flex items-center gap-2 mb-1">
-                <span className={cn('px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider shadow-sm backdrop-blur-sm', statusColor)}>
+              <div className="flex items-center gap-1 md:gap-2 mb-0.5">
+                <span className={cn('px-1.5 py-0.5 md:px-3 md:py-1.5 rounded md:rounded-lg text-[9px] md:text-xs font-bold uppercase tracking-wider shadow-sm backdrop-blur-sm', statusColor)}>
                   {statusLabel}
                 </span>
 
                 {/* Status Icons */}
                 {(data.isLab || data.isExperimental) && (
-                  <IconLab className="w-4 h-4 text-[#D1FD0A]" title="Lab Project" />
+                  <IconLab className="w-5 h-5 md:w-6 md:h-6 text-[#D1FD0A]" title="Lab Project" />
                 )}
                 {data.beliefScore >= 90 && (
-                  <IconTopPerformer className="w-4 h-4 text-[#D1FD0A]" title="Top Performer" />
+                  <IconTopPerformer className="w-5 h-5 md:w-6 md:h-6 text-[#D1FD0A]" title="Top Performer" />
                 )}
                 {data.type === 'ccm' && (
-                  <Star className="w-4 h-4 text-[#D1FD0A]" title="Creator Project" />
+                  <Star className="w-5 h-5 md:w-6 md:h-6 text-[#D1FD0A]" title="Creator Project" />
                 )}
                 {data.type === 'meme' && (
-                  <IconCult className="w-4 h-4 text-[#D1FD0A]" title="CULT" />
+                  <IconCult className="w-5 h-5 md:w-6 md:h-6 text-[#D1FD0A]" title="CULT" />
                 )}
               </div>
-              {data.subtitle && <p className="text-sm text-zinc-500 line-clamp-2 leading-relaxed">{data.subtitle}</p>}
+              {data.subtitle && <p className="hidden md:block text-xs md:text-sm text-zinc-500 line-clamp-2 leading-relaxed">{data.subtitle}</p>}
             </div>
 
             {/* Action Icons + Contributors + Ownership Pill */}
-            <div className="flex flex-col items-end gap-2">
-              <div className="flex items-center gap-2">
+            <div className="flex flex-col items-end gap-1 md:gap-2">
+              <div className="flex items-center gap-1 md:gap-2">
                 {/* Contributors - With Twitter avatars */}
                 {(data.contributors || data.networkMembers) && (data.contributors?.length > 0 || data.networkMembers?.length > 0) && (
-                  <div className="flex items-center -space-x-2 mr-2">
+                  <div className="flex items-center -space-x-1.5 md:-space-x-2 mr-1 md:mr-2">
                     {(data.contributors || data.networkMembers || []).slice(0, 3).map((contributor: any, idx: number) => (
                       <div
                         key={contributor.id || idx}
-                        className="relative w-7 h-7 rounded-full border-2 border-zinc-900 bg-gradient-to-br from-purple-500 to-blue-600 overflow-hidden hover:z-10 transition-transform hover:scale-110 cursor-pointer"
+                        className="relative w-5 h-5 md:w-7 md:h-7 rounded-full border border-zinc-900 md:border-2 bg-gradient-to-br from-purple-500 to-blue-600 overflow-hidden hover:z-10 transition-transform hover:scale-110 cursor-pointer"
                         title={contributor.name || contributor.handle || `@${contributor.twitterHandle}`}
                         onClick={() => {
                           if (contributor.twitterHandle) {
@@ -468,7 +467,7 @@ export function UnifiedCard({ data }: { data: UnifiedCardData }) {
                       </div>
                     ))}
                     {(data.contributorsCount || data.contributors?.length || data.networkMembers?.length || 0) > 3 && (
-                      <div className="w-7 h-7 rounded-full border-2 border-zinc-900 bg-zinc-800 flex items-center justify-center text-zinc-400 text-[10px] font-bold">
+                      <div className="w-5 h-5 md:w-7 md:h-7 rounded-full border border-zinc-900 md:border-2 bg-zinc-800 flex items-center justify-center text-zinc-400 text-[8px] md:text-[10px] font-bold font-led-dot">
                         +{(data.contributorsCount || data.contributors?.length || data.networkMembers?.length || 0) - 3}
                       </div>
                     )}
@@ -478,26 +477,26 @@ export function UnifiedCard({ data }: { data: UnifiedCardData }) {
                 <button
                   onClick={data.onNotificationToggle}
                   className={cn(
-                    "p-2 rounded-lg transition-all",
+                    "p-1.5 md:p-2 rounded-md md:rounded-lg transition-all border",
                     data.notificationEnabled
-                      ? `${scheme.badge} hover:opacity-80`
-                      : "bg-zinc-800/80 hover:bg-zinc-700 border border-zinc-700/50 hover:border-zinc-600"
+                      ? "bg-zinc-800/80 hover:bg-zinc-700 border-zinc-700/50"
+                      : "bg-zinc-800/80 hover:bg-zinc-700 border-zinc-700/50 hover:border-zinc-600"
                   )}
                   aria-label={data.notificationEnabled ? "Unsubscribe" : "Subscribe"}
                 >
                   <IconNotification
                     className={cn(
-                      "w-4 h-4 transition-colors",
-                      data.notificationEnabled ? 'text-[#D1FD0A] fill-[#D1FD0A]' : "text-zinc-400"
+                      "w-3.5 h-3.5 md:w-4 md:h-4 transition-colors",
+                      data.notificationEnabled ? 'text-[#D1FD0A]' : "text-zinc-600"
                     )}
                   />
                 </button>
                 <button
                   onClick={data.onShare}
-                  className="p-2 rounded-lg bg-zinc-800/80 hover:bg-zinc-700 border border-zinc-700/50 hover:border-zinc-600 transition-all"
+                  className="p-1.5 md:p-2 rounded-md md:rounded-lg bg-zinc-800/80 hover:bg-zinc-700 border border-zinc-700/50 hover:border-zinc-600 transition-all"
                   aria-label="Share"
                 >
-                  <Share2 className="w-4 h-4 text-zinc-400" />
+                  <Share2 className="w-3.5 h-3.5 md:w-4 md:h-4 text-zinc-400" />
                 </button>
               </div>
 
@@ -505,64 +504,64 @@ export function UnifiedCard({ data }: { data: UnifiedCardData }) {
               {hasPos && (
                 <div className={cn("flex items-center gap-1.5 px-3 py-1.5 rounded-lg border-2", scheme.border, scheme.badge)}>
                   <div className={cn("w-1.5 h-1.5 rounded-full animate-pulse", scheme.badge.split(' ')[1])} />
-                  <span className={cn("text-xs font-bold", scheme.badge.split(' ')[1])}>Holding {formatNumber(data.myKeys!)}</span>
-                  <span className="text-[10px] font-semibold opacity-70">({shareDisplay}%)</span>
+                  <span className={cn("text-xs font-bold font-led-dot", scheme.badge.split(' ')[1])}>Holding {formatNumber(data.myKeys!)}</span>
+                  <span className="text-[10px] font-semibold font-led-dot opacity-70">({shareDisplay}%)</span>
                 </div>
               )}
             </div>
           </div>
 
           {/* Stats Row with Social Icons */}
-          <div className="flex items-center justify-between gap-3 mb-3 text-xs">
-            <div className="flex items-center gap-3">
+          <div className="flex items-center justify-between gap-1.5 md:gap-3 mb-1.5 md:mb-3 text-xs">
+            <div className="flex items-center gap-2 md:gap-3">
               {/* Social Icons - Clickable when URLs exist */}
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-1 md:gap-1.5">
                 {data.websiteUrl || data.socialLinks?.website ? (
                   <Globe
-                    className="w-5 h-5 text-[#D1FD0A] cursor-pointer hover:text-[#B8E309] transition-colors"
+                    className="w-4 h-4 md:w-5 md:h-5 text-[#D1FD0A] cursor-pointer hover:text-[#B8E309] transition-colors"
                     onClick={() => window.open(data.websiteUrl || data.socialLinks?.website, '_blank')}
                     title={data.websiteUrl || data.socialLinks?.website}
                   />
                 ) : (
-                  <Globe className="w-5 h-5 text-zinc-600 opacity-30" />
+                  <Globe className="w-4 h-4 md:w-5 md:h-5 text-zinc-600 opacity-30" />
                 )}
 
                 {data.twitterUrl || data.socialLinks?.twitter || data.creator?.twitterHandle ? (
                   <IconTwitter
-                    className="w-5 h-5 text-[#D1FD0A] cursor-pointer hover:text-[#B8E309] transition-colors"
+                    className="w-4 h-4 md:w-5 md:h-5 text-[#D1FD0A] cursor-pointer hover:text-[#B8E309] transition-colors"
                     onClick={() => window.open(data.twitterUrl || data.socialLinks?.twitter || `https://twitter.com/${data.creator?.twitterHandle}`, '_blank')}
                     title={data.twitterUrl || data.socialLinks?.twitter}
                   />
                 ) : (
-                  <IconTwitter className="w-5 h-5 text-zinc-600 opacity-30" />
+                  <IconTwitter className="w-4 h-4 md:w-5 md:h-5 text-zinc-600 opacity-30" />
                 )}
 
                 {data.telegramUrl || data.socialLinks?.telegram ? (
                   <IconTelegram
-                    className="w-5 h-5 text-[#D1FD0A] cursor-pointer hover:text-[#B8E309] transition-colors"
+                    className="w-4 h-4 md:w-5 md:h-5 text-[#D1FD0A] cursor-pointer hover:text-[#B8E309] transition-colors"
                     onClick={() => window.open(data.telegramUrl || data.socialLinks?.telegram, '_blank')}
                     title={data.telegramUrl || data.socialLinks?.telegram}
                   />
                 ) : (
-                  <IconTelegram className="w-5 h-5 text-zinc-600 opacity-30" />
+                  <IconTelegram className="w-4 h-4 md:w-5 md:h-5 text-zinc-600 opacity-30" />
                 )}
 
                 {data.githubUrl || data.socialLinks?.github ? (
                   <Github
-                    className="w-5 h-5 text-[#D1FD0A] cursor-pointer hover:text-[#B8E309] transition-colors"
+                    className="w-4 h-4 md:w-5 md:h-5 text-[#D1FD0A] cursor-pointer hover:text-[#B8E309] transition-colors"
                     onClick={() => window.open(data.githubUrl || data.socialLinks?.github, '_blank')}
                     title={data.githubUrl || data.socialLinks?.github}
                   />
                 ) : (
-                  <Github className="w-5 h-5 text-zinc-600 opacity-30" />
+                  <Github className="w-4 h-4 md:w-5 md:h-5 text-zinc-600 opacity-30" />
                 )}
               </div>
 
               {/* Views - Aggregated from clips */}
               {(data.clipViews || data.viewCount || data.clips) !== undefined && (
-                <div className="flex items-center gap-1">
-                  <IconAim className="w-3.5 h-3.5 icon-muted" />
-                  <span className="font-led-dot text-xl text-primary">
+                <div className="flex items-center gap-0.5 md:gap-1">
+                  <IconAim className="w-3 h-3 md:w-3.5 md:h-3.5 icon-muted" />
+                  <span className="font-led-dot text-sm md:text-xl text-primary">
                     {formatNumber(
                       data.clipViews ||
                       data.clips?.reduce((acc, clip) => acc + (clip.views || 0), 0) ||
@@ -575,9 +574,9 @@ export function UnifiedCard({ data }: { data: UnifiedCardData }) {
 
               {/* Holders - Real key holders */}
               {(data.keyHolders || data.holders) !== undefined && (
-                <div className="flex items-center gap-1">
-                  <Users className="w-3.5 h-3.5 icon-muted" />
-                  <span className="font-led-dot text-xl text-primary">
+                <div className="flex items-center gap-0.5 md:gap-1">
+                  <Users className="w-3 h-3 md:w-3.5 md:h-3.5 icon-muted" />
+                  <span className="font-led-dot text-sm md:text-xl text-primary">
                     {data.keyHolders?.length || data.holders || 0}
                   </span>
                 </div>
@@ -585,16 +584,13 @@ export function UnifiedCard({ data }: { data: UnifiedCardData }) {
 
               {/* 24h Price Change - No Box */}
               {data.priceChange24h !== undefined && data.priceChange24h !== null && (
-                <div className={cn(
-                  'flex items-center gap-1 font-semibold',
-                  data.priceChange24h >= 0 ? 'text-[#D1FD0A]' : 'text-red-400'
-                )}>
+                <div className="flex items-center gap-0.5 md:gap-1">
                   {data.priceChange24h >= 0 ? (
-                    <IconPriceUp className="w-3.5 h-3.5" />
+                    <IconPriceUp className="w-3 h-3 md:w-3.5 md:h-3.5 text-[#D1FD0A]" />
                   ) : (
-                    <IconPriceDown className="w-3.5 h-3.5" />
+                    <IconPriceDown className="w-3 h-3 md:w-3.5 md:h-3.5 text-red-400" />
                   )}
-                  <span className="font-led-dot text-lg">
+                  <span className="font-led-dot text-sm md:text-xl text-primary">
                     {data.priceChange24h >= 0 ? '+' : ''}
                     {data.priceChange24h.toFixed(1)}%
                   </span>
@@ -604,11 +600,11 @@ export function UnifiedCard({ data }: { data: UnifiedCardData }) {
           </div>
 
           {/* Motion Bar */}
-          <div className="mb-4">
-            <div className="flex items-center gap-3 mb-1.5">
-              <IconMotion className="w-5 h-5 text-[#D1FD0A]" />
-              <span className="text-xs text-zinc-400">Motion</span>
-              <div className="flex-1 h-2.5 rounded-full bg-zinc-800 overflow-hidden border border-zinc-700/50 relative group cursor-help">
+          <div className="mb-1.5 md:mb-4">
+            <div className="flex items-center gap-1 md:gap-3 mb-0.5">
+              <IconMotion className="w-3.5 h-3.5 md:w-5 md:h-5 text-[#D1FD0A]" />
+              <span className="text-[9px] md:text-xs text-zinc-400 hidden sm:inline">Motion</span>
+              <div className="flex-1 h-1.5 md:h-2.5 rounded-full bg-zinc-800 overflow-hidden border border-zinc-700/50 relative group cursor-help">
                 <div
                   className={cn(
                     "h-full transition-all duration-500 relative",
@@ -617,25 +613,25 @@ export function UnifiedCard({ data }: { data: UnifiedCardData }) {
                   style={{ width: `${Math.max(0, Math.min(100, data.beliefScore))}%` }}
                 />
               </div>
-              <span className="font-led-dot text-xl text-primary">
+              <span className="font-led-dot text-xs md:text-xl text-primary">
                 {Math.round(data.beliefScore)}%
               </span>
             </div>
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 md:gap-2 flex-wrap">
             {/* Primary CTA - btdemo styled */}
             <button
               onClick={handleBuyOrManage}
               data-cta={hasPos ? 'manage' : 'buy'}
-              className="bg-[#D1FD0A] hover:bg-[#B8E309] text-black font-bold px-6 py-3 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-primary/50 flex items-center justify-center gap-2"
+              className="bg-[#D1FD0A] hover:bg-[#B8E309] text-black font-bold px-2 py-1.5 md:px-6 md:py-3 rounded-md md:rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-primary/50 flex items-center justify-center gap-0.5 md:gap-2 flex-shrink-0"
             >
-              <span className="text-black font-bold">BUY</span>
+              <span className="text-black font-bold text-[10px] md:text-base whitespace-nowrap">BUY</span>
               {(data.contractPrice || data.priceFromChain || data.currentPrice) && (
                 <>
-                  <IconSolana size={16} className="text-black opacity-80" />
-                  <span className="font-led-dot text-xl text-black">
+                  <IconSolana size={10} className="text-black opacity-80 md:w-4 md:h-4" />
+                  <span className="font-led-dot text-xs md:text-xl text-black whitespace-nowrap">
                     {(data.contractPrice || data.priceFromChain || data.currentPrice || 0).toFixed(3)}
                   </span>
                 </>
@@ -645,26 +641,24 @@ export function UnifiedCard({ data }: { data: UnifiedCardData }) {
             {/* Secondary Actions - btdemo styled */}
             <button
               onClick={data.onClipClick}
-              className="bg-zinc-800 hover:bg-zinc-700 font-semibold px-5 py-3 rounded-xl transition-all duration-300 border-2 border-[#D1FD0A] flex items-center justify-center gap-2"
+              className="bg-zinc-800 hover:bg-zinc-700 font-semibold px-1.5 py-1.5 md:px-5 md:py-3 rounded-md md:rounded-xl transition-all duration-300 border border-[#D1FD0A]/60 md:border-2 flex items-center justify-center flex-shrink-0"
               title="Submit Clip"
             >
-              <Film className="w-5 h-5 text-[#D1FD0A]" />
-              <span className="text-[#D1FD0A]">+ Clips</span>
+              <span className="text-[#D1FD0A] text-[10px] md:text-base whitespace-nowrap">+ Clip</span>
             </button>
 
             <button
               onClick={data.onCollaborate}
-              className="bg-zinc-800 hover:bg-zinc-700 font-semibold px-5 py-3 rounded-xl transition-all duration-300 border-2 border-[#D1FD0A] flex items-center justify-center gap-2"
+              className="bg-zinc-800 hover:bg-zinc-700 font-semibold px-1.5 py-1.5 md:px-5 md:py-3 rounded-md md:rounded-xl transition-all duration-300 border border-[#D1FD0A]/60 md:border-2 flex items-center justify-center flex-shrink-0"
             >
-              <Users className="w-5 h-5 text-[#D1FD0A]" />
-              <span className="hidden sm:inline text-[#D1FD0A]">Collaborate</span>
+              <span className="text-[#D1FD0A] text-[10px] md:text-base whitespace-nowrap">Collab</span>
             </button>
 
             <button
               onClick={data.onDetails || (() => router.push(`/curve/${data.id}`))}
-              className="bg-zinc-800 hover:bg-zinc-700 font-semibold px-5 py-3 rounded-xl transition-all duration-300 border-2 border-[#D1FD0A] flex items-center justify-center"
+              className="bg-zinc-800 hover:bg-zinc-700 font-semibold px-1.5 py-1.5 md:px-5 md:py-3 rounded-md md:rounded-xl transition-all duration-300 border border-[#D1FD0A]/60 md:border-2 flex items-center justify-center flex-shrink-0"
             >
-              <span className="text-[#D1FD0A]">Details</span>
+              <span className="text-[#D1FD0A] text-[10px] md:text-base whitespace-nowrap">Details</span>
             </button>
           </div>
         </div>
@@ -682,7 +676,7 @@ export function UnifiedCard({ data }: { data: UnifiedCardData }) {
             currentPrice: data.contractPrice || data.priceFromChain || data.currentPrice || 0,
             myKeys: data.myKeys || 0,
             mySharePct: data.mySharePct || 0,
-            totalSupply: 1000,
+            totalSupply: data.keysSupply || 1000000,
             priceChange24h: data.priceChange24h,
             estLaunchTokens: data.estLaunchTokens,
           }}

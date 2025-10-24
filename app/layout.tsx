@@ -18,6 +18,7 @@ import MobileTabBar from '@/components/MobileTabBar'
 import { BRAND } from '@/lib/brand'
 import { Toaster } from 'sonner'
 import { BTDemoBackground } from '@/components/BTDemoBackground'
+import { QueryProvider } from '@/components/QueryProvider'
 
 export const metadata: Metadata = {
   title: `${BRAND.name} - ${BRAND.tagline}`,
@@ -99,14 +100,15 @@ export default function RootLayout({
     <html lang="en" className="smooth-scroll">
       <body className="antialiased bg-btdemo-canvas">
         <BTDemoBackground />
-        <PrivyProviderWrapper>
-          <PrivySyncWrapper>
-            <AuthProvider>
-              <WalletProvider>
-                <NotificationProvider>
-                  <NetworkProvider>
-                    <CurveActivationProvider>
-                      <ToastProvider>
+        <QueryProvider>
+          <PrivyProviderWrapper>
+            <PrivySyncWrapper>
+              <AuthProvider>
+                <WalletProvider>
+                  <NotificationProvider>
+                    <NetworkProvider>
+                      <CurveActivationProvider>
+                        <ToastProvider>
                         <Toaster position="top-center" theme="dark" richColors />
                         <PWAInitializer />
                         <ReferralTracker />
@@ -117,14 +119,15 @@ export default function RootLayout({
                           {children}
                         </main>
                         <MobileTabBar />
-                      </ToastProvider>
-                    </CurveActivationProvider>
-                  </NetworkProvider>
-                </NotificationProvider>
-              </WalletProvider>
-            </AuthProvider>
-          </PrivySyncWrapper>
-        </PrivyProviderWrapper>
+                        </ToastProvider>
+                      </CurveActivationProvider>
+                    </NetworkProvider>
+                  </NotificationProvider>
+                </WalletProvider>
+              </AuthProvider>
+            </PrivySyncWrapper>
+          </PrivyProviderWrapper>
+        </QueryProvider>
       </body>
     </html>
   )

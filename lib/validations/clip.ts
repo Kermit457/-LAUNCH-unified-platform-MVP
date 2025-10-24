@@ -1,6 +1,14 @@
 import { z } from 'zod'
 
 /**
+ * Platform enum for validation
+ */
+export const platformSchema = z.enum([
+  'twitter', 'tiktok', 'youtube', 'twitch', 'instagram',
+  'linkedin', 'facebook', 'reddit', 'vimeo', 'rumble', 'kick'
+])
+
+/**
  * Zod Schema for Clip data from Appwrite
  */
 export const clipSchema = z.object({
@@ -10,7 +18,7 @@ export const clipSchema = z.object({
   clipId: z.string(),
   submittedBy: z.string(),
   campaignId: z.string().optional(),
-  platform: z.enum(['twitter', 'tiktok', 'youtube', 'twitch', 'instagram']),
+  platform: platformSchema,
   embedUrl: z.string().url(),
   thumbnailUrl: z.string().url().optional(),
   title: z.string().optional(),

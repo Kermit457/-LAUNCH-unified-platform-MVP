@@ -62,7 +62,7 @@ export function CommunityCompositionBTDemo({ stats }: CommunityCompositionBTDemo
   const total = stats.builders + stats.investors + stats.communities + stats.clippers + stats.traders
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+    <div className="flex overflow-x-auto gap-2 md:gap-4 md:grid md:grid-cols-5 snap-x snap-mandatory pb-2 -mx-4 px-4 md:mx-0 md:px-0" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
       {roles.map((role, index) => {
         const Icon = role.icon
         const percentage = total > 0 ? (role.count / total) * 100 : 0
@@ -74,24 +74,24 @@ export function CommunityCompositionBTDemo({ stats }: CommunityCompositionBTDemo
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: index * 0.05, duration: 0.4 }}
             whileHover={{ x: 4 }}
-            className={`glass-interactive p-4 rounded-xl border-l-0 hover:border-l-4 hover:${role.borderColor} transition-all cursor-pointer group`}
+            className={`glass-interactive p-2 md:p-4 rounded-lg md:rounded-xl border-l-0 hover:border-l-4 hover:${role.borderColor} transition-all cursor-pointer group min-w-[140px] md:min-w-0 flex-shrink-0 md:flex-shrink snap-start`}
           >
             {/* Icon + Label */}
-            <div className="flex items-center gap-3 mb-3">
-              <div className={`w-10 h-10 rounded-lg ${role.bgColor} flex items-center justify-center`}>
-                <Icon className={`w-5 h-5 ${role.color}`} />
+            <div className="flex items-center gap-1.5 md:gap-3 mb-1.5 md:mb-3">
+              <div className={`w-7 h-7 md:w-10 md:h-10 rounded-md md:rounded-lg ${role.bgColor} flex items-center justify-center`}>
+                <Icon className={`w-3.5 h-3.5 md:w-5 md:h-5 ${role.color}`} />
               </div>
               <div className="flex-1">
-                <div className="text-xs text-zinc-500 mb-1">{role.label}</div>
-                <div className={`font-led-16 ${role.color}`}>
+                <div className="text-[9px] md:text-xs text-zinc-500 mb-0.5 md:mb-1">{role.label}</div>
+                <div className={`font-led-dot text-sm md:text-base ${role.color}`}>
                   {role.count.toLocaleString()}
                 </div>
               </div>
             </div>
 
             {/* Progress Bar */}
-            <div className="space-y-2">
-              <div className="h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+            <div className="space-y-1 md:space-y-2">
+              <div className="h-1 md:h-1.5 bg-zinc-800 rounded-full overflow-hidden">
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${percentage}%` }}
@@ -100,7 +100,7 @@ export function CommunityCompositionBTDemo({ stats }: CommunityCompositionBTDemo
                   style={{ backgroundColor: role.color.replace('text-', '') }}
                 />
               </div>
-              <div className="flex items-center justify-between text-xs">
+              <div className="flex items-center justify-between text-[9px] md:text-xs">
                 <span className="text-zinc-600">of network</span>
                 <span className={`font-medium ${role.color}`}>
                   {percentage.toFixed(1)}%

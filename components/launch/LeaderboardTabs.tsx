@@ -26,6 +26,10 @@ export function LeaderboardTabs({ builders, investors, communities, clippers, tr
   const [activeTab, setActiveTab] = useState<TabType>('builders')
   const [viewMode, setViewMode] = useState<ViewMode>('table')
 
+  // Filter states
+  const [typeFilter, setTypeFilter] = useState<'icm' | 'ccm' | 'meme' | null>(null)
+  const [sortBy, setSortBy] = useState<'price' | 'volume' | 'motion' | 'holders' | 'views'>('motion')
+
   const tabs = [
     { id: 'builders' as const, label: 'Builders', icon: Trophy, count: builders.length },
     { id: 'investors' as const, label: 'Investors', icon: TrendingUp, count: investors.length },
@@ -172,7 +176,30 @@ export function LeaderboardTabs({ builders, investors, communities, clippers, tr
     }
   }
 
-  const listingData = convertToListingData()
+  let listingData = convertToListingData()
+
+  // Apply filters
+  if (typeFilter) {
+    listingData = listingData.filter(item => item.type === typeFilter)
+  }
+
+  // Apply sorting
+  listingData = [...listingData].sort((a, b) => {
+    switch (sortBy) {
+      case 'price':
+        return (b.currentPrice || 0) - (a.currentPrice || 0)
+      case 'volume':
+        return (b.metrics?.volume24h || 0) - (a.metrics?.volume24h || 0)
+      case 'motion':
+        return (b.beliefScore || 0) - (a.beliefScore || 0)
+      case 'holders':
+        return (b.holders || 0) - (a.holders || 0)
+      case 'views':
+        return (b.viewCount || 0) - (a.viewCount || 0)
+      default:
+        return 0
+    }
+  })
 
   return (
     <section className="container mx-auto px-4 py-8">
@@ -246,6 +273,123 @@ export function LeaderboardTabs({ builders, investors, communities, clippers, tr
             </button>
           )
         })}
+      </div>
+
+      {/* Filters Bar */}
+      <div className="mb-6 p-4 rounded-xl bg-zinc-900/50 border border-zinc-800">
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Type Filter */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-zinc-500 uppercase font-bold">Type:</span>
+            <button
+              onClick={() => setTypeFilter(typeFilter === 'icm' ? null : 'icm')}
+              className={cn(
+                "px-3 py-1.5 rounded-lg text-xs font-bold transition-all border",
+                typeFilter === 'icm'
+                  ? "bg-[#D1FD0A] text-black border-[#D1FD0A]"
+                  : "bg-zinc-800 text-zinc-400 border-zinc-700 hover:border-[#D1FD0A]/50"
+              )}
+            >
+              <span className="flex items-center gap-1">
+                <Trophy className="w-3 h-3" />
+                ICM
+              </span>
+            </button>
+            <button
+              onClick={() => setTypeFilter(typeFilter === 'ccm' ? null : 'ccm')}
+              className={cn(
+                "px-3 py-1.5 rounded-lg text-xs font-bold transition-all border",
+                typeFilter === 'ccm'
+                  ? "bg-[#D1FD0A] text-black border-[#D1FD0A]"
+                  : "bg-zinc-800 text-zinc-400 border-zinc-700 hover:border-[#D1FD0A]/50"
+              )}
+            >
+              <span className="flex items-center gap-1">
+                <UsersIcon className="w-3 h-3" />
+                CCM
+              </span>
+            </button>
+            <button
+              onClick={() => setTypeFilter(typeFilter === 'meme' ? null : 'meme')}
+              className={cn(
+                "px-3 py-1.5 rounded-lg text-xs font-bold transition-all border",
+                typeFilter === 'meme'
+                  ? "bg-[#D1FD0A] text-black border-[#D1FD0A]"
+                  : "bg-zinc-800 text-zinc-400 border-zinc-700 hover:border-[#D1FD0A]/50"
+              )}
+            >
+              MEME
+            </button>
+          </div>
+
+          {/* Divider */}
+          <div className="h-6 w-px bg-zinc-700" />
+
+          {/* Status Filter */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-zinc-500 uppercase font-bold">Status:</span>
+            <button
+              onClick={() => setStatusFilter(statusFilter === 'live' ? null : 'live')}
+              className={cn(
+                "px-3 py-1.5 rounded-lg text-xs font-bold transition-all border",
+                statusFilter === 'live'
+                  ? "bg-red-600 text-white border-red-600"
+                  : "bg-zinc-800 text-zinc-400 border-zinc-700 hover:border-red-600/50"
+              )}
+            >
+              <span className="flex items-center gap-1.5">
+                <div className={cn("w-1.5 h-1.5 rounded-full", statusFilter === 'live' ? "bg-white animate-pulse" : "bg-red-600")} />
+                LIVE
+              </span>
+            </button>
+            <button
+              onClick={() => setStatusFilter(statusFilter === 'active' ? null : 'active')}
+              className={cn(
+                "px-3 py-1.5 rounded-lg text-xs font-bold transition-all border",
+                statusFilter === 'active'
+                  ? "bg-[#00FF88] text-black border-[#00FF88]"
+                  : "bg-zinc-800 text-zinc-400 border-zinc-700 hover:border-[#00FF88]/50"
+              )}
+            >
+              ACTIVE
+            </button>
+          </div>
+
+          {/* Divider */}
+          <div className="h-6 w-px bg-zinc-700" />
+
+          {/* Sort By */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-zinc-500 uppercase font-bold">Sort:</span>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as any)}
+              className="px-3 py-1.5 rounded-lg text-xs font-bold bg-zinc-800 text-zinc-300 border border-zinc-700 hover:border-[#D1FD0A]/50 transition-all outline-none cursor-pointer"
+            >
+              <option value="motion">Motion ↓</option>
+              <option value="price">Price ↓</option>
+              <option value="holders">Holders ↓</option>
+              <option value="views">Views ↓</option>
+            </select>
+          </div>
+
+          {/* Clear Filters */}
+          {(typeFilter || statusFilter) && (
+            <>
+              <div className="h-6 w-px bg-zinc-700" />
+              <button
+                onClick={() => {
+                  setTypeFilter(null)
+                  setStatusFilter(null)
+                  setSortBy('motion')
+                }}
+                className="px-3 py-1.5 rounded-lg text-xs font-bold text-zinc-400 hover:text-white transition-all underline"
+              >
+                Clear All
+              </button>
+            </>
+          )}
+        </div>
       </div>
 
       {/* Content */}

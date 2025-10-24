@@ -2,6 +2,10 @@ import { databases, DB_ID, COLLECTIONS } from '@/lib/appwrite/client'
 import { Query } from 'appwrite'
 import { getCampaign } from './campaigns'
 
+export type Platform =
+  | 'twitter' | 'tiktok' | 'youtube' | 'twitch' | 'instagram'
+  | 'linkedin' | 'facebook' | 'reddit' | 'vimeo' | 'rumble' | 'kick'
+
 export interface Clip {
   $id: string
   $createdAt: string
@@ -9,7 +13,7 @@ export interface Clip {
   clipId: string
   submittedBy: string
   campaignId?: string
-  platform: 'twitter' | 'tiktok' | 'youtube' | 'twitch' | 'instagram'
+  platform: Platform
   embedUrl: string
   thumbnailUrl?: string
   title?: string
@@ -39,7 +43,7 @@ export interface Clip {
 /**
  * Detect social media platform from URL
  */
-export function detectPlatform(url: string): 'twitter' | 'tiktok' | 'youtube' | 'twitch' | 'instagram' | null {
+export function detectPlatform(url: string): Platform | null {
   const urlLower = url.toLowerCase()
 
   if (urlLower.includes('twitter.com') || urlLower.includes('x.com')) return 'twitter'
@@ -47,6 +51,12 @@ export function detectPlatform(url: string): 'twitter' | 'tiktok' | 'youtube' | 
   if (urlLower.includes('youtube.com') || urlLower.includes('youtu.be')) return 'youtube'
   if (urlLower.includes('twitch.tv')) return 'twitch'
   if (urlLower.includes('instagram.com')) return 'instagram'
+  if (urlLower.includes('linkedin.com')) return 'linkedin'
+  if (urlLower.includes('facebook.com') || urlLower.includes('fb.com')) return 'facebook'
+  if (urlLower.includes('reddit.com')) return 'reddit'
+  if (urlLower.includes('vimeo.com')) return 'vimeo'
+  if (urlLower.includes('rumble.com')) return 'rumble'
+  if (urlLower.includes('kick.com')) return 'kick'
 
   return null
 }
@@ -70,8 +80,9 @@ export async function fetchThumbnail(url: string, platform: string): Promise<str
         oembedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent(url)}&format=json`
         break
       case 'twitter':
-        // Twitter oEmbed requires API key, skip for now
-        return undefined
+        // Twitter oEmbed is public and doesn't require auth
+        oembedUrl = `https://publish.twitter.com/oembed?url=${encodeURIComponent(url)}`
+        break
       case 'tiktok':
         oembedUrl = `https://www.tiktok.com/oembed?url=${encodeURIComponent(url)}`
         break
@@ -87,10 +98,25 @@ export async function fetchThumbnail(url: string, platform: string): Promise<str
 
     if (!oembedUrl) return undefined
 
+    console.log('🖼️  Fetching thumbnail from oEmbed:', oembedUrl)
     const response = await fetch(oembedUrl)
-    if (!response.ok) return undefined
+
+    if (!response.ok) {
+      console.warn('⚠️  oEmbed fetch failed:', response.status)
+      return undefined
+    }
 
     const data = await response.json()
+    console.log('📸 oEmbed data:', data)
+
+    // Twitter oEmbed returns HTML with embedded image, not direct thumbnail_url
+    // We need to extract it from the HTML or use a different approach
+    if (platform === 'twitter' && data.html) {
+      // For Twitter, we can construct a thumbnail URL from the tweet ID
+      // Or just return a generic Twitter icon for now
+      return undefined // Will implement Twitter thumbnail extraction later
+    }
+
     return data.thumbnail_url || undefined
   } catch (error) {
     console.warn('Failed to fetch thumbnail:', error)
@@ -262,8 +288,10 @@ export async function submitClip(data: {
 
     const documentData: any = {
       clipId,
+      userId: data.submittedBy,
       submittedBy: data.submittedBy,
       platform,
+      clipUrl: data.embedUrl,
       embedUrl: data.embedUrl,
       status: data.campaignId ? 'pending' : 'active', // Pending if submitted to campaign
       views: 0,
@@ -295,7 +323,10 @@ export async function submitClip(data: {
     }
 
     // Fetch platform metrics (views, likes, comments)
+    console.log('🔍 Fetching metrics for:', platform, data.embedUrl)
     const metrics = await fetchPlatformMetrics(data.embedUrl, platform)
+    console.log('📊 Metrics fetched:', metrics)
+
     if (metrics) {
       documentData.views = metrics.views
       documentData.likes = metrics.likes
@@ -307,6 +338,8 @@ export async function submitClip(data: {
         const totalInteractions = metrics.likes + metrics.comments + metrics.shares
         documentData.engagement = (totalInteractions / metrics.views) * 100
       }
+    } else {
+      console.warn('⚠️  No metrics returned for clip')
     }
 
     console.log('📹 Creating clip document:', documentData)

@@ -1,16 +1,27 @@
 "use client"
 
-import { useState, useEffect, useMemo, useRef } from 'react'
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import dynamic from 'next/dynamic'
 import { Play } from 'lucide-react'
 import { IconSearch } from '@/lib/icons'
-import { createCampaign, getCampaigns, type Campaign } from '@/lib/appwrite/services/campaigns'
-import { submitClip, getClips, approveClip, type Clip } from '@/lib/appwrite/services/clips'
+import { createCampaign, type Campaign } from '@/lib/appwrite/services/campaigns'
+import { type Clip } from '@/lib/appwrite/services/clips'
 import { useWallet } from '@/contexts/WalletContext'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
 import { type CampaignFormData } from '@/lib/validations/clip'
+import { useClips } from '@/hooks/useClips'
+import { useCampaigns } from '@/hooks/useCampaigns'
+import { useClipMutations } from '@/hooks/useClipMutations'
+import { useQueryClient } from '@tanstack/react-query'
+import { useRealtimeClips } from '@/hooks/useRealtimeClips'
+import { useRealtimeCampaigns } from '@/hooks/useRealtimeCampaigns'
+import { SearchBar } from '@/components/clips/SearchBar'
+import { PaginationControls } from '@/components/clips/PaginationControls'
+import { ClipCardGrid } from '@/components/clips/ClipCardGrid'
+import { ClipCardScroll } from '@/components/clips/ClipCardScroll'
+import { PendingReviewSection } from '@/components/clips/PendingReviewSection'
 
 // Lazy-load heavy modals to reduce initial bundle size
 const CreateCampaignModal = dynamic(() => import('@/components/modals/CreateCampaignModal').then(mod => ({ default: mod.CreateCampaignModal })), {
@@ -26,26 +37,67 @@ interface ClipWithCampaign extends Clip {
 }
 
 export default function ClipsAndCampaignsPage() {
+  // UI State (modals, selections, view mode)
   const [createCampaignOpen, setCreateCampaignOpen] = useState(false)
   const [submitClipOpen, setSubmitClipOpen] = useState(false)
   const [selectedTab, setSelectedTab] = useState(0)
-  const [campaigns, setCampaigns] = useState<Campaign[]>([])
-  const [clips, setClips] = useState<Clip[]>([])
   const [searchQuery, setSearchQuery] = useState('')
-  const [pendingClipsByCampaign, setPendingClipsByCampaign] = useState<Record<string, number>>({})
-  const [loading, setLoading] = useState(true)
-  const [clipsLoading, setClipsLoading] = useState(true)
   const [selectedClipId, setSelectedClipId] = useState<string | null>(null)
   const [hoveredClipId, setHoveredClipId] = useState<string | null>(null)
-  const [pendingClips, setPendingClips] = useState<ClipWithCampaign[]>([])
-  const [pendingLoading, setPendingLoading] = useState(false)
   const [selectedReviewClips, setSelectedReviewClips] = useState<Set<string>>(new Set())
   const [batchActionLoading, setBatchActionLoading] = useState(false)
   const [collapsedCampaigns, setCollapsedCampaigns] = useState<Set<string>>(new Set())
+  const [currentPage, setCurrentPage] = useState(1)
+  const clipsPerPage = 15
+  const [viewMode, setViewMode] = useState<'scroll' | 'grid'>('grid')
+  const [isMobile, setIsMobile] = useState(false)
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const touchStartRef = useRef<{ x: number; y: number; time: number } | null>(null)
   const { userId, user, userInfo, connected } = useWallet()
   const router = useRouter()
+
+  // 🚀 React Query Hooks - Replace manual state management
+  const { data: clips = [], isLoading: clipsLoading } = useClips({
+    status: 'active',
+    sortBy: 'views',
+    page: currentPage,
+    limit: clipsPerPage
+  })
+
+  const { data: campaigns = [], isLoading: campaignsLoading } = useCampaigns({
+    createdBy: userId || undefined
+  })
+
+  const { data: myClips = [] } = useClips({
+    submittedBy: userId || undefined,
+    enabled: !!userId
+  })
+
+  const { data: pendingClips = [], isLoading: pendingLoading } = useClips({
+    status: 'pending',
+    enabled: !!userId
+  })
+
+  const { submit: submitMutation, approve: approveMutation } = useClipMutations()
+  const queryClient = useQueryClient()
+
+  // 🔴 Realtime Subscriptions - Live updates for clips and campaigns
+  useRealtimeClips(true)
+  useRealtimeCampaigns(true)
+
+  // Derived state for pending clips by campaign
+  const [pendingClipsByCampaign, setPendingClipsByCampaign] = useState<Record<string, number>>({})
+
+  // Detect mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      const mobile = window.innerWidth < 768
+      setIsMobile(mobile)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   // Generate embed URL for video preview
   const getEmbedUrl = (clip: Clip): string | null => {
@@ -94,7 +146,7 @@ export default function ClipsAndCampaignsPage() {
   )
 
   const tabs = useMemo(() => {
-    const baseTabs = ["All", "Trending", "My Clips", "Campaigns", "Bounties", "Analytics"]
+    const baseTabs = ["All", "Trending", "My Clips", "Campaigns", "Analytics"]
     return userOwnsCampaignsWithPending
       ? [...baseTabs.slice(0, 3), "Review Pending", ...baseTabs.slice(3)]
       : baseTabs
@@ -161,7 +213,7 @@ export default function ClipsAndCampaignsPage() {
         const bScore = b.engagement * (1 + bRecency * 0.2)
         return bScore - aScore
       })
-    } else if (selectedTab === 0) {
+    } else if (selectedTab === tabs.indexOf("All")) {
       // All: Sort by views (default)
       result = [...result].sort((a, b) => b.views - a.views)
     }
@@ -187,80 +239,18 @@ export default function ClipsAndCampaignsPage() {
     ]
   }, [filteredClips])
 
-  // Load campaigns from Appwrite
+  // 🚀 Calculate pending clips by campaign (derived from React Query data)
   useEffect(() => {
-    async function loadCampaigns() {
-      try {
-        setLoading(true)
-        const data = await getCampaigns({ status: 'active', limit: 10 })
-        setCampaigns(data)
-
-        // OPTIMIZED: Load all pending clips once, then group by campaign
-        const allPendingClips = await getClips({ status: 'pending' })
-        const pendingCounts: Record<string, number> = {}
-
-        allPendingClips.forEach(clip => {
-          if (clip.campaignId) {
-            pendingCounts[clip.campaignId] = (pendingCounts[clip.campaignId] || 0) + 1
-          }
-        })
-
-        setPendingClipsByCampaign(pendingCounts)
-      } catch (error) {
-        console.error('Error loading campaigns:', error)
-        toast.error('Failed to load campaigns')
-      } finally {
-        setLoading(false)
+    const pendingCounts: Record<string, number> = {}
+    pendingClips.forEach(clip => {
+      if (clip.campaignId) {
+        pendingCounts[clip.campaignId] = (pendingCounts[clip.campaignId] || 0) + 1
       }
-    }
-    loadCampaigns()
-  }, [])
+    })
+    setPendingClipsByCampaign(pendingCounts)
+  }, [pendingClips])
 
-  // Load clips from Appwrite
-  useEffect(() => {
-    async function loadClips() {
-      try {
-        setClipsLoading(true)
-        const data = await getClips({ status: 'active', sortBy: 'views', limit: 12 })
-        setClips(data)
-      } catch (error) {
-        console.error('Error loading clips:', error)
-      } finally {
-        setClipsLoading(false)
-      }
-    }
-    loadClips()
-  }, [])
-
-  // Load pending clips for review when Review Pending tab is selected
-  useEffect(() => {
-    async function loadPendingClips() {
-      if (selectedTab !== tabs.indexOf("Review Pending") || !userId) return
-
-      try {
-        setPendingLoading(true)
-        const allPendingClips: Clip[] = []
-
-        // Fetch pending clips for all campaigns owned by user
-        for (const campaign of campaigns) {
-          if (campaign.createdBy === userId) {
-            const clips = await getClips({
-              campaignId: campaign.campaignId,
-              status: 'pending'
-            })
-            allPendingClips.push(...clips.map(clip => ({ ...clip, campaignTitle: campaign.title })))
-          }
-        }
-
-        setPendingClips(allPendingClips)
-      } catch (error) {
-        console.error('Error loading pending clips:', error)
-      } finally {
-        setPendingLoading(false)
-      }
-    }
-    loadPendingClips()
-  }, [selectedTab, userId, campaigns, tabs])
+  // 🚀 Pending clips are now loaded automatically by useClips hook
 
   const handleCreateCampaign = async (formData: CampaignFormData) => {
     try {
@@ -308,9 +298,8 @@ export default function ClipsAndCampaignsPage() {
             onClick: () => router.push(`/campaign/${campaign.$id}`)
           }
         })
-        // Refresh campaigns list
-        const updatedCampaigns = await getCampaigns({ status: 'active', limit: 10 })
-        setCampaigns(updatedCampaigns)
+        // Refresh campaigns list via React Query
+        queryClient.invalidateQueries({ queryKey: ['campaigns'] })
       } else {
         toast.error('Failed to create campaign')
       }
@@ -355,7 +344,7 @@ export default function ClipsAndCampaignsPage() {
     router.push(`/launch/${clip.projectId}?action=buy`)
   }
 
-  const handleReactToClip = (clipId: string, emoji: string = '🔥') => {
+  const handleReactToClip = useCallback((clipId: string, emoji: string = '🔥') => {
     if (!connected) {
       toast.error('Please connect your wallet to react')
       return
@@ -364,9 +353,9 @@ export default function ClipsAndCampaignsPage() {
     setReactions(prev => new Map(prev).set(clipId, emoji))
     // TODO: Save to Appwrite reactions collection
     toast.success(`Reacted with ${emoji}`)
-  }
+  }, [connected])
 
-  const handleShareClip = (clipId: string, clip: Clip) => {
+  const handleShareClip = useCallback((clipId: string, clip: Clip) => {
     const shareUrl = `${window.location.origin}/clip/${clipId}`
     navigator.clipboard.writeText(shareUrl)
 
@@ -383,9 +372,9 @@ export default function ClipsAndCampaignsPage() {
         }
       }
     })
-  }
+  }, [])
 
-  const handlePlayClip = (clipId: string) => {
+  const handlePlayClip = useCallback((clipId: string) => {
     setSelectedClipId(clipId)
     console.log('Playing clip:', clipId)
     // TODO: Open video player modal or navigate to external URL
@@ -393,123 +382,69 @@ export default function ClipsAndCampaignsPage() {
     if (clip) {
       window.open(clip.embedUrl, '_blank')
     }
-  }
+  }, [clips])
 
-  const handleApproveClip = async (clipId: string) => {
-    try {
-      await approveClip(clipId, true, userId || undefined)
-      // Remove from pending list
-      setPendingClips(prev => prev.filter(c => c.$id !== clipId))
-      // Update pending count
-      const clip = pendingClips.find(c => c.$id === clipId)
-      if (clip?.campaignId) {
-        setPendingClipsByCampaign(prev => ({
-          ...prev,
-          [clip.campaignId!]: Math.max(0, (prev[clip.campaignId!] || 0) - 1)
-        }))
-      }
-      toast.success('Clip approved successfully!')
-    } catch (error) {
-      console.error('Error approving clip:', error)
-      const message = error instanceof Error ? error.message : 'Failed to approve clip'
-      toast.error(message)
-    }
-  }
+  const handleApproveClip = useCallback(async (clipId: string) => {
+    approveMutation.mutate({
+      clipId,
+      approved: true,
+      userId: userId || undefined
+    })
+    // React Query will automatically refetch pending clips and update UI
+  }, [approveMutation, userId])
 
-  const handleRejectClip = async (clipId: string) => {
-    try {
-      await approveClip(clipId, false, userId || undefined)
-      // Remove from pending list
-      setPendingClips(prev => prev.filter(c => c.$id !== clipId))
-      // Update pending count
-      const clip = pendingClips.find(c => c.$id === clipId)
-      if (clip?.campaignId) {
-        setPendingClipsByCampaign(prev => ({
-          ...prev,
-          [clip.campaignId!]: Math.max(0, (prev[clip.campaignId!] || 0) - 1)
-        }))
-      }
-      toast.success('Clip rejected')
-    } catch (error) {
-      console.error('Error rejecting clip:', error)
-      const message = error instanceof Error ? error.message : 'Failed to reject clip'
-      toast.error(message)
-    }
-  }
+  const handleRejectClip = useCallback(async (clipId: string) => {
+    approveMutation.mutate({
+      clipId,
+      approved: false,
+      userId: userId || undefined
+    })
+    // React Query will automatically refetch pending clips and update UI
+  }, [approveMutation, userId])
 
-  const handleBatchApprove = async () => {
+  const handleBatchApprove = useCallback(async () => {
     if (selectedReviewClips.size === 0) return
 
-    try {
-      setBatchActionLoading(true)
-      const clipIds = Array.from(selectedReviewClips)
+    setBatchActionLoading(true)
+    const clipIds = Array.from(selectedReviewClips)
 
-      for (const clipId of clipIds) {
-        await approveClip(clipId, true)
-      }
-
-      // Remove approved clips from pending list
-      setPendingClips(prev => prev.filter(c => !selectedReviewClips.has(c.$id)))
-
-      // Update pending counts
-      clipIds.forEach(clipId => {
-        const clip = pendingClips.find(c => c.$id === clipId)
-        if (clip?.campaignId) {
-          setPendingClipsByCampaign(prev => ({
-            ...prev,
-            [clip.campaignId!]: Math.max(0, (prev[clip.campaignId!] || 0) - 1)
-          }))
-        }
+    // Approve each clip using mutation
+    for (const clipId of clipIds) {
+      approveMutation.mutate({
+        clipId,
+        approved: true,
+        userId: userId || undefined
       })
-
-      setSelectedReviewClips(new Set())
-      toast.success(`${clipIds.length} clips approved successfully!`)
-    } catch (error) {
-      console.error('Error batch approving clips:', error)
-      const message = error instanceof Error ? error.message : 'Failed to approve clips'
-      toast.error(message)
-    } finally {
-      setBatchActionLoading(false)
     }
-  }
 
-  const handleBatchReject = async () => {
+    setSelectedReviewClips(new Set())
+    setBatchActionLoading(false)
+    toast.success(`${clipIds.length} clips approved!`)
+    // React Query will automatically refetch and update pending clips
+  }, [selectedReviewClips, approveMutation, userId])
+
+  const handleBatchReject = useCallback(async () => {
     if (selectedReviewClips.size === 0) return
 
-    try {
-      setBatchActionLoading(true)
-      const clipIds = Array.from(selectedReviewClips)
+    setBatchActionLoading(true)
+    const clipIds = Array.from(selectedReviewClips)
 
-      for (const clipId of clipIds) {
-        await approveClip(clipId, false)
-      }
-
-      // Remove rejected clips from pending list
-      setPendingClips(prev => prev.filter(c => !selectedReviewClips.has(c.$id)))
-
-      // Update pending counts
-      clipIds.forEach(clipId => {
-        const clip = pendingClips.find(c => c.$id === clipId)
-        if (clip?.campaignId) {
-          setPendingClipsByCampaign(prev => ({
-            ...prev,
-            [clip.campaignId!]: Math.max(0, (prev[clip.campaignId!] || 0) - 1)
-          }))
-        }
+    // Reject each clip using mutation
+    for (const clipId of clipIds) {
+      approveMutation.mutate({
+        clipId,
+        approved: false,
+        userId: userId || undefined
       })
-
-      setSelectedReviewClips(new Set())
-      toast.success(`${clipIds.length} clips rejected`)
-    } catch (error) {
-      console.error('Error batch rejecting clips:', error)
-      const message = error instanceof Error ? error.message : 'Failed to reject clips'
-      toast.error(message)
-    } finally {
-      setBatchActionLoading(false)
     }
-  }
 
-  const toggleClipSelection = (clipId: string) => {
+    setSelectedReviewClips(new Set())
+    setBatchActionLoading(false)
+    toast.success(`${clipIds.length} clips rejected`)
+    // React Query will automatically refetch and update pending clips
+  }, [selectedReviewClips, approveMutation, userId])
+
+  const toggleClipSelection = useCallback((clipId: string) => {
     setSelectedReviewClips(prev => {
       const newSet = new Set(prev)
       if (newSet.has(clipId)) {
@@ -519,9 +454,9 @@ export default function ClipsAndCampaignsPage() {
       }
       return newSet
     })
-  }
+  }, [])
 
-  const toggleCampaignCollapse = (campaignId: string) => {
+  const toggleCampaignCollapse = useCallback((campaignId: string) => {
     setCollapsedCampaigns(prev => {
       const newSet = new Set(prev)
       if (newSet.has(campaignId)) {
@@ -531,7 +466,7 @@ export default function ClipsAndCampaignsPage() {
       }
       return newSet
     })
-  }
+  }, [])
 
   const handleSubmitClip = async (data: {
     embedUrl: string
@@ -541,126 +476,118 @@ export default function ClipsAndCampaignsPage() {
     projectLogo?: string
     campaignId?: string
   }) => {
-    try {
-      if (!connected) {
-        toast.error('Please connect your wallet first')
-        return
-      }
-
-      const currentUserId = userId || 'unknown'
-
-      // Extract user info from Privy
-      const creatorUsername = user?.twitter?.username || user?.email?.address?.split('@')[0] || user?.google?.name || currentUserId.slice(0, 12)
-      const creatorAvatar = user?.twitter?.profilePictureUrl || `https://api.dicebear.com/7.x/identicon/svg?seed=${currentUserId}`
-
-      const clip = await submitClip({
-        embedUrl: data.embedUrl,
-        submittedBy: currentUserId,
-        campaignId: data.campaignId,
-        title: data.title,
-        projectName: data.projectName,
-        projectId: data.projectId,
-        projectLogo: data.projectLogo,
-        creatorUsername,
-        creatorAvatar,
-        badge: 'LIVE'
-      })
-
-      if (clip) {
-        console.log('✅ Clip submitted successfully:', clip)
-
-        if (data.campaignId) {
-          toast.success('Clip submitted for review!', {
-            description: 'The campaign owner will review your submission'
-          })
-        } else {
-          toast.success('Clip submitted successfully!')
-        }
-
-        // Refresh clips list
-        const updatedClips = await getClips({ status: 'active', sortBy: 'views', limit: 12 })
-        setClips(updatedClips)
-      } else {
-        toast.error('Failed to submit clip')
-      }
-    } catch (error) {
-      console.error('Error submitting clip:', error)
-      const message = error instanceof Error ? error.message : 'Error submitting clip'
-      toast.error(message)
+    if (!connected) {
+      toast.error('Please connect your wallet first')
+      return
     }
+
+    const currentUserId = userId || 'unknown'
+
+    // Extract user info from Privy
+    const creatorUsername = user?.twitter?.username || user?.email?.address?.split('@')[0] || user?.google?.name || currentUserId.slice(0, 12)
+    const creatorAvatar = user?.twitter?.profilePictureUrl || `https://api.dicebear.com/7.x/identicon/svg?seed=${currentUserId}`
+
+    submitMutation.mutate({
+      embedUrl: data.embedUrl,
+      submittedBy: currentUserId,
+      campaignId: data.campaignId,
+      title: data.title,
+      projectName: data.projectName,
+      projectId: data.projectId,
+      projectLogo: data.projectLogo,
+      creatorUsername,
+      creatorAvatar,
+      badge: 'LIVE'
+    })
+
+    // Reset to page 1 when submitting new clip
+    setCurrentPage(1)
   }
 
   return (
     <div className="min-h-screen bg-btdemo-canvas text-btdemo-text pb-20 md:pb-0">
       {/* Header */}
-      <header className="sticky top-0 z-30 btdemo-glass-strong border-b border-btdemo-border">
-        <div className="mx-auto max-w-7xl px-3 md:px-4 py-2 md:py-3">
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 md:gap-3">
-            <div className="text-base md:text-xl font-semibold tracking-tight flex items-center gap-2">
-              <span className="text-btdemo-primary">🎬</span>
-              <span className="btdemo-heading">Clips & Campaigns</span>
+      <header className="sticky top-0 z-30 glass-premium border-b border-[#D1FD0A]/20">
+        <SearchBar
+          value={searchQuery}
+          onChange={setSearchQuery}
+          onCreateCampaign={() => setCreateCampaignOpen(true)}
+          onSubmitClip={() => setSubmitClipOpen(true)}
+          viewMode={viewMode}
+          isMobile={isMobile}
+        />
+        {/* View Toggle & Tabs */}
+        <div className={cn(
+          "mx-auto max-w-7xl px-3 md:px-4",
+          viewMode === 'scroll' && isMobile ? "py-2" : "pb-2 md:pb-3"
+        )}>
+          <div className="flex items-center gap-2">
+            {/* View Mode Toggle - Mobile only */}
+            {isMobile && (
+            <div className="flex gap-1.5 p-1 rounded-lg">
+              <button
+                onClick={() => setViewMode('scroll')}
+                className={cn(
+                  "px-3 py-1.5 rounded-md text-xs font-bold transition-all min-h-[36px]",
+                  viewMode === 'scroll'
+                    ? "bg-[#D1FD0A] text-black"
+                    : "text-zinc-400 hover:text-white"
+                )}
+              >
+                Scroll
+              </button>
+              <button
+                onClick={() => setViewMode('grid')}
+                className={cn(
+                  "px-3 py-1.5 rounded-md text-xs font-bold transition-all min-h-[36px]",
+                  viewMode === 'grid'
+                    ? "bg-[#D1FD0A] text-black"
+                    : "text-zinc-400 hover:text-white"
+                )}
+              >
+                Grid
+              </button>
             </div>
-            <div className="flex items-center gap-2 sm:ml-auto w-full sm:w-auto sm:max-w-md">
-              <div className="relative flex-1 sm:flex-auto">
-                <input
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search clips, creators, projects"
-                  aria-label="Search clips, creators, and projects"
-                  className="w-full rounded-lg md:rounded-xl btdemo-glass px-3 md:px-4 py-2 md:py-2.5 text-xs md:text-sm outline-none focus:border-btdemo-primary placeholder:text-btdemo-text-muted transition-all"
-                />
-                {searchQuery && (
-                  <button
-                    onClick={() => setSearchQuery('')}
-                    className="absolute right-2 md:right-2.5 top-1/2 -translate-y-1/2 text-btdemo-text-muted hover:text-btdemo-text text-[10px] md:text-xs transition"
-                    aria-label="Clear search"
-                  >
-                    ✕
-                  </button>
-                )}
-                {!searchQuery && (
-                  <IconSearch className="absolute right-2 md:right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-btdemo-text-dim" />
-                )}
-              </div>
+            )}
+
+            {/* Tabs */}
+            <nav className="flex gap-1.5 md:gap-2 overflow-x-auto scrollbar-hide flex-1" role="tablist" aria-label="Clip navigation tabs">
+              {tabs.map((t, idx) => (
+                <button
+                  key={t}
+                  role="tab"
+                  aria-selected={selectedTab === idx}
+                  aria-controls={`tabpanel-${idx}`}
+                  onClick={() => setSelectedTab(idx)}
+                  className={cn(
+                    "px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-xs md:text-sm whitespace-nowrap relative min-h-[36px] md:min-h-0 flex items-center justify-center transition-all",
+                    selectedTab === idx
+                      ? "bg-[#D1FD0A] text-black font-bold"
+                      : isMobile
+                        ? "text-zinc-400 hover:text-white"
+                        : "glass-premium border border-[#D1FD0A]/20 text-zinc-400 hover:text-white hover:border-[#D1FD0A]/40"
+                  )}
+                >
+                  {t}
+                  {t === "Review Pending" && totalPendingCount > 0 && (
+                    <span className="absolute -top-1 -right-1 min-w-[18px] h-4 md:min-w-[20px] md:h-5 px-1 md:px-1.5 flex items-center justify-center text-[9px] md:text-[10px] font-bold text-black bg-[#D1FD0A] rounded-full">
+                      {totalPendingCount}
+                    </span>
+                  )}
+                </button>
+              ))}
+            </nav>
+
+            {/* +Clip Button - Mobile only in Scroll mode */}
+            {isMobile && viewMode === 'scroll' && (
               <button
                 onClick={() => setSubmitClipOpen(true)}
-                className="flex-shrink-0 rounded-lg md:rounded-xl btdemo-btn-glow px-4 md:px-4 py-2.5 md:py-2.5 text-sm md:text-sm font-bold min-h-[44px] flex items-center justify-center"
+                className="flex-shrink-0 rounded-lg bg-[#D1FD0A] hover:bg-[#B8E309] text-black px-4 py-1.5 text-sm font-bold min-h-[36px] flex items-center justify-center transition-all hover:scale-105"
               >
-                + Clip
+                +Clip
               </button>
-            </div>
+            )}
           </div>
-        </div>
-        {/* Tabs */}
-        <div className="mx-auto max-w-7xl px-3 md:px-4 pb-2 md:pb-3 relative">
-          {/* Swipe hint indicator for mobile */}
-          <div className="md:hidden absolute right-3 top-1/2 -translate-y-1/2 text-btdemo-text-dim text-xs animate-pulse pointer-events-none">
-            ← swipe →
-          </div>
-          <nav className="flex gap-1.5 md:gap-2 overflow-x-auto scrollbar-hide" role="tablist" aria-label="Clip navigation tabs">
-            {tabs.map((t, idx) => (
-              <button
-                key={t}
-                role="tab"
-                aria-selected={selectedTab === idx}
-                aria-controls={`tabpanel-${idx}`}
-                onClick={() => setSelectedTab(idx)}
-                className={cn(
-                  "px-3 md:px-3 py-2 md:py-1.5 rounded-full text-xs md:text-sm border whitespace-nowrap relative min-h-[40px] md:min-h-0 flex items-center justify-center transition-all",
-                  selectedTab === idx
-                    ? "bg-btdemo-primary text-btdemo-canvas border-btdemo-primary font-bold"
-                    : "btdemo-glass text-btdemo-text-muted hover:text-btdemo-text hover:border-btdemo-primary"
-                )}
-              >
-                {t}
-                {t === "Review Pending" && totalPendingCount > 0 && (
-                  <span className="absolute -top-1 -right-1 min-w-[18px] h-4 md:min-w-[20px] md:h-5 px-1 md:px-1.5 flex items-center justify-center text-[9px] md:text-[10px] font-bold text-btdemo-canvas bg-btdemo-primary rounded-full btdemo-pulse">
-                    {totalPendingCount}
-                  </span>
-                )}
-              </button>
-            ))}
-          </nav>
         </div>
       </header>
 
@@ -674,254 +601,39 @@ export default function ClipsAndCampaignsPage() {
         {/* Review Pending Tab Content */}
         {selectedTab === tabs.indexOf("Review Pending") && (
           <section className="space-y-6">
-            {/* Batch Actions Bar */}
-            {selectedReviewClips.size > 0 && (
-              <div className="sticky top-[120px] z-20 rounded-2xl border border-white/10 bg-neutral-900/95 backdrop-blur p-4 flex items-center justify-between">
-                <div className="text-sm text-white/80">
-                  {selectedReviewClips.size} clip{selectedReviewClips.size !== 1 ? 's' : ''} selected
-                </div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setSelectedReviewClips(new Set())}
-                    className="px-4 py-2 rounded-xl text-sm border border-white/10 bg-white/5 hover:bg-white/10 transition"
-                    disabled={batchActionLoading}
-                  >
-                    Clear
-                  </button>
-                  <button
-                    onClick={handleBatchReject}
-                    className="px-4 py-2 rounded-xl text-sm border border-red-500/50 bg-red-500/10 text-red-400 hover:bg-red-500/20 transition"
-                    disabled={batchActionLoading}
-                  >
-                    {batchActionLoading ? 'Rejecting...' : 'Reject Selected'}
-                  </button>
-                  <button
-                    onClick={handleBatchApprove}
-                    className="px-4 py-2 rounded-xl text-sm bg-gradient-to-r from-[#D1FD0A] to-[#B8E008] text-white font-semibold hover:from-[#B8E008] hover:to-[#A0C007] transition"
-                    disabled={batchActionLoading}
-                  >
-                    {batchActionLoading ? 'Approving...' : 'Approve Selected'}
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* Loading State */}
-            {pendingLoading ? (
-              <div className="space-y-4">
-                {[1, 2, 3].map(i => (
-                  <div key={i} className="rounded-2xl border border-white/10 bg-white/5 p-6 animate-pulse">
-                    <div className="h-6 bg-white/10 rounded w-1/3 mb-4"></div>
-                    <div className="h-32 bg-white/10 rounded"></div>
-                  </div>
-                ))}
-              </div>
-            ) : pendingClips.length === 0 ? (
-              /* Empty State */
-              <div className="text-center py-20">
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 mb-4">
-                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <h3 className="text-2xl font-bold text-white mb-2">All Caught Up!</h3>
-                <p className="text-white/60">No pending clips to review right now.</p>
-              </div>
-            ) : (
-              /* Campaign Groups */
-              <div className="space-y-4">
-                {campaigns
-                  .filter(campaign =>
-                    campaign.createdBy === userId &&
-                    pendingClips.some(clip => clip.campaignId === campaign.campaignId)
-                  )
-                  .map(campaign => {
-                    const campaignClips = pendingClips.filter(clip => clip.campaignId === campaign.campaignId)
-                    const isCollapsed = collapsedCampaigns.has(campaign.campaignId)
-
-                    return (
-                      <div key={campaign.$id} className="rounded-2xl border border-white/10 bg-white/5 overflow-hidden">
-                        {/* Campaign Header */}
-                        <button
-                          onClick={() => toggleCampaignCollapse(campaign.campaignId)}
-                          className="w-full p-5 flex items-center justify-between hover:bg-white/5 transition"
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className="size-12 rounded-full bg-gradient-to-br from-[#D1FD0A] to-[#B8E008] flex items-center justify-center flex-shrink-0">
-                              <span className="text-xl font-bold text-white">{campaign.title.charAt(0)}</span>
-                            </div>
-                            <div className="text-left">
-                              <h3 className="text-lg font-semibold text-white">{campaign.title}</h3>
-                              <p className="text-sm text-white/60">{campaignClips.length} pending clip{campaignClips.length !== 1 ? 's' : ''}</p>
-                            </div>
-                          </div>
-                          <svg
-                            className={cn(
-                              "w-5 h-5 text-white/60 transition-transform",
-                              isCollapsed ? "" : "rotate-180"
-                            )}
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                          </svg>
-                        </button>
-
-                        {/* Campaign Clips */}
-                        {!isCollapsed && (
-                          <div className="border-t border-white/10 p-4 space-y-3">
-                            {campaignClips.map(clip => (
-                              <div
-                                key={clip.$id}
-                                className="rounded-xl border border-white/10 bg-white/5 p-4 hover:border-white/20 transition"
-                              >
-                                <div className="flex items-start gap-4">
-                                  {/* Checkbox */}
-                                  <label className="flex items-center cursor-pointer pt-1">
-                                    <input
-                                      type="checkbox"
-                                      checked={selectedReviewClips.has(clip.$id)}
-                                      onChange={() => toggleClipSelection(clip.$id)}
-                                      className="w-5 h-5 rounded border-white/20 bg-white/5 text-lime-500 focus:ring-2 focus:ring-lime-500 focus:ring-offset-0 cursor-pointer"
-                                    />
-                                  </label>
-
-                                  {/* Video Preview */}
-                                  <div className="relative w-28 h-48 rounded-lg overflow-hidden bg-gradient-to-br from-neutral-800 to-neutral-900 flex-shrink-0">
-                                    {clip.thumbnailUrl ? (
-                                      <img
-                                        src={clip.thumbnailUrl}
-                                        alt={clip.title || 'Clip'}
-                                        className="w-full h-full object-cover"
-                                      />
-                                    ) : (
-                                      <div className="w-full h-full flex items-center justify-center text-white/30 text-xs">
-                                        {clip.platform.toUpperCase()}
-                                      </div>
-                                    )}
-                                    {/* Platform Badge */}
-                                    <div className={cn(
-                                      "absolute top-2 right-2 w-8 h-8 rounded-lg flex items-center justify-center",
-                                      clip.platform === 'youtube' && "bg-red-600",
-                                      clip.platform === 'tiktok' && "bg-black",
-                                      clip.platform === 'twitter' && "bg-black",
-                                      clip.platform === 'twitch' && "bg-lime-600",
-                                      clip.platform === 'instagram' && "bg-gradient-to-br from-lime-500 via-lime-500 to-orange-500"
-                                    )}>
-                                      {clip.platform === 'youtube' && (
-                                        <svg className="w-5 h-5 fill-white" viewBox="0 0 24 24">
-                                          <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-                                        </svg>
-                                      )}
-                                      {clip.platform === 'tiktok' && (
-                                        <svg className="w-5 h-5 fill-white" viewBox="0 0 24 24">
-                                          <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
-                                        </svg>
-                                      )}
-                                      {clip.platform === 'twitter' && (
-                                        <svg className="w-5 h-5 fill-white" viewBox="0 0 24 24">
-                                          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                                        </svg>
-                                      )}
-                                    </div>
-                                  </div>
-
-                                  {/* Clip Info */}
-                                  <div className="flex-1 min-w-0 space-y-3">
-                                    {/* Creator Info */}
-                                    <div className="flex items-center gap-2">
-                                      <img
-                                        src={clip.creatorAvatar || `https://api.dicebear.com/7.x/identicon/svg?seed=${clip.submittedBy}`}
-                                        alt={clip.creatorUsername || 'Creator'}
-                                        className="w-8 h-8 rounded-full border border-white/20"
-                                      />
-                                      <div className="flex-1 min-w-0">
-                                        <div className="text-sm font-medium text-white truncate">
-                                          {clip.creatorUsername ? `@${clip.creatorUsername}` : clip.submittedBy.slice(0, 12)}
-                                        </div>
-                                        <div className="text-xs text-white/50">
-                                          Submitted {new Date(clip.$createdAt).toLocaleDateString()}
-                                        </div>
-                                      </div>
-                                    </div>
-
-                                    {/* Metrics */}
-                                    <div className="grid grid-cols-4 gap-3">
-                                      <div className="text-center">
-                                        <div className="text-sm font-semibold text-white font-led-dot">{clip.views.toLocaleString()}</div>
-                                        <div className="text-xs text-white/50">Views</div>
-                                      </div>
-                                      <div className="text-center">
-                                        <div className="text-sm font-semibold text-white font-led-dot">{clip.likes.toLocaleString()}</div>
-                                        <div className="text-xs text-white/50">Likes</div>
-                                      </div>
-                                      <div className="text-center">
-                                        <div className="text-sm font-semibold text-white font-led-dot">{clip.comments.toLocaleString()}</div>
-                                        <div className="text-xs text-white/50">Comments</div>
-                                      </div>
-                                      <div className="text-center">
-                                        <div className="text-sm font-semibold text-[#D1FD0A] font-led-dot">{clip.engagement.toFixed(1)}%</div>
-                                        <div className="text-xs text-white/50">Engagement</div>
-                                      </div>
-                                    </div>
-
-                                    {/* Title/Link */}
-                                    {clip.title && (
-                                      <div className="text-sm text-white/80 line-clamp-2">
-                                        {clip.title}
-                                      </div>
-                                    )}
-
-                                    {/* Action Buttons */}
-                                    <div className="flex gap-2 pt-2">
-                                      <button
-                                        onClick={() => window.open(clip.embedUrl, '_blank')}
-                                        className="px-4 py-2 rounded-lg border border-white/10 bg-white/5 text-sm text-white hover:bg-white/10 transition"
-                                      >
-                                        View Clip
-                                      </button>
-                                      <button
-                                        onClick={() => handleRejectClip(clip.$id)}
-                                        className="px-4 py-2 rounded-lg border border-red-500/50 bg-red-500/10 text-sm text-red-400 hover:bg-red-500/20 transition"
-                                      >
-                                        Reject
-                                      </button>
-                                      <button
-                                        onClick={() => handleApproveClip(clip.$id)}
-                                        className="flex-1 px-4 py-2 rounded-lg bg-gradient-to-r from-[#D1FD0A] to-[#B8E008] text-sm text-white font-semibold hover:from-[#B8E008] hover:to-[#A0C007] transition"
-                                      >
-                                        Approve
-                                      </button>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    )
-                  })}
-              </div>
-            )}
+            <PendingReviewSection
+              pendingClips={pendingClips}
+              campaigns={campaigns}
+              userId={userId}
+              selectedReviewClips={selectedReviewClips}
+              collapsedCampaigns={collapsedCampaigns}
+              batchActionLoading={batchActionLoading}
+              pendingLoading={pendingLoading}
+              onToggleSelection={toggleClipSelection}
+              onToggleCampaignCollapse={toggleCampaignCollapse}
+              onApprove={handleApproveClip}
+              onReject={handleRejectClip}
+              onBatchApprove={handleBatchApprove}
+              onBatchReject={handleBatchReject}
+              onClearSelection={() => setSelectedReviewClips(new Set())}
+            />
           </section>
         )}
 
-        {/* Hero Metrics */}
-        {selectedTab !== tabs.indexOf("Review Pending") && selectedTab !== 5 && selectedTab !== 2 && selectedTab !== 3 && (
-        <section className="flex overflow-x-auto scrollbar-hide snap-x snap-mandatory gap-1.5 md:gap-3 -mx-3 px-3 md:mx-0 md:px-0 md:grid md:grid-cols-4">
+        {/* Hero Metrics - Hide in Scroll mode on mobile */}
+        {selectedTab !== tabs.indexOf("Review Pending") && selectedTab !== 5 && selectedTab !== 2 && selectedTab !== 3 && (viewMode === 'grid' || !isMobile) && (
+        <section className="flex overflow-x-auto scrollbar-hide snap-x snap-mandatory gap-2 md:gap-3 -mx-3 px-3 md:mx-0 md:px-0 md:grid md:grid-cols-4">
           {metrics.map((m) => (
-            <div key={m.label} className="snap-center shrink-0 min-w-[140px] md:min-w-0 rounded-lg md:rounded-2xl border border-white/10 bg-gradient-to-b from-white/5 to-transparent p-2 md:p-4">
-              <div className="text-[10px] md:text-xs uppercase tracking-wide text-white/60">{m.label}</div>
-              <div className="mt-0.5 md:mt-1 text-base md:text-xl font-semibold font-led-dot">{m.value}</div>
+            <div key={m.label} className="snap-center shrink-0 min-w-[160px] md:min-w-0 glass-premium rounded-xl md:rounded-2xl border border-[#D1FD0A]/20 p-3 md:p-5">
+              <div className="text-[10px] md:text-xs uppercase tracking-wider text-zinc-400 font-medium">{m.label}</div>
+              <div className="mt-1 md:mt-2 text-xl md:text-3xl font-led-dot text-white">{m.value}</div>
             </div>
           ))}
         </section>
         )}
 
         {/* Analytics Tab */}
-        {selectedTab === 5 && (
+        {selectedTab === tabs.indexOf("Analytics") && (
           <section className="space-y-3 md:space-y-6">
             {/* Time Range Selector */}
             <div className="flex items-center justify-between">
@@ -932,22 +644,6 @@ export default function ClipsAndCampaignsPage() {
                 <button className="px-2 md:px-3 py-1 md:py-1.5 rounded-lg md:rounded-xl border border-white/10 bg-white/5 text-[10px] md:text-xs hover:bg-white/10">90D</button>
                 <button className="px-2 md:px-3 py-1 md:py-1.5 rounded-lg md:rounded-xl border border-white/10 bg-white/5 text-[10px] md:text-xs hover:bg-white/10">All</button>
               </div>
-            </div>
-
-            {/* Key Metrics Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3">
-              {metrics.map((m) => (
-                <div key={m.label} className="rounded-lg md:rounded-2xl border border-white/10 bg-gradient-to-b from-white/5 to-transparent p-2 md:p-4">
-                  <div className="text-[10px] md:text-xs uppercase tracking-wide text-white/60">{m.label}</div>
-                  <div className="mt-0.5 md:mt-1 text-lg md:text-2xl font-bold font-led-dot">{m.value}</div>
-                  <div className="mt-0.5 md:mt-1 text-[9px] md:text-xs text-[#D1FD0A] flex items-center gap-0.5 md:gap-1">
-                    <svg className="w-2 h-2 md:w-3 md:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                    </svg>
-                    +12.5%
-                  </div>
-                </div>
-              ))}
             </div>
 
             {/* Platform Distribution */}
@@ -1006,7 +702,7 @@ export default function ClipsAndCampaignsPage() {
         )}
 
         {/* My Clips Tab */}
-        {selectedTab === 2 && (
+        {selectedTab === tabs.indexOf("My Clips") && (
           <section className="space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold">My Clips</h2>
@@ -1037,76 +733,45 @@ export default function ClipsAndCampaignsPage() {
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
+              <div className="space-y-2 md:space-y-3">
                 {clips
                   .filter(c => c.submittedBy === userId)
-                  .map((clip) => {
-                    const isSelected = selectedClipId === clip.$id
-                    const embedUrl = getEmbedUrl(clip)
-                    const isHovered = hoveredClipId === clip.$id
+                  .map((clip, idx) => {
+                    // Determine status display
+                    const getStatusBadge = () => {
+                      if (clip.status === 'active' || clip.approved) {
+                        return { icon: '✓', text: 'Approved', color: 'bg-[#D1FD0A] text-black' }
+                      } else if (clip.status === 'pending') {
+                        return { icon: '⏳', text: 'Pending', color: 'bg-orange-500 text-white' }
+                      } else if (clip.status === 'rejected') {
+                        return { icon: '✗', text: 'Rejected', color: 'bg-red-500 text-white' }
+                      }
+                      return { icon: '○', text: 'Unknown', color: 'bg-zinc-500 text-white' }
+                    }
+                    const status = getStatusBadge()
 
                     return (
                       <div
                         key={clip.$id}
-                        onClick={() => setSelectedClipId(isSelected ? null : clip.$id)}
-                        className={cn(
-                          "group rounded-2xl overflow-hidden border bg-white/5 transition-all cursor-pointer",
-                          isSelected
-                            ? "border-lime-500 ring-2 ring-lime-500/50 scale-[1.02]"
-                            : "border-white/10 hover:border-white/20"
-                        )}
+                        className="flex items-center gap-2 md:gap-3 p-2 md:p-3 rounded-lg md:rounded-xl bg-white/5 hover:bg-white/10 transition cursor-pointer"
+                        onClick={() => window.open(clip.embedUrl, '_blank')}
                       >
-                        {/* Reuse clip card structure - simplified version */}
-                        <div className="relative aspect-[9/16] bg-gradient-to-br from-neutral-800 to-neutral-900">
-                          {clip.thumbnailUrl && (
-                            <img
-                              src={clip.thumbnailUrl}
-                              alt={clip.title || 'Clip'}
-                              loading="lazy"
-                              className="w-full h-full object-cover"
-                            />
-                          )}
-
-                          {/* Status Badge */}
-                          <div className="absolute top-2 left-2 px-2 py-1 rounded-lg bg-[#D1FD0A] text-black text-xs font-semibold">
-                            ✓ Approved
-                          </div>
-
-                          {/* Views Badge */}
-                          <div className="absolute bottom-2 right-2 px-2 py-1 rounded-lg bg-black/80 backdrop-blur-sm text-white text-xs font-semibold font-led-dot">
-                            👁 {clip.views.toLocaleString()}
-                          </div>
+                        <div className="text-sm md:text-lg font-bold text-white/40 w-5 md:w-6 text-center">#{idx + 1}</div>
+                        <img
+                          src={clip.thumbnailUrl || `https://api.dicebear.com/7.x/identicon/svg?seed=${clip.$id}`}
+                          alt="Thumbnail"
+                          className="w-12 h-12 md:w-16 md:h-16 rounded-md md:rounded-lg object-cover"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <div className="text-xs md:text-sm font-medium text-white truncate">{clip.title || 'Untitled Clip'}</div>
+                          <div className="text-[10px] md:text-xs text-white/50">by @{clip.creatorUsername || clip.submittedBy.slice(0, 12)}</div>
                         </div>
-
-                        {/* Clip Info */}
-                        <div className="p-3 space-y-2">
-                          <div className="text-sm font-medium text-white line-clamp-1">
-                            {clip.title || 'Untitled Clip'}
-                          </div>
-                          <div className="flex items-center justify-between text-xs text-white/60">
-                            <span>{new Date(clip.$createdAt).toLocaleDateString()}</span>
-                            <span className="font-led-dot">{clip.engagement.toFixed(1)}% eng.</span>
-                          </div>
-                          <div className="flex gap-2">
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                handleShareClip(clip.$id, clip)
-                              }}
-                              className="flex-1 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-xs text-white/80 transition"
-                            >
-                              Share
-                            </button>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                window.open(clip.embedUrl, '_blank')
-                              }}
-                              className="flex-1 py-1.5 rounded-lg bg-gradient-to-r from-[#D1FD0A] to-[#B8E008] text-xs text-white font-semibold hover:from-[#B8E008] hover:to-[#A0C007] transition"
-                            >
-                              View
-                            </button>
-                          </div>
+                        <div className="text-right">
+                          <div className="text-xs md:text-sm font-semibold font-led-dot">{clip.views.toLocaleString()}</div>
+                          <div className="text-[9px] md:text-xs text-white/50">views</div>
+                        </div>
+                        <div className={`px-2 py-1 rounded-lg text-[10px] md:text-xs font-semibold whitespace-nowrap ${status.color}`}>
+                          {status.icon} {status.text}
                         </div>
                       </div>
                     )
@@ -1117,13 +782,13 @@ export default function ClipsAndCampaignsPage() {
         )}
 
         {/* Campaigns Tab (My Campaigns) */}
-        {selectedTab === 3 && (
+        {selectedTab === tabs.indexOf("Campaigns") && (
           <section className="space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold">My Campaigns</h2>
+              <h2 className="text-lg font-semibold text-[#D1FD0A]">My Campaigns</h2>
               <button
                 onClick={() => setCreateCampaignOpen(true)}
-                className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#D1FD0A] to-[#B8E008] text-white text-sm font-semibold hover:from-[#B8E008] hover:to-[#A0C007] transition"
+                className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#D1FD0A] to-[#B8E008] text-black text-sm font-semibold hover:from-[#B8E008] hover:to-[#A0C007] transition"
               >
                 + New Campaign
               </button>
@@ -1132,7 +797,7 @@ export default function ClipsAndCampaignsPage() {
             {campaigns.filter(c => c.createdBy === userId).length === 0 ? (
               <div className="text-center py-20 px-4">
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[#D1FD0A] to-[#B8E008] mb-4">
-                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
                   </svg>
                 </div>
@@ -1142,7 +807,7 @@ export default function ClipsAndCampaignsPage() {
                 </p>
                 <button
                   onClick={() => setCreateCampaignOpen(true)}
-                  className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#D1FD0A] to-[#B8E008] text-white font-semibold hover:from-[#B8E008] hover:to-[#A0C007] transition"
+                  className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#D1FD0A] to-[#B8E008] text-black font-semibold hover:from-[#B8E008] hover:to-[#A0C007] transition"
                 >
                   Start Your First Campaign
                 </button>
@@ -1177,7 +842,7 @@ export default function ClipsAndCampaignsPage() {
                         </div>
 
                         {/* Stats Grid */}
-                        <div className="grid grid-cols-4 gap-4 mb-4">
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 mb-4">
                           <div className="text-center p-3 rounded-xl bg-white/5">
                             <div className="text-lg font-bold font-led-dot">{budgetPct}%</div>
                             <div className="text-xs text-white/50">Budget Left</div>
@@ -1234,19 +899,19 @@ export default function ClipsAndCampaignsPage() {
           </section>
         )}
 
-        {/* Campaign Board */}
-        {selectedTab !== tabs.indexOf("Review Pending") && selectedTab !== 5 && selectedTab !== 2 && selectedTab !== 3 && (
+        {/* Campaign Board - Hide in Scroll mode on mobile */}
+        {selectedTab !== tabs.indexOf("Review Pending") && selectedTab !== tabs.indexOf("Analytics") && selectedTab !== tabs.indexOf("My Clips") && (viewMode === 'grid' || !isMobile) && (
         <section>
           <div className="flex items-center justify-between mb-2 md:mb-3">
             <h2 className="text-base md:text-lg font-semibold">Live Campaigns</h2>
             <button
               onClick={() => setCreateCampaignOpen(true)}
-              className="text-[11px] md:text-sm px-2 md:px-3 py-1 md:py-1.5 rounded-lg md:rounded-xl border border-white/10 bg-white/5 hover:bg-white/10"
+              className="text-xs md:text-sm px-4 md:px-5 py-2 md:py-2.5 rounded-lg md:rounded-xl bg-[#D1FD0A] hover:bg-[#B8E309] text-black font-bold transition-all hover:scale-105"
             >
               Start Campaign
             </button>
           </div>
-          {loading ? (
+          {campaignsLoading ? (
             <div className="text-center py-12 text-white/60">Loading campaigns...</div>
           ) : campaigns.length === 0 ? (
             <div className="text-center py-12 text-white/60">
@@ -1259,7 +924,7 @@ export default function ClipsAndCampaignsPage() {
               </button>
             </div>
           ) : (
-            <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-2 md:gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-2 md:gap-4">
               {campaigns.map((campaign) => {
                 // Calculate budget percentage (budgetTotal - budgetPaid)
                 const budgetPaid = campaign.budgetPaid || 0
@@ -1268,7 +933,7 @@ export default function ClipsAndCampaignsPage() {
                 const budgetPct = Math.round((budgetRemaining / budgetTotal) * 100)
 
                 return (
-                  <div key={campaign.$id} className="rounded-lg md:rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 to-transparent p-3 md:p-5 flex flex-col gap-2 md:gap-4 hover:border-white/20 transition-colors">
+                  <div key={campaign.$id} className="glass-premium rounded-xl md:rounded-2xl border border-[#D1FD0A]/20 p-3 md:p-5 flex flex-col gap-2 md:gap-4 hover:border-[#D1FD0A]/40 transition-all">
                     {/* Header with Logo and Title */}
                     <div className="flex items-start gap-2 md:gap-3">
                       <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gradient-to-br from-[#D1FD0A] to-[#B8E008] flex items-center justify-center flex-shrink-0">
@@ -1339,7 +1004,7 @@ export default function ClipsAndCampaignsPage() {
                           </button>
                           <button
                             onClick={() => handleViewCampaignDetails(campaign.$id)}
-                            className="px-2 md:px-3 py-1.5 md:py-2 rounded-lg md:rounded-xl border border-white/10 bg-white/5 text-[11px] md:text-sm font-medium text-white/80 hover:bg-white/10 hover:text-white transition active:scale-95"
+                            className="px-2 md:px-3 py-1.5 md:py-2 rounded-lg md:rounded-xl border border-[#D1FD0A]/60 bg-zinc-800 text-xs md:text-sm font-semibold text-[#D1FD0A] hover:bg-zinc-700 transition active:scale-95"
                           >
                             <svg className="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -1351,7 +1016,7 @@ export default function ClipsAndCampaignsPage() {
                         <>
                           <button
                             onClick={() => handleViewCampaignDetails(campaign.$id)}
-                            className="flex items-center justify-center gap-1 md:gap-1.5 px-2 md:px-3 py-1.5 md:py-2 rounded-lg md:rounded-xl border border-white/10 bg-white/5 text-[11px] md:text-sm font-medium text-white/80 hover:bg-white/10 hover:text-white transition active:scale-95"
+                            className="flex items-center justify-center gap-1 md:gap-1.5 px-3 md:px-4 py-1.5 md:py-2 rounded-lg md:rounded-xl border border-[#D1FD0A]/60 bg-zinc-800 text-xs md:text-sm font-semibold text-[#D1FD0A] hover:bg-zinc-700 transition active:scale-95"
                           >
                             <svg className="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -1361,7 +1026,7 @@ export default function ClipsAndCampaignsPage() {
                           </button>
                           <button
                             onClick={() => handleJoinCampaign(campaign.$id)}
-                            className="flex-1 flex items-center justify-center gap-1 md:gap-1.5 rounded-lg md:rounded-xl bg-gradient-to-r from-[#D1FD0A] to-[#B8E008] text-white py-1.5 md:py-2 text-[11px] md:text-sm font-semibold hover:from-[#B8E008] hover:to-[#A0C007] transition active:scale-95"
+                            className="flex-1 flex items-center justify-center gap-1 md:gap-1.5 rounded-lg md:rounded-xl bg-[#D1FD0A] hover:bg-[#B8E309] text-black py-1.5 md:py-2 text-xs md:text-sm font-bold transition active:scale-95"
                           >
                             <svg className="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
@@ -1381,16 +1046,19 @@ export default function ClipsAndCampaignsPage() {
         )}
 
         {/* Clip Feed */}
-        {selectedTab !== tabs.indexOf("Review Pending") && (
+        {selectedTab !== tabs.indexOf("Review Pending") && selectedTab !== tabs.indexOf("Campaigns") && selectedTab !== tabs.indexOf("My Clips") && selectedTab !== tabs.indexOf("Analytics") && (
         <section>
-          <div className="flex items-center justify-between mb-2 md:mb-3">
-            <h2 className="text-base md:text-lg font-semibold">Top Clips</h2>
-            <div className="flex gap-1.5 md:gap-2 text-[11px] md:text-sm">
-              <button className="px-2 md:px-3 py-1 md:py-1.5 rounded-lg md:rounded-xl border border-white/10 bg-white/5 hover:bg-white/10">Trending</button>
-              <button className="px-2 md:px-3 py-1 md:py-1.5 rounded-lg md:rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 hidden sm:inline-flex">Newest</button>
-              <button className="px-2 md:px-3 py-1 md:py-1.5 rounded-lg md:rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 hidden md:inline-flex">Highest CTR</button>
+          {/* Hide header in Scroll mode on mobile */}
+          {(viewMode === 'grid' || !isMobile) && (
+            <div className="flex items-center justify-between mb-2 md:mb-3">
+              <h2 className="text-base md:text-lg font-semibold">Top Clips</h2>
+              <div className="flex gap-1.5 md:gap-2 text-[11px] md:text-sm">
+                <button className="px-2 md:px-3 py-1 md:py-1.5 rounded-lg md:rounded-xl border border-white/10 bg-white/5 hover:bg-white/10">Trending</button>
+                <button className="px-2 md:px-3 py-1 md:py-1.5 rounded-lg md:rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 hidden sm:inline-flex">Newest</button>
+                <button className="px-2 md:px-3 py-1 md:py-1.5 rounded-lg md:rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 hidden md:inline-flex">Highest CTR</button>
+              </div>
             </div>
-          </div>
+          )}
           {clipsLoading ? (
             <div className="text-center py-12 text-white/60">Loading clips...</div>
           ) : clips.length === 0 ? (
@@ -1403,20 +1071,37 @@ export default function ClipsAndCampaignsPage() {
                 Submit First Clip
               </button>
             </div>
+          ) : viewMode === 'scroll' ? (
+            /* Scroll Mode - TikTok/Instagram Style */
+            <div className="h-[calc(100vh-200px)] md:h-[calc(100vh-180px)] overflow-y-scroll snap-y snap-mandatory scrollbar-hide -mx-3 md:-mx-4">
+              {filteredClips.map((clip, index) => (
+                <ClipCardScroll
+                  key={clip.$id}
+                  clip={clip}
+                  index={index}
+                  onReact={() => handleReactToClip(clip.$id)}
+                  onShare={() => handleShareClip(clip.$id, clip)}
+                />
+              ))}
+            </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
+            /* Grid Mode - Traditional Layout */
+            <>
+            <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 md:gap-4">
               {filteredClips.map((clip) => {
                 const isSelected = selectedClipId === clip.$id
-
                 const embedUrl = getEmbedUrl(clip)
                 const isHovered = hoveredClipId === clip.$id
 
                 return (
-                  <div
+                  <ClipCardGrid
                     key={clip.$id}
-                    onClick={() => setSelectedClipId(isSelected ? null : clip.$id)}
+                    clip={clip}
+                    isSelected={isSelected}
+                    isHovered={isHovered}
+                    embedUrl={embedUrl}
+                    onSelect={() => setSelectedClipId(isSelected ? null : clip.$id)}
                     onMouseEnter={() => {
-                      // Add 500ms delay before showing video preview
                       hoverTimeoutRef.current = setTimeout(() => {
                         setHoveredClipId(clip.$id)
                       }, 500)
@@ -1427,223 +1112,22 @@ export default function ClipsAndCampaignsPage() {
                       }
                       setHoveredClipId(null)
                     }}
-                    className={cn(
-                      "group rounded-lg md:rounded-2xl overflow-hidden border bg-white/5 transition-all cursor-pointer",
-                      isSelected
-                        ? "border-lime-500 ring-2 ring-lime-500/50 scale-[1.02]"
-                        : "border-white/10 hover:border-white/20"
-                    )}
-                  >
-                    <div className="relative aspect-[9/16] bg-gradient-to-br from-neutral-800 to-neutral-900 flex items-center justify-center">
-                      {/* Thumbnail - hidden on hover if video available */}
-                      {clip.thumbnailUrl ? (
-                        <img
-                          src={clip.thumbnailUrl}
-                          alt={clip.title || 'Clip'}
-                          loading="lazy"
-                          className={cn(
-                            "w-full h-full object-cover transition-opacity duration-300",
-                            isHovered && embedUrl ? "opacity-0" : "opacity-100"
-                          )}
-                        />
-                      ) : (
-                        <div className={cn(
-                          "text-white/30 text-sm transition-opacity duration-300",
-                          isHovered && embedUrl ? "opacity-0" : "opacity-100"
-                        )}>
-                          {clip.platform.toUpperCase()} Clip
-                        </div>
-                      )}
-
-                      {/* Video Embed - shown on hover */}
-                      {embedUrl && isHovered && (
-                        <iframe
-                          src={embedUrl}
-                          className="absolute inset-0 w-full h-full"
-                          allow="autoplay; encrypted-media"
-                          frameBorder="0"
-                        />
-                      )}
-
-                      {/* Creator & Project Branding - Top Overlay */}
-                      <div className="absolute top-0 left-0 right-0 p-2 md:p-3 bg-gradient-to-b from-black/80 via-black/40 to-transparent z-10">
-                        <div className="flex items-start gap-1.5 md:gap-2">
-                          {/* Creator Avatar - Clickable to profile */}
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              router.push(`/profile/${clip.submittedBy}`)
-                            }}
-                            className="w-7 h-7 md:w-9 md:h-9 rounded-full border-2 border-white/20 bg-gradient-to-br from-[#D1FD0A] to-[#B8E008] flex items-center justify-center overflow-hidden hover:border-white/40 transition-all hover:scale-105"
-                            aria-label={`View ${clip.creatorUsername || clip.submittedBy}'s profile`}
-                          >
-                            <img
-                              src={clip.creatorAvatar || `https://api.dicebear.com/7.x/identicon/svg?seed=${clip.submittedBy}`}
-                              alt={clip.creatorUsername || clip.submittedBy}
-                              loading="lazy"
-                              className="w-full h-full object-cover"
-                            />
-                          </button>
-
-                          <div className="flex-1 min-w-0">
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                router.push(`/profile/${clip.submittedBy}`)
-                              }}
-                              className="text-[10px] md:text-xs font-medium text-white/90 truncate hover:text-white hover:underline transition-colors flex items-center gap-0.5 md:gap-1"
-                            >
-                              {clip.creatorUsername ? (
-                                <>
-                                  <svg className="w-2.5 h-2.5 md:w-3 md:h-3 fill-[#1DA1F2]" viewBox="0 0 24 24">
-                                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                                  </svg>
-                                  <span>@{clip.creatorUsername}</span>
-                                </>
-                              ) : (
-                                <span>@{clip.submittedBy.slice(0, 12)}</span>
-                              )}
-                            </button>
-                          </div>
-
-                          {/* Platform Logo Badge - Top Right */}
-                          <div className={cn(
-                            "w-7 h-7 md:w-9 md:h-9 rounded-md md:rounded-lg flex items-center justify-center",
-                            clip.platform === 'youtube' && "bg-red-600",
-                            clip.platform === 'tiktok' && "bg-black",
-                            clip.platform === 'twitter' && "bg-black",
-                            clip.platform === 'twitch' && "bg-lime-600",
-                            clip.platform === 'instagram' && "bg-gradient-to-br from-lime-500 via-lime-500 to-orange-500"
-                          )}>
-                            {clip.platform === 'twitter' && (
-                              <svg className="w-4 h-4 md:w-5 md:h-5 fill-white" viewBox="0 0 24 24">
-                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                              </svg>
-                            )}
-                            {clip.platform === 'tiktok' && (
-                              <svg className="w-4 h-4 md:w-5 md:h-5 fill-white" viewBox="0 0 24 24">
-                                <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
-                              </svg>
-                            )}
-                            {clip.platform === 'youtube' && (
-                              <svg className="w-4 h-4 md:w-5 md:h-5 fill-white" viewBox="0 0 24 24">
-                                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-                              </svg>
-                            )}
-                            {clip.platform === 'twitch' && (
-                              <svg className="w-4 h-4 md:w-5 md:h-5 fill-white" viewBox="0 0 24 24">
-                                <path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z"/>
-                              </svg>
-                            )}
-                            {clip.platform === 'instagram' && (
-                              <svg className="w-4 h-4 md:w-5 md:h-5 fill-white" viewBox="0 0 24 24">
-                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                              </svg>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Play button - only show when NOT hovering or no embed available */}
-                      {!(embedUrl && isHovered) && (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            handlePlayClip(clip.$id)
-                          }}
-                          className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40"
-                        >
-                          <Play className="w-12 h-12 text-white drop-shadow-lg" />
-                        </button>
-                      )}
-
-                      {isSelected && (
-                        <div className="absolute top-3 right-3 bg-lime-500 text-white text-xs px-2 py-1 rounded-full font-medium">
-                          Selected
-                        </div>
-                      )}
-
-                      {/* Metrics Overlay - Bottom */}
-                      <div className="absolute bottom-0 left-0 right-0 p-2 md:p-3 bg-gradient-to-t from-black/90 via-black/50 to-transparent">
-                        <div className="flex items-center justify-between text-white">
-                          <div className="flex flex-col gap-0.5">
-                            <div className="text-[10px] md:text-xs font-semibold font-led-dot">{clip.views.toLocaleString()}</div>
-                            <div className="text-[8px] md:text-[10px] text-white/60">views</div>
-                          </div>
-                          <div className="flex flex-col gap-0.5 items-center">
-                            <div className="text-[10px] md:text-xs font-semibold font-led-dot">{clip.likes.toLocaleString()}</div>
-                            <div className="text-[8px] md:text-[10px] text-white/60">likes</div>
-                          </div>
-                          <div className="flex flex-col gap-0.5 items-center">
-                            <div className="text-[10px] md:text-xs font-semibold font-led-dot">{clip.comments.toLocaleString()}</div>
-                            <div className="text-[8px] md:text-[10px] text-white/60">cmnt</div>
-                          </div>
-                          <div className="flex flex-col gap-0.5 items-end">
-                            <div className="text-[10px] md:text-xs font-semibold text-[#D1FD0A] font-led-dot">{clip.engagement.toFixed(1)}%</div>
-                            <div className="text-[8px] md:text-[10px] text-white/60">eng</div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="p-3 md:p-3 space-y-2 md:space-y-2">
-                      <div className="flex items-center gap-1.5 md:gap-2">
-                        {/* Project Logo */}
-                        {(clip.projectLogo || clip.projectName) && (
-                          <div className="w-6 h-6 md:w-8 md:h-8 rounded-md md:rounded-lg border border-white/10 bg-black/40 backdrop-blur-sm flex items-center justify-center overflow-hidden flex-shrink-0">
-                            {clip.projectLogo ? (
-                              <img
-                                src={clip.projectLogo}
-                                alt={clip.projectName || 'Project'}
-                                className="w-full h-full object-cover"
-                              />
-                            ) : (
-                              <div className="text-[9px] md:text-[10px] font-bold text-white/80">
-                                {clip.projectName?.slice(0, 3).toUpperCase()}
-                              </div>
-                            )}
-                          </div>
-                        )}
-                        <div className="text-[11px] md:text-sm font-semibold truncate flex-1">
-                          {clip.projectName || clip.title || `Clip #${clip.clipId.slice(-6)}`}
-                        </div>
-                      </div>
-
-                      <div className="flex gap-1.5 md:gap-2">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            handleBuyClip(clip)
-                          }}
-                          disabled={!clip.projectId}
-                          className="flex-1 rounded-md md:rounded-lg bg-white text-black py-1 md:py-1.5 text-[10px] md:text-xs font-semibold hover:bg-neutral-200 transition active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                          Buy
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            handleReactToClip(clip.$id)
-                          }}
-                          className="rounded-md md:rounded-lg border border-white/10 bg-white/5 px-1.5 md:px-2.5 text-[10px] md:text-xs hover:bg-white/10 transition active:scale-95"
-                        >
-                          {reactions.has(clip.$id) ? reactions.get(clip.$id) : 'React'}
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            handleShareClip(clip.$id, clip)
-                          }}
-                          className="rounded-md md:rounded-lg border border-white/10 bg-white/5 px-1.5 md:px-2.5 text-[10px] md:text-xs hover:bg-white/10 transition active:scale-95"
-                        >
-                          Share
-                        </button>
-                      </div>
-                    </div>
-                  </div>
+                    onPlayClip={() => handlePlayClip(clip.$id)}
+                    onReact={() => handleReactToClip(clip.$id)}
+                    onShare={() => handleShareClip(clip.$id, clip)}
+                  />
                 )
               })}
             </div>
+
+            <PaginationControls
+              currentPage={currentPage}
+              onPageChange={setCurrentPage}
+              totalItems={clips.length}
+              itemsPerPage={clipsPerPage}
+              isLoading={clipsLoading}
+            />
+            </>
           )}
         </section>
         )}

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { X, Link as LinkIcon, Play, Search, Loader2 } from 'lucide-react'
+import { X, Link as LinkIcon, Play, Search, Loader2, Plus } from 'lucide-react'
 import { detectPlatform, fetchThumbnail } from '@/lib/appwrite/services/clips'
 import { getLaunches, type Launch } from '@/lib/appwrite/services/launches'
 import { getCampaigns, type Campaign } from '@/lib/appwrite/services/campaigns'
@@ -28,7 +28,7 @@ export function SubmitClipModal({
   preSelectedCampaignId,
   preSelectedCampaignTitle
 }: SubmitClipModalProps) {
-  const [embedUrl, setEmbedUrl] = useState('')
+  const [videoUrls, setVideoUrls] = useState([{ url: '', platform: null as string | null, error: '' }])
   const [title, setTitle] = useState('')
   const [projectName, setProjectName] = useState('')
   const [selectedProject, setSelectedProject] = useState<Launch | null>(null)
@@ -38,9 +38,6 @@ export function SubmitClipModal({
   const [projectSearch, setProjectSearch] = useState('')
   const [showProjectDropdown, setShowProjectDropdown] = useState(false)
   const [showCampaignDropdown, setShowCampaignDropdown] = useState(false)
-  const [error, setError] = useState('')
-  const [platform, setPlatform] = useState<string | null>(null)
-  const [videoPreview, setVideoPreview] = useState<string | null>(null)
   const [isValidating, setIsValidating] = useState(false)
 
   // Load projects and campaigns when modal opens
@@ -61,54 +58,54 @@ export function SubmitClipModal({
     }
   }, [open, preSelectedCampaignId, campaigns])
 
-  const handleUrlChange = async (url: string) => {
-    setEmbedUrl(url)
-    setError('')
-    setVideoPreview(null)
+  const handleUrlChange = async (index: number, url: string) => {
+    const newUrls = [...videoUrls]
+    newUrls[index].url = url
+    newUrls[index].error = ''
 
     if (url.trim()) {
       setIsValidating(true)
       const detected = detectPlatform(url)
-      setPlatform(detected)
+      newUrls[index].platform = detected
 
       if (!detected) {
-        setError('Unsupported URL. Please use Twitter, TikTok, YouTube, Twitch, or Instagram links.')
+        newUrls[index].error = 'Unsupported URL. Please use links from supported platforms.'
         setIsValidating(false)
-        return
+      } else {
+        setIsValidating(false)
       }
-
-      // Auto-fetch video preview
-      try {
-        const thumbnail = await fetchThumbnail(url, detected)
-        if (thumbnail) {
-          setVideoPreview(thumbnail)
-        }
-      } catch (err) {
-        console.error('Failed to fetch thumbnail:', err)
-      }
-
-      setIsValidating(false)
     } else {
-      setPlatform(null)
+      newUrls[index].platform = null
+    }
+
+    setVideoUrls(newUrls)
+  }
+
+  const addVideoUrl = () => {
+    setVideoUrls([...videoUrls, { url: '', platform: null, error: '' }])
+  }
+
+  const removeVideoUrl = (index: number) => {
+    if (videoUrls.length > 1) {
+      setVideoUrls(videoUrls.filter((_, i) => i !== index))
     }
   }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!embedUrl.trim()) {
-      setError('Please enter a video URL')
+    // Find the first valid URL
+    const validUrl = videoUrls.find(v => v.url.trim() && v.platform)
+    if (!validUrl) {
+      const newUrls = [...videoUrls]
+      newUrls[0].error = 'Please enter at least one valid video URL'
+      setVideoUrls(newUrls)
       return
     }
 
-    const detected = detectPlatform(embedUrl)
-    if (!detected) {
-      setError('Invalid URL. Supported platforms: Twitter, TikTok, YouTube, Twitch, Instagram')
-      return
-    }
-
+    // For now, submit only the first valid URL (can be enhanced to submit all)
     onSubmit({
-      embedUrl: embedUrl.trim(),
+      embedUrl: validUrl.url.trim(),
       title: title.trim() || undefined,
       projectName: selectedProject?.title || projectSearch.trim() || projectName.trim() || undefined,
       projectId: selectedProject?.launchId || undefined,
@@ -120,7 +117,7 @@ export function SubmitClipModal({
   }
 
   const handleClose = () => {
-    setEmbedUrl('')
+    setVideoUrls([{ url: '', platform: null, error: '' }])
     setTitle('')
     setProjectName('')
     setSelectedProject(null)
@@ -128,9 +125,6 @@ export function SubmitClipModal({
     setProjectSearch('')
     setShowProjectDropdown(false)
     setShowCampaignDropdown(false)
-    setError('')
-    setPlatform(null)
-    setVideoPreview(null)
     setIsValidating(false)
     onClose()
   }
@@ -151,7 +145,13 @@ export function SubmitClipModal({
     tiktok: '🎵',
     youtube: '▶️',
     twitch: '🎮',
-    instagram: '📷'
+    instagram: '📷',
+    linkedin: '💼',
+    facebook: '👥',
+    reddit: '🤖',
+    vimeo: '🎬',
+    rumble: '📹',
+    kick: '⚡'
   }
 
   return (
@@ -181,46 +181,54 @@ export function SubmitClipModal({
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="p-3 md:p-4 space-y-3 md:space-y-4">
-            {/* URL Input */}
+            {/* URL Inputs */}
             <div>
-              <label htmlFor="embedUrl" className="block text-xs md:text-sm font-medium text-white/80 mb-1.5 md:mb-2">
-                Video URL <span className="text-red-400">*</span>
+              <label className="block text-xs md:text-sm font-medium text-white/80 mb-1.5 md:mb-2">
+                Video URL(s) <span className="text-red-400">*</span>
               </label>
-              <div className="relative">
-                <LinkIcon className="absolute left-2.5 md:left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 md:w-4 md:h-4 text-white/40" />
-                <input
-                  id="embedUrl"
-                  type="url"
-                  value={embedUrl}
-                  onChange={(e) => handleUrlChange(e.target.value)}
-                  placeholder="https://twitter.com/... or https://tiktok.com/..."
-                  className="w-full pl-9 md:pl-10 pr-12 md:pr-16 py-2.5 md:py-3 rounded-lg md:rounded-xl bg-white/5 border border-white/10 text-white text-xs md:text-sm placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50 focus:border-transparent"
-                />
-                {isValidating ? (
-                  <div className="absolute right-2.5 md:right-3 top-1/2 -translate-y-1/2">
-                    <Loader2 className="w-3.5 h-3.5 md:w-4 md:h-4 text-white/40 animate-spin" />
+              <div className="space-y-2">
+                {videoUrls.map((video, index) => (
+                  <div key={index} className="flex gap-2">
+                    <div className="relative flex-1">
+                      <LinkIcon className="absolute left-2.5 md:left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 md:w-4 md:h-4 text-white/40" />
+                      <input
+                        type="url"
+                        value={video.url}
+                        onChange={(e) => handleUrlChange(index, e.target.value)}
+                        placeholder="Paste video URL from any supported platform..."
+                        className="w-full pl-9 md:pl-10 pr-10 py-2.5 md:py-3 rounded-lg md:rounded-xl bg-white/5 border border-white/10 text-white text-xs md:text-sm placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50 focus:border-transparent"
+                      />
+                      {video.platform && (
+                        <div className="absolute right-2.5 md:right-3 top-1/2 -translate-y-1/2 text-base md:text-lg">
+                          {platformIcons[video.platform]}
+                        </div>
+                      )}
+                    </div>
+                    {index === videoUrls.length - 1 ? (
+                      <button
+                        type="button"
+                        onClick={addVideoUrl}
+                        className="flex-shrink-0 w-8 h-8 md:w-9 md:h-9 rounded-lg bg-[#D1FD0A] hover:bg-[#B8E309] text-black flex items-center justify-center transition-all hover:scale-105 active:scale-95"
+                      >
+                        <Plus className="w-4 h-4" />
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => removeVideoUrl(index)}
+                        className="flex-shrink-0 w-8 h-8 md:w-9 md:h-9 rounded-lg glass-premium border border-white/10 text-white/60 hover:text-white hover:border-red-500/50 flex items-center justify-center transition-all"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    )}
                   </div>
-                ) : platform ? (
-                  <div className="absolute right-2.5 md:right-3 top-1/2 -translate-y-1/2 text-base md:text-lg">
-                    {platformIcons[platform]}
-                  </div>
-                ) : null}
+                ))}
+                {videoUrls.some(v => v.error) && (
+                  <p className="text-red-400 text-[10px] md:text-xs mt-1">
+                    {videoUrls.find(v => v.error)?.error}
+                  </p>
+                )}
               </div>
-              {error && <p className="text-red-400 text-[10px] md:text-xs mt-1">{error}</p>}
-              <p className="text-white/40 text-[10px] md:text-xs mt-1 md:mt-1.5">
-                Supported: Twitter, TikTok, YouTube, Twitch, Instagram
-              </p>
-
-              {/* Video Preview */}
-              {videoPreview && (
-                <div className="mt-2 rounded-lg overflow-hidden border border-white/10">
-                  <img
-                    src={videoPreview}
-                    alt="Video preview"
-                    className="w-full h-32 object-cover"
-                  />
-                </div>
-              )}
             </div>
 
             {/* Campaign Linking (if not pre-selected) */}
@@ -400,7 +408,7 @@ export function SubmitClipModal({
               </button>
               <button
                 type="submit"
-                disabled={!embedUrl.trim() || !!error}
+                disabled={!videoUrls.some(v => v.url.trim() && v.platform)}
                 className="flex-1 px-3 md:px-4 py-2.5 md:py-3 rounded-lg md:rounded-xl bg-white text-black text-xs md:text-sm font-medium hover:bg-neutral-200 transition active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white"
               >
                 Submit Clip

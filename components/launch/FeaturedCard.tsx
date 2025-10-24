@@ -18,7 +18,8 @@ import {
   IconMotion,
   IconRocket,
   IconCash,
-  IconCult
+  IconCult,
+  IconTrophy
 } from '@/lib/icons'
 import type { UnifiedCardData } from '../UnifiedCard'
 
@@ -28,6 +29,7 @@ interface FeaturedCardProps {
   onClipClick?: (project: UnifiedCardData) => void
   onCollaborate?: (project: UnifiedCardData) => void
   index?: number
+  rank?: number // Position in featured list (1, 2, 3)
 }
 
 /**
@@ -47,7 +49,8 @@ export function FeaturedCard({
   onBuyKeys,
   onClipClick,
   onCollaborate,
-  index = 0
+  index = 0,
+  rank
 }: FeaturedCardProps) {
   const router = useRouter()
   const [imageLoaded, setImageLoaded] = useState(false)
@@ -92,7 +95,7 @@ export function FeaturedCard({
         delay: index * 0.1
       }}
       className={cn(
-        "glass-premium p-3 rounded-xl group relative",
+        "glass-premium p-2 rounded-xl group relative",
         "transition-all duration-500",
         "border-2 border-[#D1FD0A]/50 hover:border-[#D1FD0A]",
         "bg-gradient-to-br from-zinc-900/80 via-zinc-900/60 to-black/80",
@@ -106,6 +109,21 @@ export function FeaturedCard({
         boxShadow: '0 0 0 2px rgba(209, 253, 10, 0.1), 0 0 20px rgba(209, 253, 10, 0.1)'
       } as any}
     >
+      {/* Top Left Ranking Badge */}
+      {rank && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.2 + index * 0.1 }}
+          className="absolute top-2 left-2 z-10 flex items-center gap-1 px-2 py-1 rounded-lg bg-gradient-to-br from-[#D1FD0A]/30 to-[#B8E309]/30 border border-[#D1FD0A] backdrop-blur-sm"
+        >
+          <IconTrophy className="w-3 h-3 text-[#D1FD0A]" />
+          <span className="font-led-dot text-[10px] font-black text-[#D1FD0A]">
+            #{rank}
+          </span>
+        </motion.div>
+      )}
+
       {/* Top Right Action Buttons - Notification & Share */}
       <div className="absolute top-2 right-2 flex items-center gap-1 z-10">
         <motion.button
@@ -138,11 +156,11 @@ export function FeaturedCard({
         </motion.button>
       </div>
 
-      {/* Logo Section - Centered, Compact (80px) */}
-      <div className="relative flex justify-center mb-3">
+      {/* Logo Section - Centered, Compact (64px) */}
+      <div className="relative flex justify-center mb-2">
         <motion.div
           className={cn(
-            "relative w-20 h-20 rounded-xl overflow-hidden border-2 transition-all duration-500",
+            "relative w-16 h-16 rounded-lg overflow-hidden border-2 transition-all duration-500",
             scheme.border
           )}
           whileHover={{ scale: 1.05 }}
@@ -176,13 +194,13 @@ export function FeaturedCard({
 
         {/* Motion Score Badge Overlay - No Glow */}
         <motion.div
-          className="absolute -bottom-2 -right-2 w-12 h-12 rounded-lg bg-[#D1FD0A] flex flex-col items-center justify-center border-2 border-black"
+          className="absolute -bottom-2 -right-2 w-10 h-10 rounded-lg bg-[#D1FD0A] flex flex-col items-center justify-center border-2 border-black"
           whileHover={{ scale: 1.1 }}
           transition={{ type: "spring", stiffness: 400, damping: 17 }}
           aria-label={`Motion score: ${Math.round(data.beliefScore)}`}
         >
-          <div className="text-[8px] font-bold text-black uppercase leading-none">Motion</div>
-          <div className="font-led-dot text-lg text-black leading-none mt-0.5">
+          <div className="text-[7px] font-bold text-black uppercase leading-none">Motion</div>
+          <div className="font-led-dot text-base text-black leading-none mt-0.5">
             {Math.round(data.beliefScore)}
           </div>
         </motion.div>
@@ -199,21 +217,21 @@ export function FeaturedCard({
       </div>
 
       {/* Title + Ticker - Centered */}
-      <div className="text-center mb-2">
-        <h3 className="text-lg font-black text-white tracking-tight mb-1 line-clamp-1">
+      <div className="text-center mb-1.5">
+        <h3 className="text-base font-black text-white tracking-tight mb-0.5 line-clamp-1">
           {data.title}
         </h3>
         {data.ticker && (
-          <span className="font-led-dot text-sm text-[#D1FD0A]">
+          <span className="font-led-dot text-xs text-[#D1FD0A]">
             ${data.ticker}
           </span>
         )}
       </div>
 
       {/* Status + Type Badges - Horizontal */}
-      <div className="flex items-center justify-center gap-2 mb-2">
+      <div className="flex items-center justify-center gap-1.5 mb-1.5">
         <span className={cn(
-          'px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border',
+          'px-1.5 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wider border',
           data.status === 'live'
             ? 'bg-[#D1FD0A]/20 text-[#D1FD0A] border-[#D1FD0A]/40'
             : 'bg-zinc-800/50 text-zinc-400 border-zinc-700'
@@ -222,10 +240,10 @@ export function FeaturedCard({
         </span>
 
         <div className={cn(
-          'flex items-center gap-1 px-2 py-1 rounded-lg border text-[10px]',
+          'flex items-center gap-0.5 px-1.5 py-0.5 rounded-md border text-[9px]',
           scheme.badge
         )}>
-          <IconComponent className="w-3 h-3" aria-hidden="true" />
+          <IconComponent className="w-2.5 h-2.5" aria-hidden="true" />
           <span className="font-bold uppercase">
             {data.type}
           </span>
@@ -233,8 +251,8 @@ export function FeaturedCard({
       </div>
 
       {/* Key Metrics - Single Horizontal Line */}
-      <div className="glass-interactive p-1.5 rounded-lg border border-zinc-800 hover:border-[#D1FD0A]/30 transition-all mb-2">
-        <div className="flex items-center justify-center gap-3 text-center">
+      <div className="glass-interactive p-1 rounded-lg border border-zinc-800 hover:border-[#D1FD0A]/30 transition-all mb-1.5">
+        <div className="flex items-center justify-center gap-2 text-center">
           {/* Market Cap */}
           <div className="flex items-center gap-1">
             <span className="text-[7px] text-zinc-500 uppercase tracking-wider">MCap</span>
@@ -287,20 +305,20 @@ export function FeaturedCard({
       </div>
 
       {/* Community Motion Bar - Compact */}
-      <div className="mb-2">
+      <div className="mb-1.5">
         <div className="flex items-center justify-between mb-0.5">
-          <div className="flex items-center gap-1">
-            <IconMotion className="w-2.5 h-2.5 text-[#D1FD0A]" aria-hidden="true" />
-            <span className="text-[8px] font-bold text-zinc-400 uppercase tracking-wider">
+          <div className="flex items-center gap-0.5">
+            <IconMotion className="w-2 h-2 text-[#D1FD0A]" aria-hidden="true" />
+            <span className="text-[7px] font-bold text-zinc-400 uppercase tracking-wider">
               Motion
             </span>
           </div>
-          <span className="font-led-dot text-xs text-[#D1FD0A]">
+          <span className="font-led-dot text-[10px] text-[#D1FD0A]">
             {Math.round(data.beliefScore)}%
           </span>
         </div>
         <div
-          className="h-2 rounded-full bg-zinc-800 overflow-hidden border border-zinc-700 relative"
+          className="h-1.5 rounded-full bg-zinc-800 overflow-hidden border border-zinc-700 relative"
           role="progressbar"
           aria-valuenow={Math.round(data.beliefScore)}
           aria-valuemin={0}
@@ -317,8 +335,8 @@ export function FeaturedCard({
       </div>
 
       {/* Secondary Stats - Compact Grid */}
-      <div className="grid grid-cols-3 gap-1 mb-2">
-        <div className="glass-interactive p-1 rounded border border-zinc-800 text-center">
+      <div className="grid grid-cols-3 gap-0.5 mb-1.5">
+        <div className="glass-interactive p-0.5 rounded border border-zinc-800 text-center">
           <div className="flex items-center justify-center gap-0.5 mb-0.5">
             <IconAim className="w-2 h-2 text-zinc-500" aria-hidden="true" />
             <span className="text-[7px] text-zinc-500">Views</span>
@@ -328,7 +346,7 @@ export function FeaturedCard({
           </div>
         </div>
 
-        <div className="glass-interactive p-1 rounded border border-zinc-800 text-center">
+        <div className="glass-interactive p-0.5 rounded border border-zinc-800 text-center">
           <div className="flex items-center justify-center gap-0.5 mb-0.5">
             <IconUpvote className="w-2 h-2 text-zinc-500" aria-hidden="true" />
             <span className="text-[7px] text-zinc-500">Votes</span>
@@ -338,7 +356,7 @@ export function FeaturedCard({
           </div>
         </div>
 
-        <div className="glass-interactive p-1 rounded border border-zinc-800 text-center">
+        <div className="glass-interactive p-0.5 rounded border border-zinc-800 text-center">
           <div className="flex items-center justify-center gap-0.5 mb-0.5">
             <IconMessage className="w-2 h-2 text-zinc-500" aria-hidden="true" />
             <span className="text-[7px] text-zinc-500">Chat</span>
@@ -351,12 +369,12 @@ export function FeaturedCard({
 
       {/* Contributors - Compact Avatar Row */}
       {data.contributors && data.contributors.length > 0 && (
-        <div className="mb-2">
-          <div className="flex items-center justify-center -space-x-2">
+        <div className="mb-1.5">
+          <div className="flex items-center justify-center -space-x-1.5">
             {data.contributors.slice(0, 4).map((contributor, idx) => (
               <motion.div
                 key={contributor.id || idx}
-                className="relative w-5 h-5 rounded-full border-2 border-zinc-900 bg-gradient-to-br from-purple-500 to-blue-600 overflow-hidden hover:z-10 transition-transform cursor-pointer"
+                className="relative w-4 h-4 rounded-full border border-zinc-900 bg-gradient-to-br from-purple-500 to-blue-600 overflow-hidden hover:z-10 transition-transform cursor-pointer"
                 whileHover={{ scale: 1.2 }}
                 transition={{ type: "spring", stiffness: 400, damping: 17 }}
                 title={contributor.name || `@${contributor.twitterHandle}`}
@@ -374,7 +392,7 @@ export function FeaturedCard({
               </motion.div>
             ))}
             {data.contributorsCount && data.contributorsCount > 4 && (
-              <div className="w-5 h-5 rounded-full border-2 border-zinc-900 bg-zinc-800 flex items-center justify-center text-zinc-400 text-[7px] font-bold">
+              <div className="w-4 h-4 rounded-full border border-zinc-900 bg-zinc-800 flex items-center justify-center text-zinc-400 text-[6px] font-bold">
                 +{data.contributorsCount - 4}
               </div>
             )}
@@ -383,17 +401,17 @@ export function FeaturedCard({
       )}
 
       {/* Action Buttons - All 4 in One Row */}
-      <div className="mt-auto grid grid-cols-[1.5fr_0.6fr_0.6fr_0.6fr] gap-1">
-        {/* Buy Keys Button - Larger */}
+      <div className="mt-auto grid grid-cols-4 gap-0.5">
+        {/* Buy Keys Button */}
         <motion.button
           onClick={() => onBuyKeys?.(data)}
           className={cn(
             "bg-[#D1FD0A] hover:bg-[#B8E309] text-black font-black",
-            "px-2 py-1.5 rounded-lg",
+            "px-0.5 py-1 rounded-md",
             "transition-all duration-300",
             "hover:shadow-xl hover:shadow-[#D1FD0A]/50",
-            "flex items-center justify-center gap-1",
-            "text-[9px]"
+            "flex items-center justify-center gap-0.5",
+            "text-[8px]"
           )}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
@@ -401,18 +419,18 @@ export function FeaturedCard({
         >
           <span>BUY</span>
           {(data.contractPrice || data.currentPrice) && (
-            <span className="font-led-dot text-[10px]">
+            <span className="font-led-dot text-[9px]">
               {(data.contractPrice || data.currentPrice || 0).toFixed(3)}
             </span>
           )}
         </motion.button>
 
-        {/* Clips Button - Smaller with Video Icon */}
+        {/* Clips Button with Video Icon */}
         <motion.button
           onClick={() => onClipClick?.(data)}
           className={cn(
             "bg-zinc-800 hover:bg-zinc-700 font-bold",
-            "px-1 py-1.5 rounded-lg",
+            "px-0.5 py-1 rounded-md",
             "transition-all duration-300",
             "border border-[#D1FD0A]",
             "flex items-center justify-center gap-0.5",
@@ -427,12 +445,12 @@ export function FeaturedCard({
           <span className="text-[#D1FD0A]">Clips</span>
         </motion.button>
 
-        {/* Collab Button - Smaller */}
+        {/* Collab Button */}
         <motion.button
           onClick={() => onCollaborate?.(data)}
           className={cn(
             "bg-zinc-800 hover:bg-zinc-700 font-bold",
-            "px-1 py-1.5 rounded-lg",
+            "px-0.5 py-1 rounded-md",
             "transition-all duration-300",
             "border border-zinc-700 hover:border-[#D1FD0A]/50",
             "flex items-center justify-center gap-0.5",
@@ -447,12 +465,12 @@ export function FeaturedCard({
           <span>Collab</span>
         </motion.button>
 
-        {/* Details Button - Smaller */}
+        {/* Details Button */}
         <motion.button
           onClick={() => router.push(`/launch/${data.id}`)}
           className={cn(
             "bg-zinc-800 hover:bg-zinc-700 font-semibold",
-            "px-1 py-1.5 rounded-lg",
+            "px-0.5 py-1 rounded-md",
             "transition-all duration-300",
             "border border-zinc-700 hover:border-[#D1FD0A]/50",
             "text-zinc-300 hover:text-white",

@@ -108,7 +108,8 @@ export function HeroMetricCard({
       className="glass-premium p-4 md:p-6 rounded-xl md:rounded-2xl group cursor-default
         border-2 border-zinc-800 hover:border-[#D1FD0A]
         hover:shadow-[0_0_24px_rgba(209,253,10,0.3)]
-        transition-all duration-200 bg-black/60 backdrop-blur-md"
+        transition-all duration-200 bg-black/60 backdrop-blur-md
+        min-w-[140px] md:min-w-0 flex-shrink-0 md:flex-shrink snap-start"
     >
       {/* LED Numeral Display */}
       <div className="font-led-dot text-3xl md:text-5xl text-[#D1FD0A] mb-3 md:mb-4 leading-none">

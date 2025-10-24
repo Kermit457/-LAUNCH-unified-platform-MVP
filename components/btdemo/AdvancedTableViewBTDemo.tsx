@@ -7,6 +7,8 @@ import type { AdvancedListingData } from '@/lib/advancedTradingData'
 import { cn } from '@/lib/cn'
 import { IconPriceUp, IconPriceDown, IconSolana, IconTwitter, IconTelegram, IconLab, IconTopPerformer, IconCult, IconUpvote } from '@/lib/icons'
 import { LiveBadge } from '@/lib/components/StatusBadge'
+import { UnifiedCard } from '@/components/UnifiedCard'
+import type { UnifiedCardData } from '@/components/UnifiedCard'
 
 interface AdvancedTableViewBTDemoProps {
   listings: AdvancedListingData[]
@@ -24,8 +26,35 @@ export function AdvancedTableViewBTDemo({
   onClipClick
 }: AdvancedTableViewBTDemoProps): JSX.Element {
   return (
-    <div className="overflow-x-auto custom-scrollbar">
-      <table className="w-full">
+    <>
+      {/* Mobile: Card View */}
+      <div className="md:hidden space-y-2 p-2">
+        {listings.map((listing, index) => (
+          <UnifiedCard
+            key={listing.id}
+            data={{
+              ...listing,
+              keyHolders: [],
+              contributors: listing.metrics?.contributors || [],
+              contributorsCount: listing.metrics?.contributorsCount || 0,
+              onVote: async () => {},
+              onComment: () => onRowClick?.(listing),
+              onCollaborate: () => onCollaborateClick?.(listing),
+              onBuyKeys: () => onBuyClick?.(listing, 1),
+              onClipClick: () => onClipClick?.(listing),
+              onDetails: () => onRowClick?.(listing),
+              onNotificationToggle: () => {},
+              onShare: () => {},
+              myKeys: 0,
+              mySharePct: 0
+            } as UnifiedCardData}
+          />
+        ))}
+      </div>
+
+      {/* Desktop: Table View */}
+      <div className="hidden md:block overflow-x-auto custom-scrollbar">
+        <table className="w-full">
         <thead className="border-b border-zinc-800">
           <tr className="text-xs font-medium text-zinc-400 uppercase tracking-wider">
             <th className="px-2 py-3 text-left">Rank</th>
@@ -55,7 +84,8 @@ export function AdvancedTableViewBTDemo({
           ))}
         </tbody>
       </table>
-    </div>
+      </div>
+    </>
   )
 }
 

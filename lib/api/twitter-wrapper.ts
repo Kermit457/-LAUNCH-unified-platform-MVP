@@ -47,11 +47,15 @@ export async function fetchTwitterMetrics(
   url: string,
   bearerToken?: string
 ): Promise<TwitterMetrics> {
+  console.log('🐦 Fetching Twitter metrics for:', url)
   const tweetId = extractTweetId(url)
 
   if (!tweetId) {
+    console.error('❌ Invalid Twitter URL - could not extract tweet ID')
     throw new Error('Invalid Twitter URL')
   }
+
+  console.log('✅ Tweet ID extracted:', tweetId)
 
   // If no bearer token, return zeros (graceful degradation)
   if (!bearerToken) {
@@ -64,6 +68,8 @@ export async function fetchTwitterMetrics(
       tweetUrl: url
     }
   }
+
+  console.log('🔑 Bearer token present, calling Twitter API...')
 
   try {
     // Twitter API v2 endpoint with public metrics
@@ -79,9 +85,11 @@ export async function fetchTwitterMetrics(
       }
     })
 
+    console.log('📡 Twitter API response status:', response.status)
+
     if (!response.ok) {
       const errorText = await response.text()
-      console.error('Twitter API error:', response.status, errorText)
+      console.error('❌ Twitter API error:', response.status, errorText)
 
       // Check if rate limited
       if (response.status === 429) {
@@ -99,8 +107,10 @@ export async function fetchTwitterMetrics(
     }
 
     const data = await response.json()
+    console.log('📦 Twitter API response data:', JSON.stringify(data, null, 2))
 
     if (!data.data || !data.data.public_metrics) {
+      console.warn('⚠️  No public metrics in response')
       return {
         views: 0,
         likes: 0,
@@ -114,7 +124,7 @@ export async function fetchTwitterMetrics(
     const metrics = tweet.public_metrics
     const author = data.includes?.users?.[0]
 
-    return {
+    const result = {
       views: metrics.impression_count || 0,
       likes: metrics.like_count || 0,
       comments: metrics.reply_count || 0,
@@ -126,6 +136,9 @@ export async function fetchTwitterMetrics(
       text: tweet.text || '',
       createdAt: tweet.created_at || ''
     }
+
+    console.log('✅ Twitter metrics extracted:', result)
+    return result
   } catch (error) {
     console.error('Twitter API error:', error)
     return {

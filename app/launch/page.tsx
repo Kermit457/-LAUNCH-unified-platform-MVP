@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from 'react'
-import { LaunchHeaderBTDemo } from '@/components/btdemo/LaunchHeaderBTDemo'
+import { Trophy, Users as UsersIcon } from 'lucide-react'
 import { HeroMetricsBTDemo } from '@/components/btdemo/HeroMetricsBTDemo'
 import { SpotlightCarouselBTDemo } from '@/components/btdemo/SpotlightCarouselBTDemo'
 import { FeaturedProjectsCarousel } from '@/components/launch/FeaturedProjectsCarousel'
@@ -19,10 +19,16 @@ import { useLaunchData } from '@/hooks/useLaunchData'
 import { getMockCommunityStats } from '@/lib/appwrite/services/community'
 import { TokenLaunchPreview } from '@/components/launch/TokenLaunchPreview'
 import { IconRocket } from '@/lib/icons'
+import { cn } from '@/lib/cn'
 
 export default function LaunchPage() {
   const [feedFilters, setFeedFilters] = useState({ status: 'all', sortBy: 'latest' })
   const [searchQuery, setSearchQuery] = useState('')
+
+  // Featured Projects filter states
+  const [typeFilter, setTypeFilter] = useState<'icm' | 'ccm' | 'meme' | null>(null)
+  const [sortBy, setSortBy] = useState<'price' | 'volume' | 'motion' | 'holders' | 'views'>('motion')
+  const [notificationPrefs, setNotificationPrefs] = useState<Record<string, boolean>>({})
 
   // Fetch all launch page data
   const {
@@ -54,6 +60,13 @@ export default function LaunchPage() {
     },
     {
       id: '2',
+      type: 'network' as const,
+      user: { name: 'DevMaster', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=dev' },
+      timestamp: Date.now() - 1000 * 60,
+      value: 0
+    },
+    {
+      id: '3',
       type: 'launch' as const,
       user: { name: 'BuilderDao', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=builder' },
       project: { name: 'DeFi Protocol', ticker: 'DFP' },
@@ -61,29 +74,60 @@ export default function LaunchPage() {
       value: 5000
     },
     {
-      id: '3',
-      type: 'buy' as const,
-      user: { name: 'MegaInvestor', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=mega' },
-      project: { name: 'GameFi Arena', ticker: 'GFA' },
-      amount: 22.3,
-      timestamp: Date.now() - 1000 * 60 * 4,
-      value: 3600
-    },
-    {
       id: '4',
-      type: 'milestone' as const,
-      user: { name: 'GameFi Arena', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=game' },
+      type: 'collab' as const,
+      user: { name: 'TeamLead', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=team' },
       project: { name: 'GameFi Arena', ticker: 'GFA' },
-      timestamp: Date.now() - 1000 * 60 * 6,
-      value: 3000
+      timestamp: Date.now() - 1000 * 60 * 3,
+      value: 0
     },
     {
       id: '5',
-      type: 'vote' as const,
-      user: { name: 'CommunityMod', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=mod' },
+      type: 'sell' as const,
+      user: { name: 'Trader99', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=trader' },
+      project: { name: 'LaunchOS Platform', ticker: 'LOS' },
+      amount: 8.2,
+      timestamp: Date.now() - 1000 * 60 * 4,
+      value: 1200
+    },
+    {
+      id: '6',
+      type: 'motion' as const,
+      user: { name: 'GameFi Arena', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=game' },
+      project: { name: 'GameFi Arena', ticker: 'GFA' },
+      timestamp: Date.now() - 1000 * 60 * 5,
+      value: 0
+    },
+    {
+      id: '7',
+      type: 'curator' as const,
+      user: { name: 'AlphaCurator', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=curator' },
+      timestamp: Date.now() - 1000 * 60 * 6,
+      value: 0
+    },
+    {
+      id: '8',
+      type: 'holders' as const,
+      user: { name: 'DeFi Protocol', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=defi' },
       project: { name: 'DeFi Protocol', ticker: 'DFP' },
+      amount: 500,
+      timestamp: Date.now() - 1000 * 60 * 7,
+      value: 0
+    },
+    {
+      id: '9',
+      type: 'dm' as const,
+      user: { name: 'InvestorPro', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=investor' },
       timestamp: Date.now() - 1000 * 60 * 8,
-      value: 200
+      value: 0
+    },
+    {
+      id: '10',
+      type: 'clip' as const,
+      user: { name: 'ContentKing', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=content' },
+      project: { name: 'GameFi Arena', ticker: 'GFA' },
+      timestamp: Date.now() - 1000 * 60 * 9,
+      value: 0
     }
   ]
 
@@ -97,13 +141,48 @@ export default function LaunchPage() {
   }
 
   // Filter feed by search query (client-side)
-  const filteredFeed = searchQuery
+  let filteredFeed = searchQuery
     ? feed.filter(project =>
         project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         project.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
         project.ticker.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : feed
+
+  // Apply type filter and sorting to Featured Projects table
+  const processedFeedForTable = (() => {
+    // First map to the format with type information
+    let processed = filteredFeed.map((project, idx) => ({
+      ...project,
+      assignedType: (idx === 0 ? 'icm' : idx === 1 ? 'ccm' : idx === 2 ? 'icm' : idx === 3 ? 'meme' : 'icm') as 'icm' | 'ccm' | 'meme',
+      beliefScore: idx === 0 ? 95 : idx === 1 ? 87 : idx === 2 ? 92 : idx === 3 ? 85 : 85
+    }))
+
+    // Apply type filter
+    if (typeFilter) {
+      processed = processed.filter(p => p.assignedType === typeFilter)
+    }
+
+    // Apply sorting
+    processed = [...processed].sort((a, b) => {
+      switch (sortBy) {
+        case 'price':
+          return (b.currentPrice || 0) - (a.currentPrice || 0)
+        case 'volume':
+          return (b.volume24h || 0) - (a.volume24h || 0)
+        case 'motion':
+          return (b.beliefScore || 0) - (a.beliefScore || 0)
+        case 'holders':
+          return (b.holders || 0) - (a.holders || 0)
+        case 'views':
+          return (b.clipViews || 0) - (a.clipViews || 0)
+        default:
+          return 0
+      }
+    })
+
+    return processed
+  })()
 
   const handleFilterChange = (status: string, sortBy: string) => {
     setFeedFilters({ status, sortBy })
@@ -136,13 +215,6 @@ export default function LaunchPage() {
 
       {/* Content */}
       <div className="relative z-10">
-        {/* Header - BTDEMO */}
-        <LaunchHeaderBTDemo
-          onSearch={setSearchQuery}
-          onLaunchClick={handleLaunchClick}
-          notificationCount={3}
-        />
-
         {/* Token Launch Preview - BTDemo Design System */}
         <TokenLaunchPreview
           onLaunch={(data) => {
@@ -180,8 +252,8 @@ export default function LaunchPage() {
             currentPrice: 0.05 + (idx * 0.02),
             contractPrice: 0.05 + (idx * 0.02),
             priceChange24h: 15.5 - (idx * 3.2),
-            contributors: [],
-            contributorsCount: 12 + (idx * 3),
+            contributors: project.contributors || project.networkMembers || [],
+            contributorsCount: project.contributorsCount || (project.contributors?.length) || (project.networkMembers?.length) || 12 + (idx * 3),
             myKeys: 0,
             mySharePct: 0,
             twitterUrl: project.twitterUrl,
@@ -203,7 +275,13 @@ export default function LaunchPage() {
               setSelectedProject(project)
               setClipModalOpen(true)
             },
-            onNotificationToggle: () => {},
+            notificationEnabled: notificationPrefs[project.id] || false,
+            onNotificationToggle: () => {
+              setNotificationPrefs(prev => ({
+                ...prev,
+                [project.id]: !prev[project.id]
+              }))
+            },
             onShare: () => {}
           }))}
           onBuyKeys={(project) => {
@@ -228,15 +306,140 @@ export default function LaunchPage() {
         {/* Featured Projects Table - BTDEMO */}
         <section className="container mx-auto px-4 py-6">
           <div className="mb-6">
-            <h2 className="text-2xl md:text-3xl font-black text-[#D1FD0A] mb-2">Featured Projects</h2>
-            <p className="text-zinc-400">Top performing launches with the highest motion scores</p>
+            <h2 className="text-2xl md:text-3xl font-black text-[#D1FD0A] mb-2">Leaderboard</h2>
+            <p className="text-zinc-400">Where motion creates value and conviction builds empires</p>
+          </div>
+
+          {/* Filters Bar */}
+          <div className="mb-6 p-4 rounded-xl bg-zinc-900/50 border border-zinc-800">
+            <div className="flex flex-wrap items-center gap-2">
+              {/* Sort Buttons - FIRST */}
+              <button
+                onClick={() => setSortBy('price')}
+                className={cn(
+                  "px-3 py-1.5 rounded-lg text-xs font-bold transition-all border",
+                  sortBy === 'price'
+                    ? "bg-[#D1FD0A] text-black border-[#D1FD0A]"
+                    : "bg-zinc-800 text-zinc-400 border-zinc-700 hover:border-[#D1FD0A]/50"
+                )}
+              >
+                Price
+              </button>
+              <button
+                onClick={() => setSortBy('volume')}
+                className={cn(
+                  "px-3 py-1.5 rounded-lg text-xs font-bold transition-all border",
+                  sortBy === 'volume'
+                    ? "bg-[#D1FD0A] text-black border-[#D1FD0A]"
+                    : "bg-zinc-800 text-zinc-400 border-zinc-700 hover:border-[#D1FD0A]/50"
+                )}
+              >
+                Volume
+              </button>
+              <button
+                onClick={() => setSortBy('motion')}
+                className={cn(
+                  "px-3 py-1.5 rounded-lg text-xs font-bold transition-all border",
+                  sortBy === 'motion'
+                    ? "bg-[#D1FD0A] text-black border-[#D1FD0A]"
+                    : "bg-zinc-800 text-zinc-400 border-zinc-700 hover:border-[#D1FD0A]/50"
+                )}
+              >
+                Motion
+              </button>
+              <button
+                onClick={() => setSortBy('holders')}
+                className={cn(
+                  "px-3 py-1.5 rounded-lg text-xs font-bold transition-all border",
+                  sortBy === 'holders'
+                    ? "bg-[#D1FD0A] text-black border-[#D1FD0A]"
+                    : "bg-zinc-800 text-zinc-400 border-zinc-700 hover:border-[#D1FD0A]/50"
+                )}
+              >
+                Holders
+              </button>
+              <button
+                onClick={() => setSortBy('views')}
+                className={cn(
+                  "px-3 py-1.5 rounded-lg text-xs font-bold transition-all border",
+                  sortBy === 'views'
+                    ? "bg-[#D1FD0A] text-black border-[#D1FD0A]"
+                    : "bg-zinc-800 text-zinc-400 border-zinc-700 hover:border-[#D1FD0A]/50"
+                )}
+              >
+                Views
+              </button>
+
+              {/* Divider */}
+              <div className="h-6 w-px bg-zinc-700" />
+
+              {/* Type Filter */}
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-zinc-500 uppercase font-bold">TYPE:</span>
+                <button
+                  onClick={() => setTypeFilter(typeFilter === 'icm' ? null : 'icm')}
+                  className={cn(
+                    "px-3 py-1.5 rounded-lg text-xs font-bold transition-all border",
+                    typeFilter === 'icm'
+                      ? "bg-[#D1FD0A] text-black border-[#D1FD0A]"
+                      : "bg-zinc-800 text-zinc-400 border-zinc-700 hover:border-[#D1FD0A]/50"
+                  )}
+                >
+                  <span className="flex items-center gap-1">
+                    <Trophy className="w-3 h-3" />
+                    ICM
+                  </span>
+                </button>
+                <button
+                  onClick={() => setTypeFilter(typeFilter === 'ccm' ? null : 'ccm')}
+                  className={cn(
+                    "px-3 py-1.5 rounded-lg text-xs font-bold transition-all border",
+                    typeFilter === 'ccm'
+                      ? "bg-[#D1FD0A] text-black border-[#D1FD0A]"
+                      : "bg-zinc-800 text-zinc-400 border-zinc-700 hover:border-[#D1FD0A]/50"
+                  )}
+                >
+                  <span className="flex items-center gap-1">
+                    <UsersIcon className="w-3 h-3" />
+                    CCM
+                  </span>
+                </button>
+                <button
+                  onClick={() => setTypeFilter(typeFilter === 'meme' ? null : 'meme')}
+                  className={cn(
+                    "px-3 py-1.5 rounded-lg text-xs font-bold transition-all border",
+                    typeFilter === 'meme'
+                      ? "bg-[#D1FD0A] text-black border-[#D1FD0A]"
+                      : "bg-zinc-800 text-zinc-400 border-zinc-700 hover:border-[#D1FD0A]/50"
+                  )}
+                >
+                  CULT
+                </button>
+              </div>
+
+              {/* Clear Filters */}
+              {typeFilter && (
+                <>
+                  <div className="h-6 w-px bg-zinc-700" />
+                  <button
+                    onClick={() => {
+                      setTypeFilter(null)
+                      setSortBy('motion')
+                    }}
+                    className="px-3 py-1.5 rounded-lg text-xs font-bold text-zinc-400 hover:text-white transition-all underline"
+                  >
+                    Clear All
+                  </button>
+                </>
+              )}
+            </div>
           </div>
 
           <div className="glass-premium rounded-2xl border-2 border-[#D1FD0A]/30 overflow-hidden">
             <AdvancedTableViewBTDemo
-              listings={filteredFeed.map((project, idx) => ({
+              listings={processedFeedForTable.map((project, idx) => ({
                 id: project.id,
-                type: idx === 0 ? 'icm' : idx === 1 ? 'ccm' : idx === 2 ? 'icm' : idx === 3 ? 'meme' : 'icm',
+                type: project.assignedType,
                 status: 'live',
                 title: project.title,
                 subtitle: project.description,
@@ -247,7 +450,7 @@ export default function LaunchPage() {
                 holders: project.holders || 124,
                 // Views linked to total clip views for this project
                 viewCount: project.clipViews || project.clips?.reduce((acc: number, clip: any) => acc + (clip.views || 0), 0) || 1250,
-                beliefScore: idx === 0 ? 95 : idx === 1 ? 87 : idx === 2 ? 92 : idx === 3 ? 85 : 85,
+                beliefScore: project.beliefScore,
                 upvotes: project.upvotes || 42,
                 commentsCount: project.commentsCount || 18,
                 myKeys: 0,
@@ -299,14 +502,18 @@ export default function LaunchPage() {
 
         {/* Active Feed - BTDEMO */}
         <section className="container mx-auto px-4 py-6">
-          <h2 className="text-xl md:text-2xl font-black mb-4 text-[#D1FD0A]">Active Feed</h2>
-
-          <div className="grid grid-cols-1 lg:grid-cols-[600px_600px] gap-6 justify-center">
-            {/* Partnership Cards */}
-            <PartnershipCardsBTDemo />
+          <div className="grid grid-cols-1 lg:grid-cols-[480px_720px] gap-6 justify-center">
+            {/* Accelerator Section */}
+            <div className="order-2 lg:order-1">
+              <div className="mb-3">
+                <h3 className="text-base font-bold text-[#D1FD0A] mb-1">Accelerator</h3>
+                <p className="text-sm text-zinc-400">Join our ecosystem programs</p>
+              </div>
+              <PartnershipCardsBTDemo />
+            </div>
 
             {/* Activity Stream */}
-            <div>
+            <div className="order-1 lg:order-2">
               <div className="mb-3">
                 <h3 className="text-base font-bold text-[#D1FD0A] mb-1">Platform Activity</h3>
                 <p className="text-sm text-zinc-400">Real-time feed of valuable actions</p>

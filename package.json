@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "typecheck": "tsc --noEmit",
     "setup-appwrite": "tsx scripts/setup-appwrite.ts",
     "update-appwrite": "node scripts/setup-appwrite.mjs",
     "seed-test-data": "node scripts/seed-database.mjs",
@@ -30,7 +31,11 @@
     "seed-curves": "node scripts/seed-curve-data.js",
     "seed-all-curves": "tsx scripts/seed-curves.ts",
     "setup-price-history": "node scripts/setup-price-history.js",
-    "test-price-change": "node scripts/add-test-price-snapshot.js"
+    "test-price-change": "node scripts/add-test-price-snapshot.js",
+    "setup-reactions": "tsx scripts/setup-reactions-collection.ts",
+    "setup-shares": "tsx scripts/setup-shares-collection.ts",
+    "setup-clip-urls": "tsx scripts/setup-clip-urls-collection.ts",
+    "setup-clips-db": "npm run setup-reactions && npm run setup-shares && npm run setup-clip-urls"
   },
   "dependencies": {
     "@coral-xyz/anchor": "^0.32.1",
@@ -75,6 +80,7 @@
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^16.0.0",
+    "@tanstack/react-query-devtools": "^5.90.2",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
