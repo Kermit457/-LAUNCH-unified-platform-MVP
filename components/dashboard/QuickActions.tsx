@@ -27,7 +27,7 @@ export function QuickActions({
         {/* Create Clipping Campaign */}
         <button
           onClick={onCreateCampaign}
-          className="p-4 rounded-xl bg-gradient-to-r from-fuchsia-500 via-pink-500 to-purple-600 hover:opacity-90 transition-all text-left group focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
+          className="p-4 rounded-xl bg-gradient-to-r from-lime-500 via-lime-500 to-lime-600 hover:opacity-90 transition-all text-left group focus:outline-none focus:ring-2 focus:ring-lime-400/80"
         >
           <div className="flex items-start gap-3">
             <div className="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
@@ -75,11 +75,11 @@ export function QuickActions({
         {/* Analytics */}
         <button
           onClick={onViewAnalytics}
-          className="p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all text-left group focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
+          className="p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all text-left group focus:outline-none focus:ring-2 focus:ring-lime-400/80"
         >
           <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-fuchsia-500/20 via-purple-500/20 to-cyan-500/20 flex items-center justify-center group-hover:scale-110 transition-transform border border-white/10 flex-shrink-0">
-              <BarChart3 className="w-5 h-5 text-fuchsia-400" />
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-lime-500/20 via-lime-500/20 to-cyan-500/20 flex items-center justify-center group-hover:scale-110 transition-transform border border-white/10 flex-shrink-0">
+              <BarChart3 className="w-5 h-5 text-lime-400" />
             </div>
             <div className="flex-1">
               <div className="font-bold text-white text-base mb-0.5">Analytics</div>
@@ -94,7 +94,7 @@ export function QuickActions({
           className="p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all text-left group focus:outline-none focus:ring-2 focus:ring-amber-400/80"
         >
           <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-fuchsia-500/20 via-purple-500/20 to-cyan-500/20 flex items-center justify-center group-hover:scale-110 transition-transform border border-white/10 flex-shrink-0">
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-lime-500/20 via-lime-500/20 to-cyan-500/20 flex items-center justify-center group-hover:scale-110 transition-transform border border-white/10 flex-shrink-0">
               <Settings className="w-5 h-5 text-amber-400" />
             </div>
             <div className="flex-1">

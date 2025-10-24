@@ -99,7 +99,7 @@ export function InvitesPanel({
             onClick={() => setFilter('all')}
             className={cn(
               'px-3 py-1 rounded-lg text-xs font-medium transition-all',
-              filter === 'all' ? 'bg-purple-500 text-white' : 'bg-white/5 text-white/60 hover:bg-white/10'
+              filter === 'all' ? 'bg-[#D1FD0A] text-black' : 'bg-white/5 text-white/60 hover:bg-white/10'
             )}
           >
             All
@@ -108,7 +108,7 @@ export function InvitesPanel({
             onClick={() => setFilter('priority')}
             className={cn(
               'px-3 py-1 rounded-lg text-xs font-medium transition-all',
-              filter === 'priority' ? 'bg-purple-500 text-white' : 'bg-white/5 text-white/60 hover:bg-white/10'
+              filter === 'priority' ? 'bg-[#D1FD0A] text-black' : 'bg-white/5 text-white/60 hover:bg-white/10'
             )}
           >
             Priority
@@ -117,7 +117,7 @@ export function InvitesPanel({
             onClick={() => setFilter('unread')}
             className={cn(
               'px-3 py-1 rounded-lg text-xs font-medium transition-all',
-              filter === 'unread' ? 'bg-purple-500 text-white' : 'bg-white/5 text-white/60 hover:bg-white/10'
+              filter === 'unread' ? 'bg-[#D1FD0A] text-black' : 'bg-white/5 text-white/60 hover:bg-white/10'
             )}
           >
             Unread
@@ -127,13 +127,13 @@ export function InvitesPanel({
 
       {/* Bulk actions toolbar */}
       {selected.size > 0 && (
-        <div className="mb-4 p-3 rounded-lg bg-purple-500/20 border border-purple-500/30 flex items-center justify-between">
+        <div className="mb-4 p-3 rounded-lg bg-[#D1FD0A]/20 border border-[#D1FD0A]/30 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <input
               type="checkbox"
               checked={selected.size === filteredInvites.length}
               onChange={toggleSelectAll}
-              className="rounded border-white/20 bg-white/5 focus:ring-2 focus:ring-fuchsia-400/80"
+              className="rounded border-white/20 bg-white/5 focus:ring-2 focus:ring-[#D1FD0A]/50"
             />
             <span className="text-sm text-white font-medium">
               {selected.size} selected
@@ -142,7 +142,7 @@ export function InvitesPanel({
           <div className="flex items-center gap-2">
             <button
               onClick={handleBulkAccept}
-              className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 text-white text-xs font-medium hover:opacity-90 transition-all flex items-center gap-1"
+              className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-[#D1FD0A] to-[#B8E008] text-black text-xs font-medium hover:opacity-90 transition-all flex items-center gap-1"
             >
               <Check className="w-3 h-3" />
               Bulk Accept
@@ -159,7 +159,7 @@ export function InvitesPanel({
       )}
 
       {/* Invites list */}
-      <div className="space-y-3 max-h-[600px] overflow-y-auto">
+      <div className="space-y-3 max-h-[600px] overflow-y-auto custom-scrollbar">
         {filteredInvites.map((invite) => (
           <InviteRow
             key={invite.id}

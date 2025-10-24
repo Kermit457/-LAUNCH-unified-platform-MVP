@@ -175,14 +175,14 @@ export function SubmissionReviewCard({
           href={submission.mediaUrl}
           target="_blank"
           rel="noreferrer"
-          className="flex items-center gap-2 p-3 rounded-xl bg-purple-500/10 border border-purple-500/30 hover:bg-purple-500/20 transition-colors mb-4 group"
+          className="flex items-center gap-2 p-3 rounded-xl bg-lime-500/10 border border-lime-500/30 hover:bg-lime-500/20 transition-colors mb-4 group"
         >
-          <ExternalLink className="w-4 h-4 text-purple-400" />
-          <span className="text-purple-300 text-sm font-medium group-hover:text-purple-200">
+          <ExternalLink className="w-4 h-4 text-lime-400" />
+          <span className="text-lime-300 text-sm font-medium group-hover:text-lime-200">
             View Submission
           </span>
           <div className="flex-1" />
-          <span className="text-xs text-purple-400/60 truncate max-w-[200px]">
+          <span className="text-xs text-lime-400/60 truncate max-w-[200px]">
             {submission.mediaUrl}
           </span>
         </a>

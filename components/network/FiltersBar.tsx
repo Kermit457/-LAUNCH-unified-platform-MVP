@@ -86,7 +86,7 @@ function MultiSelect({ label, options, selected, onChange }: MultiSelectProps) {
         <span className="text-zinc-400 text-xs">{label}</span>
         <div className="flex items-center gap-2">
           {selected.length > 0 && (
-            <span className="px-2 py-0.5 rounded-md bg-[#8800FF] text-white text-xs font-bold">
+            <span className="px-2 py-0.5 rounded-md bg-[#D1FD0A] text-white text-xs font-bold">
               {selected.length}
             </span>
           )}
@@ -98,7 +98,7 @@ function MultiSelect({ label, options, selected, onChange }: MultiSelectProps) {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="absolute top-full left-0 right-0 mt-1 p-2 rounded-lg bg-zinc-900 border border-zinc-700 shadow-xl z-50 max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-zinc-900"
+          className="absolute top-full left-0 right-0 mt-1 p-2 rounded-lg bg-zinc-900 border border-zinc-700 shadow-xl z-50 max-h-60 overflow-y-auto custom-scrollbar"
         >
           {/* Clear All */}
           {selected.length > 0 && (
@@ -120,7 +120,7 @@ function MultiSelect({ label, options, selected, onChange }: MultiSelectProps) {
                 className={`
                   w-full px-2 py-1.5 rounded-md text-xs text-left transition-colors
                   ${isSelected
-                    ? 'bg-[#8800FF]/20 text-white font-bold'
+                    ? 'bg-[#D1FD0A]/20 text-white font-bold'
                     : 'text-zinc-300 hover:bg-zinc-800'
                   }
                 `}
@@ -175,7 +175,7 @@ function SingleSelect({ label, options, selected, onChange }: SingleSelectProps)
                 className={`
                   w-full px-2 py-1.5 rounded-md text-xs text-left transition-colors
                   ${isSelected
-                    ? 'bg-[#8800FF]/20 text-white font-bold'
+                    ? 'bg-[#D1FD0A]/20 text-white font-bold'
                     : 'text-zinc-300 hover:bg-zinc-800'
                   }
                 `}
@@ -274,14 +274,14 @@ export function FiltersBar() {
             <label className="flex items-center gap-2 text-xs text-zinc-300 cursor-pointer">
               <input
                 type="checkbox"
-                className="w-4 h-4 rounded bg-zinc-800 border-zinc-700 text-[#8800FF] focus:ring-[#8800FF]/50"
+                className="w-4 h-4 rounded bg-zinc-800 border-zinc-700 text-[#D1FD0A] focus:ring-[#D1FD0A]/50"
               />
               Verified only
             </label>
             <label className="flex items-center gap-2 text-xs text-zinc-300 cursor-pointer">
               <input
                 type="checkbox"
-                className="w-4 h-4 rounded bg-zinc-800 border-zinc-700 text-[#8800FF] focus:ring-[#8800FF]/50"
+                className="w-4 h-4 rounded bg-zinc-800 border-zinc-700 text-[#D1FD0A] focus:ring-[#D1FD0A]/50"
               />
               Online now
             </label>
@@ -294,7 +294,7 @@ export function FiltersBar() {
             {selectedSkills.map(skill => (
               <span
                 key={skill}
-                className="px-2 py-1 rounded-md bg-[#8800FF]/20 border border-[#8800FF]/40 text-[#8800FF] text-xs font-bold flex items-center gap-1"
+                className="px-2 py-1 rounded-md bg-[#D1FD0A]/20 border border-[#D1FD0A]/40 text-[#D1FD0A] text-xs font-bold flex items-center gap-1"
               >
                 {skillOptions.find(o => o.value === skill)?.label}
                 <button onClick={() => setSelectedSkills(selectedSkills.filter(s => s !== skill))}>

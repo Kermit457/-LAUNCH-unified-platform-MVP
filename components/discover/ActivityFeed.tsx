@@ -9,7 +9,7 @@ const mockEvents = [
   { id: 4, icon: '⚡', text: '$DEGEN frozen – Going to Pump.fun!', meta: null, color: 'text-yellow-400' },
   { id: 5, icon: '🔥', text: '8 buys on Pepe Lambo', meta: '+18%', color: 'text-red-400' },
   { id: 6, icon: '💬', text: '@sarah_dev joined $RUBY', meta: null, color: 'text-blue-400' },
-  { id: 7, icon: '🎯', text: '$BONK hit 85% motion score', meta: null, color: 'text-purple-400' },
+  { id: 7, icon: '🎯', text: '$BONK hit 85% motion score', meta: null, color: 'text-lime-400' },
   { id: 8, icon: '🚀', text: '$TRUMP reached launch threshold', meta: null, color: 'text-green-400' },
 ]
 

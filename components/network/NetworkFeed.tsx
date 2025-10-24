@@ -84,7 +84,7 @@ const eventConfig: Record<NetworkEventType, { icon: typeof Zap, color: string, f
   },
   referral_converted: {
     icon: TrendingUp,
-    color: 'text-[#8800FF]',
+    color: 'text-[#D1FD0A]',
     format: (e) => `${e.actor}'s referral ${e.target} activated curve`
   }
 }
@@ -104,7 +104,7 @@ export function NetworkFeed() {
         Real-time activity across the network.
       </p>
 
-      <div className="space-y-3 max-h-[500px] overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-zinc-900">
+      <div className="space-y-3 max-h-[500px] overflow-y-auto custom-scrollbar">
         {mockEvents.map((event, index) => {
           const config = eventConfig[event.type]
           const Icon = config.icon

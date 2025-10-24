@@ -74,7 +74,7 @@ export default function SocialControl() {
                 type="text"
                 value={streamerId}
                 onChange={(e) => setStreamerId(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-pink-500 focus:outline-none"
+                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-[#D1FD0A] focus:outline-none"
                 placeholder="0x1234... or username"
                 required
               />
@@ -86,7 +86,7 @@ export default function SocialControl() {
                 type="text"
                 value={actionKey}
                 onChange={(e) => setActionKey(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-pink-500 focus:outline-none"
+                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-[#D1FD0A] focus:outline-none"
                 placeholder="join_telegram, follow_x, etc."
                 required
               />
@@ -98,7 +98,7 @@ export default function SocialControl() {
                 type="text"
                 value={label}
                 onChange={(e) => setLabel(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-pink-500 focus:outline-none"
+                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-[#D1FD0A] focus:outline-none"
                 placeholder="Join Telegram"
                 required
               />
@@ -110,7 +110,7 @@ export default function SocialControl() {
                 type="url"
                 value={targetUrl}
                 onChange={(e) => setTargetUrl(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-pink-500 focus:outline-none"
+                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-[#D1FD0A] focus:outline-none"
                 placeholder="https://t.me/..."
                 required
               />
@@ -124,7 +124,7 @@ export default function SocialControl() {
                 type="number"
                 value={goal}
                 onChange={(e) => setGoal(parseInt(e.target.value) || 0)}
-                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-pink-500 focus:outline-none"
+                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-[#D1FD0A] focus:outline-none"
                 placeholder="100"
                 min="0"
               />
@@ -133,7 +133,7 @@ export default function SocialControl() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full px-6 py-3 bg-gradient-to-r from-pink-600 to-orange-600 hover:from-pink-700 hover:to-orange-700 rounded-lg font-semibold transition disabled:opacity-50"
+              className="w-full px-6 py-3 bg-gradient-to-r from-[#D1FD0A] to-[#B8E008] hover:from-[#B8E008] hover:to-[#A0C007] text-black rounded-lg font-semibold transition disabled:opacity-50"
             >
               {loading ? 'Creating...' : 'Create Social Action'}
             </button>
@@ -144,23 +144,23 @@ export default function SocialControl() {
           <h2 className="text-xl font-bold mb-4">Common Action Keys</h2>
           <div className="grid grid-cols-2 gap-3 text-sm">
             <div className="bg-gray-900/50 p-3 rounded">
-              <code className="text-pink-400">join_telegram</code>
+              <code className="text-[#D1FD0A]">join_telegram</code>
             </div>
             <div className="bg-gray-900/50 p-3 rounded">
-              <code className="text-pink-400">follow_x</code>
+              <code className="text-[#D1FD0A]">follow_x</code>
             </div>
             <div className="bg-gray-900/50 p-3 rounded">
-              <code className="text-pink-400">join_discord</code>
+              <code className="text-[#D1FD0A]">join_discord</code>
             </div>
             <div className="bg-gray-900/50 p-3 rounded">
-              <code className="text-pink-400">retweet</code>
+              <code className="text-[#D1FD0A]">retweet</code>
             </div>
           </div>
 
           <div className="mt-6 space-y-2 text-sm font-mono bg-gray-900/50 p-4 rounded-lg">
             <div>
               <span className="text-gray-400">Toggle:</span>{' '}
-              <code className="text-pink-400">POST /api/social/:id/toggle</code>
+              <code className="text-[#D1FD0A]">POST /api/social/:id/toggle</code>
             </div>
           </div>
         </div>

@@ -132,7 +132,7 @@ export const TradeModal = ({
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.95, opacity: 0 }}
           onClick={(e) => e.stopPropagation()}
-          className="w-full max-w-md bg-gradient-to-br from-purple-900/90 via-black/90 to-black/90 rounded-2xl border border-purple-500/30 shadow-2xl overflow-hidden"
+          className="w-full max-w-md bg-gradient-to-br from-lime-900/90 via-black/90 to-black/90 rounded-2xl border border-lime-500/30 shadow-2xl overflow-hidden"
         >
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-white/10">
@@ -189,7 +189,7 @@ export const TradeModal = ({
                     step="0.01"
                     min="0.01"
                     disabled={isLoading}
-                    className="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-xl text-white text-lg font-medium text-center focus:outline-none focus:border-purple-500/50 disabled:opacity-50"
+                    className="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-xl text-white text-lg font-medium text-center focus:outline-none focus:border-lime-500/50 disabled:opacity-50"
                   />
                   <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm">
                     KEYS
@@ -211,7 +211,7 @@ export const TradeModal = ({
                   <button
                     key={i}
                     onClick={() => setKeys(amount.toFixed(2))}
-                    className="flex-1 px-3 py-1.5 text-xs bg-white/5 hover:bg-purple-500/20 border border-white/10 hover:border-purple-500/30 rounded-lg text-gray-400 hover:text-purple-400 transition-colors"
+                    className="flex-1 px-3 py-1.5 text-xs bg-white/5 hover:bg-lime-500/20 border border-white/10 hover:border-lime-500/30 rounded-lg text-gray-400 hover:text-lime-400 transition-colors"
                     disabled={isLoading}
                   >
                     {i === 3 && mode === 'sell' ? 'MAX' : amount}
@@ -255,10 +255,10 @@ export const TradeModal = ({
                           <span className="text-gray-400">{preview.fees.platform.toFixed(4)}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className={referrerId ? 'text-purple-400' : 'text-gray-500'}>
+                          <span className={referrerId ? 'text-lime-400' : 'text-gray-500'}>
                             {referrerId ? 'Referral (1%)' : 'Rewards (1%)'}:
                           </span>
-                          <span className={referrerId ? 'text-purple-400' : 'text-gray-400'}>
+                          <span className={referrerId ? 'text-lime-400' : 'text-gray-400'}>
                             {preview.fees.referral.toFixed(4)}
                             {referrerId && <Sparkles className="inline w-3 h-3 ml-1" />}
                           </span>

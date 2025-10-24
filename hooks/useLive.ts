@@ -72,7 +72,7 @@ function generateMockData(page: number, pageSize: number): LiveLaunch[] {
   ]
 
   // Profile picture placeholder URLs (matching the gradient avatar style from examples)
-  // Using initials-based avatars with purple/cyan/pink gradients like CryptoKing, ClipMaster, etc.
+  // Using initials-based avatars with lime/cyan/pink gradients like CryptoKing, ClipMaster, etc.
   const profilePics = [
     'https://api.dicebear.com/7.x/initials/svg?seed=CryptoKing&backgroundColor=8b5cf6,a855f7&backgroundType=gradientLinear',
     'https://api.dicebear.com/7.x/initials/svg?seed=ClipMaster&backgroundColor=ec4899,8b5cf6&backgroundType=gradientLinear',

@@ -102,7 +102,7 @@ export function CampaignEditor({ isOpen, onClose, campaign, onSave }: CampaignEd
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-lime-500"
                 placeholder="e.g., Solana Summer Clips"
                 required
               />
@@ -113,7 +113,7 @@ export function CampaignEditor({ isOpen, onClose, campaign, onSave }: CampaignEd
               <select
                 value={formData.type}
                 onChange={(e) => setFormData({ ...formData, type: e.target.value as CampaignType })}
-                className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-lime-500"
               >
                 <option value="clipping">Clipping</option>
                 <option value="raid">Raid</option>
@@ -132,7 +132,7 @@ export function CampaignEditor({ isOpen, onClose, campaign, onSave }: CampaignEd
                     className={cn(
                       'px-4 py-2 rounded-lg text-sm font-medium transition-all capitalize',
                       formData.platforms.includes(platform)
-                        ? 'bg-purple-500 text-white'
+                        ? 'bg-lime-500 text-white'
                         : 'bg-white/5 text-white/70 hover:bg-white/10'
                     )}
                   >
@@ -153,7 +153,7 @@ export function CampaignEditor({ isOpen, onClose, campaign, onSave }: CampaignEd
                 <select
                   value={formData.rateKind}
                   onChange={(e) => setFormData({ ...formData, rateKind: e.target.value as 'cpm' | 'per_task' })}
-                  className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-lime-500"
                 >
                   <option value="cpm">CPM</option>
                   <option value="per_task">Per Task</option>
@@ -165,7 +165,7 @@ export function CampaignEditor({ isOpen, onClose, campaign, onSave }: CampaignEd
                 <select
                   value={formData.rateMint}
                   onChange={(e) => setFormData({ ...formData, rateMint: e.target.value as Mint })}
-                  className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-lime-500"
                 >
                   <option value="USDC">USDC</option>
                   <option value="SOL">SOL</option>
@@ -182,7 +182,7 @@ export function CampaignEditor({ isOpen, onClose, campaign, onSave }: CampaignEd
                 step="0.01"
                 value={formData.rateValue}
                 onChange={(e) => setFormData({ ...formData, rateValue: parseFloat(e.target.value) })}
-                className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-lime-500"
                 placeholder="0.00"
                 required
               />
@@ -202,7 +202,7 @@ export function CampaignEditor({ isOpen, onClose, campaign, onSave }: CampaignEd
                 step="0.01"
                 value={formData.budgetTotal}
                 onChange={(e) => setFormData({ ...formData, budgetTotal: parseFloat(e.target.value) })}
-                className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-lime-500"
                 placeholder="0.00"
                 required
               />
@@ -214,7 +214,7 @@ export function CampaignEditor({ isOpen, onClose, campaign, onSave }: CampaignEd
                 type="date"
                 value={formData.endsAt}
                 onChange={(e) => setFormData({ ...formData, endsAt: e.target.value })}
-                className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-lime-500"
               />
             </div>
           </div>
@@ -232,7 +232,7 @@ export function CampaignEditor({ isOpen, onClose, campaign, onSave }: CampaignEd
                   type="number"
                   value={formData.minDurationSec}
                   onChange={(e) => setFormData({ ...formData, minDurationSec: parseInt(e.target.value) || 0 })}
-                  className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-lime-500"
                   placeholder="30"
                 />
               </div>
@@ -245,7 +245,7 @@ export function CampaignEditor({ isOpen, onClose, campaign, onSave }: CampaignEd
                   type="number"
                   value={formData.maxDurationSec}
                   onChange={(e) => setFormData({ ...formData, maxDurationSec: parseInt(e.target.value) || 0 })}
-                  className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-lime-500"
                   placeholder="180"
                 />
               </div>
@@ -259,7 +259,7 @@ export function CampaignEditor({ isOpen, onClose, campaign, onSave }: CampaignEd
                 type="text"
                 value={formData.requiredTags}
                 onChange={(e) => setFormData({ ...formData, requiredTags: e.target.value })}
-                className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-lime-500"
                 placeholder="#Solana, @project"
               />
             </div>
@@ -289,7 +289,7 @@ export function CampaignEditor({ isOpen, onClose, campaign, onSave }: CampaignEd
             </button>
             <button
               type="submit"
-              className="flex-1 px-6 py-3 rounded-lg bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-bold transition-all shadow-lg"
+              className="flex-1 px-6 py-3 rounded-lg bg-gradient-to-r from-lime-500 to-pink-600 hover:from-lime-600 hover:to-pink-700 text-white font-bold transition-all shadow-lg"
             >
               {campaign ? 'Save Changes' : 'Create Campaign'}
             </button>

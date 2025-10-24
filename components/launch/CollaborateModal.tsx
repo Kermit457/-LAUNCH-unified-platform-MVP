@@ -58,8 +58,8 @@ export function CollaborateModal({
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-fuchsia-500/20 via-purple-500/20 to-cyan-500/20 border border-white/10 flex items-center justify-center">
-              <Users className="w-5 h-5 text-fuchsia-400" />
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#D1FD0A]/20 to-[#B8E008]/20 border border-white/10 flex items-center justify-center">
+              <Users className="w-5 h-5 text-[#D1FD0A]" />
             </div>
             <div>
               <h2 className="text-lg font-bold text-white">Invite to Collaborate</h2>
@@ -80,7 +80,7 @@ export function CollaborateModal({
           <div className="p-4 rounded-xl bg-white/5 border border-white/10">
             <p className="text-xs text-white/50 mb-3">Requesting to collaborate with:</p>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-fuchsia-500 to-cyan-500 flex items-center justify-center flex-shrink-0 overflow-hidden">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#D1FD0A] to-[#B8E008] flex items-center justify-center flex-shrink-0 overflow-hidden">
                 {creatorAvatar ? (
                   <img src={creatorAvatar} alt={creatorName || 'Creator'} className="w-full h-full object-cover" />
                 ) : (
@@ -108,7 +108,7 @@ export function CollaborateModal({
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Hey! I'd love for you to join our project..."
               rows={4}
-              className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-purple-500 backdrop-blur-xl resize-none"
+              className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50 backdrop-blur-xl resize-none"
               disabled={sending}
             />
           </div>
@@ -141,7 +141,7 @@ export function CollaborateModal({
             <button
               type="submit"
               disabled={sending}
-              className="flex-1 h-12 rounded-xl bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 hover:shadow-[0_0_30px_rgba(168,85,247,0.4)] text-white font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="flex-1 h-12 rounded-xl bg-gradient-to-r from-[#D1FD0A] to-[#B8E008] hover:shadow-[0_0_30px_rgba(168,85,247,0.4)] text-white font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {sending ? (
                 <>

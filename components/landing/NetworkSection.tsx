@@ -17,7 +17,7 @@ export function NetworkSection() {
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent mb-4">
+          <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-lime-500 via-lime-500 to-cyan-500 bg-clip-text text-transparent mb-4">
             {network.headline}
           </h2>
           <p className="text-lg text-zinc-400 max-w-3xl mx-auto">
@@ -56,13 +56,13 @@ export function NetworkSection() {
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="relative w-full h-full">
               {/* Central node */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-gradient-to-r from-fuchsia-500 to-cyan-500 animate-pulse" />
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-gradient-to-r from-lime-500 to-cyan-500 animate-pulse" />
 
               {/* Surrounding nodes */}
-              <div className="absolute top-1/4 left-1/4 w-8 h-8 rounded-full bg-purple-500/50 animate-pulse delay-100" />
+              <div className="absolute top-1/4 left-1/4 w-8 h-8 rounded-full bg-lime-500/50 animate-pulse delay-100" />
               <div className="absolute top-1/4 right-1/4 w-8 h-8 rounded-full bg-cyan-500/50 animate-pulse delay-200" />
-              <div className="absolute bottom-1/4 left-1/3 w-8 h-8 rounded-full bg-fuchsia-500/50 animate-pulse delay-300" />
-              <div className="absolute bottom-1/4 right-1/3 w-8 h-8 rounded-full bg-purple-500/50 animate-pulse delay-400" />
+              <div className="absolute bottom-1/4 left-1/3 w-8 h-8 rounded-full bg-lime-500/50 animate-pulse delay-300" />
+              <div className="absolute bottom-1/4 right-1/3 w-8 h-8 rounded-full bg-lime-500/50 animate-pulse delay-400" />
 
               {/* Connecting lines */}
               <svg className="absolute inset-0 w-full h-full">

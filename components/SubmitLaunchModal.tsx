@@ -181,7 +181,7 @@ export function SubmitLaunchModal({ open, onOpenChange, onSubmit }: SubmitLaunch
           <div className="sticky top-0 bg-design-zinc-950/95 backdrop-blur-xl border-b border-design-zinc-800 p-4 z-10">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Rocket className="w-5 h-5 text-design-purple-400" />
+                <Rocket className="w-5 h-5 text-design-lime-400" />
                 <h2 className="text-lg font-bold text-white">Submit Your Project</h2>
               </div>
               <button
@@ -245,7 +245,7 @@ export function SubmitLaunchModal({ open, onOpenChange, onSubmit }: SubmitLaunch
                     id="type"
                     value={formData.type}
                     onChange={(e) => handleInputChange('type', e.target.value as ProjectType)}
-                    className="w-full px-3 py-2 rounded-lg bg-design-zinc-900/50 border border-design-zinc-800 text-white appearance-none focus:outline-none focus:ring-2 focus:ring-design-purple-500/50 transition-all duration-200"
+                    className="w-full px-3 py-2 rounded-lg bg-design-zinc-900/50 border border-design-zinc-800 text-white appearance-none focus:outline-none focus:ring-2 focus:ring-design-lime-500/50 transition-all duration-200"
                   >
                     {PROJECT_TYPES.map((type) => (
                       <option key={type.value} value={type.value}>
@@ -267,7 +267,7 @@ export function SubmitLaunchModal({ open, onOpenChange, onSubmit }: SubmitLaunch
                     id="status"
                     value={formData.status}
                     onChange={(e) => handleInputChange('status', e.target.value as Status)}
-                    className="w-full px-3 py-2 rounded-lg bg-design-zinc-900/50 border border-design-zinc-800 text-white appearance-none focus:outline-none focus:ring-2 focus:ring-design-purple-500/50 transition-all duration-200"
+                    className="w-full px-3 py-2 rounded-lg bg-design-zinc-900/50 border border-design-zinc-800 text-white appearance-none focus:outline-none focus:ring-2 focus:ring-design-lime-500/50 transition-all duration-200"
                   >
                     {STATUSES.map((status) => (
                       <option key={status.value} value={status.value}>
@@ -292,7 +292,7 @@ export function SubmitLaunchModal({ open, onOpenChange, onSubmit }: SubmitLaunch
                 placeholder="Tell the community about your project..."
                 maxLength={500}
                 rows={4}
-                className={`w-full px-3 py-2 rounded-lg bg-design-zinc-900/50 border border-design-zinc-800 text-white placeholder:text-design-zinc-500 focus:outline-none focus:ring-2 focus:ring-design-purple-500/50 transition-all duration-200 ${errors.description ? 'border-red-500' : ''}`}
+                className={`w-full px-3 py-2 rounded-lg bg-design-zinc-900/50 border border-design-zinc-800 text-white placeholder:text-design-zinc-500 focus:outline-none focus:ring-2 focus:ring-design-lime-500/50 transition-all duration-200 ${errors.description ? 'border-red-500' : ''}`}
               />
               <div className="flex justify-between text-xs">
                 {errors.description && <span className="text-red-400">{errors.description}</span>}
@@ -313,7 +313,7 @@ export function SubmitLaunchModal({ open, onOpenChange, onSubmit }: SubmitLaunch
                     onClick={() => togglePlatform(platform)}
                     className={`px-3 py-2 rounded-lg text-sm font-medium transition-all capitalize ${
                       formData.platforms.includes(platform)
-                        ? 'bg-gradient-to-r from-design-pink-500 to-design-purple-600 text-white'
+                        ? 'bg-gradient-to-r from-design-pink-500 to-design-lime-600 text-white'
                         : 'bg-design-zinc-900/50 text-design-zinc-400 hover:bg-design-zinc-800 border border-design-zinc-800'
                     }`}
                   >

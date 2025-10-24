@@ -63,12 +63,12 @@ export function NetworkFilters({ onFilterChange }: NetworkFiltersProps) {
       {/* Filter Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:border-fuchsia-500/30 transition-all text-white"
+        className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:border-[#D1FD0A]/30 transition-all text-white"
       >
         <SlidersHorizontal className="w-4 h-4" />
         <span className="text-sm font-medium">Filters</span>
         {activeFiltersCount > 0 && (
-          <span className="px-2 py-0.5 rounded-full bg-fuchsia-500/20 text-fuchsia-300 text-xs font-semibold">
+          <span className="px-2 py-0.5 rounded-full bg-[#D1FD0A]/20 text-[#D1FD0A] text-xs font-semibold">
             {activeFiltersCount}
           </span>
         )}
@@ -80,7 +80,7 @@ export function NetworkFilters({ onFilterChange }: NetworkFiltersProps) {
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-              <Filter className="w-5 h-5 text-fuchsia-400" />
+              <Filter className="w-5 h-5 text-[#D1FD0A]" />
               Filter Network
             </h3>
             <button
@@ -106,7 +106,7 @@ export function NetworkFilters({ onFilterChange }: NetworkFiltersProps) {
                   onClick={() => handleFilterUpdate({ sortBy: value as FilterState['sortBy'] })}
                   className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-all ${
                     filters.sortBy === value
-                      ? 'bg-fuchsia-500/20 border border-fuchsia-500/40 text-fuchsia-300'
+                      ? 'bg-[#D1FD0A]/20 border border-[#D1FD0A]/40 text-[#D1FD0A]'
                       : 'bg-white/5 border border-transparent text-white/70 hover:bg-white/10'
                   }`}
                 >
@@ -131,7 +131,7 @@ export function NetworkFilters({ onFilterChange }: NetworkFiltersProps) {
                   onClick={() => handleFilterUpdate({ connectionStatus: value as FilterState['connectionStatus'] })}
                   className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                     filters.connectionStatus === value
-                      ? 'bg-fuchsia-500/20 border border-fuchsia-500/40 text-fuchsia-300'
+                      ? 'bg-[#D1FD0A]/20 border border-[#D1FD0A]/40 text-[#D1FD0A]'
                       : 'bg-white/5 border border-transparent text-white/70 hover:bg-white/10'
                   }`}
                 >
@@ -151,7 +151,7 @@ export function NetworkFilters({ onFilterChange }: NetworkFiltersProps) {
                   onClick={() => toggleRole(role)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                     filters.roles.includes(role)
-                      ? 'bg-fuchsia-500/20 border border-fuchsia-500/40 text-fuchsia-300'
+                      ? 'bg-[#D1FD0A]/20 border border-[#D1FD0A]/40 text-[#D1FD0A]'
                       : 'bg-white/5 border border-white/10 text-white/70 hover:bg-white/10'
                   }`}
                 >

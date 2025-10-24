@@ -38,8 +38,8 @@ export function KpiTile({ icon: Icon, label, value, delta, tooltip, progressPct 
       )}
 
       {/* Icon */}
-      <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-fuchsia-500/20 via-purple-500/20 to-cyan-500/20 flex items-center justify-center mb-3 border border-white/10">
-        <Icon className="w-5 h-5 text-fuchsia-400" />
+      <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-lime-500/20 via-lime-500/20 to-cyan-500/20 flex items-center justify-center mb-3 border border-white/10">
+        <Icon className="w-5 h-5 text-lime-400" />
       </div>
 
       {/* Label */}
@@ -54,7 +54,7 @@ export function KpiTile({ icon: Icon, label, value, delta, tooltip, progressPct 
       {progressPct !== undefined && (
         <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 transition-all duration-500"
+            className="h-full bg-gradient-to-r from-lime-500 via-lime-500 to-cyan-500 transition-all duration-500"
             style={{ width: `${progressPct}%` }}
           />
         </div>

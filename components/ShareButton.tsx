@@ -113,8 +113,8 @@ export function ShareButton({ url, title, description, className = '' }: ShareBu
                 onClick={handleCopyEmbed}
                 className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-zinc-800 text-left transition-colors group"
               >
-                <div className="w-8 h-8 rounded-lg bg-violet-500/10 flex items-center justify-center group-hover:bg-violet-500/20 transition-colors">
-                  <Code className="w-4 h-4 text-violet-400" />
+                <div className="w-8 h-8 rounded-lg bg-[#D1FD0A]/10 flex items-center justify-center group-hover:bg-[#D1FD0A]/20 transition-colors">
+                  <Code className="w-4 h-4 text-[#D1FD0A]" />
                 </div>
                 <div className="flex-1">
                   <div className="text-sm font-medium text-white">Embed code</div>

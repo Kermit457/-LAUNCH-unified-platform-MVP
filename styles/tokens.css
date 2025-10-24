@@ -2,7 +2,7 @@
 
 :root {
   /* Brand Colors */
-  --launchos-fuchsia: #E700FF;
+  --launchos-lime: #E700FF;
   --launchos-violet: #5A00FF;
   --launchos-cyan: #00F0FF;
   --launchos-dark: #0a0a0a;
@@ -13,7 +13,7 @@
   --gradient-full: linear-gradient(135deg, #E700FF 0%, #5A00FF 50%, #00F0FF 100%);
 
   /* Neon Glows */
-  --glow-fuchsia: 0 0 20px rgba(231, 0, 255, 0.5), 0 0 40px rgba(231, 0, 255, 0.3);
+  --glow-lime: 0 0 20px rgba(231, 0, 255, 0.5), 0 0 40px rgba(231, 0, 255, 0.3);
   --glow-violet: 0 0 20px rgba(90, 0, 255, 0.5), 0 0 40px rgba(90, 0, 255, 0.3);
   --glow-cyan: 0 0 20px rgba(0, 240, 255, 0.5), 0 0 40px rgba(0, 240, 255, 0.3);
 

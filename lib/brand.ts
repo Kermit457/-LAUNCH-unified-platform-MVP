@@ -43,7 +43,7 @@ export const BRAND = {
       red: '#FF0040',
       orange: '#FF8800',
       blue: '#0088FF',
-      purple: '#8800FF',
+      lime: '#D1FD0A',
     },
   },
 } as const

@@ -120,8 +120,8 @@ export default function NetworkPage() {
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-4 mb-4">
-          <Users className="w-8 h-8 text-fuchsia-400" />
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent">
+          <Users className="w-8 h-8 text-lime-400" />
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-lime-500 via-lime-500 to-cyan-500 bg-clip-text text-transparent">
             Network
           </h1>
         </div>
@@ -136,7 +136,7 @@ export default function NetworkPage() {
           onClick={() => setActiveTab('invites')}
           className={`px-6 py-3 font-semibold transition-all relative ${
             activeTab === 'invites'
-              ? 'text-white border-b-2 border-fuchsia-500'
+              ? 'text-white border-b-2 border-lime-500'
               : 'text-white/60 hover:text-white'
           }`}
         >
@@ -144,7 +144,7 @@ export default function NetworkPage() {
             <UserPlus className="w-4 h-4" />
             Invites
             {pendingCount > 0 && (
-              <span className="px-2 py-0.5 bg-fuchsia-500 text-white text-xs font-bold rounded-full">
+              <span className="px-2 py-0.5 bg-lime-500 text-white text-xs font-bold rounded-full">
                 {pendingCount}
               </span>
             )}
@@ -155,7 +155,7 @@ export default function NetworkPage() {
           onClick={() => setActiveTab('connections')}
           className={`px-6 py-3 font-semibold transition-all relative ${
             activeTab === 'connections'
-              ? 'text-white border-b-2 border-fuchsia-500'
+              ? 'text-white border-b-2 border-lime-500'
               : 'text-white/60 hover:text-white'
           }`}
         >
@@ -170,7 +170,7 @@ export default function NetworkPage() {
           onClick={() => setActiveTab('discover')}
           className={`px-6 py-3 font-semibold transition-all relative ${
             activeTab === 'discover'
-              ? 'text-white border-b-2 border-fuchsia-500'
+              ? 'text-white border-b-2 border-lime-500'
               : 'text-white/60 hover:text-white'
           }`}
         >
@@ -198,7 +198,7 @@ export default function NetworkPage() {
           {/* Loading State */}
           {invitesLoading && (
             <div className="text-center py-16">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-fuchsia-500 mx-auto mb-4"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-lime-500 mx-auto mb-4"></div>
               <p className="text-zinc-500">Loading invites...</p>
             </div>
           )}
@@ -257,7 +257,7 @@ export default function NetworkPage() {
           {/* Loading State */}
           {loadingConnections && (
             <div className="text-center py-16">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-fuchsia-500 mx-auto mb-4"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-lime-500 mx-auto mb-4"></div>
               <p className="text-zinc-500">Loading connections...</p>
             </div>
           )}

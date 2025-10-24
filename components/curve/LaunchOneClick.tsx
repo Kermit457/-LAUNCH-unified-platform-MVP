@@ -121,11 +121,11 @@ export const LaunchOneClick = ({
       }
 
       return (
-        <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/30 rounded-2xl p-6 space-y-4">
+        <div className="bg-gradient-to-br from-lime-500/10 to-pink-500/10 border border-lime-500/30 rounded-2xl p-6 space-y-4">
           {/* Success Banner */}
           <div className="flex items-center gap-3">
-            <div className="p-3 bg-purple-500/20 rounded-xl">
-              <Rocket className="w-6 h-6 text-purple-400" />
+            <div className="p-3 bg-lime-500/20 rounded-xl">
+              <Rocket className="w-6 h-6 text-lime-400" />
             </div>
             <div>
               <h3 className="text-lg font-bold text-white">🎉 Token Launched!</h3>
@@ -141,7 +141,7 @@ export const LaunchOneClick = ({
                   <p className="text-xs text-gray-400">Token Contract:</p>
                   <button
                     onClick={() => copyToClipboard(curve.tokenMint!)}
-                    className="flex items-center gap-1 text-xs text-purple-400 hover:text-purple-300 transition-colors"
+                    className="flex items-center gap-1 text-xs text-lime-400 hover:text-lime-300 transition-colors"
                   >
                     {copied ? (
                       <>
@@ -156,7 +156,7 @@ export const LaunchOneClick = ({
                     )}
                   </button>
                 </div>
-                <code className="text-xs text-purple-400 break-all block font-mono">
+                <code className="text-xs text-lime-400 break-all block font-mono">
                   {curve.tokenMint}
                 </code>
               </div>
@@ -167,7 +167,7 @@ export const LaunchOneClick = ({
                   href={`https://pump.fun/${curve.tokenMint}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 p-3 bg-gradient-to-r from-pink-500/20 to-purple-500/20 hover:from-pink-500/30 hover:to-purple-500/30 border border-pink-500/30 rounded-xl transition-all group"
+                  className="flex items-center justify-center gap-2 p-3 bg-gradient-to-r from-pink-500/20 to-lime-500/20 hover:from-pink-500/30 hover:to-lime-500/30 border border-pink-500/30 rounded-xl transition-all group"
                 >
                   <Rocket className="w-4 h-4 text-pink-400 group-hover:scale-110 transition-transform" />
                   <span className="text-sm font-medium text-white">Trade Now</span>
@@ -230,11 +230,11 @@ export const LaunchOneClick = ({
     }
 
     return (
-      <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/30 rounded-2xl p-6 space-y-4">
+      <div className="bg-gradient-to-br from-lime-500/10 to-pink-500/10 border border-lime-500/30 rounded-2xl p-6 space-y-4">
         {/* Success Banner */}
         <div className="flex items-center gap-3">
-          <div className="p-3 bg-purple-500/20 rounded-xl">
-            <CheckCircle2 className="w-8 h-8 text-purple-400" />
+          <div className="p-3 bg-lime-500/20 rounded-xl">
+            <CheckCircle2 className="w-8 h-8 text-lime-400" />
           </div>
           <div>
             <h3 className="text-xl font-bold text-white">🎉 Successfully Launched!</h3>
@@ -250,7 +250,7 @@ export const LaunchOneClick = ({
                 <p className="text-xs text-gray-400">Token Contract Address:</p>
                 <button
                   onClick={() => copyToClipboard(curve.tokenMint!)}
-                  className="flex items-center gap-1 text-xs text-purple-400 hover:text-purple-300 transition-colors"
+                  className="flex items-center gap-1 text-xs text-lime-400 hover:text-lime-300 transition-colors"
                 >
                   {copied ? (
                     <>
@@ -265,7 +265,7 @@ export const LaunchOneClick = ({
                   )}
                 </button>
               </div>
-              <code className="text-sm text-purple-400 break-all block p-2 bg-black/20 rounded font-mono">
+              <code className="text-sm text-lime-400 break-all block p-2 bg-black/20 rounded font-mono">
                 {curve.tokenMint}
               </code>
             </div>
@@ -277,7 +277,7 @@ export const LaunchOneClick = ({
                 href={`https://pump.fun/${curve.tokenMint}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 p-3 bg-gradient-to-r from-pink-500/20 to-purple-500/20 hover:from-pink-500/30 hover:to-purple-500/30 border border-pink-500/30 rounded-xl transition-all group"
+                className="flex items-center justify-center gap-2 p-3 bg-gradient-to-r from-pink-500/20 to-lime-500/20 hover:from-pink-500/30 hover:to-lime-500/30 border border-pink-500/30 rounded-xl transition-all group"
               >
                 <Rocket className="w-4 h-4 text-pink-400 group-hover:scale-110 transition-transform" />
                 <span className="text-sm font-medium text-white">Trade on Pump.fun</span>
@@ -355,10 +355,10 @@ export const LaunchOneClick = ({
   // Owner view - active/frozen state
   return (
     <>
-      <div className="bg-gradient-to-br from-purple-500/10 to-blue-500/10 rounded-2xl border border-purple-500/30 p-6">
+      <div className="bg-gradient-to-br from-lime-500/10 to-blue-500/10 rounded-2xl border border-lime-500/30 p-6">
         <div className="flex items-center gap-3 mb-4">
-          <div className="p-3 bg-purple-500/20 rounded-xl">
-            <Rocket className="w-6 h-6 text-purple-400" />
+          <div className="p-3 bg-lime-500/20 rounded-xl">
+            <Rocket className="w-6 h-6 text-lime-400" />
           </div>
           <div>
             <h3 className="text-xl font-bold text-white">Launch Token</h3>
@@ -458,7 +458,7 @@ export const LaunchOneClick = ({
           onClick={() => setShowConfirm(true)}
           disabled={!canLaunch || isProcessing}
           variant="primary"
-          className="w-full py-4 bg-gradient-to-r from-purple-500 via-pink-500 to-purple-600 hover:from-purple-600 hover:via-pink-600 hover:to-purple-700 font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full py-4 bg-gradient-to-r from-lime-500 via-lime-500 to-lime-600 hover:from-lime-600 hover:via-lime-600 hover:to-lime-700 font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Rocket className="inline w-5 h-5 mr-2" />
           Launch Token
@@ -480,13 +480,13 @@ export const LaunchOneClick = ({
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-lg bg-gradient-to-br from-purple-900/90 via-black/90 to-black/90 rounded-2xl border border-purple-500/30 shadow-2xl overflow-hidden"
+              className="w-full max-w-lg bg-gradient-to-br from-lime-900/90 via-black/90 to-black/90 rounded-2xl border border-lime-500/30 shadow-2xl overflow-hidden"
             >
               {/* Header */}
               <div className="p-6 border-b border-white/10">
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="p-3 bg-purple-500/20 rounded-xl">
-                    <Rocket className="w-8 h-8 text-purple-400" />
+                  <div className="p-3 bg-lime-500/20 rounded-xl">
+                    <Rocket className="w-8 h-8 text-lime-400" />
                   </div>
                   <div>
                     <h3 className="text-2xl font-bold text-white">Launch Token</h3>
@@ -497,26 +497,26 @@ export const LaunchOneClick = ({
 
               {/* Content */}
               <div className="p-6 space-y-4">
-                <div className="p-4 bg-purple-500/10 border border-purple-500/30 rounded-xl">
-                  <div className="flex items-center gap-2 text-purple-400 mb-3">
+                <div className="p-4 bg-lime-500/10 border border-lime-500/30 rounded-xl">
+                  <div className="flex items-center gap-2 text-lime-400 mb-3">
                     <Zap className="w-5 h-5" />
                     <span className="font-bold">What happens next:</span>
                   </div>
                   <ol className="space-y-2 text-sm text-gray-300">
                     <li className="flex items-start gap-2">
-                      <span className="text-purple-400 font-bold">1.</span>
+                      <span className="text-lime-400 font-bold">1.</span>
                       <span>Freeze curve and take holder snapshot</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-purple-400 font-bold">2.</span>
+                      <span className="text-lime-400 font-bold">2.</span>
                       <span>Create SPL token on Solana</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-purple-400 font-bold">3.</span>
+                      <span className="text-lime-400 font-bold">3.</span>
                       <span>Seed liquidity pool with reserve funds</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-purple-400 font-bold">4.</span>
+                      <span className="text-lime-400 font-bold">4.</span>
                       <span>Airdrop tokens to all holders pro-rata</span>
                     </li>
                   </ol>
@@ -550,7 +550,7 @@ export const LaunchOneClick = ({
                     value={p0}
                     onChange={(e) => setP0(e.target.value)}
                     step="0.000001"
-                    className="w-full px-4 py-2 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500/50"
+                    className="w-full px-4 py-2 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:border-lime-500/50"
                   />
                   <p className="mt-1 text-xs text-gray-500">
                     Current curve price: {curve.price.toFixed(6)} SOL (deterministic from bonding curve)
@@ -579,7 +579,7 @@ export const LaunchOneClick = ({
                     onClick={handleLaunch}
                     disabled={isProcessing}
                     variant="primary"
-                    className="flex-1 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700"
+                    className="flex-1 bg-gradient-to-r from-lime-500 to-pink-600 hover:from-lime-600 hover:to-pink-700"
                   >
                     {isProcessing ? (
                       <>
@@ -613,7 +613,7 @@ export const LaunchOneClick = ({
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.8, opacity: 0 }}
-              className="w-full max-w-md bg-gradient-to-br from-purple-900 via-black to-black rounded-2xl border-2 border-purple-500 shadow-2xl p-8"
+              className="w-full max-w-md bg-gradient-to-br from-lime-900 via-black to-black rounded-2xl border-2 border-lime-500 shadow-2xl p-8"
             >
               {/* Success Icon */}
               <div className="flex justify-center mb-6">
@@ -622,7 +622,7 @@ export const LaunchOneClick = ({
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-                    className="w-24 h-24 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center"
+                    className="w-24 h-24 bg-gradient-to-br from-lime-500 to-pink-500 rounded-full flex items-center justify-center"
                   >
                     <Rocket className="w-12 h-12 text-white" />
                   </motion.div>
@@ -648,12 +648,12 @@ export const LaunchOneClick = ({
 
                 {/* Stats */}
                 <div className="grid grid-cols-2 gap-3 py-4">
-                  <div className="p-3 bg-purple-500/20 rounded-lg border border-purple-500/30">
-                    <p className="text-xs text-purple-300">Reserve</p>
+                  <div className="p-3 bg-lime-500/20 rounded-lg border border-lime-500/30">
+                    <p className="text-xs text-lime-300">Reserve</p>
                     <p className="text-lg font-bold text-white">{curve.reserve.toFixed(2)} SOL</p>
                   </div>
-                  <div className="p-3 bg-purple-500/20 rounded-lg border border-purple-500/30">
-                    <p className="text-xs text-purple-300">Holders</p>
+                  <div className="p-3 bg-lime-500/20 rounded-lg border border-lime-500/30">
+                    <p className="text-xs text-lime-300">Holders</p>
                     <p className="text-lg font-bold text-white">{curve.holders}</p>
                   </div>
                 </div>

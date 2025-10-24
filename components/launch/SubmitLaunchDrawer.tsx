@@ -145,7 +145,7 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit, isLoading = fals
         </div>
 
         {/* Content - Scrollable */}
-        <div className="flex-1 overflow-y-auto px-6 py-4">
+        <div className="flex-1 overflow-y-auto custom-scrollbar px-6 py-4">
           <div className="space-y-6">
             {/* Required Section */}
             <div className="space-y-4">
@@ -162,7 +162,7 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit, isLoading = fals
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="e.g., Solana"
                   maxLength={80}
-                  className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-500/50 focus:border-fuchsia-500/50 transition-all"
+                  className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50 focus:border-[#D1FD0A]/50 transition-all"
                 />
                 <p className="mt-1 text-xs text-white/40 text-right">{title.length}/80</p>
               </div>
@@ -178,7 +178,7 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit, isLoading = fals
                   onChange={(e) => setSubtitle(e.target.value)}
                   placeholder="e.g., SOL"
                   maxLength={120}
-                  className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-500/50 focus:border-fuchsia-500/50 transition-all"
+                  className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50 focus:border-[#D1FD0A]/50 transition-all"
                 />
                 <p className="mt-1 text-xs text-white/40 text-right">{subtitle.length}/120</p>
               </div>
@@ -201,11 +201,11 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit, isLoading = fals
                   Scope <span className="text-red-400">*</span>
                 </label>
                 <div className="grid grid-cols-3 gap-3">
-                  {/* ICM - Fuchsia */}
+                  {/* ICM - Lime */}
                   <label className={`flex flex-col items-center justify-center h-20 px-4 rounded-xl border cursor-pointer transition-all ${
                     scope === 'ICM'
-                      ? 'bg-gradient-to-br from-fuchsia-500/20 to-fuchsia-600/10 border-fuchsia-500/50 shadow-lg shadow-fuchsia-500/20'
-                      : 'bg-white/5 border-white/10 hover:bg-white/10 hover:border-fuchsia-500/30'
+                      ? 'bg-gradient-to-br from-[#D1FD0A]/20 to-[#B8E008]/10 border-[#D1FD0A]/50 shadow-lg shadow-[#D1FD0A]/20'
+                      : 'bg-white/5 border-white/10 hover:bg-white/10 hover:border-[#D1FD0A]/30'
                   }`}>
                     <input
                       type="radio"
@@ -214,15 +214,15 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit, isLoading = fals
                       onChange={() => setScope('ICM')}
                       className="sr-only"
                     />
-                    <Coins className={`w-6 h-6 mb-1 transition-colors ${scope === 'ICM' ? 'text-fuchsia-400' : 'text-white/70'}`} />
-                    <span className={`text-xs font-medium transition-colors ${scope === 'ICM' ? 'text-fuchsia-300' : 'text-white/70'}`}>ICM</span>
+                    <Coins className={`w-6 h-6 mb-1 transition-colors ${scope === 'ICM' ? 'text-[#D1FD0A]' : 'text-white/70'}`} />
+                    <span className={`text-xs font-medium transition-colors ${scope === 'ICM' ? 'text-[#D1FD0A]' : 'text-white/70'}`}>ICM</span>
                   </label>
 
-                  {/* CCM - Purple */}
+                  {/* CCM - Lime */}
                   <label className={`flex flex-col items-center justify-center h-20 px-4 rounded-xl border cursor-pointer transition-all ${
                     scope === 'CCM'
-                      ? 'bg-gradient-to-br from-purple-500/20 to-purple-600/10 border-purple-500/50 shadow-lg shadow-purple-500/20'
-                      : 'bg-white/5 border-white/10 hover:bg-white/10 hover:border-purple-500/30'
+                      ? 'bg-gradient-to-br from-[#D1FD0A]/20 to-[#B8E008]/10 border-[#D1FD0A]/50 shadow-lg shadow-[#D1FD0A]/20'
+                      : 'bg-white/5 border-white/10 hover:bg-white/10 hover:border-[#D1FD0A]/30'
                   }`}>
                     <input
                       type="radio"
@@ -231,8 +231,8 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit, isLoading = fals
                       onChange={() => setScope('CCM')}
                       className="sr-only"
                     />
-                    <Camera className={`w-6 h-6 mb-1 transition-colors ${scope === 'CCM' ? 'text-purple-400' : 'text-white/70'}`} />
-                    <span className={`text-xs font-medium transition-colors ${scope === 'CCM' ? 'text-purple-300' : 'text-white/70'}`}>CCM</span>
+                    <Camera className={`w-6 h-6 mb-1 transition-colors ${scope === 'CCM' ? 'text-[#D1FD0A]' : 'text-white/70'}`} />
+                    <span className={`text-xs font-medium transition-colors ${scope === 'CCM' ? 'text-[#D1FD0A]' : 'text-white/70'}`}>CCM</span>
                   </label>
 
                   {/* MEME - Cyan */}
@@ -260,14 +260,14 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit, isLoading = fals
                   Status <span className="text-red-400">*</span>
                 </label>
                 <div className="grid grid-cols-2 gap-3">
-                  {/* Upcoming - Purple gradient */}
+                  {/* Upcoming - Lime gradient */}
                   <button
                     type="button"
                     onClick={() => setStatus('Upcoming')}
                     className={`h-12 px-4 rounded-xl border font-medium transition-all ${
                       status === 'Upcoming'
-                        ? 'bg-gradient-to-r from-purple-500/20 to-fuchsia-500/20 border-purple-500/50 text-purple-300 shadow-lg shadow-purple-500/20'
-                        : 'bg-white/5 border-white/10 text-white/70 hover:bg-white/10 hover:border-purple-500/30'
+                        ? 'bg-gradient-to-r from-[#D1FD0A]/20 to-[#B8E008]/20 border-[#D1FD0A]/50 text-[#D1FD0A] shadow-lg shadow-[#D1FD0A]/20'
+                        : 'bg-white/5 border-white/10 text-white/70 hover:bg-white/10 hover:border-[#D1FD0A]/30'
                     }`}
                   >
                     Upcoming
@@ -316,7 +316,7 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit, isLoading = fals
                   placeholder="Describe your project..."
                   maxLength={500}
                   rows={4}
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-500/50 focus:border-fuchsia-500/50 resize-none transition-all"
+                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50 focus:border-[#D1FD0A]/50 resize-none transition-all"
                 />
                 <p className="mt-1 text-xs text-white/40 text-right">{description.length}/500</p>
               </div>
@@ -331,7 +331,7 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit, isLoading = fals
                   value={projectLink}
                   onChange={(e) => setProjectLink(e.target.value)}
                   placeholder="https://yourproject.com"
-                  className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-500/50 focus:border-fuchsia-500/50 transition-all"
+                  className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50 focus:border-[#D1FD0A]/50 transition-all"
                 />
                 <p className="mt-1 text-xs text-white/40">Website or project homepage (optional)</p>
               </div>
@@ -346,7 +346,7 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit, isLoading = fals
                   value={twitterLink}
                   onChange={(e) => setTwitterLink(e.target.value)}
                   placeholder="https://twitter.com/yourproject or https://x.com/yourproject"
-                  className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-500/50 focus:border-fuchsia-500/50 transition-all"
+                  className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50 focus:border-[#D1FD0A]/50 transition-all"
                 />
                 {!isTwitterValid && (
                   <p className="mt-1 text-xs text-red-400">Twitter/X is required</p>
@@ -369,8 +369,8 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit, isLoading = fals
                         onClick={() => togglePlatform(p.id)}
                         className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                           isSelected
-                            ? 'bg-gradient-to-r from-fuchsia-500/20 to-purple-500/20 border border-fuchsia-500/50 text-fuchsia-300 shadow-md shadow-fuchsia-500/10'
-                            : 'bg-white/5 border border-white/10 text-white/60 hover:bg-white/10 hover:border-fuchsia-500/30'
+                            ? 'bg-gradient-to-r from-[#D1FD0A]/20 to-[#B8E008]/20 border border-[#D1FD0A]/50 text-[#D1FD0A] shadow-md shadow-[#D1FD0A]/10'
+                            : 'bg-white/5 border border-white/10 text-white/60 hover:bg-white/10 hover:border-[#D1FD0A]/30'
                         }`}
                       >
                         {p.label}
@@ -391,7 +391,7 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit, isLoading = fals
                         value={platformLinks[p.id] || ''}
                         onChange={(e) => setPlatformLinks(prev => ({ ...prev, [p.id]: e.target.value }))}
                         placeholder={p.placeholder}
-                        className="w-full h-10 px-3 rounded-lg bg-white/5 border border-white/10 text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-500/50 focus:border-fuchsia-500/50 transition-all"
+                        className="w-full h-10 px-3 rounded-lg bg-white/5 border border-white/10 text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50 focus:border-[#D1FD0A]/50 transition-all"
                       />
                     </div>
                   ))}
@@ -416,7 +416,7 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit, isLoading = fals
                         setProjectImages(files)
                       }
                     }}
-                    className="w-full text-sm text-white/70 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-fuchsia-500/20 file:text-fuchsia-300 hover:file:bg-fuchsia-500/30 file:cursor-pointer"
+                    className="w-full text-sm text-white/70 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[#D1FD0A]/20 file:text-black hover:file:bg-[#D1FD0A]/30 file:cursor-pointer"
                   />
                   <p className="text-xs text-white/40">
                     Upload 3-5 images showcasing your project (PNG or JPG, max 5MB each)
@@ -478,7 +478,7 @@ export function SubmitLaunchDrawer({ isOpen, onClose, onSubmit, isLoading = fals
             <button
               onClick={handleSubmit}
               disabled={!isFormValid || isLoading}
-              className="px-6 h-11 rounded-xl bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 text-white font-bold disabled:opacity-50 disabled:cursor-not-allowed hover:from-fuchsia-600 hover:via-purple-600 hover:to-cyan-600 transition-all focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80 flex items-center gap-2"
+              className="px-6 h-11 rounded-xl bg-gradient-to-r from-[#D1FD0A] to-[#B8E008] text-white font-bold disabled:opacity-50 disabled:cursor-not-allowed hover:from-[#B8E008] to-[#A0C007] transition-all focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50 flex items-center gap-2"
             >
               {isLoading ? (
                 <>

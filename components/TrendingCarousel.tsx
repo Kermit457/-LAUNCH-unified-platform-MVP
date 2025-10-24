@@ -54,7 +54,7 @@ export function TrendingCarousel({ projects }: TrendingCarouselProps) {
     <section className="container mx-auto px-4 py-16 border-t border-white/10">
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg flex items-center justify-center">
+          <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-lime-600 rounded-lg flex items-center justify-center">
             <TrendingUp className="w-5 h-5 text-white" />
           </div>
           <div>
@@ -102,11 +102,11 @@ export function TrendingCarousel({ projects }: TrendingCarouselProps) {
               />
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="px-2 py-1 text-xs font-medium rounded-md bg-gradient-to-r from-pink-500/20 to-purple-600/20 text-pink-300 border border-pink-500/30">
+                  <span className="px-2 py-1 text-xs font-medium rounded-md bg-gradient-to-r from-pink-500/20 to-lime-600/20 text-pink-300 border border-pink-500/30">
                     {project.type}
                   </span>
                   {project.boosted && (
-                    <span className="px-2 py-1 text-xs font-medium rounded-md bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                    <span className="px-2 py-1 text-xs font-medium rounded-md bg-lime-500/20 text-lime-300 border border-lime-500/30">
                       🚀 Boosted
                     </span>
                   )}
@@ -139,7 +139,7 @@ export function TrendingCarousel({ projects }: TrendingCarouselProps) {
             onClick={() => setCurrentIndex(index)}
             className={`w-2 h-2 rounded-full transition-all ${
               index === currentIndex
-                ? 'bg-gradient-to-r from-pink-500 to-purple-600 w-8'
+                ? 'bg-gradient-to-r from-pink-500 to-lime-600 w-8'
                 : 'bg-white/20 hover:bg-white/40'
             }`}
           />

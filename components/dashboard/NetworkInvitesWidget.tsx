@@ -82,15 +82,15 @@ export function NetworkInvitesWidget() {
     <div className="glass-card p-6">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <UserPlus className="w-5 h-5 text-fuchsia-400" />
+          <UserPlus className="w-5 h-5 text-lime-400" />
           <h3 className="font-semibold text-white">Network Invites</h3>
-          <span className="px-2 py-0.5 bg-fuchsia-500 text-white text-xs font-bold rounded-full">
+          <span className="px-2 py-0.5 bg-lime-500 text-white text-xs font-bold rounded-full">
             {pendingCount}
           </span>
         </div>
         <Link
           href="/network?tab=invites"
-          className="text-sm text-fuchsia-400 hover:text-fuchsia-300 transition-colors"
+          className="text-sm text-lime-400 hover:text-lime-300 transition-colors"
         >
           View All
         </Link>
@@ -108,7 +108,7 @@ export function NetworkInvitesWidget() {
               className="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/10"
             >
               {/* Avatar */}
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-fuchsia-500 to-cyan-500 flex items-center justify-center font-bold text-white text-sm flex-shrink-0 overflow-hidden">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-lime-500 to-cyan-500 flex items-center justify-center font-bold text-white text-sm flex-shrink-0 overflow-hidden">
                 {sender?.avatar ? (
                   <img src={sender.avatar} alt={displayName} className="w-full h-full object-cover" />
                 ) : (

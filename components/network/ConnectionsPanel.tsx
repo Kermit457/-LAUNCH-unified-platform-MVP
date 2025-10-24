@@ -95,7 +95,7 @@ export function ConnectionsPanel({
         {selectedForGroup.size > 0 && onStartGroup && (
           <button
             onClick={handleStartGroup}
-            className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 text-white text-xs font-medium hover:opacity-90 transition-all flex items-center gap-1"
+            className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-[#D1FD0A] to-[#B8E008] text-black text-xs font-medium hover:opacity-90 transition-all flex items-center gap-1"
           >
             <Users className="w-3 h-3" />
             Start Group ({selectedForGroup.size})
@@ -111,7 +111,7 @@ export function ConnectionsPanel({
           placeholder="Search connections..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
+          className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50"
         />
       </div>
 
@@ -125,7 +125,7 @@ export function ConnectionsPanel({
             className={cn(
               'px-2.5 py-1 rounded-lg text-xs font-medium transition-all',
               roleFilter === role
-                ? 'bg-purple-500 text-white'
+                ? 'bg-[#D1FD0A] text-black'
                 : 'bg-white/5 text-white/60 hover:bg-white/10'
             )}
           >
@@ -137,7 +137,7 @@ export function ConnectionsPanel({
           className={cn(
             'px-2.5 py-1 rounded-lg text-xs font-medium transition-all',
             showUnreadOnly
-              ? 'bg-purple-500 text-white'
+              ? 'bg-[#D1FD0A] text-black'
               : 'bg-white/5 text-white/60 hover:bg-white/10'
           )}
         >
@@ -148,7 +148,7 @@ export function ConnectionsPanel({
           className={cn(
             'px-2.5 py-1 rounded-lg text-xs font-medium transition-all',
             showOnlineOnly
-              ? 'bg-purple-500 text-white'
+              ? 'bg-[#D1FD0A] text-black'
               : 'bg-white/5 text-white/60 hover:bg-white/10'
           )}
         >
@@ -157,7 +157,7 @@ export function ConnectionsPanel({
       </div>
 
       {/* Connections list */}
-      <div className="space-y-2 max-h-[600px] overflow-y-auto">
+      <div className="space-y-2 max-h-[600px] overflow-y-auto custom-scrollbar">
         {sortedConnections.map((conn) => {
           const isOnline = Date.now() - conn.lastActive < 5 * 60 * 1000
 
@@ -167,7 +167,7 @@ export function ConnectionsPanel({
               className={cn(
                 'p-3 rounded-lg border transition-colors',
                 selectedForGroup.has(conn.userId)
-                  ? 'bg-purple-500/20 border-purple-500/50'
+                  ? 'bg-[#D1FD0A]/20 border-[#D1FD0A]/50'
                   : 'bg-white/5 border-white/10 hover:bg-white/10'
               )}
             >
@@ -178,13 +178,13 @@ export function ConnectionsPanel({
                     type="checkbox"
                     checked={selectedForGroup.has(conn.userId)}
                     onChange={() => toggleGroupSelect(conn.userId)}
-                    className="rounded border-white/20 bg-white/5 focus:ring-2 focus:ring-fuchsia-400/80"
+                    className="rounded border-white/20 bg-white/5 focus:ring-2 focus:ring-[#D1FD0A]/50"
                   />
                 )}
 
                 {/* Avatar with online status */}
                 <div className="relative flex-shrink-0">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-fuchsia-500 via-purple-500 to-cyan-500 flex items-center justify-center text-white font-bold text-sm">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#D1FD0A] to-[#B8E008] flex items-center justify-center text-black font-bold text-sm">
                     {conn.name.slice(0, 2).toUpperCase()}
                   </div>
                   {isOnline && (
@@ -192,7 +192,7 @@ export function ConnectionsPanel({
                   )}
                   {conn.pinned && (
                     <div className="absolute -top-1 -right-1">
-                      <Pin className="w-3 h-3 text-fuchsia-400 fill-fuchsia-400" />
+                      <Pin className="w-3 h-3 text-[#D1FD0A] fill-[#D1FD0A]" />
                     </div>
                   )}
                 </div>
@@ -209,7 +209,7 @@ export function ConnectionsPanel({
                   </div>
                   <div className="flex items-center gap-1 flex-wrap">
                     {conn.roles.map((role, i) => (
-                      <span key={i} className="px-2 py-0.5 rounded-full text-xs bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                      <span key={i} className="px-2 py-0.5 rounded-full text-xs bg-[#D1FD0A]/20 text-[#D1FD0A] border border-[#D1FD0A]/30">
                         {role}
                       </span>
                     ))}
@@ -218,8 +218,8 @@ export function ConnectionsPanel({
 
                 {/* Unread badge */}
                 {conn.unread > 0 && (
-                  <div className="w-5 h-5 rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 flex items-center justify-center flex-shrink-0">
-                    <span className="text-xs font-bold text-white">
+                  <div className="w-5 h-5 rounded-full bg-gradient-to-r from-[#D1FD0A] to-[#B8E008] flex items-center justify-center flex-shrink-0">
+                    <span className="text-xs font-bold text-black">
                       {conn.unread > 9 ? '9+' : conn.unread}
                     </span>
                   </div>
@@ -229,7 +229,7 @@ export function ConnectionsPanel({
                 <div className="flex items-center gap-1">
                   <button
                     onClick={() => onDM(conn.userId)}
-                    className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
+                    className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50"
                     title="DM"
                   >
                     <MessageSquare className="w-4 h-4" />
@@ -237,7 +237,7 @@ export function ConnectionsPanel({
                   {onInviteToCampaign && (
                     <button
                       onClick={() => onInviteToCampaign(conn.userId)}
-                      className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
+                      className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50"
                       title="Invite to Campaign"
                     >
                       <Megaphone className="w-4 h-4" />

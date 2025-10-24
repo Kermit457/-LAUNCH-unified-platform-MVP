@@ -36,7 +36,7 @@ export function CommentItem({ comment, onDelete, canDelete = false }: CommentIte
             className="w-8 h-8 rounded-full object-cover flex-shrink-0"
           />
         ) : (
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-pink-500 to-lime-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
             {author?.[0]?.toUpperCase() || '?'}
           </div>
         )}

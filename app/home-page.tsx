@@ -11,7 +11,7 @@ export default function HomePage() {
       <section className="container mx-auto px-4 py-20">
         <div className="text-center max-w-4xl mx-auto">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-full mb-6">
-            <Sparkles className="w-4 h-4 text-purple-400" />
+            <Sparkles className="w-4 h-4 text-lime-400" />
             <span className="text-sm text-white/70">Interactive OBS Overlays</span>
           </div>
 
@@ -52,7 +52,7 @@ export default function HomePage() {
           {/* Widget Previews - Placeholder */}
           <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
             <div className="flex flex-col items-center gap-4">
-              <div className="w-64 h-48 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-lg border border-purple-500/30 flex items-center justify-center">
+              <div className="w-64 h-48 bg-gradient-to-br from-[#D1FD0A]/20 to-[#B8E008]/20 rounded-lg border border-[#D1FD0A]/30 flex items-center justify-center">
                 <p className="text-white/50">Prediction Widget</p>
               </div>
               <div className="text-center">
@@ -92,7 +92,7 @@ export default function HomePage() {
 
         <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
           <div className="glass-card p-6 text-center">
-            <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg flex items-center justify-center mx-auto mb-4">
+            <div className="w-12 h-12 bg-gradient-to-br from-[#D1FD0A] to-[#B8E008] rounded-lg flex items-center justify-center mx-auto mb-4">
               <TrendingUp className="w-6 h-6 text-white" />
             </div>
             <h3 className="font-bold text-xl mb-2 text-white">Real-time Engagement</h3>
@@ -102,7 +102,7 @@ export default function HomePage() {
           </div>
 
           <div className="glass-card p-6 text-center">
-            <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg flex items-center justify-center mx-auto mb-4">
+            <div className="w-12 h-12 bg-gradient-to-br from-[#D1FD0A] to-[#B8E008] rounded-lg flex items-center justify-center mx-auto mb-4">
               <Users className="w-6 h-6 text-white" />
             </div>
             <h3 className="font-bold text-xl mb-2 text-white">Community Growth</h3>
@@ -112,7 +112,7 @@ export default function HomePage() {
           </div>
 
           <div className="glass-card p-6 text-center">
-            <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg flex items-center justify-center mx-auto mb-4">
+            <div className="w-12 h-12 bg-gradient-to-br from-[#D1FD0A] to-[#B8E008] rounded-lg flex items-center justify-center mx-auto mb-4">
               <Zap className="w-6 h-6 text-white" />
             </div>
             <h3 className="font-bold text-xl mb-2 text-white">Monetization</h3>

@@ -33,8 +33,8 @@ export function RankBadge({ rank, className }: RankBadgeProps) {
     }
     if (rank <= 10) {
       return {
-        gradient: 'from-purple-500 to-pink-600',
-        shadow: 'shadow-purple-500/30',
+        gradient: 'from-[#D1FD0A] to-[#B8E008]',
+        shadow: 'shadow-[#D1FD0A]/30',
         ring: 'ring-1 ring-white/20',
         text: 'text-white'
       }

@@ -21,7 +21,7 @@ export function UserJourneyCards() {
       features: ['Stream raids', 'Social campaigns', 'Quest systems'],
       cta: 'Start Streaming',
       href: '/engage',
-      gradient: 'from-purple-500 to-indigo-600'
+      gradient: 'from-lime-500 to-indigo-600'
     },
     {
       icon: Briefcase,

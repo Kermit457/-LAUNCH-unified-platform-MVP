@@ -14,8 +14,8 @@ export default function NewHeroSection({ onLaunchApp }: { onLaunchApp?: () => vo
     {
       icon: Rocket,
       label: 'Launch',
-      gradient: 'from-violet-500 to-purple-600',
-      borderColor: 'rgb(139, 92, 246)'
+      gradient: 'from-[#D1FD0A] to-[#B8E008]',
+      borderColor: '#D1FD0A'
     },
     {
       icon: LineChart,
@@ -32,7 +32,7 @@ export default function NewHeroSection({ onLaunchApp }: { onLaunchApp?: () => vo
     {
       icon: Gift,
       label: 'Bounty',
-      gradient: 'from-red-500 to-pink-600',
+      gradient: 'from-red-500 to-red-600',
       borderColor: 'rgb(239, 68, 68)'
     },
     {
@@ -68,7 +68,7 @@ export default function NewHeroSection({ onLaunchApp }: { onLaunchApp?: () => vo
     {
       icon: Radio,
       label: 'OBS',
-      gradient: 'from-indigo-500 to-purple-600',
+      gradient: 'from-indigo-500 to-lime-600',
       borderColor: 'rgb(99, 102, 241)'
     },
     {
@@ -104,9 +104,9 @@ export default function NewHeroSection({ onLaunchApp }: { onLaunchApp?: () => vo
 
   return (
     <section className="relative min-h-screen bg-black overflow-hidden">
-      {/* Background gradient - purple mesh */}
+      {/* Background gradient - lime mesh */}
       <div className="absolute inset-0">
-        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-purple-600/30 rounded-full blur-[200px]" />
+        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-lime-600/30 rounded-full blur-[200px]" />
         <div className="absolute top-1/2 left-0 w-[600px] h-[600px] bg-violet-600/20 rounded-full blur-[150px]" />
         <div className="absolute bottom-0 right-1/3 w-[400px] h-[400px] bg-pink-600/20 rounded-full blur-[100px]" />
       </div>
@@ -237,7 +237,7 @@ export default function NewHeroSection({ onLaunchApp }: { onLaunchApp?: () => vo
             </div>
 
             {/* Decorative elements */}
-            <div className="absolute -top-10 -right-10 w-32 h-32 bg-purple-500/20 rounded-full blur-3xl" />
+            <div className="absolute -top-10 -right-10 w-32 h-32 bg-lime-500/20 rounded-full blur-3xl" />
             <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-pink-500/20 rounded-full blur-3xl" />
           </motion.div>
         </div>

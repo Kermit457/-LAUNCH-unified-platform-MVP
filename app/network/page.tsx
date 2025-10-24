@@ -2,7 +2,8 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Search, UserPlus, Zap, Users, Rocket, Plus, Copy, Share2 } from 'lucide-react'
+import { Plus, Copy, Share2, UserPlus } from 'lucide-react'
+import { IconSearch, IconLightning, IconNetwork, IconRocket } from '@/lib/icons'
 import { PeopleGrid } from '@/components/network/PeopleGrid'
 import { Dealflow } from '@/components/network/Dealflow'
 import { NetworkTicker } from '@/components/network/NetworkTicker'
@@ -103,16 +104,16 @@ export default function NetworkPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white pb-20 md:pb-6">
+    <div className="min-h-screen bg-btdemo-canvas text-btdemo-text pb-20 md:pb-6">
       {/* Header - Ultra Compact Mobile */}
       <div className="px-2 sm:px-6 lg:px-8 pt-2 md:pt-6 pb-2 md:pb-3">
         <div className="max-w-7xl mx-auto">
           {/* Title - Much Smaller on Mobile */}
           <div className="mb-2 md:mb-4">
-            <h1 className="text-base md:text-4xl font-black text-[#8800FF]">
+            <h1 className="text-base md:text-4xl font-black text-btdemo-primary btdemo-text-glow">
               Network
             </h1>
-            <p className="text-[10px] md:text-base text-zinc-500">
+            <p className="text-[10px] md:text-base text-btdemo-text-muted">
               Connect, team up, and get deals moving.
             </p>
           </div>
@@ -121,33 +122,33 @@ export default function NetworkPage() {
           <div className="flex gap-1.5 md:gap-3 mb-2 md:mb-3">
             {/* Compact Search */}
             <div className="relative flex-1">
-              <Search className="absolute left-2 md:left-3 top-1/2 -translate-y-1/2 w-5 h-5 md:w-6 md:h-6 text-zinc-500" />
+              <IconSearch size={20} className="absolute left-2 md:left-3 top-1/2 -translate-y-1/2 w-5 h-5 md:w-6 md:h-6 text-btdemo-primary opacity-50" />
               <input
                 type="text"
                 placeholder="Search..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-7 md:pl-9 pr-2 md:pr-3 py-3 min-h-[48px] rounded-md md:rounded-lg bg-zinc-900 border border-zinc-800 text-white text-base placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#8800FF]/50"
+                className="w-full pl-7 md:pl-9 pr-2 md:pr-3 py-3 min-h-[48px] rounded-md md:rounded-lg btdemo-glass text-btdemo-text text-base placeholder:text-btdemo-text-muted focus:outline-none focus:border-btdemo-primary transition-all"
               />
             </div>
 
             {/* Online Badge - Minimal */}
-            <div className="flex items-center gap-1 md:gap-2 px-2 md:px-3 py-1.5 md:py-2 rounded-md md:rounded-lg bg-zinc-900/50 border border-zinc-800 whitespace-nowrap">
-              <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-green-500 animate-pulse" />
-              <span className="text-[10px] md:text-xs font-bold text-white">{metrics.onlineNow}</span>
+            <div className="flex items-center gap-1 md:gap-2 px-2 md:px-3 py-1.5 md:py-2 rounded-md md:rounded-lg btdemo-glass whitespace-nowrap">
+              <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-btdemo-secondary animate-pulse" />
+              <span className="text-[10px] md:text-xs font-bold text-btdemo-text font-led-dot">{metrics.onlineNow}</span>
             </div>
 
             {/* Add Dealflow Button - Larger */}
             <button
               onClick={() => setShowDealflowModal(true)}
-              className="px-6 py-3 min-h-[48px] rounded-xl bg-[#00FF88] hover:bg-[#00DD77] active:scale-95 text-black font-bold transition-all flex items-center gap-2 whitespace-nowrap text-sm"
+              className="px-6 py-3 min-h-[48px] rounded-xl btdemo-btn-glow transition-all flex items-center gap-2 whitespace-nowrap text-sm"
             >
               <Plus className="w-5 h-5" />
               <span>Dealflow</span>
             </button>
 
             {/* Invite Button - Compact */}
-            <button className="px-5 py-2.5 min-h-[44px] rounded-lg bg-[#8800FF] hover:bg-[#9910FF] active:scale-95 text-white font-bold transition-all flex items-center gap-2 whitespace-nowrap text-sm">
+            <button className="px-5 py-2.5 min-h-[44px] rounded-lg btdemo-btn-glow transition-all flex items-center gap-2 whitespace-nowrap text-sm">
               <UserPlus className="w-5 h-5" />
               <span className="hidden sm:inline">Invite</span>
             </button>
@@ -156,23 +157,23 @@ export default function NetworkPage() {
           {/* Referral Link & Stats - Combined Row */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3 mb-2 md:mb-3">
             {/* Referral Link - Copy & Share - Half width on desktop */}
-            <div className="p-2 md:p-3 rounded-md md:rounded-lg bg-zinc-900/50 border border-zinc-800">
+            <div className="p-2 md:p-3 rounded-md md:rounded-lg btdemo-glass">
               <div className="flex items-center gap-2 h-full">
                 <div className="flex-1 min-w-0">
-                  <div className="text-[9px] md:text-xs text-zinc-500 mb-0.5">Your Referral Link</div>
-                  <div className="text-[10px] md:text-sm text-white font-mono truncate">{referralLink}</div>
+                  <div className="text-[9px] md:text-xs text-btdemo-text-muted mb-0.5">Your Referral Link</div>
+                  <div className="text-[10px] md:text-sm text-btdemo-text font-mono truncate">{referralLink}</div>
                 </div>
                 <div className="flex gap-1 md:gap-2">
                   <button
                     onClick={handleCopyRefLink}
-                    className="px-5 py-2.5 min-h-[44px] rounded-lg bg-zinc-800 hover:bg-zinc-700 active:scale-95 text-white font-bold transition-all flex items-center gap-2 text-sm"
+                    className="px-5 py-2.5 min-h-[44px] rounded-lg btdemo-btn-glass transition-all flex items-center gap-2 text-sm"
                   >
                     <Copy className="w-5 h-5" />
                     <span className="hidden sm:inline">Copy</span>
                   </button>
                   <button
                     onClick={handleShareRefLink}
-                    className="px-5 py-2.5 min-h-[44px] rounded-lg bg-[#00FFFF] hover:bg-[#00DDDD] active:scale-95 text-black font-bold transition-all flex items-center gap-2 text-sm"
+                    className="px-5 py-2.5 min-h-[44px] rounded-lg btdemo-btn-glow transition-all flex items-center gap-2 text-sm"
                   >
                     <Share2 className="w-5 h-5" />
                     <span className="hidden sm:inline">Share</span>
@@ -184,24 +185,24 @@ export default function NetworkPage() {
             {/* Holders & Collabs - Half width on desktop */}
             <div className="grid grid-cols-2 gap-2 md:gap-3">
               {/* Holders */}
-              <div className="flex items-center gap-1.5 md:gap-2 px-2 md:px-3 py-1.5 md:py-3 rounded-md md:rounded-xl bg-gradient-to-br from-blue-500/10 to-blue-600/5 border border-blue-500/20">
-                <div className="w-6 h-6 md:w-8 md:h-8 rounded-md md:rounded-lg bg-blue-500/20 flex items-center justify-center flex-shrink-0">
-                  <Users className="w-3 h-3 md:w-4 md:h-4 text-blue-400" />
+              <div className="flex items-center gap-1.5 md:gap-2 px-2 md:px-3 py-1.5 md:py-3 rounded-md md:rounded-xl bg-gradient-to-br from-[#D1FD0A]/10 to-[#B8E008]/5 border border-[#D1FD0A]/20">
+                <div className="w-6 h-6 md:w-8 md:h-8 rounded-md md:rounded-lg bg-[#D1FD0A]/20 flex items-center justify-center flex-shrink-0">
+                  <IconNetwork size={16} className="text-[#D1FD0A]" />
                 </div>
                 <div className="min-w-0">
                   <div className="text-[9px] md:text-xs text-zinc-500">Holders</div>
-                  <div className="text-sm md:text-xl font-bold text-white">{metrics.holders}</div>
+                  <div className="text-sm md:text-xl font-bold text-white font-led-dot">{metrics.holders}</div>
                 </div>
               </div>
 
               {/* Collaborations */}
-              <div className="flex items-center gap-1.5 md:gap-2 px-2 md:px-3 py-1.5 md:py-3 rounded-md md:rounded-xl bg-gradient-to-br from-purple-500/10 to-purple-600/5 border border-purple-500/20">
-                <div className="w-6 h-6 md:w-8 md:h-8 rounded-md md:rounded-lg bg-purple-500/20 flex items-center justify-center flex-shrink-0">
-                  <Rocket className="w-3 h-3 md:w-4 md:h-4 text-purple-400" />
+              <div className="flex items-center gap-1.5 md:gap-2 px-2 md:px-3 py-1.5 md:py-3 rounded-md md:rounded-xl bg-gradient-to-br from-[#D1FD0A]/10 to-[#B8E008]/5 border border-[#D1FD0A]/20">
+                <div className="w-6 h-6 md:w-8 md:h-8 rounded-md md:rounded-lg bg-[#D1FD0A]/20 flex items-center justify-center flex-shrink-0">
+                  <IconRocket size={16} className="text-[#D1FD0A]" />
                 </div>
                 <div className="min-w-0">
                   <div className="text-[9px] md:text-xs text-zinc-500">Collabs</div>
-                  <div className="text-sm md:text-xl font-bold text-white">{metrics.collaborations}</div>
+                  <div className="text-sm md:text-xl font-bold text-white font-led-dot">{metrics.collaborations}</div>
                 </div>
               </div>
             </div>
@@ -238,11 +239,11 @@ export default function NetworkPage() {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-2 md:mb-6 p-2 md:p-4 rounded-lg md:rounded-xl bg-[#8800FF]/10 border border-[#8800FF]/30"
+            className="mb-2 md:mb-6 p-2 md:p-4 rounded-lg md:rounded-xl glass-premium border-2 border-[#D1FD0A]/30"
           >
             <div className="flex items-start gap-1.5 md:gap-3">
-              <div className="w-6 h-6 md:w-10 md:h-10 rounded-md md:rounded-lg bg-[#8800FF]/20 flex items-center justify-center flex-shrink-0">
-                <Zap className="w-3 h-3 md:w-5 md:h-5 text-[#8800FF]" />
+              <div className="w-6 h-6 md:w-10 md:h-10 rounded-md md:rounded-lg bg-[#D1FD0A]/20 flex items-center justify-center flex-shrink-0">
+                <IconLightning size={20} className="text-[#D1FD0A]" />
               </div>
               <div className="flex-1">
                 <h3 className="text-[11px] md:text-base font-bold text-white mb-0.5 md:mb-1">Unlock DMs & Collab</h3>
@@ -260,7 +261,7 @@ export default function NetworkPage() {
             onClick={() => setMobileView('users')}
             className={`flex-1 px-3 py-2.5 min-h-[44px] rounded-md font-bold text-sm active:scale-95 transition-all ${
               mobileView === 'users'
-                ? 'bg-[#8800FF] text-white'
+                ? 'bg-[#D1FD0A] text-white'
                 : 'text-zinc-400'
             }`}
           >
@@ -270,7 +271,7 @@ export default function NetworkPage() {
             onClick={() => setMobileView('dealflow')}
             className={`flex-1 px-3 py-2.5 min-h-[44px] rounded-md font-bold text-sm active:scale-95 transition-all ${
               mobileView === 'dealflow'
-                ? 'bg-[#8800FF] text-white'
+                ? 'bg-[#D1FD0A] text-white'
                 : 'text-zinc-400'
             }`}
           >

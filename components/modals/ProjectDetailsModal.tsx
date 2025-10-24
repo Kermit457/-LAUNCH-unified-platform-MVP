@@ -60,11 +60,11 @@ export function ProjectDetailsModal({ open, onClose, project }: ProjectDetailsMo
 
       {/* Modal */}
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
-        <div className="w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-design-zinc-950/95 backdrop-blur-xl rounded-2xl border border-design-zinc-800 shadow-2xl pointer-events-auto animate-in zoom-in-95 duration-200">
+        <div className="w-full max-w-4xl max-h-[90vh] overflow-y-auto custom-scrollbar bg-design-zinc-950/95 backdrop-blur-xl rounded-2xl border border-design-zinc-800 shadow-2xl pointer-events-auto animate-in zoom-in-95 duration-200">
           {/* Header with Banner */}
           <div className="relative">
             {/* Banner Gradient */}
-            <div className="absolute inset-0 h-32 bg-gradient-to-br from-design-purple-500/20 via-design-pink-500/20 to-design-purple-600/20 rounded-t-2xl" />
+            <div className="absolute inset-0 h-32 bg-gradient-to-br from-[#D1FD0A]/20 via-[#B8E008]/20 to-[#D1FD0A]/20 rounded-t-2xl" />
 
             {/* Close Button */}
             <button
@@ -103,7 +103,7 @@ export function ProjectDetailsModal({ open, onClose, project }: ProjectDetailsMo
                     </div>
                     <div className={`px-2 py-1 rounded-full text-xs font-medium ${
                       project.scope === 'ICM'
-                        ? 'bg-design-purple-500/20 text-design-purple-300 border border-design-purple-500/40'
+                        ? 'bg-design-lime-500/20 text-design-lime-300 border border-design-lime-500/40'
                         : 'bg-design-pink-500/20 text-design-pink-300 border border-design-pink-500/40'
                     }`}>
                       {project.scope}
@@ -158,13 +158,13 @@ export function ProjectDetailsModal({ open, onClose, project }: ProjectDetailsMo
               {project.convictionPct !== undefined && (
                 <div className="bg-design-zinc-900/50 rounded-xl p-4 border border-design-zinc-800">
                   <div className="flex items-center gap-2 mb-2">
-                    <Target className="w-4 h-4 text-design-purple-400" />
+                    <Target className="w-4 h-4 text-design-lime-400" />
                     <span className="text-xs text-design-zinc-500">Conviction</span>
                   </div>
                   <div className="text-2xl font-bold text-white">{project.convictionPct}%</div>
                   <div className="mt-2 h-1 bg-design-zinc-800 rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-gradient-to-r from-design-purple-500 to-design-pink-500 rounded-full"
+                      className="h-full bg-gradient-to-r from-design-lime-500 to-design-pink-500 rounded-full"
                       style={{ width: `${project.convictionPct}%` }}
                     />
                   </div>
@@ -175,7 +175,7 @@ export function ProjectDetailsModal({ open, onClose, project }: ProjectDetailsMo
               {project.contributionPoolPct !== undefined && (
                 <div className="bg-design-zinc-900/50 rounded-xl p-4 border border-design-zinc-800">
                   <div className="flex items-center gap-2 mb-2">
-                    <DollarSign className="w-4 h-4 text-design-purple-400" />
+                    <DollarSign className="w-4 h-4 text-design-lime-400" />
                     <span className="text-xs text-design-zinc-500">Pool Share</span>
                   </div>
                   <div className="text-2xl font-bold text-white">{project.contributionPoolPct}%</div>
@@ -218,8 +218,8 @@ export function ProjectDetailsModal({ open, onClose, project }: ProjectDetailsMo
                       {contributor.avatar ? (
                         <img src={contributor.avatar} alt={contributor.name} className="w-6 h-6 rounded-full" />
                       ) : (
-                        <div className="w-6 h-6 rounded-full bg-design-purple-500/20 flex items-center justify-center">
-                          <span className="text-xs text-design-purple-400">{contributor.name.charAt(0)}</span>
+                        <div className="w-6 h-6 rounded-full bg-design-lime-500/20 flex items-center justify-center">
+                          <span className="text-xs text-design-lime-400">{contributor.name.charAt(0)}</span>
                         </div>
                       )}
                       <span className="text-sm text-design-zinc-300">{contributor.name}</span>

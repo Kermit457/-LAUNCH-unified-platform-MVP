@@ -161,7 +161,7 @@ export default function DiscoverPage() {
             icon={TrendingUp}
             label="Curves Created"
             value={totalCurves.toString()}
-            color="purple"
+            color="lime"
           />
           <StatCard
             icon={Users}
@@ -272,7 +272,7 @@ export default function DiscoverPage() {
                 active={sortBy === 'conviction'}
                 onClick={() => setSortBy('conviction')}
                 small
-                className="data-[active]:bg-[#8800FF]/20 data-[active]:border-[#8800FF] data-[active]:text-white"
+                className="data-[active]:bg-[#D1FD0A]/20 data-[active]:border-[#D1FD0A] data-[active]:text-white"
               >
                 Conviction
               </FilterPill>
@@ -476,7 +476,7 @@ export default function DiscoverPage() {
                 setSearchQuery('')
                 setViewFilter('trending')
               }}
-              className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#8800FF] to-[#0088FF] hover:scale-105 text-white font-bold transition-transform"
+              className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#D1FD0A] to-[#0088FF] hover:scale-105 text-white font-bold transition-transform"
             >
               Reset Filters
             </button>
@@ -569,11 +569,11 @@ function StatCard({
   label: string
   value: string
   change?: string
-  color: 'green' | 'purple' | 'blue' | 'orange'
+  color: 'green' | 'lime' | 'blue' | 'orange'
 }) {
   const colorClasses = {
     green: 'bg-[#00FF88]/10 border-[#00FF88]/20 text-[#00FF88]',
-    purple: 'bg-[#8800FF]/10 border-[#8800FF]/20 text-[#8800FF]',
+    lime: 'bg-[#D1FD0A]/10 border-[#D1FD0A]/20 text-[#D1FD0A]',
     blue: 'bg-[#0088FF]/10 border-[#0088FF]/20 text-[#0088FF]',
     orange: 'bg-[#FF8800]/10 border-[#FF8800]/20 text-[#FF8800]'
   }

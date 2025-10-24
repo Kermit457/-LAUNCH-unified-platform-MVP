@@ -57,7 +57,7 @@ export function RoomsList({ onThreadClick, filterType }: RoomsListProps) {
   if (loading) {
     return (
       <div className="text-center py-8 md:py-12">
-        <div className="w-6 h-6 md:w-8 md:h-8 border-3 md:border-4 border-[#8800FF] border-t-transparent rounded-full animate-spin mx-auto mb-2 md:mb-4" />
+        <div className="w-6 h-6 md:w-8 md:h-8 border-3 md:border-4 border-[#D1FD0A] border-t-transparent rounded-full animate-spin mx-auto mb-2 md:mb-4" />
         <p className="text-xs md:text-base text-zinc-400">Loading conversations...</p>
       </div>
     )
@@ -98,13 +98,13 @@ export function RoomsList({ onThreadClick, filterType }: RoomsListProps) {
           <div
             key={thread.$id}
             onClick={() => onThreadClick(thread.$id)}
-            className="p-3 md:p-4 min-h-[64px] rounded-lg md:rounded-xl bg-zinc-900/50 border border-zinc-800 hover:border-[#8800FF]/50 active:scale-[0.98] transition-all cursor-pointer"
+            className="p-3 md:p-4 min-h-[64px] rounded-lg md:rounded-xl bg-zinc-900/50 border border-zinc-800 hover:border-[#D1FD0A]/50 active:scale-[0.98] transition-all cursor-pointer"
           >
             <div className="flex items-center gap-2 md:gap-3">
               {/* Icon - Mobile Optimized */}
-              <div className="w-8 h-8 md:w-12 md:h-12 rounded-md md:rounded-lg bg-gradient-to-br from-[#8800FF]/20 to-[#00FFFF]/20 border border-[#8800FF]/30 flex items-center justify-center flex-shrink-0">
+              <div className="w-8 h-8 md:w-12 md:h-12 rounded-md md:rounded-lg bg-gradient-to-br from-[#D1FD0A]/20 to-[#00FFFF]/20 border border-[#D1FD0A]/30 flex items-center justify-center flex-shrink-0">
                 {thread.type === 'dm' ? (
-                  <MessageCircle className="w-4 h-4 md:w-6 md:h-6 text-[#8800FF]" />
+                  <MessageCircle className="w-4 h-4 md:w-6 md:h-6 text-[#D1FD0A]" />
                 ) : (
                   <Hash className="w-4 h-4 md:w-6 md:h-6 text-[#00FFFF]" />
                 )}

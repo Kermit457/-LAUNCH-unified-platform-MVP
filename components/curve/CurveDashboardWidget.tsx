@@ -42,7 +42,7 @@ export const CurveDashboardWidget = ({ userId }: CurveDashboardWidgetProps) => {
     return (
       <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
         <div className="flex items-center justify-center py-8">
-          <div className="w-8 h-8 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin" />
+          <div className="w-8 h-8 border-4 border-lime-500/30 border-t-lime-500 rounded-full animate-spin" />
         </div>
       </div>
     )
@@ -60,12 +60,12 @@ export const CurveDashboardWidget = ({ userId }: CurveDashboardWidgetProps) => {
     <div className="space-y-6">
       {/* Your Curve Stats */}
       {userCurve && (
-        <div className="bg-gradient-to-br from-purple-500/10 to-blue-500/10 border border-purple-500/30 rounded-2xl p-6">
+        <div className="bg-gradient-to-br from-lime-500/10 to-blue-500/10 border border-lime-500/30 rounded-2xl p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-bold text-white">Your Creator Curve</h3>
             <Link
               href={`/profile/${userId}`}
-              className="text-purple-400 hover:text-purple-300 transition-colors"
+              className="text-lime-400 hover:text-lime-300 transition-colors"
             >
               <ExternalLink className="w-4 h-4" />
             </Link>
@@ -112,7 +112,7 @@ export const CurveDashboardWidget = ({ userId }: CurveDashboardWidgetProps) => {
               </span>
             )}
             {userCurve.state === 'launched' && (
-              <span className="px-3 py-1 bg-purple-500/20 text-purple-400 rounded-full text-xs font-medium flex items-center gap-1">
+              <span className="px-3 py-1 bg-lime-500/20 text-lime-400 rounded-full text-xs font-medium flex items-center gap-1">
                 <Rocket className="w-3 h-3" />
                 Launched
               </span>
@@ -161,7 +161,7 @@ export const CurveDashboardWidget = ({ userId }: CurveDashboardWidgetProps) => {
                 <Link
                   key={curve.id}
                   href={`/profile/${curve.ownerId}`}
-                  className="block p-3 bg-black/20 rounded-lg border border-white/5 hover:border-purple-500/30 transition-colors"
+                  className="block p-3 bg-black/20 rounded-lg border border-white/5 hover:border-lime-500/30 transition-colors"
                 >
                   <div className="flex items-center justify-between">
                     <div>

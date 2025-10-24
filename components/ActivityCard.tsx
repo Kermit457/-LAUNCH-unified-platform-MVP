@@ -23,11 +23,11 @@ const activityIcons = {
 
 const activityColors = {
   submission: 'text-cyan-400',
-  campaign_live: 'text-fuchsia-400',
+  campaign_live: 'text-lime-400',
   payout: 'text-green-400',
   approval: 'text-emerald-400',
   topup: 'text-amber-400',
-  network: 'text-purple-400',
+  network: 'text-lime-400',
   launch: 'text-orange-400',
 }
 
@@ -48,7 +48,7 @@ export function ActivityCard({ activity, onMarkAsRead }: ActivityCardProps) {
         flex items-start gap-3 p-3 rounded-lg border transition-all cursor-pointer
         ${activity.read
           ? 'bg-white/[0.02] border-white/5'
-          : 'bg-fuchsia-500/5 border-fuchsia-500/20 hover:bg-fuchsia-500/10'
+          : 'bg-lime-500/5 border-lime-500/20 hover:bg-lime-500/10'
         }
       `}
       onClick={() => !activity.read && onMarkAsRead?.(activity.$id)}
@@ -69,7 +69,7 @@ export function ActivityCard({ activity, onMarkAsRead }: ActivityCardProps) {
 
       {/* Unread indicator */}
       {!activity.read && (
-        <div className="w-2 h-2 bg-fuchsia-500 rounded-full flex-shrink-0 animate-pulse"></div>
+        <div className="w-2 h-2 bg-lime-500 rounded-full flex-shrink-0 animate-pulse"></div>
       )}
     </div>
   )

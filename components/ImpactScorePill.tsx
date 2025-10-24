@@ -8,7 +8,7 @@ interface ImpactScorePillProps {
 export function ImpactScorePill({ score, className }: ImpactScorePillProps) {
   const getScoreColor = () => {
     if (score >= 90) return 'from-yellow-400 to-orange-500'
-    if (score >= 75) return 'from-purple-500 to-pink-600'
+    if (score >= 75) return 'from-lime-500 to-pink-600'
     if (score >= 60) return 'from-blue-500 to-cyan-600'
     if (score >= 45) return 'from-green-500 to-emerald-600'
     return 'from-gray-500 to-gray-600'

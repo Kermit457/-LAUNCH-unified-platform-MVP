@@ -45,7 +45,7 @@ export function PaginationControls({
           'px-4 py-2 rounded-xl font-bold text-sm transition-all flex items-center gap-2',
           page === 1
             ? 'bg-white/5 text-white/30 cursor-not-allowed'
-            : 'bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white shadow-lg'
+            : 'bg-gradient-to-r from-lime-500 to-pink-600 hover:from-lime-600 hover:to-pink-700 text-white shadow-lg'
         )}
         aria-label="Previous page"
       >
@@ -69,7 +69,7 @@ export function PaginationControls({
             onChange={(e) => setJumpValue(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Go to..."
-            className="w-20 px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="w-20 px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-lime-500"
           />
           <button
             onClick={handleJump}
@@ -77,7 +77,7 @@ export function PaginationControls({
             className={cn(
               'px-3 py-2 rounded-xl text-sm font-medium transition-all',
               jumpValue
-                ? 'bg-purple-500 hover:bg-purple-600 text-white'
+                ? 'bg-lime-500 hover:bg-lime-600 text-white'
                 : 'bg-white/5 text-white/30 cursor-not-allowed'
             )}
           >
@@ -94,7 +94,7 @@ export function PaginationControls({
           'px-4 py-2 rounded-xl font-bold text-sm transition-all flex items-center gap-2',
           page === totalPages
             ? 'bg-white/5 text-white/30 cursor-not-allowed'
-            : 'bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white shadow-lg'
+            : 'bg-gradient-to-r from-lime-500 to-pink-600 hover:from-lime-600 hover:to-pink-700 text-white shadow-lg'
         )}
         aria-label="Next page"
       >

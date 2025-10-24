@@ -25,7 +25,7 @@ export function StatusBadge({ status, className }: StatusBadgeProps) {
       case 'needs_fix':
         return 'bg-orange-500/20 text-orange-300 border-orange-500/40'
       case 'claimable':
-        return 'bg-purple-500/20 text-purple-300 border-purple-500/40'
+        return 'bg-lime-500/20 text-lime-300 border-lime-500/40'
       case 'paid':
         return 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40'
       default:

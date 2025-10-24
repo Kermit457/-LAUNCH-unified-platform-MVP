@@ -80,7 +80,7 @@ export function AvatarUpload({ currentAvatar, onUploadComplete, onError }: Avata
         {/* Upload Status Overlay */}
         {uploading && (
           <div className="absolute inset-0 rounded-full bg-black/60 flex items-center justify-center">
-            <Loader2 className="w-8 h-8 text-fuchsia-400 animate-spin" />
+            <Loader2 className="w-8 h-8 text-lime-400 animate-spin" />
           </div>
         )}
 

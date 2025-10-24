@@ -1,7 +1,8 @@
 "use client"
 
 import { useState, useEffect } from 'react'
-import { DollarSign, ArrowDownToLine, ArrowUpFromLine, Share2, Image as ImageIcon, Twitter, Globe, Send, Plus, X, Users2, Rocket } from 'lucide-react'
+import { ArrowDownToLine, ArrowUpFromLine, Share2, Image as ImageIcon, Twitter, Globe, Send, Plus, X, DollarSign, Users2 } from 'lucide-react'
+import { IconCash, IconNetwork, IconRocket } from '@/lib/icons'
 import { usePrivy } from '@privy-io/react-auth'
 import { useToast } from '@/hooks/useToast'
 import { useRouter } from 'next/navigation'
@@ -49,16 +50,16 @@ export default function ProfilePage() {
     { id: 'trader', label: 'Trader', color: 'from-green-500 to-emerald-500' },
     { id: 'advisor', label: 'Advisor', color: 'from-blue-500 to-cyan-500' },
     { id: 'vc', label: 'VC', color: 'from-yellow-500 to-orange-500' },
-    { id: 'believer', label: 'Believer', color: 'from-purple-500 to-pink-500' },
+    { id: 'believer', label: 'Believer', color: 'from-lime-500 to-pink-500' },
     { id: 'cultist', label: 'Cultist', color: 'from-red-500 to-rose-500' },
     { id: 'contributor', label: 'Contributor', color: 'from-teal-500 to-cyan-500' },
     { id: 'developer', label: 'Developer', color: 'from-indigo-500 to-blue-500' },
-    { id: 'incubator', label: 'Incubator', color: 'from-violet-500 to-purple-500' },
+    { id: 'incubator', label: 'Incubator', color: 'from-violet-500 to-lime-500' },
     { id: 'scout', label: 'Scout', color: 'from-amber-500 to-yellow-500' },
     { id: 'influencer', label: 'Influencer', color: 'from-pink-500 to-rose-500' },
     { id: 'builder', label: 'Builder', color: 'from-slate-500 to-zinc-500' },
     { id: 'marketer', label: 'Marketer', color: 'from-orange-500 to-red-500' },
-    { id: 'kol', label: 'KOL', color: 'from-fuchsia-500 to-pink-500' },
+    { id: 'kol', label: 'KOL', color: 'from-lime-500 to-pink-500' },
     { id: 'founder', label: 'Founder', color: 'from-yellow-400 to-amber-500' },
     { id: 'rizzer', label: 'Rizzer', color: 'from-cyan-500 to-blue-500' },
     { id: 'degen', label: 'Degen', color: 'from-lime-500 to-green-500' },
@@ -273,7 +274,7 @@ export default function ProfilePage() {
         <div className="mb-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="relative">
-              <div className="w-14 h-14 md:w-20 md:h-20 rounded-2xl bg-gradient-to-br from-[#00FF88] to-[#00FFFF] p-1 overflow-hidden">
+              <div className="w-14 h-14 md:w-20 md:h-20 rounded-2xl bg-gradient-to-br from-[#D1FD0A] to-[#B8E008] p-1 overflow-hidden">
                 <img
                   src={profilePicture}
                   alt="Profile"
@@ -300,10 +301,10 @@ export default function ProfilePage() {
 
         {/* Balance Display */}
         <div className="mb-3 text-center py-4">
-          <div className="text-4xl md:text-6xl font-black text-white mb-1">
+          <div className="text-4xl md:text-6xl font-black text-[#D1FD0A] mb-1 font-led-dot">
             ${stats.totalValue.toFixed(2)}
           </div>
-          <div className="text-base md:text-xl text-zinc-400">
+          <div className="text-base md:text-xl text-zinc-400 font-led-dot">
             {stats.solBalance.toFixed(3)} SOL
           </div>
         </div>
@@ -311,19 +312,19 @@ export default function ProfilePage() {
         {/* Social Stats */}
         <div className="mb-3 grid grid-cols-4 gap-1.5 text-center">
           <div>
-            <div className="text-xl md:text-3xl font-bold text-white">{stats.keyHolders}</div>
+            <div className="text-xl md:text-3xl font-bold text-white font-led-dot">{stats.keyHolders}</div>
             <div className="text-[9px] md:text-xs text-zinc-500">Key Holders</div>
           </div>
           <div>
-            <div className="text-xl md:text-3xl font-bold text-white">{stats.yourHoldings}</div>
+            <div className="text-xl md:text-3xl font-bold text-white font-led-dot">{stats.yourHoldings}</div>
             <div className="text-[9px] md:text-xs text-zinc-500">Your Holdings</div>
           </div>
           <div>
-            <div className="text-xl md:text-3xl font-bold text-white">{stats.networkConnections}</div>
+            <div className="text-xl md:text-3xl font-bold text-white font-led-dot">{stats.networkConnections}</div>
             <div className="text-[9px] md:text-xs text-zinc-500">Network</div>
           </div>
           <div>
-            <div className="text-xl md:text-3xl font-bold text-white">{stats.collaborations}</div>
+            <div className="text-xl md:text-3xl font-bold text-white font-led-dot">{stats.collaborations}</div>
             <div className="text-[9px] md:text-xs text-zinc-500">Collabs</div>
           </div>
         </div>
@@ -333,7 +334,7 @@ export default function ProfilePage() {
           <div className="flex flex-col items-center gap-1">
             <button
               onClick={handleReceive}
-              className="w-14 h-14 md:w-16 md:h-16 min-h-[56px] rounded-full bg-[#00FF88] flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
+              className="w-14 h-14 md:w-16 md:h-16 min-h-[56px] rounded-full bg-[#D1FD0A] flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
             >
               <ArrowDownToLine className="w-7 h-7 text-black" />
             </button>
@@ -417,7 +418,7 @@ export default function ProfilePage() {
         {/* Skills Section */}
         <div className="mb-3 p-3 rounded-xl bg-zinc-900/60 border border-zinc-800">
           <div className="flex items-center gap-2 mb-2">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#8800FF] to-[#00FFFF] flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#D1FD0A] to-[#00FFFF] flex items-center justify-center">
               <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
                 <circle cx="9" cy="7" r="4"/>
@@ -454,7 +455,7 @@ export default function ProfilePage() {
              onClick={() => setShowProfileEditor(true)}>
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#8800FF] to-[#00FFFF] flex items-center justify-center">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#D1FD0A] to-[#00FFFF] flex items-center justify-center">
                 <span className="text-2xl">💡</span>
               </div>
               <div>
@@ -485,7 +486,7 @@ export default function ProfilePage() {
           {holdings.map((holding, idx) => (
             <div key={idx} className="mb-2 p-3 rounded-xl bg-zinc-900/60 border border-zinc-800 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-cyan-500 flex items-center justify-center overflow-hidden">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-lime-500 to-cyan-500 flex items-center justify-center overflow-hidden">
                   {holding.logo === 'solana' ? (
                     <svg width="24" height="24" viewBox="0 0 397.7 311.7" fill="white">
                       <path d="M64.6 237.9c2.4-2.4 5.7-3.8 9.2-3.8h317.4c5.8 0 8.7 7 4.6 11.1l-62.7 62.7c-2.4 2.4-5.7 3.8-9.2 3.8H6.5c-5.8 0-8.7-7-4.6-11.1l62.7-62.7z"/>

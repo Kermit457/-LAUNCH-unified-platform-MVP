@@ -27,6 +27,22 @@ const config: Config = {
         background: "var(--background)",
         foreground: "var(--foreground)",
 
+        // BTDemo Design System - PRIMARY THEME
+        btdemo: {
+          canvas: '#000000',
+          primary: '#D1FD0A',  // Lime - Main color
+          secondary: '#00FF88', // Greenish - Accents only
+          card: 'rgba(8, 8, 9, 0.6)',
+          'card-solid': '#080809',
+          border: '#3B3B3B',
+          text: '#FFFFFF',
+          'text-muted': 'rgba(255, 255, 255, 0.6)',
+          'text-dim': 'rgba(255, 255, 255, 0.4)',
+          error: '#FF0040',
+          warning: '#FFD700',
+          info: '#0088FF',
+        },
+
         // ICM Motion Color Palette 2025
         primary: {
           cyan: '#00FFFF',
@@ -76,8 +92,17 @@ const config: Config = {
           }
         }
       },
+      backdropBlur: {
+        xs: '2px',
+        sm: '3.5px',
+        md: '8px',
+        lg: '12.5px',
+        xl: '20px',
+        '2xl': '40px',
+        '3xl': '325px',
+      },
       fontFamily: {
-        display: ['Inter', 'sans-serif'], // Using Inter as display until Clash Display is added
+        display: ['Helvetica Now Display', 'Helvetica Neue', 'Inter', 'sans-serif'],
         body: ['Inter Tight', 'Inter', 'sans-serif'],
       },
       backgroundImage: {
@@ -109,6 +134,8 @@ const config: Config = {
         'belief-pulse': 'belief-pulse 1.5s ease-in-out infinite',
         'glow': 'glow 3s ease-in-out infinite',
         'shimmer': 'shimmer 2s ease-in-out infinite',
+        'border-shine': 'border-shine 3s linear infinite',
+        'border-glow': 'border-glow 3s ease-in-out infinite',
       },
       keyframes: {
         ticker: {
@@ -130,6 +157,28 @@ const config: Config = {
         shimmer: {
           '0%': { transform: 'translateX(-100%)' },
           '100%': { transform: 'translateX(100%)' },
+        },
+        'border-shine': {
+          '0%': {
+            backgroundPosition: '0% 50%',
+            opacity: '0.3',
+          },
+          '50%': {
+            backgroundPosition: '100% 50%',
+            opacity: '0.7',
+          },
+          '100%': {
+            backgroundPosition: '200% 50%',
+            opacity: '0.3',
+          },
+        },
+        'border-glow': {
+          '0%, 100%': {
+            boxShadow: '0 0 0 2px rgba(209, 253, 10, 0.2), 0 0 15px rgba(209, 253, 10, 0.1), inset 0 0 20px rgba(0, 0, 0, 0.5)',
+          },
+          '50%': {
+            boxShadow: '0 0 0 2px rgba(209, 253, 10, 0.5), 0 0 30px rgba(209, 253, 10, 0.3), inset 0 0 20px rgba(0, 0, 0, 0.3)',
+          },
         },
       },
     },

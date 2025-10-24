@@ -38,7 +38,7 @@ export const landingData = {
       stat: "$115M total valuation driven by creator clips",
       quote: "Ark Invest's Cathie Wood called Pumpfun the new economy of meme coin launches.",
       category: "Clipping Campaign",
-      color: "fuchsia" as const
+      color: "lime" as const
     },
     {
       id: "bagwork",
@@ -56,7 +56,7 @@ export const landingData = {
       stat: "45K+ network interactions, 12x engagement boost",
       quote: "The conviction score system helped us find real believers early.",
       category: "ICM Launch",
-      color: "purple" as const
+      color: "lime" as const
     }
   ],
 
@@ -92,7 +92,7 @@ export const landingData = {
       title: "Create & Launch",
       description: "Deploy ICM tokens or CCM campaigns. Set rules, pool funds, go live in minutes.",
       cta: { label: "Start Building", href: "/create" },
-      gradient: "from-fuchsia-500 to-purple-500"
+      gradient: "from-lime-500 to-lime-500"
     },
     {
       id: "engage",
@@ -100,7 +100,7 @@ export const landingData = {
       title: "Engage & Amplify",
       description: "Raids, clipping, bounties, predictions. Turn your community into a growth engine.",
       cta: { label: "View Campaigns", href: "/engage" },
-      gradient: "from-purple-500 to-cyan-500"
+      gradient: "from-lime-500 to-cyan-500"
     },
     {
       id: "earn",

@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useMemo, useRef } from 'react'
 import dynamic from 'next/dynamic'
-import { Search, Play } from 'lucide-react'
+import { Play } from 'lucide-react'
+import { IconSearch } from '@/lib/icons'
 import { createCampaign, getCampaigns, type Campaign } from '@/lib/appwrite/services/campaigns'
 import { submitClip, getClips, approveClip, type Clip } from '@/lib/appwrite/services/clips'
 import { useWallet } from '@/contexts/WalletContext'
@@ -590,14 +591,14 @@ export default function ClipsAndCampaignsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-white pb-20 md:pb-0">
+    <div className="min-h-screen bg-btdemo-canvas text-btdemo-text pb-20 md:pb-0">
       {/* Header */}
-      <header className="sticky top-0 z-30 backdrop-blur supports-[backdrop-filter]:bg-neutral-950/70 bg-neutral-950/90 border-b border-white/10">
+      <header className="sticky top-0 z-30 btdemo-glass-strong border-b border-btdemo-border">
         <div className="mx-auto max-w-7xl px-3 md:px-4 py-2 md:py-3">
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 md:gap-3">
             <div className="text-base md:text-xl font-semibold tracking-tight flex items-center gap-2">
-              <span className="text-white/90">🎬</span>
-              <span>Clips & Campaigns</span>
+              <span className="text-btdemo-primary">🎬</span>
+              <span className="btdemo-heading">Clips & Campaigns</span>
             </div>
             <div className="flex items-center gap-2 sm:ml-auto w-full sm:w-auto sm:max-w-md">
               <div className="relative flex-1 sm:flex-auto">
@@ -606,24 +607,24 @@ export default function ClipsAndCampaignsPage() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search clips, creators, projects"
                   aria-label="Search clips, creators, and projects"
-                  className="w-full rounded-lg md:rounded-xl bg-white/5 border border-white/10 px-3 md:px-4 py-2 md:py-2.5 text-xs md:text-sm outline-none focus:border-white/20 placeholder:text-white/40"
+                  className="w-full rounded-lg md:rounded-xl btdemo-glass px-3 md:px-4 py-2 md:py-2.5 text-xs md:text-sm outline-none focus:border-btdemo-primary placeholder:text-btdemo-text-muted transition-all"
                 />
                 {searchQuery && (
                   <button
                     onClick={() => setSearchQuery('')}
-                    className="absolute right-2 md:right-2.5 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/80 text-[10px] md:text-xs transition"
+                    className="absolute right-2 md:right-2.5 top-1/2 -translate-y-1/2 text-btdemo-text-muted hover:text-btdemo-text text-[10px] md:text-xs transition"
                     aria-label="Clear search"
                   >
                     ✕
                   </button>
                 )}
                 {!searchQuery && (
-                  <div className="absolute right-2 md:right-2.5 top-1/2 -translate-y-1/2 text-white/40 text-[10px] md:text-xs">/</div>
+                  <IconSearch className="absolute right-2 md:right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-btdemo-text-dim" />
                 )}
               </div>
               <button
                 onClick={() => setSubmitClipOpen(true)}
-                className="flex-shrink-0 rounded-lg md:rounded-xl bg-white text-black px-4 md:px-4 py-2.5 md:py-2.5 text-sm md:text-sm font-medium hover:bg-neutral-200 transition min-h-[44px] flex items-center justify-center"
+                className="flex-shrink-0 rounded-lg md:rounded-xl btdemo-btn-glow px-4 md:px-4 py-2.5 md:py-2.5 text-sm md:text-sm font-bold min-h-[44px] flex items-center justify-center"
               >
                 + Clip
               </button>
@@ -633,7 +634,7 @@ export default function ClipsAndCampaignsPage() {
         {/* Tabs */}
         <div className="mx-auto max-w-7xl px-3 md:px-4 pb-2 md:pb-3 relative">
           {/* Swipe hint indicator for mobile */}
-          <div className="md:hidden absolute right-3 top-1/2 -translate-y-1/2 text-white/30 text-xs animate-pulse pointer-events-none">
+          <div className="md:hidden absolute right-3 top-1/2 -translate-y-1/2 text-btdemo-text-dim text-xs animate-pulse pointer-events-none">
             ← swipe →
           </div>
           <nav className="flex gap-1.5 md:gap-2 overflow-x-auto scrollbar-hide" role="tablist" aria-label="Clip navigation tabs">
@@ -645,15 +646,15 @@ export default function ClipsAndCampaignsPage() {
                 aria-controls={`tabpanel-${idx}`}
                 onClick={() => setSelectedTab(idx)}
                 className={cn(
-                  "px-3 md:px-3 py-2 md:py-1.5 rounded-full text-xs md:text-sm border whitespace-nowrap relative min-h-[40px] md:min-h-0 flex items-center justify-center",
+                  "px-3 md:px-3 py-2 md:py-1.5 rounded-full text-xs md:text-sm border whitespace-nowrap relative min-h-[40px] md:min-h-0 flex items-center justify-center transition-all",
                   selectedTab === idx
-                    ? "bg-white text-black border-white"
-                    : "bg-white/5 text-white/80 border-white/10 hover:bg-white/10"
+                    ? "bg-btdemo-primary text-btdemo-canvas border-btdemo-primary font-bold"
+                    : "btdemo-glass text-btdemo-text-muted hover:text-btdemo-text hover:border-btdemo-primary"
                 )}
               >
                 {t}
                 {t === "Review Pending" && totalPendingCount > 0 && (
-                  <span className="absolute -top-1 -right-1 min-w-[18px] h-4 md:min-w-[20px] md:h-5 px-1 md:px-1.5 flex items-center justify-center text-[9px] md:text-[10px] font-bold text-white bg-gradient-to-r from-fuchsia-500 to-purple-600 rounded-full animate-pulse">
+                  <span className="absolute -top-1 -right-1 min-w-[18px] h-4 md:min-w-[20px] md:h-5 px-1 md:px-1.5 flex items-center justify-center text-[9px] md:text-[10px] font-bold text-btdemo-canvas bg-btdemo-primary rounded-full btdemo-pulse">
                     {totalPendingCount}
                   </span>
                 )}
@@ -665,7 +666,7 @@ export default function ClipsAndCampaignsPage() {
 
       {/* Main (single column, no sidebar) */}
       <main
-        className="mx-auto max-w-7xl px-3 md:px-4 py-3 md:py-6 space-y-3 md:space-y-6"
+        className="mx-auto max-w-7xl px-3 md:px-4 py-3 md:py-6 space-y-3 md:space-y-6 bg-btdemo-canvas min-h-screen"
         role="main"
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
@@ -696,7 +697,7 @@ export default function ClipsAndCampaignsPage() {
                   </button>
                   <button
                     onClick={handleBatchApprove}
-                    className="px-4 py-2 rounded-xl text-sm bg-gradient-to-r from-fuchsia-500 to-purple-600 text-white font-semibold hover:from-fuchsia-600 hover:to-purple-700 transition"
+                    className="px-4 py-2 rounded-xl text-sm bg-gradient-to-r from-[#D1FD0A] to-[#B8E008] text-white font-semibold hover:from-[#B8E008] hover:to-[#A0C007] transition"
                     disabled={batchActionLoading}
                   >
                     {batchActionLoading ? 'Approving...' : 'Approve Selected'}
@@ -746,7 +747,7 @@ export default function ClipsAndCampaignsPage() {
                           className="w-full p-5 flex items-center justify-between hover:bg-white/5 transition"
                         >
                           <div className="flex items-center gap-3">
-                            <div className="size-12 rounded-full bg-gradient-to-br from-fuchsia-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+                            <div className="size-12 rounded-full bg-gradient-to-br from-[#D1FD0A] to-[#B8E008] flex items-center justify-center flex-shrink-0">
                               <span className="text-xl font-bold text-white">{campaign.title.charAt(0)}</span>
                             </div>
                             <div className="text-left">
@@ -782,7 +783,7 @@ export default function ClipsAndCampaignsPage() {
                                       type="checkbox"
                                       checked={selectedReviewClips.has(clip.$id)}
                                       onChange={() => toggleClipSelection(clip.$id)}
-                                      className="w-5 h-5 rounded border-white/20 bg-white/5 text-fuchsia-500 focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-0 cursor-pointer"
+                                      className="w-5 h-5 rounded border-white/20 bg-white/5 text-lime-500 focus:ring-2 focus:ring-lime-500 focus:ring-offset-0 cursor-pointer"
                                     />
                                   </label>
 
@@ -805,8 +806,8 @@ export default function ClipsAndCampaignsPage() {
                                       clip.platform === 'youtube' && "bg-red-600",
                                       clip.platform === 'tiktok' && "bg-black",
                                       clip.platform === 'twitter' && "bg-black",
-                                      clip.platform === 'twitch' && "bg-purple-600",
-                                      clip.platform === 'instagram' && "bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500"
+                                      clip.platform === 'twitch' && "bg-lime-600",
+                                      clip.platform === 'instagram' && "bg-gradient-to-br from-lime-500 via-lime-500 to-orange-500"
                                     )}>
                                       {clip.platform === 'youtube' && (
                                         <svg className="w-5 h-5 fill-white" viewBox="0 0 24 24">
@@ -848,19 +849,19 @@ export default function ClipsAndCampaignsPage() {
                                     {/* Metrics */}
                                     <div className="grid grid-cols-4 gap-3">
                                       <div className="text-center">
-                                        <div className="text-sm font-semibold text-white">{clip.views.toLocaleString()}</div>
+                                        <div className="text-sm font-semibold text-white font-led-dot">{clip.views.toLocaleString()}</div>
                                         <div className="text-xs text-white/50">Views</div>
                                       </div>
                                       <div className="text-center">
-                                        <div className="text-sm font-semibold text-white">{clip.likes.toLocaleString()}</div>
+                                        <div className="text-sm font-semibold text-white font-led-dot">{clip.likes.toLocaleString()}</div>
                                         <div className="text-xs text-white/50">Likes</div>
                                       </div>
                                       <div className="text-center">
-                                        <div className="text-sm font-semibold text-white">{clip.comments.toLocaleString()}</div>
+                                        <div className="text-sm font-semibold text-white font-led-dot">{clip.comments.toLocaleString()}</div>
                                         <div className="text-xs text-white/50">Comments</div>
                                       </div>
                                       <div className="text-center">
-                                        <div className="text-sm font-semibold text-emerald-400">{clip.engagement.toFixed(1)}%</div>
+                                        <div className="text-sm font-semibold text-[#D1FD0A] font-led-dot">{clip.engagement.toFixed(1)}%</div>
                                         <div className="text-xs text-white/50">Engagement</div>
                                       </div>
                                     </div>
@@ -888,7 +889,7 @@ export default function ClipsAndCampaignsPage() {
                                       </button>
                                       <button
                                         onClick={() => handleApproveClip(clip.$id)}
-                                        className="flex-1 px-4 py-2 rounded-lg bg-gradient-to-r from-fuchsia-500 to-purple-600 text-sm text-white font-semibold hover:from-fuchsia-600 hover:to-purple-700 transition"
+                                        className="flex-1 px-4 py-2 rounded-lg bg-gradient-to-r from-[#D1FD0A] to-[#B8E008] text-sm text-white font-semibold hover:from-[#B8E008] hover:to-[#A0C007] transition"
                                       >
                                         Approve
                                       </button>
@@ -913,7 +914,7 @@ export default function ClipsAndCampaignsPage() {
           {metrics.map((m) => (
             <div key={m.label} className="snap-center shrink-0 min-w-[140px] md:min-w-0 rounded-lg md:rounded-2xl border border-white/10 bg-gradient-to-b from-white/5 to-transparent p-2 md:p-4">
               <div className="text-[10px] md:text-xs uppercase tracking-wide text-white/60">{m.label}</div>
-              <div className="mt-0.5 md:mt-1 text-base md:text-xl font-semibold">{m.value}</div>
+              <div className="mt-0.5 md:mt-1 text-base md:text-xl font-semibold font-led-dot">{m.value}</div>
             </div>
           ))}
         </section>
@@ -927,7 +928,7 @@ export default function ClipsAndCampaignsPage() {
               <h2 className="text-base md:text-lg font-semibold">Analytics Overview</h2>
               <div className="flex gap-1.5 md:gap-2">
                 <button className="px-2 md:px-3 py-1 md:py-1.5 rounded-lg md:rounded-xl border border-white/10 bg-white/5 text-[10px] md:text-xs hover:bg-white/10">7D</button>
-                <button className="px-2 md:px-3 py-1 md:py-1.5 rounded-lg md:rounded-xl bg-gradient-to-r from-fuchsia-500 to-purple-600 text-white text-[10px] md:text-xs font-semibold">30D</button>
+                <button className="px-2 md:px-3 py-1 md:py-1.5 rounded-lg md:rounded-xl bg-gradient-to-r from-[#D1FD0A] to-[#B8E008] text-white text-[10px] md:text-xs font-semibold">30D</button>
                 <button className="px-2 md:px-3 py-1 md:py-1.5 rounded-lg md:rounded-xl border border-white/10 bg-white/5 text-[10px] md:text-xs hover:bg-white/10">90D</button>
                 <button className="px-2 md:px-3 py-1 md:py-1.5 rounded-lg md:rounded-xl border border-white/10 bg-white/5 text-[10px] md:text-xs hover:bg-white/10">All</button>
               </div>
@@ -938,8 +939,8 @@ export default function ClipsAndCampaignsPage() {
               {metrics.map((m) => (
                 <div key={m.label} className="rounded-lg md:rounded-2xl border border-white/10 bg-gradient-to-b from-white/5 to-transparent p-2 md:p-4">
                   <div className="text-[10px] md:text-xs uppercase tracking-wide text-white/60">{m.label}</div>
-                  <div className="mt-0.5 md:mt-1 text-lg md:text-2xl font-bold">{m.value}</div>
-                  <div className="mt-0.5 md:mt-1 text-[9px] md:text-xs text-emerald-400 flex items-center gap-0.5 md:gap-1">
+                  <div className="mt-0.5 md:mt-1 text-lg md:text-2xl font-bold font-led-dot">{m.value}</div>
+                  <div className="mt-0.5 md:mt-1 text-[9px] md:text-xs text-[#D1FD0A] flex items-center gap-0.5 md:gap-1">
                     <svg className="w-2 h-2 md:w-3 md:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                     </svg>
@@ -957,13 +958,13 @@ export default function ClipsAndCampaignsPage() {
                   { platform: 'YouTube', count: clips.filter(c => c.platform === 'youtube').length, color: 'bg-red-500' },
                   { platform: 'Twitter/X', count: clips.filter(c => c.platform === 'twitter').length, color: 'bg-blue-400' },
                   { platform: 'TikTok', count: clips.filter(c => c.platform === 'tiktok').length, color: 'bg-black border border-white/20' },
-                  { platform: 'Instagram', count: clips.filter(c => c.platform === 'instagram').length, color: 'bg-gradient-to-r from-purple-500 to-pink-500' },
+                  { platform: 'Instagram', count: clips.filter(c => c.platform === 'instagram').length, color: 'bg-gradient-to-r from-lime-500 to-pink-500' },
                 ].map(p => (
                   <div key={p.platform} className="flex items-center gap-2 md:gap-3">
                     <div className={cn("w-2 h-2 md:w-3 md:h-3 rounded-full", p.color)} />
                     <div className="flex-1 text-xs md:text-sm text-white/80">{p.platform}</div>
-                    <div className="text-xs md:text-sm font-semibold">{p.count} clips</div>
-                    <div className="text-[10px] md:text-xs text-white/50">{clips.length > 0 ? Math.round((p.count / clips.length) * 100) : 0}%</div>
+                    <div className="text-xs md:text-sm font-semibold font-led-dot">{p.count} clips</div>
+                    <div className="text-[10px] md:text-xs text-white/50 font-led-dot">{clips.length > 0 ? Math.round((p.count / clips.length) * 100) : 0}%</div>
                   </div>
                 ))}
               </div>
@@ -989,7 +990,7 @@ export default function ClipsAndCampaignsPage() {
                         <div className="text-[10px] md:text-xs text-white/50">by @{clip.creatorUsername || clip.submittedBy.slice(0, 12)}</div>
                       </div>
                       <div className="text-right">
-                        <div className="text-xs md:text-sm font-semibold">{clip.views.toLocaleString()}</div>
+                        <div className="text-xs md:text-sm font-semibold font-led-dot">{clip.views.toLocaleString()}</div>
                         <div className="text-[9px] md:text-xs text-white/50">views</div>
                       </div>
                     </div>
@@ -1010,7 +1011,7 @@ export default function ClipsAndCampaignsPage() {
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold">My Clips</h2>
               <div className="flex gap-2">
-                <button className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-fuchsia-500 to-purple-600 text-white text-xs font-semibold">All</button>
+                <button className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#D1FD0A] to-[#B8E008] text-white text-xs font-semibold">All</button>
                 <button className="px-3 py-1.5 rounded-xl border border-white/10 bg-white/5 text-xs hover:bg-white/10">Approved</button>
                 <button className="px-3 py-1.5 rounded-xl border border-white/10 bg-white/5 text-xs hover:bg-white/10">Pending</button>
                 <button className="px-3 py-1.5 rounded-xl border border-white/10 bg-white/5 text-xs hover:bg-white/10">Rejected</button>
@@ -1019,7 +1020,7 @@ export default function ClipsAndCampaignsPage() {
 
             {clips.filter(c => c.submittedBy === userId).length === 0 ? (
               <div className="text-center py-20 px-4">
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-fuchsia-500 to-purple-600 mb-4">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[#D1FD0A] to-[#B8E008] mb-4">
                   <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                   </svg>
@@ -1030,7 +1031,7 @@ export default function ClipsAndCampaignsPage() {
                 </p>
                 <button
                   onClick={() => setSubmitClipOpen(true)}
-                  className="px-6 py-3 rounded-xl bg-gradient-to-r from-fuchsia-500 to-purple-600 text-white font-semibold hover:from-fuchsia-600 hover:to-purple-700 transition"
+                  className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#D1FD0A] to-[#B8E008] text-white font-semibold hover:from-[#B8E008] hover:to-[#A0C007] transition"
                 >
                   Submit Your First Clip
                 </button>
@@ -1051,7 +1052,7 @@ export default function ClipsAndCampaignsPage() {
                         className={cn(
                           "group rounded-2xl overflow-hidden border bg-white/5 transition-all cursor-pointer",
                           isSelected
-                            ? "border-fuchsia-500 ring-2 ring-fuchsia-500/50 scale-[1.02]"
+                            ? "border-lime-500 ring-2 ring-lime-500/50 scale-[1.02]"
                             : "border-white/10 hover:border-white/20"
                         )}
                       >
@@ -1067,12 +1068,12 @@ export default function ClipsAndCampaignsPage() {
                           )}
 
                           {/* Status Badge */}
-                          <div className="absolute top-2 left-2 px-2 py-1 rounded-lg bg-emerald-500 text-white text-xs font-semibold">
+                          <div className="absolute top-2 left-2 px-2 py-1 rounded-lg bg-[#D1FD0A] text-black text-xs font-semibold">
                             ✓ Approved
                           </div>
 
                           {/* Views Badge */}
-                          <div className="absolute bottom-2 right-2 px-2 py-1 rounded-lg bg-black/80 backdrop-blur-sm text-white text-xs font-semibold">
+                          <div className="absolute bottom-2 right-2 px-2 py-1 rounded-lg bg-black/80 backdrop-blur-sm text-white text-xs font-semibold font-led-dot">
                             👁 {clip.views.toLocaleString()}
                           </div>
                         </div>
@@ -1084,7 +1085,7 @@ export default function ClipsAndCampaignsPage() {
                           </div>
                           <div className="flex items-center justify-between text-xs text-white/60">
                             <span>{new Date(clip.$createdAt).toLocaleDateString()}</span>
-                            <span>{clip.engagement.toFixed(1)}% eng.</span>
+                            <span className="font-led-dot">{clip.engagement.toFixed(1)}% eng.</span>
                           </div>
                           <div className="flex gap-2">
                             <button
@@ -1101,7 +1102,7 @@ export default function ClipsAndCampaignsPage() {
                                 e.stopPropagation()
                                 window.open(clip.embedUrl, '_blank')
                               }}
-                              className="flex-1 py-1.5 rounded-lg bg-gradient-to-r from-fuchsia-500 to-purple-600 text-xs text-white font-semibold hover:from-fuchsia-600 hover:to-purple-700 transition"
+                              className="flex-1 py-1.5 rounded-lg bg-gradient-to-r from-[#D1FD0A] to-[#B8E008] text-xs text-white font-semibold hover:from-[#B8E008] hover:to-[#A0C007] transition"
                             >
                               View
                             </button>
@@ -1122,7 +1123,7 @@ export default function ClipsAndCampaignsPage() {
               <h2 className="text-lg font-semibold">My Campaigns</h2>
               <button
                 onClick={() => setCreateCampaignOpen(true)}
-                className="px-4 py-2 rounded-xl bg-gradient-to-r from-fuchsia-500 to-purple-600 text-white text-sm font-semibold hover:from-fuchsia-600 hover:to-purple-700 transition"
+                className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#D1FD0A] to-[#B8E008] text-white text-sm font-semibold hover:from-[#B8E008] hover:to-[#A0C007] transition"
               >
                 + New Campaign
               </button>
@@ -1130,7 +1131,7 @@ export default function ClipsAndCampaignsPage() {
 
             {campaigns.filter(c => c.createdBy === userId).length === 0 ? (
               <div className="text-center py-20 px-4">
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-fuchsia-500 to-purple-600 mb-4">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[#D1FD0A] to-[#B8E008] mb-4">
                   <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
                   </svg>
@@ -1141,7 +1142,7 @@ export default function ClipsAndCampaignsPage() {
                 </p>
                 <button
                   onClick={() => setCreateCampaignOpen(true)}
-                  className="px-6 py-3 rounded-xl bg-gradient-to-r from-fuchsia-500 to-purple-600 text-white font-semibold hover:from-fuchsia-600 hover:to-purple-700 transition"
+                  className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#D1FD0A] to-[#B8E008] text-white font-semibold hover:from-[#B8E008] hover:to-[#A0C007] transition"
                 >
                   Start Your First Campaign
                 </button>
@@ -1161,7 +1162,7 @@ export default function ClipsAndCampaignsPage() {
                       <div key={campaign.$id} className="rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 to-transparent p-6">
                         {/* Header */}
                         <div className="flex items-start gap-4 mb-4">
-                          <div className="size-14 rounded-full bg-gradient-to-br from-fuchsia-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+                          <div className="size-14 rounded-full bg-gradient-to-br from-[#D1FD0A] to-[#B8E008] flex items-center justify-center flex-shrink-0">
                             <span className="text-2xl font-bold text-white">{campaign.title.charAt(0)}</span>
                           </div>
                           <div className="flex-1 min-w-0">
@@ -1178,19 +1179,19 @@ export default function ClipsAndCampaignsPage() {
                         {/* Stats Grid */}
                         <div className="grid grid-cols-4 gap-4 mb-4">
                           <div className="text-center p-3 rounded-xl bg-white/5">
-                            <div className="text-lg font-bold">{budgetPct}%</div>
+                            <div className="text-lg font-bold font-led-dot">{budgetPct}%</div>
                             <div className="text-xs text-white/50">Budget Left</div>
                           </div>
                           <div className="text-center p-3 rounded-xl bg-white/5">
-                            <div className="text-lg font-bold">{pendingCount}</div>
+                            <div className="text-lg font-bold font-led-dot">{pendingCount}</div>
                             <div className="text-xs text-white/50">Pending</div>
                           </div>
                           <div className="text-center p-3 rounded-xl bg-white/5">
-                            <div className="text-lg font-bold">0</div>
+                            <div className="text-lg font-bold font-led-dot">0</div>
                             <div className="text-xs text-white/50">Approved</div>
                           </div>
                           <div className="text-center p-3 rounded-xl bg-white/5">
-                            <div className="text-lg font-bold">0</div>
+                            <div className="text-lg font-bold font-led-dot">0</div>
                             <div className="text-xs text-white/50">Views</div>
                           </div>
                         </div>
@@ -1198,11 +1199,11 @@ export default function ClipsAndCampaignsPage() {
                         {/* Budget Progress */}
                         <div className="mb-4">
                           <div className="flex items-center justify-between text-sm mb-2">
-                            <span className="text-white/60">${budgetPaid} of ${budgetTotal} paid out</span>
-                            <span className="font-semibold text-white">${budgetRemaining} remaining</span>
+                            <span className="text-white/60 font-led-dot">${budgetPaid} of ${budgetTotal} paid out</span>
+                            <span className="font-semibold text-white font-led-dot">${budgetRemaining} remaining</span>
                           </div>
                           <div className="h-2 w-full rounded-full bg-white/10 overflow-hidden">
-                            <div className="h-full bg-gradient-to-r from-fuchsia-500 to-purple-600 transition-all duration-500" style={{ width: `${budgetPct}%` }} />
+                            <div className="h-full bg-gradient-to-r from-[#D1FD0A] to-[#B8E008] transition-all duration-500" style={{ width: `${budgetPct}%` }} />
                           </div>
                         </div>
 
@@ -1270,12 +1271,12 @@ export default function ClipsAndCampaignsPage() {
                   <div key={campaign.$id} className="rounded-lg md:rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 to-transparent p-3 md:p-5 flex flex-col gap-2 md:gap-4 hover:border-white/20 transition-colors">
                     {/* Header with Logo and Title */}
                     <div className="flex items-start gap-2 md:gap-3">
-                      <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gradient-to-br from-fuchsia-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+                      <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gradient-to-br from-[#D1FD0A] to-[#B8E008] flex items-center justify-center flex-shrink-0">
                         <span className="text-base md:text-xl font-bold text-white">{campaign.title.charAt(0)}</span>
                       </div>
                       <div className="flex-1 min-w-0">
                         <h3 className="text-sm md:text-base font-bold text-white truncate">{campaign.title}</h3>
-                        <p className="text-[10px] md:text-xs text-white/50 mt-0.5">
+                        <p className="text-[10px] md:text-xs text-white/50 mt-0.5 font-led-dot">
                           Earn ${campaign.prizePool / 1000} per 1K Views
                         </p>
                       </div>
@@ -1285,7 +1286,7 @@ export default function ClipsAndCampaignsPage() {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
                           </svg>
                         </button>
-                        <div className="px-2 md:px-3 py-1 md:py-1.5 rounded-full bg-blue-500 text-white text-[10px] md:text-xs font-semibold whitespace-nowrap">
+                        <div className="px-2 md:px-3 py-1 md:py-1.5 rounded-full bg-[#D1FD0A] text-black text-[10px] md:text-xs font-semibold whitespace-nowrap font-led-dot">
                           ${Math.round(campaign.prizePool / 1000)} / 1K
                         </div>
                       </div>
@@ -1294,11 +1295,11 @@ export default function ClipsAndCampaignsPage() {
                     {/* Budget Progress */}
                     <div>
                       <div className="flex items-center justify-between text-[10px] md:text-sm mb-1.5 md:mb-2">
-                        <span className="text-white/60">${budgetPaid} of ${budgetTotal} paid</span>
-                        <span className="font-semibold text-white">{budgetPct}%</span>
+                        <span className="text-white/60 font-led-dot">${budgetPaid} of ${budgetTotal} paid</span>
+                        <span className="font-semibold text-white font-led-dot">{budgetPct}%</span>
                       </div>
                       <div className="h-1.5 md:h-2 w-full rounded-full bg-white/10 overflow-hidden">
-                        <div className="h-full bg-gradient-to-r from-fuchsia-500 to-purple-600 transition-all duration-500" style={{ width: `${budgetPct}%` }} />
+                        <div className="h-full bg-gradient-to-r from-[#D1FD0A] to-[#B8E008] transition-all duration-500" style={{ width: `${budgetPct}%` }} />
                       </div>
                     </div>
 
@@ -1360,7 +1361,7 @@ export default function ClipsAndCampaignsPage() {
                           </button>
                           <button
                             onClick={() => handleJoinCampaign(campaign.$id)}
-                            className="flex-1 flex items-center justify-center gap-1 md:gap-1.5 rounded-lg md:rounded-xl bg-gradient-to-r from-fuchsia-500 to-purple-600 text-white py-1.5 md:py-2 text-[11px] md:text-sm font-semibold hover:from-fuchsia-600 hover:to-purple-700 transition active:scale-95"
+                            className="flex-1 flex items-center justify-center gap-1 md:gap-1.5 rounded-lg md:rounded-xl bg-gradient-to-r from-[#D1FD0A] to-[#B8E008] text-white py-1.5 md:py-2 text-[11px] md:text-sm font-semibold hover:from-[#B8E008] hover:to-[#A0C007] transition active:scale-95"
                           >
                             <svg className="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
@@ -1429,7 +1430,7 @@ export default function ClipsAndCampaignsPage() {
                     className={cn(
                       "group rounded-lg md:rounded-2xl overflow-hidden border bg-white/5 transition-all cursor-pointer",
                       isSelected
-                        ? "border-fuchsia-500 ring-2 ring-fuchsia-500/50 scale-[1.02]"
+                        ? "border-lime-500 ring-2 ring-lime-500/50 scale-[1.02]"
                         : "border-white/10 hover:border-white/20"
                     )}
                   >
@@ -1473,7 +1474,7 @@ export default function ClipsAndCampaignsPage() {
                               e.stopPropagation()
                               router.push(`/profile/${clip.submittedBy}`)
                             }}
-                            className="w-7 h-7 md:w-9 md:h-9 rounded-full border-2 border-white/20 bg-gradient-to-br from-fuchsia-500 to-violet-500 flex items-center justify-center overflow-hidden hover:border-white/40 transition-all hover:scale-105"
+                            className="w-7 h-7 md:w-9 md:h-9 rounded-full border-2 border-white/20 bg-gradient-to-br from-[#D1FD0A] to-[#B8E008] flex items-center justify-center overflow-hidden hover:border-white/40 transition-all hover:scale-105"
                             aria-label={`View ${clip.creatorUsername || clip.submittedBy}'s profile`}
                           >
                             <img
@@ -1511,8 +1512,8 @@ export default function ClipsAndCampaignsPage() {
                             clip.platform === 'youtube' && "bg-red-600",
                             clip.platform === 'tiktok' && "bg-black",
                             clip.platform === 'twitter' && "bg-black",
-                            clip.platform === 'twitch' && "bg-purple-600",
-                            clip.platform === 'instagram' && "bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500"
+                            clip.platform === 'twitch' && "bg-lime-600",
+                            clip.platform === 'instagram' && "bg-gradient-to-br from-lime-500 via-lime-500 to-orange-500"
                           )}>
                             {clip.platform === 'twitter' && (
                               <svg className="w-4 h-4 md:w-5 md:h-5 fill-white" viewBox="0 0 24 24">
@@ -1557,7 +1558,7 @@ export default function ClipsAndCampaignsPage() {
                       )}
 
                       {isSelected && (
-                        <div className="absolute top-3 right-3 bg-fuchsia-500 text-white text-xs px-2 py-1 rounded-full font-medium">
+                        <div className="absolute top-3 right-3 bg-lime-500 text-white text-xs px-2 py-1 rounded-full font-medium">
                           Selected
                         </div>
                       )}
@@ -1566,19 +1567,19 @@ export default function ClipsAndCampaignsPage() {
                       <div className="absolute bottom-0 left-0 right-0 p-2 md:p-3 bg-gradient-to-t from-black/90 via-black/50 to-transparent">
                         <div className="flex items-center justify-between text-white">
                           <div className="flex flex-col gap-0.5">
-                            <div className="text-[10px] md:text-xs font-semibold">{clip.views.toLocaleString()}</div>
+                            <div className="text-[10px] md:text-xs font-semibold font-led-dot">{clip.views.toLocaleString()}</div>
                             <div className="text-[8px] md:text-[10px] text-white/60">views</div>
                           </div>
                           <div className="flex flex-col gap-0.5 items-center">
-                            <div className="text-[10px] md:text-xs font-semibold">{clip.likes.toLocaleString()}</div>
+                            <div className="text-[10px] md:text-xs font-semibold font-led-dot">{clip.likes.toLocaleString()}</div>
                             <div className="text-[8px] md:text-[10px] text-white/60">likes</div>
                           </div>
                           <div className="flex flex-col gap-0.5 items-center">
-                            <div className="text-[10px] md:text-xs font-semibold">{clip.comments.toLocaleString()}</div>
+                            <div className="text-[10px] md:text-xs font-semibold font-led-dot">{clip.comments.toLocaleString()}</div>
                             <div className="text-[8px] md:text-[10px] text-white/60">cmnt</div>
                           </div>
                           <div className="flex flex-col gap-0.5 items-end">
-                            <div className="text-[10px] md:text-xs font-semibold text-emerald-400">{clip.engagement.toFixed(1)}%</div>
+                            <div className="text-[10px] md:text-xs font-semibold text-[#D1FD0A] font-led-dot">{clip.engagement.toFixed(1)}%</div>
                             <div className="text-[8px] md:text-[10px] text-white/60">eng</div>
                           </div>
                         </div>

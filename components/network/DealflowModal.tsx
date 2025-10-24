@@ -24,7 +24,7 @@ export interface DealflowSubmission {
 const DEAL_TYPES = [
   { id: 'partnership' as const, label: 'Partnership', icon: Users, color: 'from-blue-500/20 to-blue-600/10 border-blue-500/30' },
   { id: 'investment' as const, label: 'Investment', icon: DollarSign, color: 'from-green-500/20 to-green-600/10 border-green-500/30' },
-  { id: 'collaboration' as const, label: 'Collaboration', icon: Briefcase, color: 'from-purple-500/20 to-purple-600/10 border-purple-500/30' },
+  { id: 'collaboration' as const, label: 'Collaboration', icon: Briefcase, color: 'from-[#D1FD0A]/20 to-[#B8E008]/10 border-[#D1FD0A]/30' },
   { id: 'service' as const, label: 'Service', icon: Calendar, color: 'from-orange-500/20 to-orange-600/10 border-orange-500/30' },
 ]
 
@@ -107,7 +107,7 @@ export function DealflowModal({ isOpen, onClose, onSubmit }: DealflowModalProps)
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
           >
-            <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-zinc-950 rounded-2xl border border-zinc-800 shadow-2xl">
+            <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto custom-scrollbar bg-zinc-950 rounded-2xl border border-zinc-800 shadow-2xl">
               {/* Header */}
               <div className="sticky top-0 z-10 flex items-center justify-between p-6 border-b border-zinc-800 bg-zinc-950">
                 <div>

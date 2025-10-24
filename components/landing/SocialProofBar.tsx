@@ -27,7 +27,7 @@ export function SocialProofBar() {
             <div className="text-sm text-zinc-500 uppercase tracking-wide mb-1">
               {socialProof.stats.label}
             </div>
-            <div className="text-2xl font-bold bg-gradient-to-r from-fuchsia-500 to-cyan-500 bg-clip-text text-transparent">
+            <div className="text-2xl font-bold bg-gradient-to-r from-lime-500 to-cyan-500 bg-clip-text text-transparent">
               {socialProof.stats.creators} creators
             </div>
           </div>

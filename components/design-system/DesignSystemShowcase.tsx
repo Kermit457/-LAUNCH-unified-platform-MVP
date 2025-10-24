@@ -301,7 +301,7 @@ export const Input = React.forwardRef<
         w-full px-3 py-2 rounded-lg
         bg-design-zinc-900/50 border border-design-zinc-800
         text-white placeholder:text-design-zinc-500
-        focus:outline-none focus:ring-2 focus:ring-design-purple-500/50
+        focus:outline-none focus:ring-2 focus:ring-design-lime-500/50
         transition-all duration-200
         ${className}
       `}
@@ -444,7 +444,7 @@ export const FloatingTabBar = ({
             {activeIndex === index && (
               <motion.div
                 layoutId="activeTab"
-                className="absolute inset-0 bg-gradient-to-r from-violet-500/20 to-fuchsia-500/20 rounded-2xl"
+                className="absolute inset-0 bg-gradient-to-r from-violet-500/20 to-lime-500/20 rounded-2xl"
                 transition={tokens.animation.spring}
               />
             )}
@@ -517,7 +517,7 @@ export const ActivityCard = ({
         </span>
       </div>
 
-      <h3 className="text-lg font-semibold text-white mb-1 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-violet-400 group-hover:to-fuchsia-400 transition-all">
+      <h3 className="text-lg font-semibold text-white mb-1 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-violet-400 group-hover:to-lime-400 transition-all">
         {title}
       </h3>
       <p className="text-sm text-zinc-500 mb-3">{subtitle}</p>
@@ -604,7 +604,7 @@ export default function DesignSystemShowcase() {
       {/* Animated Background */}
       <div className="fixed inset-0 -z-10">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-violet-500/20 rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-fuchsia-500/20 rounded-full blur-[120px] animate-pulse" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-lime-500/20 rounded-full blur-[120px] animate-pulse" />
       </div>
 
       {/* Header */}
@@ -612,7 +612,7 @@ export default function DesignSystemShowcase() {
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-violet-400 to-fuchsia-400 text-transparent bg-clip-text">
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-violet-400 to-lime-400 text-transparent bg-clip-text">
                 LaunchOS Design System
               </h1>
               <p className="text-zinc-500 mt-1">Premium native app experience for web</p>

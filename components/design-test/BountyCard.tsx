@@ -38,7 +38,7 @@ export const BountyCard: React.FC<BountyCardProps> = ({ bounty, onAccept }) => {
       <div className="relative p-4 rounded-2xl bg-zinc-900/40 backdrop-blur-xl border border-zinc-800 group-hover:border-violet-500/30 transition-all">
         <div className="flex items-start gap-4">
           {/* Icon */}
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center flex-shrink-0">
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500 to-lime-500 flex items-center justify-center flex-shrink-0">
             <DollarSign className="w-6 h-6 text-white" />
           </div>
 

@@ -37,7 +37,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               {isActive && (
                 <motion.div
                   layoutId="activeFilter"
-                  className="absolute inset-0 bg-gradient-to-r from-violet-500/20 to-fuchsia-500/20 border border-violet-500/30 rounded-xl"
+                  className="absolute inset-0 bg-gradient-to-r from-violet-500/20 to-lime-500/20 border border-violet-500/30 rounded-xl"
                   transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                 />
               )}

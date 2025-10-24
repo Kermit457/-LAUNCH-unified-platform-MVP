@@ -13,8 +13,8 @@ const categoryIcons: Record<NotificationCategory, any> = {
 }
 
 const categoryColors: Record<NotificationCategory, string> = {
-  network: 'text-fuchsia-400',
-  campaign: 'text-purple-400',
+  network: 'text-lime-400',
+  campaign: 'text-lime-400',
   financial: 'text-emerald-400',
   platform: 'text-cyan-400',
 }
@@ -35,7 +35,7 @@ function NotificationItem({ notification, onMarkRead, onClear }: {
     >
       {/* Unread indicator */}
       {!notification.read && (
-        <div className="absolute left-2 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-fuchsia-500" />
+        <div className="absolute left-2 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-lime-500" />
       )}
 
       <div className="flex items-start gap-3 pl-3">
@@ -63,7 +63,7 @@ function NotificationItem({ notification, onMarkRead, onClear }: {
             {!notification.read && (
               <button
                 onClick={onMarkRead}
-                className="text-xs text-fuchsia-400 hover:text-fuchsia-300 transition-colors flex items-center gap-1"
+                className="text-xs text-lime-400 hover:text-lime-300 transition-colors flex items-center gap-1"
               >
                 <Check className="w-3 h-3" />
                 Mark read
@@ -104,10 +104,10 @@ export function NotificationDropdown({ isOpen, onClose }: {
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-white/10">
           <div className="flex items-center gap-2">
-            <Bell className="w-5 h-5 text-fuchsia-400" />
+            <Bell className="w-5 h-5 text-lime-400" />
             <h3 className="text-lg font-semibold text-white">Notifications</h3>
             {unreadCount > 0 && (
-              <span className="px-2 py-0.5 rounded-full bg-fuchsia-500/20 text-fuchsia-300 text-xs font-semibold">
+              <span className="px-2 py-0.5 rounded-full bg-lime-500/20 text-lime-300 text-xs font-semibold">
                 {unreadCount}
               </span>
             )}
@@ -126,7 +126,7 @@ export function NotificationDropdown({ isOpen, onClose }: {
             <button
               onClick={markAllAsRead}
               disabled={unreadCount === 0}
-              className="text-xs text-fuchsia-400 hover:text-fuchsia-300 disabled:text-white/30 disabled:cursor-not-allowed transition-colors flex items-center gap-1"
+              className="text-xs text-lime-400 hover:text-lime-300 disabled:text-white/30 disabled:cursor-not-allowed transition-colors flex items-center gap-1"
             >
               <CheckCheck className="w-3 h-3" />
               Mark all read

@@ -34,7 +34,7 @@ export function InviteTree({ compact = false }: InviteTreeProps) {
   if (compact) {
     return (
       <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-zinc-900/50 border border-zinc-800">
-        <Users className="w-4 h-4 text-[#8800FF]" />
+        <Users className="w-4 h-4 text-[#D1FD0A]" />
         <div className="flex items-center gap-2 text-xs">
           <span className="text-zinc-400">Invites</span>
           <span className="font-bold text-white">{totalInvited}</span>
@@ -61,12 +61,12 @@ export function InviteTree({ compact = false }: InviteTreeProps) {
     <div className="p-4 rounded-xl bg-zinc-900/30 border border-zinc-800">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-bold text-white flex items-center gap-2">
-          <Users className="w-5 h-5 text-[#8800FF]" />
+          <Users className="w-5 h-5 text-[#D1FD0A]" />
           Your Invites
         </h2>
         <button
           onClick={handleCopyLink}
-          className="px-3 py-1.5 rounded-lg bg-[#8800FF]/10 hover:bg-[#8800FF]/20 text-[#8800FF] text-xs font-bold transition-all border border-[#8800FF]/30 flex items-center gap-1"
+          className="px-3 py-1.5 rounded-lg bg-[#D1FD0A]/10 hover:bg-[#D1FD0A]/20 text-[#D1FD0A] text-xs font-bold transition-all border border-[#D1FD0A]/30 flex items-center gap-1"
         >
           <Share2 className="w-3 h-3" />
           Share Link
@@ -126,9 +126,9 @@ export function InviteTree({ compact = false }: InviteTreeProps) {
       </div>
 
       {/* Incentive Banner */}
-      <div className="mt-4 p-3 rounded-lg bg-gradient-to-r from-[#8800FF]/10 to-[#00FF88]/10 border border-[#8800FF]/30">
+      <div className="mt-4 p-3 rounded-lg bg-gradient-to-r from-[#D1FD0A]/10 to-[#00FF88]/10 border border-[#D1FD0A]/30">
         <div className="flex items-start gap-2">
-          <UserPlus className="w-4 h-4 text-[#8800FF] flex-shrink-0 mt-0.5" />
+          <UserPlus className="w-4 h-4 text-[#D1FD0A] flex-shrink-0 mt-0.5" />
           <div>
             <p className="text-xs font-bold text-white mb-1">2% on every trade</p>
             <p className="text-[10px] text-zinc-400">
@@ -143,7 +143,7 @@ export function InviteTree({ compact = false }: InviteTreeProps) {
         <div className="py-8 text-center">
           <Users className="w-12 h-12 text-zinc-700 mx-auto mb-3" />
           <p className="text-sm text-zinc-500 mb-3">No invites yet. Start growing your network.</p>
-          <button className="px-4 py-2 rounded-lg bg-[#8800FF] hover:bg-[#9910FF] text-white font-bold text-sm transition-all">
+          <button className="px-4 py-2 rounded-lg bg-[#D1FD0A] hover:bg-[#9910FF] text-white font-bold text-sm transition-all">
             Invite Now
           </button>
         </div>

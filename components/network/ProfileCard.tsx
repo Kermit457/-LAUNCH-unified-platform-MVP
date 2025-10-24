@@ -45,7 +45,7 @@ export function ProfileCard({
         return (
           <button
             onClick={() => onInvite?.(id)}
-            className="flex-1 h-10 px-4 rounded-xl bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 hover:from-fuchsia-600 hover:via-purple-600 hover:to-cyan-600 text-white font-semibold text-sm transition-all focus:outline-none focus:ring-2 focus:ring-fuchsia-400/50"
+            className="flex-1 h-10 px-4 rounded-xl bg-gradient-to-r from-[#D1FD0A] to-[#B8E008] hover:from-lime-600 hover:via-lime-600 hover:to-cyan-600 text-black font-semibold text-sm transition-all focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50"
             aria-label="Invite to network"
           >
             Invite
@@ -67,7 +67,7 @@ export function ProfileCard({
             <div className="relative">
               <button
                 onClick={() => setShowOverflow(!showOverflow)}
-                className="h-10 w-10 rounded-xl bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition-colors flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-fuchsia-400/50"
+                className="h-10 w-10 rounded-xl bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition-colors flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50"
                 aria-label="More options"
               >
                 <MoreVertical className="w-4 h-4" />
@@ -106,7 +106,7 @@ export function ProfileCard({
           <div className="flex-1 flex items-center gap-2">
             <button
               onClick={() => onChat?.(id)}
-              className="flex-1 h-10 px-4 rounded-xl bg-fuchsia-600 hover:bg-fuchsia-700 text-white font-semibold text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-fuchsia-400/50 flex items-center justify-center gap-2"
+              className="flex-1 h-10 px-4 rounded-xl bg-[#D1FD0A] hover:bg-[#C8E807] text-black font-semibold text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50 flex items-center justify-center gap-2"
               aria-label="Open chat"
             >
               <MessageCircle className="w-4 h-4" />
@@ -114,7 +114,7 @@ export function ProfileCard({
             </button>
             <button
               onClick={() => onInviteToCampaign?.(id)}
-              className="h-10 px-3 rounded-xl bg-white/5 hover:bg-white/10 text-white/70 hover:text-white text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-fuchsia-400/50 whitespace-nowrap"
+              className="h-10 px-3 rounded-xl bg-white/5 hover:bg-white/10 text-white/70 hover:text-white text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50 whitespace-nowrap"
               aria-label="Invite to campaign"
             >
               Invite to Campaign
@@ -126,7 +126,7 @@ export function ProfileCard({
         return (
           <button
             onClick={onEditProfile}
-            className="flex-1 h-10 px-4 rounded-xl bg-white/10 hover:bg-white/15 text-white font-semibold text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-fuchsia-400/50 flex items-center justify-center gap-2"
+            className="flex-1 h-10 px-4 rounded-xl bg-white/10 hover:bg-white/15 text-black font-semibold text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50 flex items-center justify-center gap-2"
             aria-label="Edit profile"
           >
             <Edit className="w-4 h-4" />
@@ -140,18 +140,18 @@ export function ProfileCard({
     <div
       className={cn(
         'rounded-2xl bg-white/5 border border-white/10 overflow-hidden transition-all hover:ring-1 hover:ring-white/15 hover:-translate-y-0.5',
-        'focus-within:ring-2 focus-within:ring-fuchsia-400/50'
+        'focus-within:ring-2 focus-within:ring-[#D1FD0A]/50'
       )}
     >
       {/* Banner strip (optional) */}
       {!isCompact && bannerUrl && (
         <div
-          className="h-20 bg-gradient-to-r from-fuchsia-500/20 via-purple-500/20 to-cyan-500/20 bg-cover bg-center"
+          className="h-20 bg-gradient-to-r from-[#D1FD0A]/20 to-[#B8E008]/20 bg-cover bg-center"
           style={{ backgroundImage: bannerUrl ? `url(${bannerUrl})` : undefined }}
         />
       )}
       {!isCompact && !bannerUrl && (
-        <div className="h-20 bg-gradient-to-r from-fuchsia-500/20 via-purple-500/20 to-cyan-500/20" />
+        <div className="h-20 bg-gradient-to-r from-[#D1FD0A]/20 to-[#B8E008]/20" />
       )}
 
       {/* Main content */}
@@ -161,9 +161,9 @@ export function ProfileCard({
           {/* Avatar */}
           <div
             className={cn(
-              'w-14 h-14 rounded-2xl border-2 border-white/20 bg-gradient-to-br from-fuchsia-500 to-cyan-500 flex items-center justify-center font-bold text-white text-lg flex-shrink-0 overflow-hidden',
+              'w-14 h-14 rounded-2xl border-2 border-white/20 bg-gradient-to-br from-[#D1FD0A] to-[#B8E008] flex items-center justify-center font-bold text-white text-lg flex-shrink-0 overflow-hidden',
               !isCompact && '-mt-7',
-              verified && 'ring-2 ring-fuchsia-400/50 ring-offset-2 ring-offset-[#0D1220]'
+              verified && 'ring-2 ring-[#D1FD0A]/50 ring-offset-2 ring-offset-[#0D1220]'
             )}
           >
             {avatarUrl ? (
@@ -252,7 +252,7 @@ export function ProfileCard({
                         className="h-8 w-8 rounded-full border-2 border-[#0D1220] hover:scale-110 hover:z-10 transition-transform duration-150"
                       />
                     ) : (
-                      <div className="h-8 w-8 rounded-full border-2 border-[#0D1220] bg-gradient-to-br from-fuchsia-500 to-cyan-500 flex items-center justify-center text-white text-xs font-bold hover:scale-110 hover:z-10 transition-transform duration-150">
+                      <div className="h-8 w-8 rounded-full border-2 border-[#0D1220] bg-gradient-to-br from-[#D1FD0A] to-[#B8E008] flex items-center justify-center text-white text-xs font-bold hover:scale-110 hover:z-10 transition-transform duration-150">
                         {c.projectName.slice(0, 2).toUpperCase()}
                       </div>
                     )}
@@ -268,14 +268,14 @@ export function ProfileCard({
           {/* Secondary actions on left */}
           <button
             onClick={() => onShare?.(id)}
-            className="h-10 w-10 rounded-xl bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition-colors flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-fuchsia-400/50"
+            className="h-10 w-10 rounded-xl bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition-colors flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50"
             aria-label="Share profile"
           >
             <Share2 className="w-4 h-4" />
           </button>
           <button
             onClick={() => onFollow?.(id)}
-            className="h-10 w-10 rounded-xl bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition-colors flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-fuchsia-400/50"
+            className="h-10 w-10 rounded-xl bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition-colors flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50"
             aria-label="Follow user"
           >
             <UserPlus className="w-4 h-4" />

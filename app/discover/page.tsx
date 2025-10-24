@@ -2,16 +2,17 @@
 
 import { useState, useEffect } from 'react'
 import { UnifiedCard } from '@/components/UnifiedCard'
-import { AdvancedTableView } from '@/components/AdvancedTableView'
+import { AdvancedTableViewBTDemo } from '@/components/btdemo/AdvancedTableViewBTDemo'
 import { CommentsDrawer } from '@/components/CommentsDrawer'
 import { BuySellModal } from '@/components/launch/BuySellModal'
 import { LaunchDetailsModal } from '@/components/launch/LaunchDetailsModal'
 import { SubmitLaunchDrawer } from '@/components/launch/SubmitLaunchDrawer'
 import { CoinListItem } from '@/components/mobile/CoinListItem'
-import { ActivityFeed } from '@/components/discover/ActivityFeed'
+import { LiveTicker } from '@/components/LiveTicker'
 import { type UnifiedCardData, type CurveType } from '@/components/UnifiedCard'
 import { type AdvancedListingData } from '@/lib/advancedTradingData'
-import { Search, TrendingUp, DollarSign, Users, Zap, LayoutGrid, Table, Rocket } from 'lucide-react'
+import { LayoutGrid, Table } from 'lucide-react'
+import { IconSearch, IconPriceUp, IconCash, IconNetwork, IconLightning, IconRocket } from '@/lib/icons'
 import { cn } from '@/lib/cn'
 import { useToast } from '@/hooks/useToast'
 import { usePrivy } from '@privy-io/react-auth'
@@ -113,17 +114,20 @@ export default function DiscoverPage() {
 
   return (
     <div className="min-h-screen bg-black pb-24 md:pb-6">
+      {/* Live Ticker */}
+      <LiveTicker />
+
       {/* Sticky Header - Mobile */}
       <div className="md:hidden sticky top-0 z-40 bg-black/95 backdrop-blur-xl border-b border-zinc-800">
         <div className="px-3 py-2 flex items-center justify-between">
-          <h1 className="text-base font-black text-[#00FFFF]">
+          <h1 className="text-base font-black text-[#D1FD0A]">
             Discover
           </h1>
           <button
             onClick={() => setShowSubmitDrawer(true)}
             className="px-6 py-3 min-h-[48px] rounded-xl bg-gradient-to-r from-[#FFD700] to-[#FFC700] hover:from-[#FFE700] hover:to-[#FFD700] active:scale-95 text-black font-bold transition-all flex items-center gap-2 text-sm"
           >
-            <Rocket className="w-5 h-5" />
+            <IconRocket size={20} />
             <span>Create</span>
           </button>
         </div>
@@ -136,7 +140,7 @@ export default function DiscoverPage() {
           {/* Title Row - Horizontal on mobile */}
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-4xl lg:text-5xl font-black text-[#00FFFF] mb-3">
+              <h1 className="text-4xl lg:text-5xl font-black text-[#D1FD0A] mb-3">
                 Discover
               </h1>
               <p className="text-lg text-zinc-400">
@@ -149,7 +153,7 @@ export default function DiscoverPage() {
               onClick={() => setShowSubmitDrawer(true)}
               className="px-6 py-3 min-h-[48px] rounded-xl bg-gradient-to-r from-[#FFD700] to-[#FFC700] hover:from-[#FFE700] hover:to-[#FFD700] text-black font-bold transition-all hover:scale-105 flex items-center gap-2 text-sm"
             >
-              <Rocket className="w-5 h-5" />
+              <IconRocket size={20} />
               <span>Create</span>
             </button>
           </div>
@@ -157,13 +161,13 @@ export default function DiscoverPage() {
           {/* View Toggle & Stats - Combined Row */}
           <div className="hidden md:flex items-center justify-between gap-6">
             {/* View Toggle */}
-            <div className="flex items-center gap-3 bg-zinc-900/80 backdrop-blur-xl rounded-2xl p-2 border-2 border-zinc-800/80 shadow-2xl">
+            <div className="flex items-center gap-3 glass-interactive rounded-2xl p-2 border-2 border-[#D1FD0A]/20 shadow-2xl">
               <button
                 onClick={() => setDisplayMode('cards')}
                 className={cn(
                   "px-6 py-3.5 rounded-xl font-bold text-base transition-all flex items-center justify-center gap-3",
                   displayMode === 'cards'
-                    ? "bg-[#00FFFF] text-black"
+                    ? "bg-[#D1FD0A] text-black"
                     : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"
                 )}
               >
@@ -175,7 +179,7 @@ export default function DiscoverPage() {
                 className={cn(
                   "px-6 py-3.5 rounded-xl font-bold text-base transition-all flex items-center justify-center gap-3",
                   displayMode === 'table'
-                    ? "bg-[#00FFFF] text-black"
+                    ? "bg-[#D1FD0A] text-black"
                     : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"
                 )}
               >
@@ -186,32 +190,32 @@ export default function DiscoverPage() {
 
             {/* Compact Stats */}
             <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-br from-green-500/10 to-green-600/5 border border-green-500/20">
-                <DollarSign className="w-4 h-4 text-green-400" />
+              <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-[#D1FD0A]/10 border-2 border-[#D1FD0A]/30 hover:border-[#D1FD0A]/50 transition-all">
+                <IconCash size={20} className="text-[#D1FD0A]" />
                 <div>
-                  <div className="text-[10px] text-zinc-500">Holdings</div>
-                  <div className="text-sm font-bold text-white">{totalValue.toFixed(2)} SOL</div>
+                  <div className="text-xs text-zinc-400">Holdings</div>
+                  <div className="text-xl font-bold text-[#D1FD0A] font-led-dot">{totalValue.toFixed(2)} SOL</div>
                 </div>
               </div>
-              <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-br from-blue-500/10 to-blue-600/5 border border-blue-500/20">
-                <Users className="w-4 h-4 text-blue-400" />
+              <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-[#D1FD0A]/10 border-2 border-[#D1FD0A]/30 hover:border-[#D1FD0A]/50 transition-all">
+                <IconNetwork size={20} className="text-[#D1FD0A]" />
                 <div>
-                  <div className="text-[10px] text-zinc-500">Network</div>
-                  <div className="text-sm font-bold text-white">248</div>
+                  <div className="text-xs text-zinc-400">Network</div>
+                  <div className="text-xl font-bold text-[#D1FD0A] font-led-dot">248</div>
                 </div>
               </div>
-              <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-br from-orange-500/10 to-orange-600/5 border border-orange-500/20">
-                <Zap className="w-4 h-4 text-orange-400" />
+              <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-[#D1FD0A]/10 border-2 border-[#D1FD0A]/30 hover:border-[#D1FD0A]/50 transition-all">
+                <IconLightning size={20} className="text-[#D1FD0A]" />
                 <div>
-                  <div className="text-[10px] text-zinc-500">Referral</div>
-                  <div className="text-sm font-bold text-white">1,240</div>
+                  <div className="text-xs text-zinc-400">Referral</div>
+                  <div className="text-xl font-bold text-[#D1FD0A] font-led-dot">1,240</div>
                 </div>
               </div>
-              <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-br from-green-500/10 to-green-600/5 border border-green-500/20">
-                <DollarSign className="w-4 h-4 text-green-400" />
+              <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-[#D1FD0A]/10 border-2 border-[#D1FD0A]/30 hover:border-[#D1FD0A]/50 transition-all">
+                <IconCash size={20} className="text-[#D1FD0A]" />
                 <div>
-                  <div className="text-[10px] text-zinc-500">Earnings</div>
-                  <div className="text-sm font-bold text-white">3.45 SOL</div>
+                  <div className="text-xs text-zinc-400">Earnings</div>
+                  <div className="text-xl font-bold text-[#D1FD0A] font-led-dot">3.45 SOL</div>
                 </div>
               </div>
             </div>
@@ -222,14 +226,14 @@ export default function DiscoverPage() {
         <div className="md:hidden fixed bottom-16 left-0 right-0 z-30 px-3 pb-2">
           <div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-zinc-900/90 backdrop-blur-xl border border-zinc-800 shadow-lg">
             <div className="flex items-center gap-1.5">
-              <DollarSign className="w-3.5 h-3.5 text-[#00FF88]" />
+              <IconCash size={14} className="text-[#D1FD0A]" />
               <span className="text-[10px] text-zinc-400 font-medium">Balances</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-bold text-white">${(totalValue * 0.1).toFixed(2)}</span>
+              <span className="text-xs font-bold text-white font-led-dot">${(totalValue * 0.1).toFixed(2)}</span>
               <button
                 onClick={() => {/* Handle deposit */}}
-                className="px-3 py-1.5 min-h-[36px] rounded bg-[#00FF88]/15 border border-[#00FF88]/40 text-xs font-bold text-[#00FF88] active:scale-95 transition-all"
+                className="px-3 py-1.5 min-h-[36px] rounded bg-[#D1FD0A]/15 border border-[#D1FD0A]/40 text-xs font-bold text-[#D1FD0A] active:scale-95 transition-all"
               >
                 Deposit
               </button>
@@ -237,26 +241,22 @@ export default function DiscoverPage() {
           </div>
         </div>
 
-
-        {/* Live Activity Feed */}
-        <ActivityFeed />
-
         {/* Search Bar - Compact on mobile */}
         <div className="mb-3 md:mb-8">
           <div className="relative">
-            <Search className="absolute left-3 md:left-5 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-[#00FFFF]" />
+            <IconSearch size={20} className="absolute left-3 md:left-5 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-[#D1FD0A]" />
             <input
               type="text"
               placeholder="Search..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 md:pl-14 pr-3 md:pr-5 py-3 min-h-[48px] rounded-lg md:rounded-2xl bg-zinc-900/80 border border-zinc-800 md:border-2 text-base text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#00FFFF]/50 focus:border-[#00FFFF] transition-all font-medium"
+              className="w-full pl-10 md:pl-14 pr-3 md:pr-5 py-3 min-h-[48px] rounded-lg md:rounded-2xl bg-zinc-900/80 border border-zinc-800 md:border-2 text-base text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50 focus:border-[#D1FD0A] transition-all font-medium"
             />
           </div>
         </div>
 
         {/* Filters - Everything on One Line Mobile */}
-        <div className="bg-zinc-900/30 backdrop-blur-xl rounded-md md:rounded-2xl border border-zinc-800/50 p-1.5 md:p-8 mb-2 md:mb-8">
+        <div className="glass-premium rounded-md md:rounded-2xl border-2 border-[#D1FD0A]/20 p-1.5 md:p-8 mb-2 md:mb-8">
           {/* Desktop Version - Single Row */}
           <div className="hidden md:block">
             <div className="flex items-center gap-8 mb-6">
@@ -274,14 +274,14 @@ export default function DiscoverPage() {
                   <FilterPill
                     active={typeFilter === 'icm'}
                     onClick={() => setTypeFilter('icm')}
-                    className="data-[active]:bg-[#00FF88]/20 data-[active]:border-[#00FF88] data-[active]:text-white"
+                    className="data-[active]:bg-[#D1FD0A]/20 data-[active]:border-[#D1FD0A] data-[active]:text-white"
                   >
                     ICM
                   </FilterPill>
                   <FilterPill
                     active={typeFilter === 'ccm'}
                     onClick={() => setTypeFilter('ccm')}
-                    className="data-[active]:bg-[#00FFFF]/20 data-[active]:border-[#00FFFF] data-[active]:text-white"
+                    className="data-[active]:bg-[#D1FD0A]/20 data-[active]:border-[#D1FD0A] data-[active]:text-white"
                   >
                     CCM
                   </FilterPill>
@@ -306,7 +306,7 @@ export default function DiscoverPage() {
                     active={sortBy === 'trending'}
                     onClick={() => setSortBy('trending')}
                     small
-                    className="data-[active]:bg-[#FF0040]/20 data-[active]:border-[#FF0040] data-[active]:text-white"
+                    className="data-[active]:bg-[#D1FD0A]/20 data-[active]:border-[#D1FD0A] data-[active]:text-white"
                   >
                     Trending
                   </FilterPill>
@@ -314,7 +314,7 @@ export default function DiscoverPage() {
                     active={sortBy === 'active'}
                     onClick={() => setSortBy('active')}
                     small
-                    className="data-[active]:bg-[#00FF88]/20 data-[active]:border-[#00FF88] data-[active]:text-white"
+                    className="data-[active]:bg-[#D1FD0A]/20 data-[active]:border-[#D1FD0A] data-[active]:text-white"
                   >
                     Active
                   </FilterPill>
@@ -322,7 +322,7 @@ export default function DiscoverPage() {
                     active={sortBy === 'live'}
                     onClick={() => setSortBy('live')}
                     small
-                    className="data-[active]:bg-[#FF0040]/20 data-[active]:border-[#FF0040] data-[active]:text-white"
+                    className="data-[active]:bg-[#D1FD0A]/20 data-[active]:border-[#D1FD0A] data-[active]:text-white"
                   >
                     Live
                   </FilterPill>
@@ -330,7 +330,7 @@ export default function DiscoverPage() {
                     active={sortBy === 'conviction'}
                     onClick={() => setSortBy('conviction')}
                     small
-                    className="data-[active]:bg-[#8800FF]/20 data-[active]:border-[#8800FF] data-[active]:text-white"
+                    className="data-[active]:bg-[#D1FD0A]/20 data-[active]:border-[#D1FD0A] data-[active]:text-white"
                   >
                     Conviction
                   </FilterPill>
@@ -338,7 +338,7 @@ export default function DiscoverPage() {
                     active={sortBy === 'volume'}
                     onClick={() => setSortBy('volume')}
                     small
-                    className="data-[active]:bg-[#0088FF]/20 data-[active]:border-[#0088FF] data-[active]:text-white"
+                    className="data-[active]:bg-[#D1FD0A]/20 data-[active]:border-[#D1FD0A] data-[active]:text-white"
                   >
                     Volume
                   </FilterPill>
@@ -354,8 +354,8 @@ export default function DiscoverPage() {
               </div>
             </div>
             <div className="pt-6 border-t border-zinc-800/50 text-sm text-zinc-500">
-              Showing <span className="text-[#00FFFF] font-bold">{filtered.length}</span> of{' '}
-              <span className="text-white font-medium">{baseListings.length}</span> listings
+              Showing <span className="text-[#D1FD0A] font-bold font-led-dot">{filtered.length}</span> of{' '}
+              <span className="text-white font-medium font-led-dot">{baseListings.length}</span> listings
             </div>
           </div>
 
@@ -374,14 +374,14 @@ export default function DiscoverPage() {
               <FilterPill
                 active={typeFilter === 'icm'}
                 onClick={() => setTypeFilter('icm')}
-                className="data-[active]:bg-[#00FF88]/20 data-[active]:border-[#00FF88] data-[active]:text-white"
+                className="data-[active]:bg-[#D1FD0A]/20 data-[active]:border-[#D1FD0A] data-[active]:text-white"
               >
                 ICM
               </FilterPill>
               <FilterPill
                 active={typeFilter === 'ccm'}
                 onClick={() => setTypeFilter('ccm')}
-                className="data-[active]:bg-[#00FFFF]/20 data-[active]:border-[#00FFFF] data-[active]:text-white"
+                className="data-[active]:bg-[#D1FD0A]/20 data-[active]:border-[#D1FD0A] data-[active]:text-white"
               >
                 CCM
               </FilterPill>
@@ -402,7 +402,7 @@ export default function DiscoverPage() {
                 active={sortBy === 'trending'}
                 onClick={() => setSortBy('trending')}
                 small
-                className="data-[active]:bg-[#FF0040]/20 data-[active]:border-[#FF0040] data-[active]:text-white"
+                className="data-[active]:bg-[#D1FD0A]/20 data-[active]:border-[#D1FD0A] data-[active]:text-white"
               >
                 Trend
               </FilterPill>
@@ -410,7 +410,7 @@ export default function DiscoverPage() {
                 active={sortBy === 'active'}
                 onClick={() => setSortBy('active')}
                 small
-                className="data-[active]:bg-[#00FF88]/20 data-[active]:border-[#00FF88] data-[active]:text-white"
+                className="data-[active]:bg-[#D1FD0A]/20 data-[active]:border-[#D1FD0A] data-[active]:text-white"
               >
                 Active
               </FilterPill>
@@ -418,7 +418,7 @@ export default function DiscoverPage() {
                 active={sortBy === 'live'}
                 onClick={() => setSortBy('live')}
                 small
-                className="data-[active]:bg-[#FF0040]/20 data-[active]:border-[#FF0040] data-[active]:text-white"
+                className="data-[active]:bg-[#D1FD0A]/20 data-[active]:border-[#D1FD0A] data-[active]:text-white"
               >
                 Live
               </FilterPill>
@@ -426,7 +426,7 @@ export default function DiscoverPage() {
                 active={sortBy === 'conviction'}
                 onClick={() => setSortBy('conviction')}
                 small
-                className="data-[active]:bg-[#8800FF]/20 data-[active]:border-[#8800FF] data-[active]:text-white"
+                className="data-[active]:bg-[#D1FD0A]/20 data-[active]:border-[#D1FD0A] data-[active]:text-white"
               >
                 Conv
               </FilterPill>
@@ -434,7 +434,7 @@ export default function DiscoverPage() {
                 active={sortBy === 'volume'}
                 onClick={() => setSortBy('volume')}
                 small
-                className="data-[active]:bg-[#0088FF]/20 data-[active]:border-[#0088FF] data-[active]:text-white"
+                className="data-[active]:bg-[#D1FD0A]/20 data-[active]:border-[#D1FD0A] data-[active]:text-white"
               >
                 Vol
               </FilterPill>
@@ -450,7 +450,7 @@ export default function DiscoverPage() {
 
             {/* Results Count - Mobile */}
             <div className="mt-1 pt-1 border-t border-zinc-800/50 text-[8px] text-zinc-500">
-              Showing <span className="text-[#00FFFF] font-bold">{filtered.length}</span> of {baseListings.length}
+              Showing <span className="text-[#D1FD0A] font-bold font-led-dot">{filtered.length}</span> of <span className="font-led-dot">{baseListings.length}</span>
             </div>
           </div>
         </div>
@@ -465,7 +465,7 @@ export default function DiscoverPage() {
         ) : filtered.length > 0 ? (
           <div>
             {/* Mobile List View - Always shown on mobile */}
-            <div className="md:hidden flex flex-col gap-1.5">
+            <div className="md:hidden flex flex-col gap-1.5 overflow-y-auto custom-scrollbar">
               {filtered.map(listing => (
                 <CoinListItem
                   key={listing.id}
@@ -532,7 +532,7 @@ export default function DiscoverPage() {
               {displayMode === 'table' ? (
                 // Table View
                 <div className="bg-zinc-900/20 backdrop-blur-xl rounded-2xl border border-zinc-800/50 overflow-x-auto custom-scrollbar">
-                  <AdvancedTableView
+                  <AdvancedTableViewBTDemo
                     listings={filtered}
                     onBuyClick={(listing, amount) => {
                       setBuyModalListing(listing)
@@ -564,8 +564,8 @@ export default function DiscoverPage() {
                         showError('Failed to Send Invite', error.message)
                       }
                     }}
-                    onCommentClick={(listing) => {
-                      setCommentDrawerListing(listing)
+                    onClipClick={(listing) => {
+                      info('Create Clip', `Create a clip for ${listing.title}`)
                     }}
                     onRowClick={(listing) => {
                       setDetailsModalListing(listing)
@@ -684,7 +684,7 @@ export default function DiscoverPage() {
                 setSearchQuery('')
                 setViewFilter('trending')
               }}
-              className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#8800FF] to-[#0088FF] hover:scale-105 text-white font-bold transition-transform"
+              className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#D1FD0A] to-[#0088FF] hover:scale-105 text-white font-bold transition-transform"
             >
               Reset Filters
             </button>
@@ -854,11 +854,11 @@ function StatCard({
   label: string
   value: string
   change?: string
-  color: 'green' | 'purple' | 'blue' | 'orange'
+  color: 'green' | 'lime' | 'blue' | 'orange'
 }) {
   const colorClasses = {
     green: 'bg-[#00FF88]/10 border-[#00FF88]/20 text-[#00FF88]',
-    purple: 'bg-[#8800FF]/10 border-[#8800FF]/20 text-[#8800FF]',
+    lime: 'bg-[#D1FD0A]/10 border-[#D1FD0A]/20 text-[#D1FD0A]',
     blue: 'bg-[#0088FF]/10 border-[#0088FF]/20 text-[#0088FF]',
     orange: 'bg-[#FF8800]/10 border-[#FF8800]/20 text-[#FF8800]'
   }

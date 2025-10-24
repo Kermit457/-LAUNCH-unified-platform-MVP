@@ -63,7 +63,7 @@ export function StatStrip(props: StatStripProps) {
           icon={<Eye className="w-3.5 h-3.5" />}
           label="Views"
           value={formatNumber(props.views)}
-          color="text-purple-400"
+          color="text-lime-400"
         />
         <StatItem
           icon={<Clock className="w-3.5 h-3.5" />}
@@ -94,7 +94,7 @@ export function StatStrip(props: StatStripProps) {
           icon={<Target className="w-3.5 h-3.5" />}
           label="Completion"
           value={`${(props.completionRate * 100).toFixed(0)}%`}
-          color="text-purple-400"
+          color="text-lime-400"
         />
         <StatItem
           icon={<Repeat className="w-3.5 h-3.5" />}
@@ -125,7 +125,7 @@ export function StatStrip(props: StatStripProps) {
         icon={<DollarSign className="w-3.5 h-3.5" />}
         label="Spend"
         value={formatUsd(props.spendUsd)}
-        color="text-purple-400"
+        color="text-lime-400"
       />
       <StatItem
         icon={<Users className="w-3.5 h-3.5" />}

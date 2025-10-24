@@ -33,9 +33,9 @@ export function SegmentedControl<T extends string>({
             type="button"
             onClick={() => onChange(option)}
             className={cn(
-              "flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80",
+              "flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-lime-400/80",
               isActive
-                ? "bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 text-white"
+                ? "bg-gradient-to-r from-lime-500 via-lime-500 to-cyan-500 text-white"
                 : "text-white/60 hover:text-white hover:bg-white/5"
             )}
           >

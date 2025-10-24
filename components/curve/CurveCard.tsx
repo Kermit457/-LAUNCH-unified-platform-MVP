@@ -21,7 +21,7 @@ export const CurveCard = ({
   const getStateColor = (state: string) => {
     switch (state) {
       case 'active':
-        return 'border-purple-500/30 bg-purple-500/5'
+        return 'border-lime-500/30 bg-lime-500/5'
       case 'frozen':
         return 'border-amber-500/30 bg-amber-500/5'
       case 'launched':
@@ -36,7 +36,7 @@ export const CurveCard = ({
   const getStateIcon = (state: string) => {
     switch (state) {
       case 'active':
-        return <Activity className="w-4 h-4 text-purple-400" />
+        return <Activity className="w-4 h-4 text-lime-400" />
       case 'frozen':
         return <Lock className="w-4 h-4 text-amber-400" />
       case 'launched':
@@ -51,7 +51,7 @@ export const CurveCard = ({
   const getStateBadgeColor = (state: string) => {
     switch (state) {
       case 'active':
-        return 'bg-purple-500/20 text-purple-300 border-purple-500/30'
+        return 'bg-lime-500/20 text-lime-300 border-lime-500/30'
       case 'frozen':
         return 'bg-amber-500/20 text-amber-300 border-amber-500/30'
       case 'launched':
@@ -155,7 +155,7 @@ export const CurveCard = ({
         <div className="grid grid-cols-2 gap-4 mb-4">
           <div className="bg-zinc-900/50 rounded-lg p-3">
             <div className="flex items-center gap-2 mb-1">
-              <Users className="w-4 h-4 text-purple-400" />
+              <Users className="w-4 h-4 text-lime-400" />
               <p className="text-xs text-zinc-500">Holders</p>
             </div>
             <p className="text-2xl font-bold text-white">{curve.holders}</p>

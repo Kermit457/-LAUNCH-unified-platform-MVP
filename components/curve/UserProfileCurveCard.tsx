@@ -86,7 +86,7 @@ export function UserProfileCurveCard({
     return (
       <div className="bg-[#0f0f1e] rounded-2xl border border-white/10 p-6">
         <div className="flex items-center justify-center">
-          <div className="w-6 h-6 border-2 border-purple-500/30 border-t-purple-500 rounded-full animate-spin" />
+          <div className="w-6 h-6 border-2 border-lime-500/30 border-t-lime-500 rounded-full animate-spin" />
         </div>
       </div>
     )
@@ -94,14 +94,14 @@ export function UserProfileCurveCard({
 
   return (
     <>
-      <div className="bg-gradient-to-br from-[#0f0f1e] to-[#1a1a2e] rounded-2xl border border-purple-500/20 overflow-hidden">
+      <div className="bg-gradient-to-br from-[#0f0f1e] to-[#1a1a2e] rounded-2xl border border-lime-500/20 overflow-hidden">
         {/* Profile Header */}
         <div className="p-6">
           <div className="flex items-start gap-4 mb-4">
             {userAvatar ? (
-              <img src={userAvatar} alt={userName} className="w-16 h-16 rounded-full border-2 border-purple-500/30" />
+              <img src={userAvatar} alt={userName} className="w-16 h-16 rounded-full border-2 border-lime-500/30" />
             ) : (
-              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-2xl border-2 border-purple-500/30">
+              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-lime-500 to-pink-500 flex items-center justify-center text-white font-bold text-2xl border-2 border-lime-500/30">
                 {userName[0]}
               </div>
             )}
@@ -119,7 +119,7 @@ export function UserProfileCurveCard({
                   {userBadges.map((badge, i) => (
                     <span
                       key={i}
-                      className="px-2 py-1 rounded-md text-xs font-medium bg-purple-500/20 text-purple-400 border border-purple-500/30"
+                      className="px-2 py-1 rounded-md text-xs font-medium bg-lime-500/20 text-lime-400 border border-lime-500/30"
                     >
                       {badge}
                     </span>
@@ -170,7 +170,7 @@ export function UserProfileCurveCard({
 
           {/* Your Holdings */}
           {userKeys > 0 && (
-            <div className="p-3 bg-purple-500/10 rounded-lg border border-purple-500/20 mb-4">
+            <div className="p-3 bg-lime-500/10 rounded-lg border border-lime-500/20 mb-4">
               <div className="flex items-center justify-between text-sm">
                 <span className="text-gray-400">You own:</span>
                 <span className="text-white font-bold">{userKeys.toFixed(2)} keys</span>
@@ -183,13 +183,13 @@ export function UserProfileCurveCard({
             {curve && curve.state === 'active' && (
               <button
                 onClick={() => setShowModal(true)}
-                className="flex-1 px-4 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold text-sm transition-all shadow-lg shadow-purple-500/25"
+                className="flex-1 px-4 py-2.5 rounded-xl bg-gradient-to-r from-lime-500 to-pink-500 hover:from-lime-600 hover:to-pink-600 text-white font-semibold text-sm transition-all shadow-lg shadow-lime-500/25"
               >
                 Buy Keys
               </button>
             )}
 
-            <button className="flex-1 px-4 py-2.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 text-purple-400 font-semibold text-sm transition-all border border-purple-500/30">
+            <button className="flex-1 px-4 py-2.5 rounded-xl bg-lime-500/20 hover:bg-lime-500/30 text-lime-400 font-semibold text-sm transition-all border border-lime-500/30">
               Invite
             </button>
           </div>

@@ -82,7 +82,7 @@ export function ProjectCurveCard({
     return (
       <div className="bg-[#0a0a0a] rounded-xl border border-white/10 p-6">
         <div className="flex items-center justify-center">
-          <div className="w-6 h-6 border-2 border-purple-500/30 border-t-purple-500 rounded-full animate-spin" />
+          <div className="w-6 h-6 border-2 border-lime-500/30 border-t-lime-500 rounded-full animate-spin" />
         </div>
       </div>
     )
@@ -104,8 +104,8 @@ export function ProjectCurveCard({
           <div className="bg-black/60 backdrop-blur-sm rounded-lg px-3 py-1.5 flex items-center gap-2 border border-white/10">
             <span className="text-xs text-gray-400">@</span>
             <span className="text-white font-semibold">{conviction}</span>
-            <span className="w-1 h-1 bg-purple-500 rounded-full animate-pulse" />
-            <span className="text-xs text-purple-400">pool</span>
+            <span className="w-1 h-1 bg-lime-500 rounded-full animate-pulse" />
+            <span className="text-xs text-lime-400">pool</span>
             <span className="w-1 h-1 bg-cyan-500 rounded-full animate-pulse" />
             <span className="text-xs text-cyan-400">fees</span>
           </div>
@@ -118,7 +118,7 @@ export function ProjectCurveCard({
             {projectLogo ? (
               <img src={projectLogo} alt={projectName} className="w-16 h-16 rounded-xl" />
             ) : (
-              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-lime-500 to-pink-500 flex items-center justify-center">
                 <span className="text-white font-bold text-2xl">{projectName[0]}</span>
               </div>
             )}
@@ -129,7 +129,7 @@ export function ProjectCurveCard({
                 {projectTags.map((tag, i) => (
                   <span
                     key={i}
-                    className="px-2 py-0.5 rounded text-xs font-medium bg-purple-500/20 text-purple-400 border border-purple-500/30"
+                    className="px-2 py-0.5 rounded text-xs font-medium bg-lime-500/20 text-lime-400 border border-lime-500/30"
                   >
                     {tag}
                   </span>

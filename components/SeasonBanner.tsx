@@ -15,7 +15,7 @@ export function SeasonBanner({ season }: SeasonBannerProps) {
   }
 
   return (
-    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-purple-950/60 via-pink-950/40 to-neutral-900/60 border border-purple-500/30 p-8">
+    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-lime-950/60 via-pink-950/40 to-neutral-900/60 border border-lime-500/30 p-8">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute inset-0" style={{
@@ -28,7 +28,7 @@ export function SeasonBanner({ season }: SeasonBannerProps) {
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-6">
           <div>
             <div className="flex items-center gap-3 mb-2">
-              <div className="px-3 py-1 rounded-full bg-purple-500/20 border border-purple-400/30 text-purple-300 text-xs font-bold">
+              <div className="px-3 py-1 rounded-full bg-lime-500/20 border border-lime-400/30 text-lime-300 text-xs font-bold">
                 SEASON {season.number}
               </div>
               <h2 className="text-3xl font-bold text-white">{season.name}</h2>

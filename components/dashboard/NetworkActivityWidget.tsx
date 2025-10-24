@@ -18,8 +18,8 @@ export function NetworkActivityWidget() {
     <div className="rounded-2xl bg-white/5 border border-white/10 p-6 backdrop-blur-xl">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-bold bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent flex items-center gap-2">
-          <UserPlus className="w-5 h-5 text-fuchsia-400" />
+        <h3 className="text-lg font-bold bg-gradient-to-r from-lime-500 via-lime-500 to-cyan-500 bg-clip-text text-transparent flex items-center gap-2">
+          <UserPlus className="w-5 h-5 text-lime-400" />
           Network Activity
         </h3>
         <Link
@@ -48,7 +48,7 @@ export function NetworkActivityWidget() {
                     {invite.avatar ? (
                       <img src={invite.avatar} alt={invite.displayName} className="w-full h-full object-cover" />
                     ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-fuchsia-500 to-cyan-500 flex items-center justify-center text-white font-bold text-sm">
+                      <div className="w-full h-full bg-gradient-to-br from-lime-500 to-cyan-500 flex items-center justify-center text-white font-bold text-sm">
                         {invite.displayName.slice(0, 2).toUpperCase()}
                       </div>
                     )}
@@ -95,7 +95,7 @@ export function NetworkActivityWidget() {
               <Link
                 key={message.id}
                 href={`/messages/${message.userId}`}
-                className="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/10 hover:border-fuchsia-500/50 transition-colors group"
+                className="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/10 hover:border-lime-500/50 transition-colors group"
               >
                 {/* Avatar */}
                 <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
@@ -110,7 +110,7 @@ export function NetworkActivityWidget() {
 
                 {/* Info */}
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm font-semibold text-white group-hover:text-fuchsia-400 transition-colors truncate">
+                  <div className="text-sm font-semibold text-white group-hover:text-lime-400 transition-colors truncate">
                     {message.displayName}
                   </div>
                   <div className="text-xs text-zinc-500 truncate">

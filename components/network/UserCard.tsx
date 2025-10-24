@@ -150,7 +150,7 @@ export function UserCard({
                 ? 'bg-gradient-to-br from-[#FFD700] to-[#FF8800]'
                 : user.motionScore && user.motionScore >= 80
                 ? 'bg-gradient-to-br from-[#00FF88] to-[#00FFFF]'
-                : 'bg-gradient-to-br from-[#8800FF] to-[#00FFFF]'
+                : 'bg-gradient-to-br from-[#D1FD0A] to-[#00FFFF]'
             }`}>
               <div className="w-full h-full rounded-lg md:rounded-xl bg-zinc-900 flex items-center justify-center text-white font-bold text-xs md:text-lg">
                 {user.avatar || user.handle.slice(0, 2).toUpperCase()}
@@ -218,7 +218,7 @@ export function UserCard({
                 ? 'bg-gradient-to-br from-[#FFD700] to-[#FF8800]'
                 : user.motionScore && user.motionScore >= 80
                 ? 'bg-gradient-to-br from-[#00FF88] to-[#00FFFF]'
-                : 'bg-gradient-to-br from-[#8800FF] to-[#00FFFF]'
+                : 'bg-gradient-to-br from-[#D1FD0A] to-[#00FFFF]'
             }`}>
               <div className="w-full h-full rounded-lg md:rounded-xl bg-zinc-900 flex items-center justify-center text-white font-bold text-xs md:text-sm">
                 {user.avatar || user.handle.slice(0, 2).toUpperCase()}

@@ -96,13 +96,13 @@ export function ActionCard({
   // Color themes for each card type
   const colorThemes = {
     campaign: {
-      avatar: 'from-fuchsia-500 via-pink-500 to-purple-600',
-      border: 'border-fuchsia-500/30',
-      progress: 'from-fuchsia-400 via-pink-400 to-purple-500',
-      rate: 'bg-fuchsia-500/20 border-fuchsia-500/40 text-fuchsia-300',
-      button: 'from-fuchsia-500 via-pink-500 to-purple-600 hover:from-fuchsia-600 hover:via-pink-600 hover:to-purple-700',
-      ring: 'focus:ring-fuchsia-400',
-      typeBadge: 'bg-fuchsia-500/30 border-fuchsia-400/60 text-fuchsia-200',
+      avatar: 'from-lime-500 via-lime-500 to-lime-600',
+      border: 'border-lime-500/30',
+      progress: 'from-lime-400 via-lime-500 to-lime-500',
+      rate: 'bg-lime-500/20 border-lime-500/40 text-lime-300',
+      button: 'from-lime-500 via-lime-500 to-lime-600 hover:from-lime-600 hover:via-lime-600 hover:to-lime-700',
+      ring: 'focus:ring-lime-400',
+      typeBadge: 'bg-lime-500/30 border-lime-400/60 text-lime-200',
     },
     raid: {
       avatar: 'from-red-500 via-orange-500 to-amber-500',

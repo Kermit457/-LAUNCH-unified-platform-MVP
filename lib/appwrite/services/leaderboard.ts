@@ -3,9 +3,19 @@
  * Provides rankings for Builders, Investors, and Communities
  */
 
-import { databases, DB_ID, COLLECTIONS } from '@/lib/appwrite/client'
+import { databases } from '@/lib/appwrite/client'
 import { Query } from 'appwrite'
-import type { Curve } from '@/types/curve'
+
+const DB_ID = process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID || 'launchos_db'
+const COLLECTIONS = {
+  PROJECTS: 'projects',
+  CLIPS: 'clips',
+  CONTRIBUTORS: 'contributors',
+  VOTES: 'votes',
+  HOLDERS: 'holders',
+  SOCIAL_LINKS: 'social_links',
+  USERS: 'users'
+}
 
 export interface BuilderRanking {
   rank: number
@@ -69,50 +79,51 @@ export interface TraderRanking {
 }
 
 /**
- * Get top builders by TVL and success rate
+ * Get top builders by project count and belief score
  */
 export async function getBuildersLeaderboard(limit = 10): Promise<BuilderRanking[]> {
   try {
-    // Get all launches
-    const launchesResponse = await databases.listDocuments(
+    // Get all projects
+    const projectsResponse = await databases.listDocuments(
       DB_ID,
-      COLLECTIONS.LAUNCHES,
+      COLLECTIONS.PROJECTS,
       [Query.limit(1000)]
     )
 
-    const launches = launchesResponse.documents as any[]
+    const projects = projectsResponse.documents as any[]
 
     // Group by creator
     const builderStats = new Map<string, {
       userId: string
-      launchIds: string[]
-      totalTVL: number
+      projectIds: string[]
+      totalBeliefScore: number
       successCount: number
     }>()
 
-    for (const launch of launches) {
-      const creatorId = launch.createdBy
+    for (const project of projects) {
+      const creatorId = project.creatorId
       if (!creatorId) continue
 
       if (!builderStats.has(creatorId)) {
         builderStats.set(creatorId, {
           userId: creatorId,
-          launchIds: [],
-          totalTVL: 0,
+          projectIds: [],
+          totalBeliefScore: 0,
           successCount: 0
         })
       }
 
       const stats = builderStats.get(creatorId)!
-      stats.launchIds.push(launch.$id)
+      stats.projectIds.push(project.$id)
+      stats.totalBeliefScore += project.beliefScore || 0
 
-      // Count success if status is frozen or launched
-      if (['frozen', 'launched'].includes(launch.status)) {
+      // Count success if status is live or active
+      if (['live', 'active'].includes(project.status)) {
         stats.successCount++
       }
     }
 
-    // Fetch curves to get TVL for each builder
+    // Create rankings
     const builderRankings: BuilderRanking[] = []
 
     for (const [userId, stats] of builderStats.entries()) {
@@ -128,28 +139,8 @@ export async function getBuildersLeaderboard(limit = 10): Promise<BuilderRanking
         }
       }
 
-      // Calculate total TVL from curves
-      let totalTVL = 0
-      for (const launchId of stats.launchIds) {
-        try {
-          const curveResponse = await databases.listDocuments(
-            DB_ID,
-            COLLECTIONS.CURVES,
-            [
-              Query.equal('ownerType', 'project'),
-              Query.equal('ownerId', launchId),
-              Query.limit(1)
-            ]
-          )
-
-          if (curveResponse.documents.length > 0) {
-            const curve = curveResponse.documents[0] as unknown as Curve
-            totalTVL += curve.reserve || 0
-          }
-        } catch (error) {
-          console.error(`Error fetching curve for launch ${launchId}:`, error)
-        }
-      }
+      // Use belief score as TVL proxy
+      const totalTVL = stats.totalBeliefScore * 100
 
       builderRankings.push({
         rank: 0, // Will be set after sorting
@@ -157,10 +148,10 @@ export async function getBuildersLeaderboard(limit = 10): Promise<BuilderRanking
         displayName: userProfile.displayName || 'Anonymous',
         username: userProfile.username || 'anon',
         avatar: userProfile.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${userId}`,
-        launchesCount: stats.launchIds.length,
+        launchesCount: stats.projectIds.length,
         totalTVL,
-        avgTVL: totalTVL / Math.max(stats.launchIds.length, 1),
-        successRate: (stats.successCount / Math.max(stats.launchIds.length, 1)) * 100
+        avgTVL: totalTVL / Math.max(stats.projectIds.length, 1),
+        successRate: (stats.successCount / Math.max(stats.projectIds.length, 1)) * 100
       })
     }
 
@@ -181,69 +172,47 @@ export async function getBuildersLeaderboard(limit = 10): Promise<BuilderRanking
 }
 
 /**
- * Get top investors by portfolio value and ROI
+ * Get top investors by holdings count
  */
 export async function getInvestorsLeaderboard(limit = 10): Promise<InvestorRanking[]> {
   try {
-    // Get all curve holders
+    // Get all holders
     const holdersResponse = await databases.listDocuments(
       DB_ID,
-      COLLECTIONS.CURVE_HOLDERS,
+      COLLECTIONS.HOLDERS,
       [Query.limit(5000)]
     )
 
     const holders = holdersResponse.documents as any[]
 
-    // Group by holder ID
+    // Group by user ID
     const investorStats = new Map<string, {
       userId: string
-      totalInvested: number
-      currentValue: number
       holdingsCount: number
+      projectIds: Set<string>
     }>()
 
     for (const holder of holders) {
-      const userId = holder.holderId
+      const userId = holder.userId
       if (!userId) continue
 
       if (!investorStats.has(userId)) {
         investorStats.set(userId, {
           userId,
-          totalInvested: 0,
-          currentValue: 0,
-          holdingsCount: 0
+          holdingsCount: 0,
+          projectIds: new Set()
         })
       }
 
       const stats = investorStats.get(userId)!
-
-      // Add to invested amount (from events or holder.invested field)
-      stats.totalInvested += holder.invested || 0
-
-      // Get current curve to calculate portfolio value
-      try {
-        const curve = await databases.getDocument(
-          DB_ID,
-          COLLECTIONS.CURVES,
-          holder.curveId
-        ) as unknown as Curve
-
-        const currentValue = (holder.balance || 0) * (curve.price || 0)
-        stats.currentValue += currentValue
-      } catch (error) {
-        // Curve not found, skip
-      }
-
       stats.holdingsCount++
+      stats.projectIds.add(holder.projectId)
     }
 
-    // Fetch user profiles and create rankings
+    // Create rankings
     const investorRankings: InvestorRanking[] = []
 
     for (const [userId, stats] of investorStats.entries()) {
-      // Skip if no investment
-      if (stats.totalInvested === 0) continue
-
       // Get user profile
       let userProfile
       try {
@@ -256,7 +225,10 @@ export async function getInvestorsLeaderboard(limit = 10): Promise<InvestorRanki
         }
       }
 
-      const roi = ((stats.currentValue - stats.totalInvested) / stats.totalInvested) * 100
+      // Mock investment values
+      const portfolioValue = stats.holdingsCount * 1000
+      const investedAmount = stats.holdingsCount * 900
+      const roi = ((portfolioValue - investedAmount) / investedAmount) * 100
 
       investorRankings.push({
         rank: 0,
@@ -264,16 +236,16 @@ export async function getInvestorsLeaderboard(limit = 10): Promise<InvestorRanki
         displayName: userProfile.displayName || 'Anonymous',
         username: userProfile.username || 'anon',
         avatar: userProfile.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${userId}`,
-        investedAmount: stats.totalInvested,
-        portfolioValue: stats.currentValue,
+        investedAmount,
+        portfolioValue,
         roi,
-        holdingsCount: stats.holdingsCount
+        holdingsCount: stats.projectIds.size
       })
     }
 
-    // Sort by portfolio value and assign ranks
+    // Sort by holdings count and assign ranks
     const sorted = investorRankings
-      .sort((a, b) => b.portfolioValue - a.portfolioValue)
+      .sort((a, b) => b.holdingsCount - a.holdingsCount)
       .slice(0, limit)
       .map((investor, index) => ({
         ...investor,
@@ -288,79 +260,56 @@ export async function getInvestorsLeaderboard(limit = 10): Promise<InvestorRanki
 }
 
 /**
- * Get top communities by members and engagement
- * Note: This is a placeholder - requires communities collection
+ * Get top communities by project type
  */
 export async function getCommunitiesLeaderboard(limit = 10): Promise<CommunityRanking[]> {
   try {
-    // TODO: Implement when communities collection exists
-    // For now, return mock data or group by project categories
-
-    // Placeholder: Group launches by category (scope)
-    const launchesResponse = await databases.listDocuments(
+    // Group projects by type
+    const projectsResponse = await databases.listDocuments(
       DB_ID,
-      COLLECTIONS.LAUNCHES,
+      COLLECTIONS.PROJECTS,
       [Query.limit(1000)]
     )
 
-    const launches = launchesResponse.documents as any[]
+    const projects = projectsResponse.documents as any[]
 
     const categoryStats = new Map<string, {
       name: string
-      launchIds: string[]
-      totalTVL: number
+      projectIds: string[]
+      totalBeliefScore: number
     }>()
 
-    for (const launch of launches) {
-      const category = launch.scope || 'Other'
+    for (const project of projects) {
+      const category = project.type || 'Other'
 
       if (!categoryStats.has(category)) {
         categoryStats.set(category, {
           name: category,
-          launchIds: [],
-          totalTVL: 0
+          projectIds: [],
+          totalBeliefScore: 0
         })
       }
 
-      categoryStats.get(category)!.launchIds.push(launch.$id)
+      const stats = categoryStats.get(category)!
+      stats.projectIds.push(project.$id)
+      stats.totalBeliefScore += project.beliefScore || 0
     }
 
-    // Calculate TVL for each category
+    // Create rankings
     const communityRankings: CommunityRanking[] = []
 
     for (const [category, stats] of categoryStats.entries()) {
-      let totalTVL = 0
-
-      for (const launchId of stats.launchIds) {
-        try {
-          const curveResponse = await databases.listDocuments(
-            DB_ID,
-            COLLECTIONS.CURVES,
-            [
-              Query.equal('ownerType', 'project'),
-              Query.equal('ownerId', launchId),
-              Query.limit(1)
-            ]
-          )
-
-          if (curveResponse.documents.length > 0) {
-            const curve = curveResponse.documents[0] as unknown as Curve
-            totalTVL += curve.reserve || 0
-          }
-        } catch (error) {
-          // Skip on error
-        }
-      }
+      const totalTVL = stats.totalBeliefScore * 100
 
       communityRankings.push({
         rank: 0,
         communityId: category.toLowerCase(),
-        name: category,
-        logoUrl: `https://api.dicebear.com/7.x/shapes/svg?seed=${category}&backgroundColor=10b981`,
-        membersCount: stats.launchIds.length * 10, // Mock: assume 10 members per launch
-        engagementScore: Math.floor(Math.random() * 100), // Mock engagement
+        name: category.charAt(0).toUpperCase() + category.slice(1),
+        logoUrl: `https://api.dicebear.com/7.x/shapes/svg?seed=${category}`,
+        membersCount: stats.projectIds.length * 10, // Mock: assume 10 members per project
+        engagementScore: Math.floor(stats.totalBeliefScore / stats.projectIds.length) || 0,
         totalTVL,
-        launchesCount: stats.launchIds.length
+        launchesCount: stats.projectIds.length
       })
     }
 
@@ -385,85 +334,89 @@ export async function getCommunitiesLeaderboard(limit = 10): Promise<CommunityRa
  */
 export async function getClippersLeaderboard(limit = 10): Promise<ClipperRanking[]> {
   try {
-    // TODO: Implement when clips collection exists
-    // For now, return mock data
+    // Get all clips
+    const clipsResponse = await databases.listDocuments(
+      DB_ID,
+      COLLECTIONS.CLIPS,
+      [Query.limit(5000)]
+    )
 
-    const mockClippers: ClipperRanking[] = [
-      {
-        rank: 1,
-        userId: 'clipper1',
-        displayName: 'ClipMaster',
-        username: 'clipmaster',
-        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=clipper1',
-        clipsCreated: 142,
-        totalViews: 854200,
-        avgCTR: 1.8,
-        totalEarnings: 24.5,
-        engagementScore: 2183
-      },
-      {
-        rank: 2,
-        userId: 'clipper2',
-        displayName: 'ViralQueen',
-        username: 'viralqueen',
-        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=clipper2',
-        clipsCreated: 98,
-        totalViews: 621000,
-        avgCTR: 1.5,
-        totalEarnings: 18.2,
-        engagementScore: 912
-      },
-      {
-        rank: 3,
-        userId: 'clipper3',
-        displayName: 'ContentKing',
-        username: 'contentking',
-        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=clipper3',
-        clipsCreated: 76,
-        totalViews: 445000,
-        avgCTR: 1.2,
-        totalEarnings: 12.8,
-        engagementScore: 406
-      },
-      {
-        rank: 4,
-        userId: 'clipper4',
-        displayName: 'TrendSetter',
-        username: 'trendsetter',
-        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=clipper4',
-        clipsCreated: 54,
-        totalViews: 298000,
-        avgCTR: 0.9,
-        totalEarnings: 8.4,
-        engagementScore: 145
-      },
-      {
-        rank: 5,
-        userId: 'clipper5',
-        displayName: 'ClipWizard',
-        username: 'clipwizard',
-        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=clipper5',
-        clipsCreated: 42,
-        totalViews: 187000,
-        avgCTR: 0.7,
-        totalEarnings: 5.6,
-        engagementScore: 55
-      },
-      {
-        rank: 6,
-        userId: 'clipper6',
-        displayName: 'Anonymous',
-        username: 'anon',
-        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=clipper6',
-        clipsCreated: 31,
-        totalViews: 124000,
-        avgCTR: 0.6,
-        totalEarnings: 3.2,
-        engagementScore: 23
+    const clips = clipsResponse.documents as any[]
+
+    // Group by user
+    const clipperStats = new Map<string, {
+      userId: string
+      clipsCount: number
+      totalViews: number
+      totalClicks: number
+      totalEngagement: number
+    }>()
+
+    for (const clip of clips) {
+      const userId = clip.userId
+      if (!userId) continue
+
+      if (!clipperStats.has(userId)) {
+        clipperStats.set(userId, {
+          userId,
+          clipsCount: 0,
+          totalViews: 0,
+          totalClicks: 0,
+          totalEngagement: 0
+        })
       }
-    ]
 
-    return mockClippers.slice(0, limit)
+      const stats = clipperStats.get(userId)!
+      stats.clipsCount++
+      stats.totalViews += clip.views || 0
+      stats.totalClicks += clip.clicks || 0
+      stats.totalEngagement += clip.engagement || 0
+    }
+
+    // Create rankings
+    const clipperRankings: ClipperRanking[] = []
+
+    for (const [userId, stats] of clipperStats.entries()) {
+      // Get user profile
+      let userProfile
+      try {
+        userProfile = await databases.getDocument(DB_ID, COLLECTIONS.USERS, userId)
+      } catch {
+        userProfile = {
+          displayName: 'Anonymous',
+          username: 'anon',
+          avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${userId}`
+        }
+      }
+
+      const avgCTR = stats.totalViews > 0 ? (stats.totalClicks / stats.totalViews) * 100 : 0
+      const engagementScore = Math.floor(stats.totalEngagement)
+      const totalEarnings = stats.clipsCount * 0.5 // Mock earnings
+
+      clipperRankings.push({
+        rank: 0,
+        userId,
+        displayName: userProfile.displayName || 'Anonymous',
+        username: userProfile.username || 'anon',
+        avatar: userProfile.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${userId}`,
+        clipsCreated: stats.clipsCount,
+        totalViews: stats.totalViews,
+        avgCTR,
+        totalEarnings,
+        engagementScore
+      })
+    }
+
+    // Sort by engagement score and assign ranks
+    const sorted = clipperRankings
+      .sort((a, b) => b.engagementScore - a.engagementScore)
+      .slice(0, limit)
+      .map((clipper, index) => ({
+        ...clipper,
+        rank: index + 1
+      }))
+
+    return sorted
   } catch (error) {
     console.error('Error fetching clippers leaderboard:', error)
     return []

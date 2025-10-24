@@ -152,7 +152,7 @@ function ActivityStream() {
       case 'launch': return 'text-[#FFD700] bg-[#FFD700]/10 border-[#FFD700]/30'
       case 'vote': return 'text-[#00FFFF] bg-[#00FFFF]/10 border-[#00FFFF]/30'
       case 'comment': return 'text-blue-400 bg-blue-400/10 border-blue-400/30'
-      case 'milestone': return 'text-purple-400 bg-purple-400/10 border-purple-400/30'
+      case 'milestone': return 'text-[#D1FD0A] bg-[#D1FD0A]/10 border-[#D1FD0A]/30'
       case 'clip': return 'text-pink-400 bg-pink-400/10 border-pink-400/30'
     }
   }
@@ -328,7 +328,7 @@ export function ProjectFeed({ projects, isLoading, onFilterChange }: ProjectFeed
             <div className="mb-3 md:mb-3 pb-3 md:pb-3 border-b border-zinc-800">
               <div className="flex items-center gap-2 md:gap-2 mb-2 md:mb-2">
                 <div className="w-10 h-10 md:w-8 md:h-8 rounded-lg md:rounded-lg bg-zinc-900 flex items-center justify-center flex-shrink-0">
-                  <Sparkles className="w-5 h-5 md:w-4 md:h-4 text-purple-400" />
+                  <Sparkles className="w-5 h-5 md:w-4 md:h-4 text-[#D1FD0A]" />
                 </div>
                 <div>
                   <h3 className="font-bold text-sm md:text-sm text-white">Become a Partner</h3>
@@ -337,15 +337,15 @@ export function ProjectFeed({ projects, isLoading, onFilterChange }: ProjectFeed
               </div>
               <div className="grid grid-cols-2 gap-x-3 md:gap-x-4 gap-y-1.5 md:gap-y-1 mb-2 md:mb-2">
                 <div className="flex items-start gap-1.5 md:gap-1.5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-purple-400 mt-1 flex-shrink-0" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-[#D1FD0A] mt-1 flex-shrink-0" />
                   <span className="text-xs md:text-[10px] text-zinc-400 leading-tight">Revenue sharing</span>
                 </div>
                 <div className="flex items-start gap-1.5 md:gap-1.5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-purple-400 mt-1 flex-shrink-0" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-[#D1FD0A] mt-1 flex-shrink-0" />
                   <span className="text-xs md:text-[10px] text-zinc-400 leading-tight">Co-marketing</span>
                 </div>
                 <div className="flex items-start gap-1.5 md:gap-1.5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-purple-400 mt-1 flex-shrink-0" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-[#D1FD0A] mt-1 flex-shrink-0" />
                   <span className="text-xs md:text-[10px] text-zinc-400 leading-tight">White-label solutions</span>
                 </div>
               </div>

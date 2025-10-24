@@ -8,13 +8,13 @@ export function Flywheel() {
       icon: Rocket,
       title: 'Launch',
       description: 'Create token or campaign',
-      color: 'from-launchos-fuchsia to-pink-600',
+      color: 'from-launchos-lime to-pink-600',
     },
     {
       icon: Users,
       title: 'Engage',
       description: 'Raids, clips, predictions, streams',
-      color: 'from-launchos-violet to-purple-600',
+      color: 'from-launchos-violet to-lime-600',
     },
     {
       icon: DollarSign,
@@ -69,7 +69,7 @@ export function Flywheel() {
         <div className="flex items-center justify-center gap-4 flex-wrap">
           <div className="flex items-center gap-2">
             <span className="text-white/80 font-medium">Fees</span>
-            <TrendingUp className="w-4 h-4 text-launchos-fuchsia" />
+            <TrendingUp className="w-4 h-4 text-launchos-lime" />
           </div>
           <div className="flex items-center gap-2">
             <span className="text-white/80 font-medium">Boosts</span>
@@ -81,7 +81,7 @@ export function Flywheel() {
           </div>
           <div className="flex items-center gap-2">
             <span className="text-white/80 font-medium">Demand</span>
-            <TrendingUp className="w-4 h-4 text-launchos-fuchsia" />
+            <TrendingUp className="w-4 h-4 text-launchos-lime" />
           </div>
           <div className="flex items-center gap-2">
             <Repeat className="w-5 h-5 text-white animate-spin" style={{ animationDuration: '3s' }} />

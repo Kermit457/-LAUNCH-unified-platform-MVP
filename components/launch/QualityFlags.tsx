@@ -22,7 +22,7 @@ export function QualityFlags({
     { id: 'kyc', label: 'KYC', icon: Shield, verified: kyc, color: 'text-[#00FF88]' },
     { id: 'docs', label: 'Docs', icon: FileText, verified: docs, color: 'text-[#00FFFF]' },
     { id: 'team', label: 'Team', icon: Users, verified: team, color: 'text-yellow-400' },
-    { id: 'code', label: 'Code', icon: Code, verified: code, color: 'text-purple-400' }
+    { id: 'code', label: 'Code', icon: Code, verified: code, color: 'text-[#D1FD0A]' }
   ]
 
   const verifiedCount = [kyc, docs, team, code].filter(Boolean).length

@@ -207,7 +207,7 @@ export const CleanLaunchCard = ({
                 <div className={`
                   px-2 py-0.5 rounded-full text-[10px] font-medium flex-shrink-0
                   ${launch.scope === 'ICM'
-                    ? 'bg-purple-500/10 text-purple-400 border border-purple-500/20'
+                    ? 'bg-lime-500/10 text-lime-400 border border-lime-500/20'
                     : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20'}
                 `}>
                   {launch.scope}
@@ -263,8 +263,8 @@ export const CleanLaunchCard = ({
 
             {/* Contribution Pool */}
             {launch.contributionPoolPct !== undefined && (
-              <div className="px-1.5 py-0.5 rounded bg-purple-500/10 border border-purple-500/20">
-                <span className="text-purple-400 font-medium">{launch.contributionPoolPct}%</span>
+              <div className="px-1.5 py-0.5 rounded bg-lime-500/10 border border-lime-500/20">
+                <span className="text-lime-400 font-medium">{launch.contributionPoolPct}%</span>
                 <span className="text-zinc-600 ml-0.5">pool</span>
               </div>
             )}
@@ -287,7 +287,7 @@ export const CleanLaunchCard = ({
               </div>
               <div className="h-1 bg-zinc-900 rounded-full overflow-hidden">
                 <motion.div
-                  className="h-full bg-gradient-to-r from-violet-500 to-purple-500 rounded-full"
+                  className="h-full bg-gradient-to-r from-violet-500 to-lime-500 rounded-full"
                   initial={{ width: 0 }}
                   animate={{ width: `${launch.convictionPct}%` }}
                   transition={{ duration: 1, ease: "easeOut" }}

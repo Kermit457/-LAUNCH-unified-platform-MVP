@@ -68,7 +68,7 @@ export function LaunchChart({ data }: LaunchChartProps) {
           {(point as any).convictionPct > 0 && (
             <div className="flex items-center justify-between gap-4">
               <span className="text-white/70">Conviction:</span>
-              <span className="text-fuchsia-400 font-semibold">{(point as any).convictionPct.toFixed(1)}%</span>
+              <span className="text-[#D1FD0A] font-semibold">{(point as any).convictionPct.toFixed(1)}%</span>
             </div>
           )}
           {(point as any).feesUsd > 0 && (
@@ -92,7 +92,7 @@ export function LaunchChart({ data }: LaunchChartProps) {
           {(point as any).buybacksUsd > 0 && (
             <div className="flex items-center justify-between gap-4">
               <span className="text-white/70">Buybacks:</span>
-              <span className="text-purple-400 font-semibold">${(point as any).buybacksUsd.toLocaleString()}</span>
+              <span className="text-[#D1FD0A] font-semibold">${(point as any).buybacksUsd.toLocaleString()}</span>
             </div>
           )}
           {point.views > 0 && (
@@ -140,10 +140,10 @@ export function LaunchChart({ data }: LaunchChartProps) {
           <button
             onClick={() => toggleSeries('conviction')}
             className={`flex items-center gap-1.5 px-2 py-1 rounded transition-colors ${
-              visibleSeries.conviction ? 'text-fuchsia-400' : 'text-white/40'
+              visibleSeries.conviction ? 'text-[#D1FD0A]' : 'text-white/40'
             }`}
           >
-            <div className={`w-3 h-0.5 ${visibleSeries.conviction ? 'bg-fuchsia-400' : 'bg-white/40'}`} />
+            <div className={`w-3 h-0.5 ${visibleSeries.conviction ? 'bg-[#D1FD0A]' : 'bg-white/40'}`} />
             Conviction
           </button>
           <button
@@ -176,10 +176,10 @@ export function LaunchChart({ data }: LaunchChartProps) {
           <button
             onClick={() => toggleSeries('buybacks')}
             className={`flex items-center gap-1.5 px-2 py-1 rounded transition-colors ${
-              visibleSeries.buybacks ? 'text-purple-400' : 'text-white/40'
+              visibleSeries.buybacks ? 'text-[#D1FD0A]' : 'text-white/40'
             }`}
           >
-            <div className={`w-3 h-0.5 ${visibleSeries.buybacks ? 'bg-purple-400' : 'bg-white/40'}`} />
+            <div className={`w-3 h-0.5 ${visibleSeries.buybacks ? 'bg-[#D1FD0A]' : 'bg-white/40'}`} />
             Buybacks
           </button>
           <button
@@ -194,10 +194,10 @@ export function LaunchChart({ data }: LaunchChartProps) {
           <button
             onClick={() => toggleSeries('networkInteractions')}
             className={`flex items-center gap-1.5 px-2 py-1 rounded transition-colors ${
-              visibleSeries.networkInteractions ? 'text-pink-400' : 'text-white/40'
+              visibleSeries.networkInteractions ? 'text-[#D1FD0A]' : 'text-white/40'
             }`}
           >
-            <div className={`w-3 h-0.5 ${visibleSeries.networkInteractions ? 'bg-pink-400' : 'bg-white/40'}`} />
+            <div className={`w-3 h-0.5 ${visibleSeries.networkInteractions ? 'bg-[#D1FD0A]' : 'bg-white/40'}`} />
             Network
           </button>
           <button

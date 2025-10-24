@@ -47,13 +47,13 @@ export default function ChatPage() {
         >
           {/* Lock Icon */}
           <div className="mb-6 flex justify-center">
-            <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#8800FF]/20 to-[#00FFFF]/20 border border-[#8800FF]/30 flex items-center justify-center">
-              <Lock className="w-10 h-10 text-[#8800FF]" />
+            <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#D1FD0A]/20 to-[#B8E008]/20 border border-[#D1FD0A]/30 flex items-center justify-center">
+              <Lock className="w-10 h-10 text-[#D1FD0A]" />
             </div>
           </div>
 
           {/* Heading */}
-          <h1 className="text-3xl font-bold mb-3 bg-gradient-to-r from-[#8800FF] to-[#00FFFF] bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold mb-3 bg-gradient-to-r from-[#D1FD0A] to-[#B8E008] bg-clip-text text-transparent">
             Activate Your Curve
           </h1>
           <p className="text-zinc-400 mb-8 leading-relaxed">
@@ -63,7 +63,7 @@ export default function ChatPage() {
           {/* CTA */}
           <button
             onClick={() => window.location.href = '/launch'}
-            className="px-6 py-3 min-h-[48px] rounded-xl bg-gradient-to-r from-[#8800FF] to-[#9910FF] hover:from-[#9910FF] hover:to-[#AA20FF] active:scale-95 text-white font-bold transition-all flex items-center gap-2 mx-auto text-sm"
+            className="px-6 py-3 min-h-[48px] rounded-xl bg-gradient-to-r from-[#D1FD0A] to-[#B8E008] hover:from-[#B8E008] hover:to-[#A0C007] active:scale-95 text-black font-bold transition-all flex items-center gap-2 mx-auto text-sm"
           >
             <Zap className="w-5 h-5" />
             Activate Curve
@@ -86,7 +86,7 @@ export default function ChatPage() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-base md:text-2xl font-bold flex items-center gap-1.5 md:gap-3">
-                <MessageCircle className="w-5 h-5 md:w-7 md:h-7 text-[#8800FF]" />
+                <MessageCircle className="w-5 h-5 md:w-7 md:h-7 text-[#D1FD0A]" />
                 Chat
               </h1>
               <p className="text-[10px] md:text-sm text-zinc-400 mt-0.5 md:mt-1">Connect with builders</p>
@@ -109,7 +109,7 @@ export default function ChatPage() {
                   onClick={() => setActiveTab(tab.id as any)}
                   className={`relative px-3 py-2.5 md:px-4 md:py-2 min-h-[44px] rounded-lg font-bold text-sm active:scale-95 transition-all flex items-center gap-1.5 md:gap-2 whitespace-nowrap ${
                     active
-                      ? 'text-[#8800FF] bg-[#8800FF]/10 border border-[#8800FF]/30'
+                      ? 'text-[#D1FD0A] bg-[#D1FD0A]/10 border border-[#D1FD0A]/30'
                       : 'text-zinc-400 hover:text-white hover:bg-zinc-800/50'
                   }`}
                 >
@@ -118,7 +118,7 @@ export default function ChatPage() {
                   {active && (
                     <motion.div
                       layoutId="activeTab"
-                      className="absolute inset-0 bg-[#8800FF]/5 rounded-lg -z-10"
+                      className="absolute inset-0 bg-[#D1FD0A]/5 rounded-lg -z-10"
                       transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                     />
                   )}

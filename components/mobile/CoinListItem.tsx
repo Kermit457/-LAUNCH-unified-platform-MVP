@@ -1,6 +1,6 @@
 "use client"
 
-import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { MessageCircle, Eye, TrendingUp, Users, ShoppingCart, UserPlus, Bell, Share2, Globe, Send } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { X as TwitterIcon } from 'lucide-react'
@@ -86,14 +86,21 @@ export function CoinListItem({
     live: 'bg-red-500/20 text-red-400 border-red-500/30',
     active: 'bg-green-500/20 text-green-400 border-green-500/30',
     frozen: 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30',
-    launched: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
+    launched: 'bg-lime-500/20 text-lime-400 border-lime-500/30',
     upcoming: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
     ended: 'bg-zinc-500/20 text-zinc-400 border-zinc-500/30',
   }
 
+  const router = useRouter()
+
+  const handleClick = () => {
+    router.push(href)
+  }
+
   return (
-    <Link href={href} className="block">
-      <div className="flex flex-col gap-1 p-1.5 rounded-md bg-zinc-900/40 border border-zinc-800/50 hover:bg-zinc-800/50 hover:border-zinc-700 active:scale-[0.99] transition-all">
+      <div
+        onClick={handleClick}
+        className="flex flex-col gap-1 p-1.5 rounded-md bg-zinc-900/40 border border-zinc-800/50 hover:bg-zinc-800/50 hover:border-zinc-700 active:scale-[0.99] transition-all cursor-pointer">
         {/* Top Row: Icon + Name/Ticker + Type Badge + Status Badges + Actions */}
         <div className="flex items-center gap-1.5">
           {/* Icon - Tiny */}
@@ -251,6 +258,5 @@ export function CoinListItem({
         </button>
       </div>
       </div>
-    </Link>
   )
 }

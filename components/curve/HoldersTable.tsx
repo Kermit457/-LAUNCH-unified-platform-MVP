@@ -101,7 +101,7 @@ export const HoldersTable = ({
                       href={`/u/${holder.userId}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-gray-400 hover:text-purple-400 transition-colors"
+                      className="text-gray-400 hover:text-lime-400 transition-colors"
                     >
                       <ExternalLink className="w-3 h-3" />
                     </a>

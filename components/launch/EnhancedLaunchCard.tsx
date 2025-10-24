@@ -100,10 +100,10 @@ export function EnhancedLaunchCard({ data }: { data: LaunchCardData }) {
 
   const isCCM = data.marketType === 'ccm'
   const statusColor =
-    data.status === 'live' ? 'bg-green-500/20 text-green-400 border-green-500/30' : 'bg-purple-500/20 text-purple-400 border-purple-500/30'
+    data.status === 'live' ? 'bg-green-500/20 text-green-400 border-green-500/30' : 'bg-[#D1FD0A]/20 text-[#D1FD0A] border-[#D1FD0A]/30'
   const statusLabel = data.status === 'live' ? 'LIVE' : data.status.toUpperCase()
   const marketLabel = isCCM ? 'CCM' : 'ICM'
-  const marketColor = isCCM ? 'bg-purple-500/20 text-purple-400 border-purple-500/30' : 'bg-blue-500/20 text-blue-400 border-blue-500/30'
+  const marketColor = isCCM ? 'bg-[#D1FD0A]/20 text-[#D1FD0A] border-[#D1FD0A]/30' : 'bg-blue-500/20 text-blue-400 border-blue-500/30'
 
   const handleVote = async () => {
     if (data.onVote && !data.isVoting) {
@@ -154,23 +154,23 @@ export function EnhancedLaunchCard({ data }: { data: LaunchCardData }) {
 
       {/* Token Claim Banner */}
       {hasUnclaimedAirdrop && (
-        <div className="mb-4 p-3 rounded-xl bg-gradient-to-r from-purple-500/20 via-fuchsia-500/20 to-purple-500/20 border-2 border-purple-500/50 shadow-lg shadow-purple-500/20">
+        <div className="mb-4 p-3 rounded-xl bg-gradient-to-r from-[#D1FD0A]/20 to-[#B8E008]/20 border-2 border-[#D1FD0A]/50 shadow-lg shadow-[#D1FD0A]/20">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               <div className="relative">
-                <Sparkles className="w-6 h-6 text-fuchsia-400 animate-pulse" />
-                <Sparkles className="w-6 h-6 text-purple-400 absolute inset-0 animate-ping opacity-75" />
+                <Sparkles className="w-6 h-6 text-[#D1FD0A] animate-pulse" />
+                <Sparkles className="w-6 h-6 text-[#D1FD0A] absolute inset-0 animate-ping opacity-75" />
               </div>
               <div>
-                <div className="text-sm font-bold text-purple-200">Tokens Ready to Claim!</div>
-                <div className="text-xs text-purple-300/90">
+                <div className="text-sm font-bold text-[#B8E008]">Tokens Ready to Claim!</div>
+                <div className="text-xs text-[#B8E008]/90">
                   {data.airdropAmount ? formatNumber(data.airdropAmount) : '0'} tokens available
                 </div>
               </div>
             </div>
             <button
               onClick={data.onClaimAirdrop}
-              className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-purple-500 via-fuchsia-500 to-purple-500 hover:from-purple-400 hover:via-fuchsia-400 hover:to-purple-400 text-white font-bold text-sm transition-all whitespace-nowrap"
+              className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-[#D1FD0A] to-[#B8E008] hover:from-[#B8E008] hover:to-[#A6CF00] text-white font-bold text-sm transition-all whitespace-nowrap"
             >
               Claim Tokens
             </button>
@@ -188,7 +188,7 @@ export function EnhancedLaunchCard({ data }: { data: LaunchCardData }) {
             className={cn(
               'flex flex-col items-center justify-center w-14 h-14 rounded-xl font-bold text-lg transition-all relative',
               data.hasVoted
-                ? 'bg-gradient-to-br from-purple-500 to-fuchsia-600 text-white shadow-lg shadow-purple-500/50'
+                ? 'bg-gradient-to-br from-[#D1FD0A] to-[#B8E008] text-white shadow-lg shadow-[#D1FD0A]/50'
                 : 'bg-zinc-800/80 hover:bg-zinc-700 border border-zinc-700/50 hover:border-zinc-600 text-zinc-300 hover:text-white hover:scale-105',
               data.isVoting && 'opacity-50 cursor-not-allowed'
             )}
@@ -281,7 +281,7 @@ export function EnhancedLaunchCard({ data }: { data: LaunchCardData }) {
                 {/* Avatar Image with ORANGE ACTIVE BORDER */}
                 <div
                   className={cn(
-                    'relative z-10 w-16 h-16 rounded-xl bg-gradient-to-br from-purple-500 to-blue-600 flex items-center justify-center overflow-hidden transition-all',
+                    'relative z-10 w-16 h-16 rounded-xl bg-gradient-to-br from-[#D1FD0A] to-[#B8E008] flex items-center justify-center overflow-hidden transition-all',
                     hasPos
                       ? 'border-[3px] border-orange-500'
                       : 'border-2 border-zinc-800'
@@ -351,7 +351,7 @@ export function EnhancedLaunchCard({ data }: { data: LaunchCardData }) {
                     {data.contributors.slice(0, 3).map((contributor, idx) => (
                       <div
                         key={idx}
-                        className="relative w-7 h-7 rounded-full border-2 border-zinc-900 bg-gradient-to-br from-purple-500 to-blue-600 overflow-hidden hover:z-10 transition-transform hover:scale-110"
+                        className="relative w-7 h-7 rounded-full border-2 border-zinc-900 bg-gradient-to-br from-[#D1FD0A] to-[#B8E008] overflow-hidden hover:z-10 transition-transform hover:scale-110"
                         title={contributor.name}
                       >
                         {contributor.avatar ? (
@@ -380,7 +380,7 @@ export function EnhancedLaunchCard({ data }: { data: LaunchCardData }) {
                   className={cn(
                     "p-2 rounded-lg transition-all",
                     data.notificationEnabled
-                      ? "bg-purple-500/20 border border-purple-500/50 hover:bg-purple-500/30"
+                      ? "bg-[#D1FD0A]/20 border border-[#D1FD0A]/50 hover:bg-[#D1FD0A]/30"
                       : "bg-zinc-800/80 hover:bg-zinc-700 border border-zinc-700/50 hover:border-zinc-600"
                   )}
                   aria-label={data.notificationEnabled ? "Unsubscribe" : "Subscribe"}
@@ -388,7 +388,7 @@ export function EnhancedLaunchCard({ data }: { data: LaunchCardData }) {
                   <Bell
                     className={cn(
                       "w-4 h-4 transition-colors",
-                      data.notificationEnabled ? "text-purple-400 fill-purple-400" : "text-zinc-400"
+                      data.notificationEnabled ? "text-[#D1FD0A] fill-[#D1FD0A]" : "text-zinc-400"
                     )}
                   />
                 </button>
@@ -478,7 +478,7 @@ export function EnhancedLaunchCard({ data }: { data: LaunchCardData }) {
                 className={cn(
                   "h-full transition-all duration-500 relative",
                   data.beliefScore >= 70
-                    ? "bg-gradient-to-r from-cyan-500 via-purple-500 to-fuchsia-500 shadow-lg shadow-purple-500/50"
+                    ? "bg-gradient-to-r from-[#D1FD0A] to-[#B8E008] shadow-lg shadow-[#D1FD0A]/50"
                     : data.beliefScore >= 50
                     ? "bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-400 shadow-lg shadow-amber-500/30"
                     : "bg-gradient-to-r from-zinc-600 via-zinc-500 to-zinc-600"

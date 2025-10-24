@@ -1,14 +1,29 @@
+/* Google Fonts - Must be first */
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Import BTDemo Design System - Primary Theme */
+@import '../styles/btdemo.css';
+
 /* Import ICM Motion Color Palette */
 @import '../styles/colors.css';
+
+/* Import Fonts */
+@import '../styles/fonts.css';
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+/* BTDemo Base Styles */
+body {
+  background: var(--btdemo-canvas);
+  color: var(--btdemo-text);
 }
 
 :root {
@@ -21,53 +36,45 @@ html {
   overflow-x: hidden;
 }
 
-/* Hide default scrollbars globally on mobile, custom on desktop */
-html::-webkit-scrollbar {
-  width: 3px;
-  height: 3px;
+/* Universal scrollbar styling - Black/Gray theme */
+html::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
 
-html::-webkit-scrollbar-track {
-  background: transparent;
+html::-webkit-scrollbar-track,
+*::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
 }
 
-html::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+html::-webkit-scrollbar-thumb,
+*::-webkit-scrollbar-thumb {
+  background: rgba(63, 63, 70, 0.8);
   border-radius: 10px;
 }
 
-html::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+html::-webkit-scrollbar-thumb:hover,
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(82, 82, 91, 1);
 }
 
-html {
+html,
+* {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+  scrollbar-color: rgba(63, 63, 70, 0.8) rgba(0, 0, 0, 0.3);
 }
 
-@media (min-width: 768px) {
-  html::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
-
-  html::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, #E700FF 0%, #5A00FF 50%, #00F0FF 100%);
-  }
-
-  html::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, #E700FF 20%, #5A00FF 60%, #00F0FF 100%);
-    box-shadow: 0 0 10px rgba(231, 0, 255, 0.5),
-                0 0 20px rgba(90, 0, 255, 0.3);
-  }
-
-  html {
-    scrollbar-color: #E700FF rgba(10, 10, 10, 0.5);
+@media (max-width: 767px) {
+  html::-webkit-scrollbar,
+  *::-webkit-scrollbar {
+    width: 3px;
+    height: 3px;
   }
 }
 
 body {
-  font-family: 'Inter Tight', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  font-family: 'Archivo', 'Inter Tight', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -113,7 +120,7 @@ body {
 
   /* Premium Buttons */
   .btn-primary {
-    @apply bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white font-semibold px-6 py-3 rounded-xl transition-all duration-300 shadow-lg shadow-violet-500/20;
+    @apply bg-gradient-to-r from-violet-500 to-lime-500 text-white font-semibold px-6 py-3 rounded-xl transition-all duration-300 shadow-lg shadow-violet-500/20;
   }
 
   .btn-primary:hover {
@@ -129,11 +136,11 @@ body {
   }
 
   .btn-gradient {
-    @apply bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-semibold px-6 py-3 rounded-lg transition-all duration-300 uppercase tracking-wide text-sm;
+    @apply bg-gradient-to-br from-indigo-500 to-lime-600 text-white font-semibold px-6 py-3 rounded-lg transition-all duration-300 uppercase tracking-wide text-sm;
   }
 
   .btn-gradient:hover {
-    @apply bg-gradient-to-br from-indigo-600 to-purple-700 -translate-y-0.5 shadow-lg shadow-indigo-500/30;
+    @apply bg-gradient-to-br from-indigo-600 to-lime-700 -translate-y-0.5 shadow-lg shadow-indigo-500/30;
   }
 
   .avatar {
@@ -412,7 +419,7 @@ body {
   }
 
   /* LaunchOS Neon Effects */
-  .neon-text-fuchsia {
+  .neon-text-lime {
     color: #E700FF;
     text-shadow: 0 0 10px rgba(231, 0, 255, 0.8),
                  0 0 20px rgba(231, 0, 255, 0.5),
@@ -426,7 +433,7 @@ body {
                  0 0 30px rgba(0, 240, 255, 0.3);
   }
 
-  .neon-border-fuchsia {
+  .neon-border-lime {
     border: 1px solid #E700FF;
     box-shadow: 0 0 15px rgba(231, 0, 255, 0.5),
                 inset 0 0 15px rgba(231, 0, 255, 0.2);
@@ -497,6 +504,47 @@ body {
     animation-play-state: paused;
   }
 
+  /* Flash ticker for btdemo style */
+  .ticker-content-flash {
+    display: inline-flex;
+    animation: ticker-flash 30s linear infinite;
+  }
+
+  @keyframes ticker-flash {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% {
+      opacity: 1;
+      text-shadow: 0 0 10px #D1FD0A, 0 0 20px #D1FD0A, 0 0 30px #D1FD0A;
+    }
+    50% {
+      opacity: 0.8;
+      text-shadow: 0 0 5px #D1FD0A, 0 0 10px #D1FD0A, 0 0 15px #D1FD0A;
+    }
+  }
+
+  @keyframes flash {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.6;
+      transform: scale(1.05);
+    }
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  .animate-flash {
+    animation: flash 1.5s ease-in-out infinite;
+  }
+
   /* Gradient Text - LaunchOS Style */
   .gradient-text-launchos {
     background: linear-gradient(135deg, #E700FF 0%, #5A00FF 50%, #00F0FF 100%);
@@ -552,7 +600,7 @@ body {
 
   /* New Design System - Native App Feel */
   .section-heading {
-    @apply text-4xl md:text-5xl font-bold bg-gradient-to-r from-violet-400 via-fuchsia-400 to-cyan-400 bg-clip-text text-transparent;
+    @apply text-4xl md:text-5xl font-bold text-[#D1FD0A];
   }
 
   .card-title {
@@ -586,7 +634,10 @@ body {
   }
 
   .badge-success {
-    @apply px-3 py-1 rounded-full bg-green-500/10 text-green-400 border border-green-500/30 text-xs font-semibold;
+    @apply px-3 py-1 rounded-full text-xs font-semibold;
+    background-color: rgba(209, 253, 10, 0.1);
+    color: #D1FD0A;
+    border: 1px solid rgba(209, 253, 10, 0.3);
   }
 
   .badge-warning {
@@ -604,51 +655,129 @@ body {
     -webkit-overflow-scrolling: touch;
   }
 
-  /* Custom Scrollbar - Optimized for Mobile */
+  /* Custom Scrollbar - Black/Gray theme (inherits from global) */
   .custom-scrollbar::-webkit-scrollbar {
-    width: 3px;
-    height: 3px;
+    width: 6px;
+    height: 6px;
   }
 
   .custom-scrollbar::-webkit-scrollbar-track {
-    background: transparent;
+    background: rgba(0, 0, 0, 0.3);
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(63, 63, 70, 0.8);
     border-radius: 10px;
-    transition: all 0.3s ease;
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(82, 82, 91, 1);
   }
 
-  /* Firefox scrollbar */
   .custom-scrollbar {
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+    scrollbar-color: rgba(63, 63, 70, 0.8) rgba(0, 0, 0, 0.3);
   }
 
-  /* Desktop: Wider scrollbar */
-  @media (min-width: 768px) {
+  @media (max-width: 767px) {
     .custom-scrollbar::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
+      width: 3px;
+      height: 3px;
     }
+  }
+}
 
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: linear-gradient(135deg, #E700FF 0%, #5A00FF 50%, #00F0FF 100%);
-    }
+/* ========================================
+   BTDEMO DESIGN SYSTEM
+   Complete theme for /btdemo preview
+   Zero impact on existing app pages
+   ======================================== */
 
-    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-      background: linear-gradient(135deg, #E700FF 20%, #5A00FF 60%, #00F0FF 100%);
-      box-shadow: 0 0 10px rgba(231, 0, 255, 0.5),
-                  0 0 20px rgba(90, 0, 255, 0.3);
-    }
+/* LED Display Font - DSEG14 Classic */
+@font-face {
+  font-family: 'DSEG14';
+  src: url('/fonts/dseg/DSEG14Classic-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
 
-    .custom-scrollbar {
-      scrollbar-color: #E700FF rgba(10, 10, 10, 0.5);
-    }
+/* BTDEMO Design Tokens */
+:root {
+  /* Colors - Based on user specs */
+  --btdemo-canvas: #000000;
+  --btdemo-card: rgba(8, 8, 9, 0.60);
+  --btdemo-card-hover: rgba(23, 23, 23, 0.60);
+  --btdemo-primary: #D1FD0A;
+  --btdemo-border: #3B3B3B;
+  --btdemo-border-active: #D1FD0A;
+  --btdemo-text: #FFFFFF;
+  --btdemo-text-dim: rgba(255, 255, 255, 0.72);
+  --btdemo-text-mute: rgba(255, 255, 255, 0.56);
+
+  /* Border Radius */
+  --btdemo-radius-sm: 12px;
+  --btdemo-radius-md: 15px;
+  --btdemo-radius-lg: 20px;
+  --btdemo-radius-xl: 24px;
+
+  /* Blur Effects */
+  --btdemo-blur-sm: 2px;
+  --btdemo-blur-md: 4px;
+
+  /* Shadows */
+  --btdemo-shadow-inset: 0 0 1px 0 rgba(0, 0, 0, 0.25) inset;
+  --btdemo-shadow-glow: 0 0 24px rgba(209, 253, 10, 0.4);
+}
+
+@layer components {
+  /* LED Display Font Utilities */
+  .font-led-32 {
+    font-family: 'DSEG14', monospace;
+    font-size: 32px;
+    letter-spacing: -1.28px;
+    color: var(--btdemo-primary);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .font-led-16 {
+    font-family: 'DSEG14', monospace;
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--btdemo-primary);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .font-led-15 {
+    font-family: 'DSEG14', monospace;
+    font-size: 15px;
+    letter-spacing: -0.6px;
+    color: var(--btdemo-primary);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Icon Color Utilities */
+  .icon-primary {
+    @apply text-[#D1FD0A];
+  }
+
+  .icon-active {
+    @apply text-white;
+  }
+
+  .icon-inactive {
+    @apply text-zinc-500;
+  }
+
+  .icon-muted {
+    @apply text-zinc-400;
+  }
+
+  .icon-interactive {
+    @apply text-[#D1FD0A] transition-colors duration-200 hover:text-white;
+  }
+
+  .icon-interactive-primary {
+    @apply text-[#D1FD0A] transition-colors duration-200 hover:text-[#D1FD0A];
   }
 }

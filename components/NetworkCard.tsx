@@ -33,13 +33,13 @@ export type NetworkCardProps = {
 }
 
 const ROLE_COLORS: Record<string, string> = {
-  Streamer: "bg-purple-500/20 text-purple-300 border-purple-500/40",
+  Streamer: "bg-lime-500/20 text-lime-300 border-lime-500/40",
   Degen: "bg-orange-500/20 text-orange-300 border-orange-500/40",
   Trader: "bg-green-500/20 text-green-300 border-green-500/40",
   Clipper: "bg-pink-500/20 text-pink-300 border-pink-500/40",
   Editor: "bg-blue-500/20 text-blue-300 border-blue-500/40",
   Agency: "bg-cyan-500/20 text-cyan-300 border-cyan-500/40",
-  Manager: "bg-purple-500/20 text-purple-300 border-purple-500/40",
+  Manager: "bg-lime-500/20 text-lime-300 border-lime-500/40",
   Project: "bg-yellow-500/20 text-yellow-300 border-yellow-500/40",
   Entertainer: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40",
   Alpha: "bg-red-500/20 text-red-300 border-red-500/40",
@@ -75,7 +75,7 @@ export function NetworkCard({
       return (
         <button
           onClick={onEditProfile}
-          className="h-10 px-4 rounded-xl bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 text-white text-sm font-medium hover:opacity-90 transition-all focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80 flex items-center gap-2"
+          className="h-10 px-4 rounded-xl bg-gradient-to-r from-lime-500 via-lime-500 to-cyan-500 text-white text-sm font-medium hover:opacity-90 transition-all focus:outline-none focus:ring-2 focus:ring-lime-400/80 flex items-center gap-2"
         >
           Edit Profile
         </button>
@@ -86,7 +86,7 @@ export function NetworkCard({
       return (
         <button
           onClick={() => onChat?.(id)}
-          className="h-10 px-4 rounded-xl bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 text-white text-sm font-medium hover:opacity-90 transition-all focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80 flex items-center gap-2"
+          className="h-10 px-4 rounded-xl bg-gradient-to-r from-lime-500 via-lime-500 to-cyan-500 text-white text-sm font-medium hover:opacity-90 transition-all focus:outline-none focus:ring-2 focus:ring-lime-400/80 flex items-center gap-2"
         >
           <MessageSquare className="w-4 h-4" />
           Chat
@@ -119,7 +119,7 @@ export function NetworkCard({
     return (
       <button
         onClick={() => onInvite?.(id)}
-        className="h-10 px-4 rounded-xl bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 text-white text-sm font-medium hover:opacity-90 transition-all focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80 flex items-center gap-2"
+        className="h-10 px-4 rounded-xl bg-gradient-to-r from-lime-500 via-lime-500 to-cyan-500 text-white text-sm font-medium hover:opacity-90 transition-all focus:outline-none focus:ring-2 focus:ring-lime-400/80 flex items-center gap-2"
       >
         <UserPlus className="w-4 h-4" />
         Invite
@@ -128,10 +128,10 @@ export function NetworkCard({
   }
 
   return (
-    <div className="rounded-2xl bg-white/5 border border-white/10 p-5 hover:border-fuchsia-500/30 transition-all group">
+    <div className="rounded-2xl bg-white/5 border border-white/10 p-5 hover:border-lime-500/30 transition-all group">
       {/* Avatar & Name */}
       <div className="flex items-start gap-4 mb-4">
-        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-fuchsia-500 via-purple-500 to-cyan-500 flex items-center justify-center text-white font-bold text-xl flex-shrink-0">
+        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-lime-500 via-lime-500 to-cyan-500 flex items-center justify-center text-white font-bold text-xl flex-shrink-0">
           {avatarInitials}
         </div>
         <div className="flex-1 min-w-0">
@@ -213,7 +213,7 @@ export function NetworkCard({
         <div className="flex items-center gap-2">
           <button
             onClick={() => onShare?.(id)}
-            className="h-10 px-3 rounded-xl bg-white/5 hover:bg-white/10 text-white/70 hover:text-white text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80 flex items-center gap-2"
+            className="h-10 px-3 rounded-xl bg-white/5 hover:bg-white/10 text-white/70 hover:text-white text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-lime-400/80 flex items-center gap-2"
           >
             <Share2 className="w-4 h-4" />
             Share
@@ -221,7 +221,7 @@ export function NetworkCard({
 
           <button
             onClick={() => onFollow?.(id)}
-            className="h-10 px-3 rounded-xl bg-white/5 hover:bg-white/10 text-white/70 hover:text-white text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
+            className="h-10 px-3 rounded-xl bg-white/5 hover:bg-white/10 text-white/70 hover:text-white text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-lime-400/80"
           >
             Follow
           </button>
@@ -229,7 +229,7 @@ export function NetworkCard({
           {connection === "connected" && onInviteToCampaign && (
             <button
               onClick={() => onInviteToCampaign(id)}
-              className="h-10 px-3 rounded-xl bg-white/5 hover:bg-white/10 text-white/70 hover:text-white text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80 flex items-center gap-2"
+              className="h-10 px-3 rounded-xl bg-white/5 hover:bg-white/10 text-white/70 hover:text-white text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-lime-400/80 flex items-center gap-2"
             >
               <Megaphone className="w-4 h-4" />
               Invite to Campaign
@@ -245,7 +245,7 @@ export function NetworkCard({
           <div className="relative">
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="h-10 w-10 rounded-xl bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80 flex items-center justify-center"
+              className="h-10 w-10 rounded-xl bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-lime-400/80 flex items-center justify-center"
             >
               <MoreVertical className="w-4 h-4" />
             </button>

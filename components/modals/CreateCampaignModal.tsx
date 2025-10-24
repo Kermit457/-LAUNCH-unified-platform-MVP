@@ -141,13 +141,13 @@ export function CreateCampaignModal({ open, onClose, onSubmit }: CreateCampaignM
   return (
     <>
       <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50" onClick={handleClose} />
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-3 md:p-4 pointer-events-none overflow-y-auto">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-3 md:p-4 pointer-events-none overflow-y-auto custom-scrollbar">
         <div className="w-full max-w-md bg-design-zinc-950/95 backdrop-blur-xl rounded-xl md:rounded-2xl border border-design-zinc-800 shadow-2xl pointer-events-auto animate-in zoom-in-95 duration-200 my-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
           {/* Header */}
           <div className="border-b border-design-zinc-800 p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Video className="w-5 h-5 text-design-pink-400" />
+                <Video className="w-5 h-5 text-[#D1FD0A]" />
                 <h2 className="text-lg font-bold text-white">Create Campaign</h2>
               </div>
               <button onClick={handleClose} className="p-2 hover:bg-design-zinc-800/50 rounded-lg transition-colors">
@@ -165,7 +165,7 @@ export function CreateCampaignModal({ open, onClose, onSubmit }: CreateCampaignM
                 id="type"
                 value={formData.type}
                 onChange={(e) => handleInputChange('type', e.target.value)}
-                className="w-full px-3 py-2 rounded-lg bg-design-zinc-900/50 border border-design-zinc-800 text-white text-sm focus:outline-none focus:ring-2 focus:ring-design-pink-500/50"
+                className="w-full px-3 py-2 rounded-lg bg-design-zinc-900/50 border border-design-zinc-800 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50"
               >
                 {CAMPAIGN_TYPES.map((type) => (
                   <option key={type.value} value={type.value}>{type.label}</option>
@@ -202,7 +202,7 @@ export function CreateCampaignModal({ open, onClose, onSubmit }: CreateCampaignM
                 />
               </div>
               {budgetInUSD > 0 && (
-                <p className="text-xs text-design-zinc-400 mt-1">
+                <p className="text-xs text-design-zinc-400 mt-1 font-led-dot">
                   ≈ ${budgetInUSD.toFixed(2)} USD
                 </p>
               )}
@@ -243,8 +243,8 @@ export function CreateCampaignModal({ open, onClose, onSubmit }: CreateCampaignM
                       onClick={() => togglePlatform(platform.value)}
                       className={`p-2.5 rounded-lg border transition-all text-sm flex items-center justify-center gap-1.5 ${
                         isSelected
-                          ? 'bg-design-pink-500/20 border-design-pink-500 text-white'
-                          : 'bg-design-zinc-900/50 border-design-zinc-800 text-design-zinc-400 hover:border-design-pink-500/50'
+                          ? 'bg-[#D1FD0A]/20 border-[#D1FD0A] text-white'
+                          : 'bg-design-zinc-900/50 border-design-zinc-800 text-design-zinc-400 hover:border-[#D1FD0A]/50'
                       }`}
                     >
                       <Icon className="w-4 h-4" />
@@ -264,7 +264,7 @@ export function CreateCampaignModal({ open, onClose, onSubmit }: CreateCampaignM
                   id="duration"
                   value={formData.duration}
                   onChange={(e) => handleInputChange('duration', e.target.value)}
-                  className={`w-full pl-10 px-3 py-2 rounded-lg bg-design-zinc-900/50 border border-design-zinc-800 text-white text-sm focus:outline-none focus:ring-2 focus:ring-design-pink-500/50 ${
+                  className={`w-full pl-10 px-3 py-2 rounded-lg bg-design-zinc-900/50 border border-design-zinc-800 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50 ${
                     errors.duration ? 'border-red-500' : ''
                   }`}
                 >
@@ -289,7 +289,7 @@ export function CreateCampaignModal({ open, onClose, onSubmit }: CreateCampaignM
                 onChange={(e) => handleInputChange('description', e.target.value)}
                 placeholder="Campaign details, goals, and guidelines..."
                 rows={3}
-                className="w-full px-3 py-2 rounded-lg bg-design-zinc-900/50 border border-design-zinc-800 text-white text-sm placeholder:text-design-zinc-500 focus:outline-none focus:ring-2 focus:ring-design-pink-500/50"
+                className="w-full px-3 py-2 rounded-lg bg-design-zinc-900/50 border border-design-zinc-800 text-white text-sm placeholder:text-design-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50"
               />
             </div>
 
@@ -309,12 +309,12 @@ export function CreateCampaignModal({ open, onClose, onSubmit }: CreateCampaignM
                       }
                     }}
                     placeholder="e.g., Minimum 10 seconds"
-                    className="flex-1 px-3 py-2 rounded-lg bg-design-zinc-900/50 border border-design-zinc-800 text-white text-sm placeholder:text-design-zinc-500 focus:outline-none focus:ring-2 focus:ring-design-pink-500/50"
+                    className="flex-1 px-3 py-2 rounded-lg bg-design-zinc-900/50 border border-design-zinc-800 text-white text-sm placeholder:text-design-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50"
                   />
                   <button
                     type="button"
                     onClick={addRequirement}
-                    className="px-3 py-2 rounded-lg bg-design-pink-500 text-white text-sm hover:bg-design-pink-600 transition"
+                    className="px-3 py-2 rounded-lg bg-[#D1FD0A] text-black text-sm hover:bg-[#B8E008] transition font-semibold"
                   >
                     Add
                   </button>

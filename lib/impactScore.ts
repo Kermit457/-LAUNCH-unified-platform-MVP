@@ -187,7 +187,7 @@ export function getProjectBadges(
     badges.push({
       type: 'cleanOps',
       label: 'Clean Ops',
-      color: 'from-purple-400 to-purple-600'
+      color: 'from-lime-400 to-lime-600'
     })
   }
 
@@ -219,7 +219,7 @@ export function getAgencyBadges(
     badges.push({
       type: 'cleanOps',
       label: 'Clean Ops',
-      color: 'from-purple-400 to-purple-600'
+      color: 'from-lime-400 to-lime-600'
     })
   }
 

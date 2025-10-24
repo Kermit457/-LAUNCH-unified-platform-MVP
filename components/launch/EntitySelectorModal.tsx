@@ -87,7 +87,7 @@ export function EntitySelectorModal({
           <div className="flex items-center justify-between p-6 border-b border-design-zinc-800">
             <div>
               <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                <Rocket className="w-6 h-6 text-design-purple-400" />
+                <Rocket className="w-6 h-6 text-[#D1FD0A]" />
                 Launch this as...
               </h2>
               <p className="text-sm text-design-zinc-400 mt-1">Choose who will own this launch</p>
@@ -101,13 +101,13 @@ export function EntitySelectorModal({
           </div>
 
           {/* Content */}
-          <div className="p-6 space-y-4 max-h-[60vh] overflow-y-auto">
+          <div className="p-6 space-y-4 max-h-[60vh] overflow-y-auto custom-scrollbar">
             {/* User Profile Option */}
             <button
               onClick={handleSelectUser}
               onMouseEnter={() => setHoveredId('user')}
               onMouseLeave={() => setHoveredId(null)}
-              className="w-full p-4 rounded-xl bg-design-zinc-900/50 hover:bg-design-purple-500/10 border border-design-zinc-800 hover:border-design-purple-500/30 transition-all text-left group"
+              className="w-full p-4 rounded-xl bg-design-zinc-900/50 hover:bg-[#D1FD0A]/10 border border-design-zinc-800 hover:border-[#D1FD0A]/30 transition-all text-left group"
             >
               <div className="flex items-center gap-4">
                 {/* Avatar */}
@@ -115,10 +115,10 @@ export function EntitySelectorModal({
                   <img
                     src={userProfile.avatar}
                     alt={userProfile.name}
-                    className="w-12 h-12 rounded-full object-cover border-2 border-design-purple-500/30 group-hover:border-design-purple-400 transition-colors"
+                    className="w-12 h-12 rounded-full object-cover border-2 border-[#D1FD0A]/30 group-hover:border-[#B8E008] transition-colors"
                   />
                 ) : (
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-design-pink-500 to-design-purple-500 flex items-center justify-center border-2 border-design-purple-500/30 group-hover:border-design-purple-400 transition-colors">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#D1FD0A] to-[#D1FD0A] flex items-center justify-center border-2 border-[#D1FD0A]/30 group-hover:border-[#B8E008] transition-colors">
                     <User className="w-6 h-6 text-white" />
                   </div>
                 )}
@@ -131,13 +131,13 @@ export function EntitySelectorModal({
                   {userProfile.username && (
                     <p className="text-sm text-design-zinc-400">@{userProfile.username}</p>
                   )}
-                  <p className="text-xs text-design-purple-400 mt-1">Launch as yourself</p>
+                  <p className="text-xs text-[#D1FD0A] mt-1">Launch as yourself</p>
                 </div>
 
                 {/* Indicator */}
                 {hoveredId === 'user' && (
-                  <div className="w-8 h-8 rounded-full bg-design-purple-500/20 flex items-center justify-center">
-                    <div className="w-3 h-3 rounded-full bg-design-purple-500" />
+                  <div className="w-8 h-8 rounded-full bg-[#D1FD0A]/20 flex items-center justify-center">
+                    <div className="w-3 h-3 rounded-full bg-[#D1FD0A]" />
                   </div>
                 )}
               </div>
@@ -161,7 +161,7 @@ export function EntitySelectorModal({
                     onClick={() => handleSelectProject(project)}
                     onMouseEnter={() => setHoveredId(project.id)}
                     onMouseLeave={() => setHoveredId(null)}
-                    className="w-full p-4 rounded-xl bg-design-zinc-900/50 hover:bg-design-purple-500/10 border border-design-zinc-800 hover:border-design-purple-500/30 transition-all text-left group"
+                    className="w-full p-4 rounded-xl bg-design-zinc-900/50 hover:bg-[#D1FD0A]/10 border border-design-zinc-800 hover:border-[#D1FD0A]/30 transition-all text-left group"
                   >
                     <div className="flex items-center gap-4">
                       {/* Project Logo */}
@@ -169,10 +169,10 @@ export function EntitySelectorModal({
                         <img
                           src={project.logoUrl}
                           alt={project.title}
-                          className="w-12 h-12 rounded-lg object-cover border-2 border-design-purple-500/30 group-hover:border-design-purple-400 transition-colors"
+                          className="w-12 h-12 rounded-lg object-cover border-2 border-[#D1FD0A]/30 group-hover:border-[#B8E008] transition-colors"
                         />
                       ) : (
-                        <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-design-purple-500 to-design-pink-500 flex items-center justify-center border-2 border-design-purple-500/30 group-hover:border-design-purple-400 transition-colors">
+                        <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[#D1FD0A] to-[#D1FD0A] flex items-center justify-center border-2 border-[#D1FD0A]/30 group-hover:border-[#B8E008] transition-colors">
                           <Rocket className="w-6 h-6 text-white" />
                         </div>
                       )}
@@ -184,20 +184,20 @@ export function EntitySelectorModal({
                           <span
                             className={`px-2 py-0.5 rounded text-xs font-bold ${
                               project.scope === 'ICM'
-                                ? 'bg-design-purple-500/20 text-design-purple-300 border border-design-purple-500/40'
-                                : 'bg-design-pink-500/20 text-design-pink-300 border border-design-pink-500/40'
+                                ? 'bg-[#D1FD0A]/20 text-[#D1FD0A] border border-[#D1FD0A]/40'
+                                : 'bg-[#D1FD0A]/20 text-design-pink-300 border border-[#D1FD0A]/40'
                             }`}
                           >
                             {project.scope}
                           </span>
                         </div>
-                        <p className="text-xs text-design-purple-400 mt-1">Launch under this project</p>
+                        <p className="text-xs text-[#D1FD0A] mt-1">Launch under this project</p>
                       </div>
 
                       {/* Indicator */}
                       {hoveredId === project.id && (
-                        <div className="w-8 h-8 rounded-full bg-design-purple-500/20 flex items-center justify-center">
-                          <div className="w-3 h-3 rounded-full bg-design-purple-500" />
+                        <div className="w-8 h-8 rounded-full bg-[#D1FD0A]/20 flex items-center justify-center">
+                          <div className="w-3 h-3 rounded-full bg-[#D1FD0A]" />
                         </div>
                       )}
                     </div>
@@ -210,16 +210,16 @@ export function EntitySelectorModal({
             {onCreateNewProject && (
               <button
                 onClick={onCreateNewProject}
-                className="w-full p-4 rounded-xl bg-design-zinc-900/50 hover:bg-design-purple-500/10 border border-dashed border-design-zinc-700 hover:border-design-purple-500/40 transition-all text-left group"
+                className="w-full p-4 rounded-xl bg-design-zinc-900/50 hover:bg-[#D1FD0A]/10 border border-dashed border-design-zinc-700 hover:border-[#D1FD0A]/40 transition-all text-left group"
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-design-purple-500/20 to-design-pink-500/20 flex items-center justify-center border-2 border-design-purple-500/30 group-hover:border-design-purple-400 transition-colors">
-                    <Plus className="w-6 h-6 text-design-purple-400" />
+                  <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[#D1FD0A]/20 to-[#D1FD0A]/20 flex items-center justify-center border-2 border-[#D1FD0A]/30 group-hover:border-[#B8E008] transition-colors">
+                    <Plus className="w-6 h-6 text-[#D1FD0A]" />
                   </div>
 
                   <div className="flex-1">
                     <span className="text-white font-semibold">Create New Project</span>
-                    <p className="text-xs text-design-purple-400 mt-1">
+                    <p className="text-xs text-[#D1FD0A] mt-1">
                       Start a new project and launch under it
                     </p>
                   </div>

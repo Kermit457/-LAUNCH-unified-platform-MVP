@@ -182,7 +182,7 @@ export function CreateCampaignModal({ isOpen, onClose, onSubmit }: CreateCampaig
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto"
+      className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto custom-scrollbar"
       onClick={(e) => {
         if (e.target === e.currentTarget) {
           onClose()
@@ -204,12 +204,12 @@ export function CreateCampaignModal({ isOpen, onClose, onSubmit }: CreateCampaig
         </div>
 
         {/* Content - Scrollable */}
-        <div className="flex-1 overflow-y-auto px-6 py-4">
+        <div className="flex-1 overflow-y-auto custom-scrollbar px-6 py-4">
           <div className="space-y-6">
             {/* Required Information Section */}
             <div className="space-y-4">
               <div className="flex items-center gap-2 text-white">
-                <FileText className="w-5 h-5 text-fuchsia-400" />
+                <FileText className="w-5 h-5 text-lime-400" />
                 <h3 className="font-semibold">Required Information</h3>
               </div>
 
@@ -224,7 +224,7 @@ export function CreateCampaignModal({ isOpen, onClose, onSubmit }: CreateCampaig
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="Enter campaign title"
                   maxLength={80}
-                  className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
+                  className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-lime-400/80"
                 />
                 <div className="mt-1 flex justify-between text-xs">
                   {title && !isTitleValid && title.length > 80 && (
@@ -261,7 +261,7 @@ export function CreateCampaignModal({ isOpen, onClose, onSubmit }: CreateCampaig
                       onClick={() => togglePlatform(platform)}
                       className={`px-4 py-2 rounded-lg text-sm font-medium capitalize transition-all ${
                         platforms.includes(platform)
-                          ? 'bg-fuchsia-500 text-white border border-fuchsia-400'
+                          ? 'bg-lime-500 text-white border border-lime-400'
                           : 'bg-white/5 text-white/70 border border-white/10 hover:bg-white/10'
                       }`}
                     >
@@ -288,7 +288,7 @@ export function CreateCampaignModal({ isOpen, onClose, onSubmit }: CreateCampaig
                       placeholder="Min seconds"
                       min="1"
                       step="1"
-                      className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
+                      className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-lime-400/80"
                     />
                     <p className="mt-1 text-xs text-white/40">Minimum duration (seconds)</p>
                   </div>
@@ -300,7 +300,7 @@ export function CreateCampaignModal({ isOpen, onClose, onSubmit }: CreateCampaig
                       placeholder="Max seconds"
                       min="1"
                       step="1"
-                      className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
+                      className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-lime-400/80"
                     />
                     <p className="mt-1 text-xs text-white/40">Maximum duration (seconds)</p>
                   </div>
@@ -335,7 +335,7 @@ export function CreateCampaignModal({ isOpen, onClose, onSubmit }: CreateCampaig
                       placeholder="0.00"
                       step="0.01"
                       min="0"
-                      className="w-full h-12 pl-10 pr-16 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
+                      className="w-full h-12 pl-10 pr-16 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-lime-400/80"
                     />
                     <div className="absolute right-3 top-1/2 -translate-y-1/2 px-2 py-0.5 rounded bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-semibold">
                       USDC
@@ -364,7 +364,7 @@ export function CreateCampaignModal({ isOpen, onClose, onSubmit }: CreateCampaig
                       placeholder="0.00"
                       step="0.01"
                       min="0"
-                      className="w-full h-12 pl-10 pr-16 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
+                      className="w-full h-12 pl-10 pr-16 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-lime-400/80"
                     />
                     <div className="absolute right-3 top-1/2 -translate-y-1/2 px-2 py-0.5 rounded bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-semibold">
                       USDC
@@ -386,13 +386,13 @@ export function CreateCampaignModal({ isOpen, onClose, onSubmit }: CreateCampaig
                     type="date"
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
-                    className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
+                    className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-lime-400/80"
                   />
                   <input
                     type="time"
                     value={endTime}
                     onChange={(e) => setEndTime(e.target.value)}
-                    className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
+                    className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-lime-400/80"
                   />
                 </div>
                 {endDate && endTime && !isEndDateValid && (
@@ -415,7 +415,7 @@ export function CreateCampaignModal({ isOpen, onClose, onSubmit }: CreateCampaig
                           value={link}
                           onChange={(e) => handleSocialLinkChange(index, e.target.value)}
                           placeholder="https://..."
-                          className="w-full h-12 pl-10 pr-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
+                          className="w-full h-12 pl-10 pr-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-lime-400/80"
                         />
                       </div>
                       {socialLinks.length > 1 && (
@@ -430,7 +430,7 @@ export function CreateCampaignModal({ isOpen, onClose, onSubmit }: CreateCampaig
                   ))}
                   <button
                     onClick={handleAddSocialLink}
-                    className="text-sm text-fuchsia-400 hover:text-fuchsia-300 transition-colors"
+                    className="text-sm text-lime-400 hover:text-lime-300 transition-colors"
                   >
                     + Add another link
                   </button>
@@ -452,7 +452,7 @@ export function CreateCampaignModal({ isOpen, onClose, onSubmit }: CreateCampaig
                     value={driveLink}
                     onChange={(e) => setDriveLink(e.target.value)}
                     placeholder="https://drive.google.com/..."
-                    className="w-full h-12 pl-10 pr-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
+                    className="w-full h-12 pl-10 pr-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-lime-400/80"
                   />
                 </div>
                 {driveLink && !isDriveLinkValid && (
@@ -464,7 +464,7 @@ export function CreateCampaignModal({ isOpen, onClose, onSubmit }: CreateCampaig
             {/* Optional Information Section */}
             <div className="space-y-4">
               <div className="flex items-center gap-2 text-white">
-                <Eye className="w-5 h-5 text-fuchsia-400" />
+                <Eye className="w-5 h-5 text-lime-400" />
                 <h3 className="font-semibold">Optional Information</h3>
               </div>
 
@@ -476,7 +476,7 @@ export function CreateCampaignModal({ isOpen, onClose, onSubmit }: CreateCampaig
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Describe your campaign..."
                   rows={3}
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80 resize-none"
+                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-lime-400/80 resize-none"
                 />
               </div>
 
@@ -488,7 +488,7 @@ export function CreateCampaignModal({ isOpen, onClose, onSubmit }: CreateCampaig
                   onChange={(e) => setConditions(e.target.value)}
                   placeholder="List any conditions or requirements..."
                   rows={3}
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80 resize-none"
+                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-lime-400/80 resize-none"
                 />
               </div>
 
@@ -503,7 +503,7 @@ export function CreateCampaignModal({ isOpen, onClose, onSubmit }: CreateCampaig
                     placeholder="0"
                     min="0"
                     step="1"
-                    className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
+                    className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-lime-400/80"
                   />
                   {minViewsRequired && !isMinViewsValid && (
                     <p className="mt-1 text-xs text-red-400">Must be 0 or greater</p>
@@ -516,7 +516,7 @@ export function CreateCampaignModal({ isOpen, onClose, onSubmit }: CreateCampaig
                       type="checkbox"
                       checked={autoApprove}
                       onChange={(e) => setAutoApprove(e.target.checked)}
-                      className="w-4 h-4 rounded border-white/20 bg-white/5 text-fuchsia-500 focus:ring-2 focus:ring-fuchsia-400/80"
+                      className="w-4 h-4 rounded border-white/20 bg-white/5 text-lime-500 focus:ring-2 focus:ring-lime-400/80"
                     />
                     <span className="text-sm text-white/70">Auto-approve Submissions</span>
                   </label>
@@ -537,7 +537,7 @@ export function CreateCampaignModal({ isOpen, onClose, onSubmit }: CreateCampaig
           <button
             onClick={handleSubmit}
             disabled={!isFormValid}
-            className="px-6 h-11 rounded-xl bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 text-white font-bold disabled:opacity-50 disabled:cursor-not-allowed hover:from-fuchsia-600 hover:via-purple-600 hover:to-cyan-600 transition-all focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
+            className="px-6 h-11 rounded-xl bg-gradient-to-r from-lime-500 via-lime-500 to-cyan-500 text-white font-bold disabled:opacity-50 disabled:cursor-not-allowed hover:from-lime-600 hover:via-lime-600 hover:to-cyan-600 transition-all focus:outline-none focus:ring-2 focus:ring-lime-400/80"
           >
             Create Campaign
           </button>

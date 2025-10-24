@@ -29,9 +29,9 @@ export function BaseLaunchCard({ data, children, hasVoted = false, onUpvote, onC
   } = data
 
   const scopeColors: Record<string, string> = {
-    ICM: 'bg-fuchsia-500/20 text-fuchsia-300 border-fuchsia-500/40',
+    ICM: 'bg-lime-500/20 text-lime-300 border-lime-500/40',
     CCM: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40',
-    MEME: 'bg-purple-500/20 text-purple-300 border-purple-500/40',
+    MEME: 'bg-lime-500/20 text-lime-300 border-lime-500/40',
   }
 
   const statusColors = {
@@ -54,14 +54,14 @@ export function BaseLaunchCard({ data, children, hasVoted = false, onUpvote, onC
             <div className={cn(
               "w-10 h-10 rounded-lg border flex items-center justify-center transition-all",
               hasVoted
-                ? "bg-fuchsia-500/20 border-fuchsia-400/50"
-                : "bg-white/5 hover:bg-white/10 border-white/10 group-hover:border-fuchsia-400/50 group-hover:bg-fuchsia-500/10"
+                ? "bg-lime-500/20 border-lime-400/50"
+                : "bg-white/5 hover:bg-white/10 border-white/10 group-hover:border-lime-400/50 group-hover:bg-lime-500/10"
             )}>
               <ArrowUp className={cn(
                 "w-5 h-5 transition-colors",
                 hasVoted
-                  ? "text-fuchsia-400"
-                  : "text-white/70 group-hover:text-fuchsia-400"
+                  ? "text-lime-400"
+                  : "text-white/70 group-hover:text-lime-400"
               )} />
             </div>
             <span className="text-sm text-white/50 font-medium">{upvotes}</span>
@@ -85,7 +85,7 @@ export function BaseLaunchCard({ data, children, hasVoted = false, onUpvote, onC
           {/* Header Row - Logo, Title, Scope Badge */}
           <div className="flex items-start gap-3 mb-3">
             {/* Logo */}
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-fuchsia-500 to-cyan-500 flex items-center justify-center font-bold text-white text-sm flex-shrink-0 overflow-hidden">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-lime-500 to-cyan-500 flex items-center justify-center font-bold text-white text-sm flex-shrink-0 overflow-hidden">
               {logoUrl ? (
                 <img src={logoUrl} alt={title || 'Launch'} className="w-full h-full object-cover" />
               ) : (
@@ -148,7 +148,7 @@ export function BaseLaunchCard({ data, children, hasVoted = false, onUpvote, onC
             </div>
             <div className="h-2 rounded-full bg-white/10 overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-fuchsia-400 via-purple-400 to-cyan-400 transition-all duration-500"
+                className="h-full bg-gradient-to-r from-lime-400 via-lime-400 to-cyan-400 transition-all duration-500"
                 style={{ width: `${Math.max(0, Math.min(100, convictionPct))}%` }}
               />
             </div>
@@ -184,9 +184,9 @@ export function BaseLaunchCard({ data, children, hasVoted = false, onUpvote, onC
             <div className="mb-3 flex flex-wrap gap-2">
               {/* Boost Count Badge */}
               {data.boostCount !== undefined && data.boostCount > 0 && (
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-fuchsia-500/10 border border-fuchsia-500/30">
-                  <Zap className="w-3.5 h-3.5 text-fuchsia-400" />
-                  <span className="text-xs font-semibold text-fuchsia-300">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-lime-500/10 border border-lime-500/30">
+                  <Zap className="w-3.5 h-3.5 text-lime-400" />
+                  <span className="text-xs font-semibold text-lime-300">
                     {data.boostCount} {data.boostCount === 1 ? 'Boost' : 'Boosts'}
                   </span>
                 </div>

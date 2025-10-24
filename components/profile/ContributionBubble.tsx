@@ -17,7 +17,7 @@ export function ContributionBubble({ contribution }: ContributionBubbleProps) {
       onMouseLeave={() => setShowTooltip(false)}
     >
       {/* Bubble */}
-      <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-white/10 hover:border-fuchsia-500/50 hover:scale-110 transition-all cursor-pointer">
+      <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-white/10 hover:border-lime-500/50 hover:scale-110 transition-all cursor-pointer">
         <img
           src={contribution.logo}
           alt={contribution.name}

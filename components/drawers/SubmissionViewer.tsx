@@ -126,7 +126,7 @@ export function SubmissionViewer({
                 href={(submission as any).link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500 hover:bg-purple-600 text-white text-sm font-medium transition-all"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-lime-500 hover:bg-lime-600 text-white text-sm font-medium transition-all"
               >
                 <ExternalLink className="w-4 h-4" />
                 Open in New Tab
@@ -148,7 +148,7 @@ export function SubmissionViewer({
                 <div className="flex items-center justify-center h-full text-white/60">
                   <div className="text-center">
                     <p className="mb-2">Twitch embed preview</p>
-                    <a href={(submission as any).link} target="_blank" rel="noopener noreferrer" className="text-purple-400 underline">
+                    <a href={(submission as any).link} target="_blank" rel="noopener noreferrer" className="text-lime-400 underline">
                       View on Twitch
                     </a>
                   </div>
@@ -158,7 +158,7 @@ export function SubmissionViewer({
                 <div className="flex items-center justify-center h-full text-white/60">
                   <div className="text-center">
                     <p className="mb-2">X/Twitter post</p>
-                    <a href={(submission as any).link} target="_blank" rel="noopener noreferrer" className="text-purple-400 underline">
+                    <a href={(submission as any).link} target="_blank" rel="noopener noreferrer" className="text-lime-400 underline">
                       View on X
                     </a>
                   </div>
@@ -168,7 +168,7 @@ export function SubmissionViewer({
                 <div className="flex items-center justify-center h-full text-white/60">
                   <div className="text-center">
                     <p className="mb-2">TikTok video</p>
-                    <a href={(submission as any).link} target="_blank" rel="noopener noreferrer" className="text-purple-400 underline">
+                    <a href={(submission as any).link} target="_blank" rel="noopener noreferrer" className="text-lime-400 underline">
                       View on TikTok
                     </a>
                   </div>

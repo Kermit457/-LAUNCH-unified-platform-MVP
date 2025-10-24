@@ -299,7 +299,7 @@ export const StoriesViewer = ({
       {/* Header */}
       <div className="flex items-center justify-between p-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500 p-0.5">
+          <div className="w-10 h-10 rounded-full bg-gradient-to-r from-violet-500 to-lime-500 p-0.5">
             <div className="w-full h-full rounded-full bg-black flex items-center justify-center">
               <span className="text-white text-sm font-semibold">
                 {story.user.charAt(0).toUpperCase()}
@@ -396,7 +396,7 @@ export const FloatingActionButton = ({
           }
         }}
         animate={{ rotate: isExpanded ? 45 : 0 }}
-        className="w-14 h-14 rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500 flex items-center justify-center shadow-lg"
+        className="w-14 h-14 rounded-full bg-gradient-to-r from-violet-500 to-lime-500 flex items-center justify-center shadow-lg"
       >
         <Icon className="h-6 w-6 text-white" />
       </motion.button>
@@ -450,7 +450,7 @@ export const InteractiveListItem = ({
         className="relative bg-zinc-900 p-4 flex items-center gap-4 cursor-pointer"
       >
         {avatar && (
-          <div className="w-12 h-12 rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500 p-0.5">
+          <div className="w-12 h-12 rounded-full bg-gradient-to-r from-violet-500 to-lime-500 p-0.5">
             <div className="w-full h-full rounded-full bg-zinc-900 flex items-center justify-center">
               {avatar}
             </div>
@@ -549,7 +549,7 @@ export const ChatInput = ({
         <motion.button
           whileTap={{ scale: 0.9 }}
           onClick={handleSend}
-          className="p-2 bg-gradient-to-r from-violet-500 to-fuchsia-500 rounded-full"
+          className="p-2 bg-gradient-to-r from-violet-500 to-lime-500 rounded-full"
         >
           <Send className="h-5 w-5 text-white" />
         </motion.button>

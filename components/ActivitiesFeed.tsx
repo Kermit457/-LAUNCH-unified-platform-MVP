@@ -52,7 +52,7 @@ export function ActivitiesFeed() {
         <div className="flex items-center gap-2">
           <h3 className="text-lg font-bold text-white">Activity</h3>
           {unreadCount > 0 && (
-            <span className="px-2 py-0.5 bg-fuchsia-500 text-white text-xs font-bold rounded-full">
+            <span className="px-2 py-0.5 bg-lime-500 text-white text-xs font-bold rounded-full">
               {unreadCount}
             </span>
           )}
@@ -68,7 +68,7 @@ export function ActivitiesFeed() {
             onClick={() => setFilter('all')}
             className={`px-3 py-1 rounded-lg text-xs font-semibold transition-colors ${
               filter === 'all'
-                ? 'bg-fuchsia-500 text-white'
+                ? 'bg-lime-500 text-white'
                 : 'bg-white/5 text-white/60 hover:bg-white/10'
             }`}
           >
@@ -78,7 +78,7 @@ export function ActivitiesFeed() {
             onClick={() => setFilter('unread')}
             className={`px-3 py-1 rounded-lg text-xs font-semibold transition-colors ${
               filter === 'unread'
-                ? 'bg-fuchsia-500 text-white'
+                ? 'bg-lime-500 text-white'
                 : 'bg-white/5 text-white/60 hover:bg-white/10'
             }`}
           >

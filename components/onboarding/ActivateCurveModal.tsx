@@ -63,7 +63,7 @@ export function ActivateCurveModal({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.9, y: 20 }}
           onClick={(e) => e.stopPropagation()}
-          className="w-full max-w-2xl bg-gradient-to-br from-zinc-900 via-zinc-900 to-purple-900/20 rounded-3xl border border-zinc-800 shadow-2xl overflow-hidden"
+          className="w-full max-w-2xl bg-gradient-to-br from-zinc-900 via-zinc-900 to-lime-900/20 rounded-3xl border border-zinc-800 shadow-2xl overflow-hidden"
         >
           {/* Header */}
           <div className="relative p-8 pb-6 border-b border-zinc-800">
@@ -75,7 +75,7 @@ export function ActivateCurveModal({
             </button>
 
             <div className="flex items-center gap-4 mb-4">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#D1FD0A] to-[#B8E008] flex items-center justify-center">
                 <Sparkles className="w-8 h-8 text-white" />
               </div>
               <div>
@@ -110,7 +110,7 @@ export function ActivateCurveModal({
               const Icon = step.icon
               const isActive = currentStep === index
               const colors = {
-                purple: 'from-purple-500 to-violet-500',
+                lime: 'from-[#D1FD0A] to-[#B8E008]',
                 blue: 'from-blue-500 to-cyan-500',
                 green: 'from-green-500 to-emerald-500'
               }

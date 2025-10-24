@@ -44,7 +44,7 @@ export function AboutCollapse({
       {!expanded && (
         <button
           onClick={() => setExpanded(true)}
-          className="mt-2 text-xs text-purple-400 hover:text-purple-300 font-medium transition-colors"
+          className="mt-2 text-xs text-[#D1FD0A] hover:text-[#B8E008] font-medium transition-colors"
         >
           Read more →
         </button>

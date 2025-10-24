@@ -38,19 +38,19 @@ export function HeroSection() {
         <div className="bg-white/5 border border-white/10 rounded-2xl p-5 max-w-4xl mx-auto backdrop-blur-xl">
           <div className="grid grid-cols-3 gap-6">
             <div className="text-center">
-              <div className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent mb-1">
+              <div className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-[#D1FD0A] via-[#D1FD0A] to-cyan-500 bg-clip-text text-transparent mb-1">
                 {launches}
               </div>
               <div className="text-xs text-zinc-500">Launches</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent mb-1">
+              <div className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-[#D1FD0A] via-[#D1FD0A] to-cyan-500 bg-clip-text text-transparent mb-1">
                 {boosted}
               </div>
               <div className="text-xs text-zinc-500">Boosted</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent mb-1">
+              <div className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-[#D1FD0A] via-[#D1FD0A] to-cyan-500 bg-clip-text text-transparent mb-1">
                 {users}
               </div>
               <div className="text-xs text-zinc-500">Users</div>
@@ -67,7 +67,7 @@ export function HeroSection() {
             <div className="flex items-center justify-center gap-6 md:gap-8 flex-wrap">
               {/* LaunchOS */}
               <div className="flex flex-col items-center gap-2 text-zinc-300 hover:text-white transition-colors cursor-pointer">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center shadow-lg">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-lime-500 flex items-center justify-center shadow-lg">
                   <Rocket className="w-5 h-5 text-white" />
                 </div>
                 <span className="text-xs font-medium">LaunchOS</span>
@@ -83,7 +83,7 @@ export function HeroSection() {
 
               {/* Solana */}
               <div className="flex flex-col items-center gap-2 text-zinc-300 hover:text-white transition-colors cursor-pointer">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-cyan-500 flex items-center justify-center shadow-lg">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-lime-500 to-cyan-500 flex items-center justify-center shadow-lg">
                   <span className="text-white font-bold text-sm">S</span>
                 </div>
                 <span className="text-xs font-medium">Solana</span>
@@ -123,7 +123,7 @@ export function HeroSection() {
 
               {/* Phantom */}
               <div className="flex flex-col items-center gap-2 text-zinc-300 hover:text-white transition-colors cursor-pointer">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center shadow-lg">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-lime-600 to-indigo-600 flex items-center justify-center shadow-lg">
                   <span className="text-white font-bold text-sm">Φ</span>
                 </div>
                 <span className="text-xs font-medium">Phantom</span>

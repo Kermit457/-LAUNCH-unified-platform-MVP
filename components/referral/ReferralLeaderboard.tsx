@@ -31,7 +31,7 @@ export const ReferralLeaderboard = ({
   }
 
   const getLevelColor = (level: number) => {
-    if (level >= 5) return 'text-purple-400 bg-purple-500/10'
+    if (level >= 5) return 'text-lime-400 bg-lime-500/10'
     if (level >= 4) return 'text-blue-400 bg-blue-500/10'
     if (level >= 3) return 'text-green-400 bg-green-500/10'
     if (level >= 2) return 'text-yellow-400 bg-yellow-500/10'
@@ -98,7 +98,7 @@ export const ReferralLeaderboard = ({
       className="bg-zinc-950 rounded-2xl border border-zinc-800 overflow-hidden"
     >
       {/* Header */}
-      <div className="bg-gradient-to-r from-orange-500/10 to-purple-500/10 border-b border-zinc-800 p-6">
+      <div className="bg-gradient-to-r from-orange-500/10 to-lime-500/10 border-b border-zinc-800 p-6">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
             <div className="bg-orange-500/20 p-2 rounded-lg">
@@ -139,7 +139,7 @@ export const ReferralLeaderboard = ({
               </div>
               <span className="text-lg font-bold text-white">#{userRank}</span>
               {position.isTopTen && (
-                <span className="text-xs bg-purple-500/20 text-purple-400 px-2 py-1 rounded">
+                <span className="text-xs bg-lime-500/20 text-lime-400 px-2 py-1 rounded">
                   Top 10!
                 </span>
               )}

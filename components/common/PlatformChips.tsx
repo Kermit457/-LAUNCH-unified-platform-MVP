@@ -35,7 +35,7 @@ export function PlatformChips({ selected, onChange }: PlatformChipsProps) {
   return (
     <div>
       <label className="block text-sm font-medium text-white mb-2">
-        Platforms <span className="text-fuchsia-400">*</span>
+        Platforms <span className="text-lime-400">*</span>
       </label>
       <div className="flex flex-wrap gap-2">
         {platforms.map(({ value, label, Icon }) => {
@@ -47,10 +47,10 @@ export function PlatformChips({ selected, onChange }: PlatformChipsProps) {
               type="button"
               onClick={() => togglePlatform(value)}
               className={cn(
-                "px-4 py-2 rounded-lg border transition-all focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80",
+                "px-4 py-2 rounded-lg border transition-all focus:outline-none focus:ring-2 focus:ring-lime-400/80",
                 "flex items-center gap-2 text-sm font-medium",
                 isSelected
-                  ? "bg-fuchsia-500/10 border-fuchsia-500/50 text-fuchsia-300"
+                  ? "bg-lime-500/10 border-lime-500/50 text-lime-300"
                   : "bg-white/5 border-white/10 text-white/60 hover:bg-white/10 hover:text-white"
               )}
             >

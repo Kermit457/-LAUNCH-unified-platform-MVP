@@ -45,7 +45,7 @@ export const CreatorProfileCard = ({
       transition={{ duration: 0.2 }}
       className="relative group"
     >
-      {/* Animated Glow Effect - Purple gradient for creators */}
+      {/* Animated Glow Effect - Lime gradient for creators */}
       <motion.div
         className="absolute -inset-0.5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
         style={{
@@ -164,7 +164,7 @@ export const CreatorProfileCard = ({
                 {creator.badges && creator.badges.map((badge, i) => (
                   <div
                     key={i}
-                    className="px-2 py-0.5 rounded-full text-[10px] font-medium flex-shrink-0 bg-purple-500/10 text-purple-400 border border-purple-500/20"
+                    className="px-2 py-0.5 rounded-full text-[10px] font-medium flex-shrink-0 bg-lime-500/10 text-lime-400 border border-lime-500/20"
                   >
                     {badge}
                   </div>
@@ -183,9 +183,9 @@ export const CreatorProfileCard = ({
           <div className="flex items-center gap-2 mb-4 text-[10px]">
             {/* Followers */}
             {creator.followers !== undefined && (
-              <div className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-purple-500/10 border border-purple-500/20">
-                <Users className="w-3 h-3 text-purple-400" />
-                <span className="text-purple-400 font-medium">{creator.followers}</span>
+              <div className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-lime-500/10 border border-lime-500/20">
+                <Users className="w-3 h-3 text-lime-400" />
+                <span className="text-lime-400 font-medium">{creator.followers}</span>
                 <span className="text-zinc-600 ml-0.5">followers</span>
               </div>
             )}
@@ -224,7 +224,7 @@ export const CreatorProfileCard = ({
               </div>
               <div className="h-1 bg-zinc-900 rounded-full overflow-hidden">
                 <motion.div
-                  className="h-full bg-gradient-to-r from-violet-500 to-purple-500 rounded-full"
+                  className="h-full bg-gradient-to-r from-violet-500 to-lime-500 rounded-full"
                   initial={{ width: 0 }}
                   animate={{ width: `${creator.convictionPct}%` }}
                   transition={{ duration: 1, ease: "easeOut" }}
@@ -252,7 +252,7 @@ export const CreatorProfileCard = ({
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={onInvite}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-zinc-900 text-zinc-400 hover:bg-gradient-to-r hover:from-purple-500 hover:to-pink-500 hover:text-white border border-zinc-800 hover:border-purple-500 transition-all"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-zinc-900 text-zinc-400 hover:bg-gradient-to-r hover:from-lime-500 hover:to-pink-500 hover:text-white border border-zinc-800 hover:border-lime-500 transition-all"
             >
               <Users className="w-3.5 h-3.5" />
               <span className="text-xs">Invite</span>

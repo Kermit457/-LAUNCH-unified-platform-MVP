@@ -24,7 +24,7 @@ export function ConvictionBar({
       )}
       <div className="h-2 rounded-full bg-white/5 overflow-hidden">
         <div
-          className="h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-300 rounded-full"
+          className="h-full bg-gradient-to-r from-[#D1FD0A] to-[#B8E008] transition-all duration-300 rounded-full"
           style={{ width: `${percentage}%` }}
         />
       </div>

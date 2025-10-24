@@ -62,7 +62,7 @@ export const ProductHuntCard = ({
           <div className={`
             px-4 py-2 text-xs font-bold text-white flex items-center gap-2
             ${launch.featured
-              ? 'bg-gradient-to-r from-violet-500 to-purple-600'
+              ? 'bg-gradient-to-r from-violet-500 to-lime-600'
               : 'bg-gradient-to-r from-green-500 to-emerald-600'
             }
           `}>

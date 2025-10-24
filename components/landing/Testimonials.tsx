@@ -6,11 +6,11 @@ export function Testimonials() {
   const { testimonials, press } = landingData
 
   return (
-    <section className="py-24 px-4 bg-gradient-to-b from-transparent via-fuchsia-950/10 to-transparent">
+    <section className="py-24 px-4 bg-gradient-to-b from-transparent via-lime-950/10 to-transparent">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent mb-4">
+          <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-lime-500 via-lime-500 to-cyan-500 bg-clip-text text-transparent mb-4">
             What Builders & Creators Are Saying
           </h2>
         </div>
@@ -20,7 +20,7 @@ export function Testimonials() {
           {testimonials.map((testimonial) => (
             <div
               key={testimonial.id}
-              className="rounded-2xl bg-white/5 border border-white/10 p-8 backdrop-blur-xl hover:border-fuchsia-500/50 transition-all"
+              className="rounded-2xl bg-white/5 border border-white/10 p-8 backdrop-blur-xl hover:border-lime-500/50 transition-all"
             >
               {/* Quote */}
               <blockquote className="text-zinc-300 mb-6 italic">

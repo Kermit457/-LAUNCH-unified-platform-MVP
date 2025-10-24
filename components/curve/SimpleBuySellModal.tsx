@@ -134,7 +134,7 @@ export function SimpleBuySellModal({
               {ownerAvatar ? (
                 <img src={ownerAvatar} alt={ownerName} className="w-12 h-12 rounded-full" />
               ) : (
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-lg">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-lime-500 to-pink-500 flex items-center justify-center text-white font-bold text-lg">
                   {ownerName[0].toUpperCase()}
                 </div>
               )}

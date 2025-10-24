@@ -127,7 +127,7 @@ export default function PredictionWidget({ streamer }: { streamer: string }) {
             >
               <div
                 className={`absolute inset-0 transition-all duration-500 ${
-                  isWinner ? 'bg-gradient-to-r from-green-500/20 to-green-500/10' : 'bg-gradient-to-r from-indigo-500/20 to-purple-500/10'
+                  isWinner ? 'bg-gradient-to-r from-green-500/20 to-green-500/10' : 'bg-gradient-to-r from-indigo-500/20 to-lime-500/10'
                 }`}
                 style={{ width: `${percentage}%` }}
               />

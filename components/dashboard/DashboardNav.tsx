@@ -55,7 +55,7 @@ export function DashboardNav({ activeSection, onSectionChange }: DashboardNavPro
               className={cn(
                 'flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all whitespace-nowrap',
                 isActive
-                  ? 'bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 text-white shadow-lg shadow-fuchsia-500/20'
+                  ? 'bg-gradient-to-r from-lime-500 via-lime-500 to-cyan-500 text-white shadow-lg shadow-lime-500/20'
                   : 'bg-white/5 text-white/70 hover:text-white hover:bg-white/10 border border-white/10'
               )}
             >
@@ -71,7 +71,7 @@ export function DashboardNav({ activeSection, onSectionChange }: DashboardNavPro
         <select
           value={activeSection}
           onChange={(e) => onSectionChange(e.target.value as DashboardSection)}
-          className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white font-medium focus:outline-none focus:ring-2 focus:ring-fuchsia-400"
+          className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white font-medium focus:outline-none focus:ring-2 focus:ring-lime-400"
         >
           {navItems.map((item) => (
             <option key={item.id} value={item.id}>

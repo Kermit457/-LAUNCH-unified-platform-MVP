@@ -17,7 +17,7 @@ export function MarketSwitcher({ market, onMarketChange }: MarketSwitcherProps) 
           flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all duration-300
           ${
             market === 'all'
-              ? 'bg-gradient-to-r from-launchos-fuchsia to-launchos-violet text-white shadow-neon-fuchsia'
+              ? 'bg-gradient-to-r from-launchos-lime to-launchos-violet text-white shadow-neon-lime'
               : 'text-white/60 hover:text-white hover:bg-white/5'
           }
         `}
@@ -32,7 +32,7 @@ export function MarketSwitcher({ market, onMarketChange }: MarketSwitcherProps) 
           flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all duration-300
           ${
             market === 'icm'
-              ? 'bg-gradient-to-r from-launchos-fuchsia to-launchos-violet text-white shadow-neon-fuchsia'
+              ? 'bg-gradient-to-r from-launchos-lime to-launchos-violet text-white shadow-neon-lime'
               : 'text-white/60 hover:text-white hover:bg-white/5'
           }
         `}

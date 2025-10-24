@@ -46,7 +46,7 @@ export const ReferralCard = ({
 
   // Level colors
   const getLevelColor = (level: number) => {
-    if (level >= 5) return 'text-purple-400'
+    if (level >= 5) return 'text-lime-400'
     if (level >= 4) return 'text-blue-400'
     if (level >= 3) return 'text-green-400'
     if (level >= 2) return 'text-yellow-400'

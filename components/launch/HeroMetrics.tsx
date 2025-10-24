@@ -1,6 +1,7 @@
 "use client"
 
-import { DollarSign, Gift, TrendingUp, Flame, Video, Users, Repeat } from 'lucide-react'
+import { Gift, Flame, Video, Users, Repeat, TrendingUp } from 'lucide-react'
+import { IconCash } from '@/lib/icons'
 import { StatCard } from '@/components/design-system/StatCard'
 import { StatCardSkeleton } from '@/components/design-system/Skeleton'
 import type { PlatformMetrics } from '@/lib/appwrite/services/metrics'
@@ -65,29 +66,8 @@ export function HeroMetrics({ metrics, isLoading, clipStats, tradingVolume, netw
           <StatCard
             label="Vault TVL"
             value={formatCurrency(metrics.vaultTVL)}
-            icon={DollarSign}
-            valueClassName="text-gradient-main"
-          />
-        </div>
-
-        {/* 24h Motion - Core Activity Index */}
-        <div className="snap-center shrink-0 w-[160px] md:w-auto">
-          <StatCard
-            label="24h Motion"
-            value={`${metrics.motion24h >= 0 ? '+' : ''}${metrics.motion24h.toFixed(1)}%`}
-            icon={TrendingUp}
-            trend={metrics.motion24h}
-            valueClassName={metrics.motion24h >= 0 ? 'text-[#00FF88]' : 'text-red-400'}
-          />
-        </div>
-
-        {/* Live Projects - Growth Pulse */}
-        <div className="snap-center shrink-0 w-[160px] md:w-auto">
-          <StatCard
-            label="Live Projects"
-            value={metrics.liveProjects}
-            icon={Flame}
-            valueClassName="text-yellow-400"
+            icon={IconCash}
+            valueClassName="text-[#D1FD0A] font-led-dot"
           />
         </div>
 
@@ -97,8 +77,8 @@ export function HeroMetrics({ metrics, isLoading, clipStats, tradingVolume, netw
             <StatCard
               label="Trading Volume"
               value={formatCurrency(tradingVolume)}
-              icon={TrendingUp}
-              valueClassName="text-[#00FF88]"
+              icon={Repeat}
+              valueClassName="text-[#D1FD0A] font-led-dot"
             />
           </div>
         )}
@@ -110,10 +90,30 @@ export function HeroMetrics({ metrics, isLoading, clipStats, tradingVolume, netw
               label="Clip Views"
               value={formatViews(clipStats.totalViews)}
               icon={Video}
-              valueClassName="text-purple-400"
+              valueClassName="text-[#D1FD0A] font-led-dot"
             />
           </div>
         )}
+
+        {/* 24h Motion - Core Activity Index */}
+        <div className="snap-center shrink-0 w-[160px] md:w-auto">
+          <StatCard
+            label="24h Motion"
+            value={metrics.motion24h}
+            icon={TrendingUp}
+            valueClassName="text-[#D1FD0A] font-led-dot"
+          />
+        </div>
+
+        {/* Live Projects - Growth Pulse */}
+        <div className="snap-center shrink-0 w-[160px] md:w-auto">
+          <StatCard
+            label="Live Projects"
+            value={metrics.liveProjects}
+            icon={Flame}
+            valueClassName="text-[#D1FD0A] font-led-dot"
+          />
+        </div>
       </div>
     </section>
   )

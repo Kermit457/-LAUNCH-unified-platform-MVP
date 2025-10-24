@@ -63,7 +63,7 @@ export function ConnectedNetwork({ connections, onOpenChat }: ConnectedNetworkPr
             onClick={() => setFilter('all')}
             className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${
               filter === 'all'
-                ? 'bg-purple-500 text-white'
+                ? 'bg-lime-500 text-white'
                 : 'bg-white/5 text-white/60 hover:bg-white/10'
             }`}
           >
@@ -73,7 +73,7 @@ export function ConnectedNetwork({ connections, onOpenChat }: ConnectedNetworkPr
             onClick={() => setFilter('unread')}
             className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${
               filter === 'unread'
-                ? 'bg-purple-500 text-white'
+                ? 'bg-lime-500 text-white'
                 : 'bg-white/5 text-white/60 hover:bg-white/10'
             }`}
           >
@@ -93,7 +93,7 @@ export function ConnectedNetwork({ connections, onOpenChat }: ConnectedNetworkPr
             <div className="flex items-center gap-3">
               {/* Avatar */}
               <div className="relative flex-shrink-0">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-fuchsia-500 via-purple-500 to-cyan-500 flex items-center justify-center text-white font-bold text-sm">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-lime-500 via-lime-500 to-cyan-500 flex items-center justify-center text-white font-bold text-sm">
                   {connection.user.name.slice(0, 2).toUpperCase()}
                 </div>
                 {connection.online && (
@@ -123,7 +123,7 @@ export function ConnectedNetwork({ connections, onOpenChat }: ConnectedNetworkPr
               {/* Unread badge or chat icon */}
               <div className="flex-shrink-0">
                 {connection.unreadCount && connection.unreadCount > 0 ? (
-                  <div className="w-5 h-5 rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 flex items-center justify-center">
+                  <div className="w-5 h-5 rounded-full bg-gradient-to-r from-lime-500 to-lime-500 flex items-center justify-center">
                     <span className="text-xs font-bold text-white">
                       {connection.unreadCount > 9 ? '9+' : connection.unreadCount}
                     </span>

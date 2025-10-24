@@ -3,10 +3,10 @@
 import { useParams, useRouter } from 'next/navigation'
 import { ArrowLeft, TrendingUp, Heart, Eye, MessageCircle, Send, ArrowBigUp, Clock, Users, Coins } from 'lucide-react'
 import { LaunchHeaderCompact } from '@/components/launch/LaunchHeaderCompact'
-import { ChartTabs } from '@/components/launch/ChartTabs'
+import { ChartTabsBTDemo } from '@/components/btdemo/ChartTabsBTDemo'
 import { TokenStatsCompact } from '@/components/launch/TokenStatsCompact'
 import { AboutCollapse } from '@/components/launch/AboutCollapse'
-import { TradingPanel } from '@/components/trading/TradingPanel'
+import { TradingPanelBTDemo } from '@/components/btdemo/TradingPanelBTDemo'
 import { useState, useEffect } from 'react'
 import { useTokenData } from '@/lib/tokenData'
 import { generateMockCandles, generateMockActivity } from '@/lib/mockChartData'
@@ -143,7 +143,7 @@ export default function LaunchDetailPage() {
   // Show loading state while fetching
   if (loading || !launch) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-black via-purple-950/20 to-black pb-20 lg:pb-8">
+      <div className="min-h-screen bg-gradient-to-br from-black via-lime-950/20 to-black pb-20 lg:pb-8">
         <div className="max-w-4xl mx-auto px-4 py-6">
           {/* Back Button Skeleton */}
           <div className="mb-4 h-8 w-20 bg-white/10 rounded animate-pulse"></div>
@@ -179,7 +179,7 @@ export default function LaunchDetailPage() {
 
   return (
     <ErrorBoundary>
-      <div className="min-h-screen bg-gradient-to-br from-black via-purple-950/20 to-black pb-20 lg:pb-8">
+      <div className="min-h-screen bg-gradient-to-br from-black via-lime-950/20 to-black pb-20 lg:pb-8">
         {/* Content Wrapper - Compact max-width */}
         <div className="max-w-4xl mx-auto px-4 py-6">
         {/* Back Button */}
@@ -232,13 +232,13 @@ export default function LaunchDetailPage() {
                 disabled={isVoting}
                 className={`flex flex-col items-center gap-2 p-3 rounded-xl transition-all ${
                   hasVoted
-                    ? 'bg-fuchsia-500/20 border border-fuchsia-500/40'
-                    : 'bg-white/5 hover:bg-white/10 border border-white/10 hover:border-fuchsia-500/40'
+                    ? 'bg-lime-500/20 border border-lime-500/40'
+                    : 'bg-white/5 hover:bg-white/10 border border-white/10 hover:border-lime-500/40'
                 } ${isVoting ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'} ${voteFlash ? 'animate-flash' : ''}`}
               >
-                <ArrowBigUp className={`w-6 h-6 ${hasVoted ? 'text-fuchsia-400 fill-fuchsia-400' : 'text-white/70'}`} />
+                <ArrowBigUp className={`w-6 h-6 ${hasVoted ? 'text-lime-400 fill-lime-400' : 'text-white/70'}`} />
                 <div className="text-center">
-                  <div className={`text-xl font-bold ${hasVoted ? 'text-fuchsia-400' : 'text-white'}`}>{voteCount}</div>
+                  <div className={`text-xl font-bold ${hasVoted ? 'text-lime-400' : 'text-white'}`}>{voteCount}</div>
                   <div className="text-xs text-white/60">Upvotes</div>
                 </div>
               </button>
@@ -254,7 +254,7 @@ export default function LaunchDetailPage() {
 
               {/* Contributors */}
               <div className="flex flex-col items-center gap-2 p-3 rounded-xl bg-white/5 border border-white/10">
-                <Users className="w-6 h-6 text-purple-400" />
+                <Users className="w-6 h-6 text-lime-400" />
                 <div className="text-center">
                   <div className="text-xl font-bold text-white">{launch.contributors?.length || 0}</div>
                   <div className="text-xs text-white/60">Contributors</div>
@@ -335,7 +335,7 @@ export default function LaunchDetailPage() {
           {/* Chart - Takes 2 columns on desktop */}
           <div className="lg:col-span-2">
             {launch.status === "LIVE" && launch.dexPairId && (
-              <ChartTabs
+              <ChartTabsBTDemo
                 pairId={launch.dexPairId}
                 candles={chartData.candles}
                 activity={chartData.activity}
@@ -345,7 +345,7 @@ export default function LaunchDetailPage() {
 
           {/* Trading Panel - Takes 1 column on desktop */}
           <div className="lg:col-span-1">
-            <TradingPanel
+            <TradingPanelBTDemo
               curveId={launchId}
               currentPrice={0.0001234}
               userBalance={1250.50}
@@ -424,7 +424,7 @@ export default function LaunchDetailPage() {
                     }
                   }}
                   placeholder="Add a comment..."
-                  className="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white placeholder:text-white/40 focus:outline-none focus:border-fuchsia-500/50"
+                  className="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white placeholder:text-white/40 focus:outline-none focus:border-lime-500/50"
                 />
                 <Button
                   onClick={async () => {
@@ -474,7 +474,7 @@ export default function LaunchDetailPage() {
                       <p className="text-white/80 text-sm mb-2">{comment.text}</p>
                       <button
                         onClick={() => upvoteComment(comment.id)}
-                        className="flex items-center gap-1 text-xs text-white/60 hover:text-fuchsia-400 transition-colors"
+                        className="flex items-center gap-1 text-xs text-white/60 hover:text-lime-400 transition-colors"
                       >
                         <Heart className="w-3 h-3" />
                         {comment.upvotes || 0}

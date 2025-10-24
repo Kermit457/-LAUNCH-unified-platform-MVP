@@ -166,7 +166,7 @@ export function LeaderboardTable({ defaultTab = 'creators', className }: Leaderb
                 className={cn(
                   'px-3 py-1.5 rounded-lg text-xs font-medium transition-all',
                   roleFilter === role
-                    ? 'bg-purple-500 text-white shadow-lg'
+                    ? 'bg-lime-500 text-white shadow-lg'
                     : 'bg-white/5 text-white/60 hover:bg-white/10 border border-white/10'
                 )}
               >
@@ -186,7 +186,7 @@ export function LeaderboardTable({ defaultTab = 'creators', className }: Leaderb
                 className={cn(
                   'px-3 py-1.5 rounded-lg text-xs font-medium transition-all',
                   chainFilter === chain
-                    ? 'bg-purple-500 text-white shadow-lg'
+                    ? 'bg-lime-500 text-white shadow-lg'
                     : 'bg-white/5 text-white/60 hover:bg-white/10 border border-white/10'
                 )}
               >
@@ -256,7 +256,7 @@ function TabButton({ active, onClick, children }: { active: boolean; onClick: ()
     >
       {children}
       {active && (
-        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-500 to-pink-600" />
+        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-lime-500 to-pink-600" />
       )}
     </button>
   )
@@ -277,7 +277,7 @@ function CreatorCard({
 
   return (
     <div
-      className="glass-launchos rounded-2xl p-4 border border-white/10 hover:border-purple-500/30 transition-all"
+      className="glass-launchos rounded-2xl p-4 border border-white/10 hover:border-lime-500/30 transition-all"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -290,7 +290,7 @@ function CreatorCard({
           <div className="flex items-start justify-between gap-4 mb-3">
             <div className="flex items-center gap-3">
               {/* Avatar */}
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-white font-bold text-lg">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-lime-500 to-pink-600 flex items-center justify-center text-white font-bold text-lg">
                 {entry.avatar || entry.handle.slice(0, 2).toUpperCase()}
               </div>
 
@@ -393,7 +393,7 @@ function CreatorCard({
                 Follow
               </button>
               <button
-                className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-bold text-sm transition-all shadow-lg"
+                className="px-4 py-2 rounded-lg bg-gradient-to-r from-lime-500 to-pink-600 hover:from-lime-600 hover:to-pink-700 text-white font-bold text-sm transition-all shadow-lg"
                 aria-label={`Invite ${entry.name} to campaign`}
               >
                 Invite to Campaign
@@ -420,14 +420,14 @@ function ProjectCard({
   const [isHovered, setIsHovered] = useState(false)
 
   const getChainColor = () => {
-    if (entry.chain === 'SOL') return 'from-purple-500 to-violet-600'
+    if (entry.chain === 'SOL') return 'from-lime-500 to-violet-600'
     if (entry.chain === 'BASE') return 'from-blue-500 to-cyan-600'
     return 'from-gray-500 to-gray-700'
   }
 
   return (
     <div
-      className="glass-launchos rounded-2xl p-4 border border-white/10 hover:border-purple-500/30 transition-all"
+      className="glass-launchos rounded-2xl p-4 border border-white/10 hover:border-lime-500/30 transition-all"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -537,7 +537,7 @@ function ProjectCard({
                 Follow
               </button>
               <button
-                className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-bold text-sm transition-all shadow-lg"
+                className="px-4 py-2 rounded-lg bg-gradient-to-r from-lime-500 to-pink-600 hover:from-lime-600 hover:to-pink-700 text-white font-bold text-sm transition-all shadow-lg"
                 aria-label={`Join campaigns for ${entry.name}`}
               >
                 Join Campaigns
@@ -565,7 +565,7 @@ function AgencyCard({
 
   return (
     <div
-      className="glass-launchos rounded-2xl p-4 border border-white/10 hover:border-purple-500/30 transition-all"
+      className="glass-launchos rounded-2xl p-4 border border-white/10 hover:border-lime-500/30 transition-all"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -661,7 +661,7 @@ function AgencyCard({
                 Follow
               </button>
               <button
-                className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-bold text-sm transition-all shadow-lg"
+                className="px-4 py-2 rounded-lg bg-gradient-to-r from-lime-500 to-pink-600 hover:from-lime-600 hover:to-pink-700 text-white font-bold text-sm transition-all shadow-lg"
                 aria-label={`Invite ${entry.name} agency`}
               >
                 Invite Agency

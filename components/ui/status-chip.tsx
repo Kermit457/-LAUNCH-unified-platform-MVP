@@ -11,7 +11,7 @@ export function StatusChip({ type, className, ...props }: StatusChipProps) {
     upcoming: 'bg-amber-500/10 text-amber-500 border-amber-600/30',
     ended: 'bg-gray-500/10 text-gray-500 border-gray-600/30',
     icm: 'bg-cyan-500/10 text-cyan-500 border-cyan-600/30',
-    ccm: 'bg-purple-500/10 text-purple-500 border-purple-600/30',
+    ccm: 'bg-lime-500/10 text-lime-500 border-lime-600/30',
   }
 
   const labels = {

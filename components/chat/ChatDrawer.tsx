@@ -89,9 +89,9 @@ export function ChatDrawer({ threadId, isOpen, onClose }: ChatDrawerProps) {
         <div className="flex items-center justify-between px-3 py-2.5 md:px-6 md:py-4 border-b border-zinc-800 bg-zinc-900/50 backdrop-blur-xl">
           <div className="flex items-center gap-2 md:gap-3">
             {/* Icon */}
-            <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-gradient-to-br from-[#8800FF]/20 to-[#00FFFF]/20 border border-[#8800FF]/30 flex items-center justify-center">
+            <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-gradient-to-br from-[#D1FD0A]/20 to-[#00FFFF]/20 border border-[#D1FD0A]/30 flex items-center justify-center">
               {thread?.type === 'dm' ? (
-                <Hash className="w-4 h-4 md:w-5 md:h-5 text-[#8800FF]" />
+                <Hash className="w-4 h-4 md:w-5 md:h-5 text-[#D1FD0A]" />
               ) : (
                 <Hash className="w-4 h-4 md:w-5 md:h-5 text-[#00FFFF]" />
               )}

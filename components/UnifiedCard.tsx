@@ -4,19 +4,34 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/cn'
 import {
-  ArrowUp,
-  MessageSquare,
-  Eye,
-  Bell,
   Share2,
   Users,
-  Twitter,
-  TrendingUp,
   Sparkles,
-  Coins,
-  Video,
-  Flame
+  Film,
+  Globe,
+  Github,
+  Star
 } from 'lucide-react'
+import {
+  IconUpvote,
+  IconMessage,
+  IconAim,
+  IconNotification,
+  IconTwitter,
+  IconPriceUp,
+  IconPriceDown,
+  IconSolana,
+  IconLab,
+  IconTopPerformer,
+  IconWeb,
+  IconTelegram,
+  IconGithub,
+  IconLightning,
+  IconRocket,
+  IconCash,
+  IconMotion,
+  IconCult
+} from '@/lib/icons'
 import { BuySellModal } from './launch/BuySellModal'
 
 // Helper to format numbers consistently
@@ -24,40 +39,40 @@ const formatNumber = (num: number) => {
   return new Intl.NumberFormat('en-US').format(num)
 }
 
-// Color schemes for each type - ICM Motion Color Palette
+// Color schemes for each type - btdemo design system
 const colorSchemes = {
   icm: {
     name: 'Project',
     emoji: '💼',
-    icon: Coins,
-    badge: 'bg-[#00FF88]/20 text-[#00FF88] border-[#00FF88]/30',
-    border: 'border-[#00FF88]/60',
-    gradient: 'bg-[#00FF88]', // Green (Success, positive actions)
-    glow: 'shadow-[#00FF88]/50',
-    ring: 'text-[#00FF88]',
-    buttonHover: 'hover:bg-[#00FF88]/90 hover:scale-105'
+    icon: IconRocket,
+    badge: 'bg-[#D1FD0A]/20 text-[#D1FD0A] border-[#D1FD0A]/30',
+    border: 'border-[#D1FD0A]/60',
+    gradient: 'bg-[#D1FD0A]', // Lime green - btdemo primary
+    glow: 'shadow-[#D1FD0A]/50',
+    ring: 'text-[#D1FD0A]',
+    buttonHover: 'hover:bg-[#B8E309] hover:scale-105'
   },
   ccm: {
     name: 'Creator',
     emoji: '🎥',
-    icon: Video,
-    badge: 'bg-[#00FFFF]/20 text-[#00FFFF] border-[#00FFFF]/30',
-    border: 'border-[#00FFFF]/60',
-    gradient: 'bg-[#00FFFF]', // Cyan (Primary brand, highlights)
-    glow: 'shadow-[#00FFFF]/50',
-    ring: 'text-[#00FFFF]',
-    buttonHover: 'hover:bg-[#00FFFF]/90 hover:scale-105'
+    icon: IconMotion,
+    badge: 'bg-[#D1FD0A]/20 text-[#D1FD0A] border-[#D1FD0A]/30',
+    border: 'border-[#D1FD0A]/60',
+    gradient: 'bg-[#D1FD0A]', // Lime green - btdemo primary
+    glow: 'shadow-[#D1FD0A]/50',
+    ring: 'text-[#D1FD0A]',
+    buttonHover: 'hover:bg-[#B8E309] hover:scale-105'
   },
   meme: {
     name: 'Meme',
     emoji: '🔥',
-    icon: Flame,
-    badge: 'bg-[#FFD700]/20 text-[#FFD700] border-[#FFD700]/30',
-    border: 'border-[#FFD700]/60',
-    gradient: 'bg-[#FFD700]', // Yellow (Attention, warnings, energy)
-    glow: 'shadow-[#FFD700]/50',
-    ring: 'text-[#FFD700]',
-    buttonHover: 'hover:bg-[#FFD700]/90 hover:scale-105'
+    icon: IconCash,
+    badge: 'bg-[#D1FD0A]/20 text-[#D1FD0A] border-[#D1FD0A]/30',
+    border: 'border-[#D1FD0A]/60',
+    gradient: 'bg-[#D1FD0A]', // Lime green - btdemo primary
+    glow: 'shadow-[#D1FD0A]/50',
+    ring: 'text-[#D1FD0A]',
+    buttonHover: 'hover:bg-[#B8E309] hover:scale-105'
   }
 } as const
 
@@ -76,33 +91,66 @@ export type UnifiedCardData = {
   upvotes: number
   commentsCount: number
 
-  // Stats
-  viewCount?: number
+  // Stats - Enhanced with blockchain data
+  viewCount?: number // Total clip views
+  clipViews?: number // Aggregated clip views
+  clips?: Array<{ views: number }>
   holders?: number
+  keyHolders?: Array<any> // Actual token holders from blockchain
   keysSupply?: number
   priceChange24h?: number
 
-  // Team/Contributors
+  // Price from smart contract
+  currentPrice?: number
+  contractPrice?: number // Direct from Solana contract
+  priceFromChain?: number
+
+  // Team/Contributors - Enhanced with Twitter data
   contributors?: Array<{
+    id?: string
     name: string
     avatar: string
+    twitterHandle?: string
+    twitterAvatar?: string
+    handle?: string
   }>
+  networkMembers?: Array<any>
+  contributorsCount?: number
 
   // Portfolio data for current user
   myKeys?: number
   mySharePct?: number
   estLaunchTokens?: number | null
-  currentPrice?: number
 
   // Airdrop/Merkle claim
   airdropAmount?: number
   hasClaimedAirdrop?: boolean
 
-  // Socials
+  // Enhanced Social Links
   twitterUrl?: string
+  websiteUrl?: string
+  telegramUrl?: string
+  githubUrl?: string
+  socialLinks?: {
+    twitter?: string
+    website?: string
+    telegram?: string
+    github?: string
+  }
 
-  // Creator info
+  // Creator info - Enhanced
   creatorId?: string
+  creator?: {
+    displayName?: string
+    avatar?: string
+    twitterHandle?: string
+  }
+  creatorName?: string
+  creatorAvatar?: string
+
+  // Additional metadata
+  isExperimental?: boolean
+  isLab?: boolean
 
   // State handlers
   hasVoted?: boolean
@@ -113,6 +161,7 @@ export type UnifiedCardData = {
   onDetails?: () => void
   onBuyKeys?: () => void
   onClaimAirdrop?: () => Promise<void>
+  onClipClick?: () => void // New CLIPS handler
 
   // Notification & sharing
   notificationEnabled?: boolean
@@ -139,18 +188,18 @@ export function UnifiedCard({ data }: { data: UnifiedCardData }) {
   const hasUnclaimedAirdrop = data.airdropAmount && data.airdropAmount > 0 && !data.hasClaimedAirdrop
 
   // SVG circle for ownership ring
-  const R = 28
+  const R = 35
   const C = 2 * Math.PI * R
   const pct = Math.max(0, Math.min(75, data.mySharePct ?? 0))
   const dash = C * (pct / 100)
 
-  // Status badge color
+  // Status badge color - btdemo design
   const statusColors = {
-    live: 'bg-green-500/20 text-green-400 border-green-500/30',
-    active: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
-    frozen: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
+    live: 'bg-[#D1FD0A]/20 text-[#D1FD0A] border-[#D1FD0A]/30',
+    active: 'bg-[#D1FD0A]/20 text-[#D1FD0A] border-[#D1FD0A]/30',
+    frozen: 'bg-orange-500/20 text-orange-400 border-orange-500/30',
     ended: 'bg-zinc-500/20 text-zinc-400 border-zinc-500/30',
-    launched: 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30'
+    launched: 'bg-[#D1FD0A]/20 text-[#D1FD0A] border-[#D1FD0A]/30'
   }
 
   const statusLabel = data.status?.toUpperCase() || 'LIVE'
@@ -186,7 +235,7 @@ export function UnifiedCard({ data }: { data: UnifiedCardData }) {
   }
 
   return (
-    <div className="relative rounded-2xl bg-[rgba(255,255,255,0.06)] backdrop-blur-[8px] ring-1 ring-[rgba(255,255,255,0.10)] shadow-[0_0_0_1px_rgba(255,255,255,0.05),0_20px_60px_rgba(0,0,0,0.35)] p-6 hover:ring-2 hover:ring-[rgba(255,255,255,0.20)] hover:shadow-[0_0_0_1px_rgba(255,255,255,0.08),0_24px_80px_rgba(0,0,0,0.45)] hover:-translate-y-0.5 transition-all group">
+    <div className="glass-premium p-6 rounded-3xl group hover:shadow-xl hover:shadow-primary/50 transition-all border-2 border-primary/50 hover:border-primary">
 
       {/* Token Claim Banner */}
       {hasUnclaimedAirdrop && (
@@ -222,7 +271,7 @@ export function UnifiedCard({ data }: { data: UnifiedCardData }) {
             onClick={handleVote}
             disabled={data.isVoting}
             className={cn(
-              'flex flex-col items-center justify-center w-14 h-14 rounded-xl font-bold text-lg transition-all relative',
+              'flex flex-col items-center justify-center w-16 h-16 rounded-xl font-bold text-lg transition-all relative',
               data.hasVoted
                 ? `${scheme.gradient} text-black`
                 : 'bg-zinc-800/80 hover:bg-zinc-700 border border-zinc-700/50 hover:border-zinc-600 text-zinc-300 hover:text-white hover:scale-105',
@@ -230,18 +279,18 @@ export function UnifiedCard({ data }: { data: UnifiedCardData }) {
             )}
             aria-label="Upvote"
           >
-            <ArrowUp className="w-5 h-5 mb-0.5" strokeWidth={2.5} />
-            <span className="text-sm font-bold">{data.upvotes}</span>
+            <IconUpvote className="w-6 h-6 mb-0.5 icon-primary" />
+            <span className="font-led-dot text-xl text-primary">{data.upvotes}</span>
           </button>
 
           {/* Comments */}
           <button
-            onClick={data.onComment}
-            className="flex flex-col items-center justify-center w-14 h-14 rounded-xl bg-zinc-800/80 hover:bg-zinc-700 border border-zinc-700/50 hover:border-zinc-600 transition-all"
+            onClick={data.onCommentsClick}
+            className="flex flex-col items-center justify-center w-16 h-16 rounded-xl bg-zinc-800/80 hover:bg-zinc-700 border border-zinc-700/50 hover:border-zinc-600 transition-all text-zinc-400 hover:text-white"
             aria-label="Comments"
           >
-            <MessageSquare className="w-4 h-4 mb-0.5 text-zinc-400" />
-            <span className="text-xs text-zinc-400 font-medium">{data.commentsCount || 0}</span>
+            <IconMessage className="w-5 h-5 mb-0.5" />
+            <span className="text-xs font-medium">{data.comments}</span>
           </button>
 
           {/* Twitter */}
@@ -251,10 +300,10 @@ export function UnifiedCard({ data }: { data: UnifiedCardData }) {
               target="_blank"
               rel="noreferrer"
               onClick={data.onTwitterClick}
-              className="flex items-center justify-center w-14 h-14 rounded-xl bg-zinc-800/80 hover:bg-sky-500/20 border border-zinc-700/50 hover:border-sky-500/40 transition-all group/twitter"
+              className="flex items-center justify-center w-16 h-16 rounded-xl bg-zinc-800/80 hover:bg-[#D1FD0A]/20 border border-zinc-700/50 hover:border-[#D1FD0A]/40 transition-all group/twitter"
               aria-label="Twitter"
             >
-              <Twitter className="w-4 h-4 text-zinc-400 group-hover/twitter:text-sky-400 transition-colors" />
+              <IconTwitter className="w-5 h-5 text-zinc-400 group-hover/twitter:text-[#D1FD0A] transition-colors" />
             </a>
           )}
         </div>
@@ -266,7 +315,7 @@ export function UnifiedCard({ data }: { data: UnifiedCardData }) {
             {/* Avatar with Ownership Ring + Type-Colored Border */}
             <div className="relative flex-shrink-0">
               <div
-                className="relative w-16 h-16 cursor-pointer"
+                className="relative w-20 h-20 cursor-pointer"
                 tabIndex={0}
                 role="button"
                 aria-label={hasPos ? `Your share: ${shareDisplay}%` : 'No ownership yet'}
@@ -278,14 +327,14 @@ export function UnifiedCard({ data }: { data: UnifiedCardData }) {
                 {/* SVG Ring - Ownership Progress */}
                 <svg
                   className="absolute inset-0 pointer-events-none"
-                  viewBox="0 0 68 68"
+                  viewBox="0 0 84 84"
                   style={{ transform: 'rotate(-90deg)' }}
                 >
                   {/* Track */}
                   <circle
-                    cx="34"
-                    cy="34"
-                    r={R}
+                    cx="42"
+                    cy="42"
+                    r="35"
                     className={cn('transition-all', hasPos ? 'text-zinc-700' : 'text-zinc-800')}
                     strokeWidth="3"
                     stroke="currentColor"
@@ -294,9 +343,9 @@ export function UnifiedCard({ data }: { data: UnifiedCardData }) {
                   {/* Progress - Type-colored ring */}
                   {hasPos && (
                     <circle
-                      cx="34"
-                      cy="34"
-                      r={R}
+                      cx="42"
+                      cy="42"
+                      r="35"
                       className={cn('transition-all duration-300', scheme.ring)}
                       strokeWidth="3.5"
                       stroke="currentColor"
@@ -310,7 +359,7 @@ export function UnifiedCard({ data }: { data: UnifiedCardData }) {
                 {/* Avatar Image with TYPE-COLORED BORDER */}
                 <div
                   className={cn(
-                    'relative z-10 w-16 h-16 rounded-xl bg-gradient-to-br from-purple-500 to-blue-600 flex items-center justify-center overflow-hidden transition-all',
+                    'relative z-10 w-20 h-20 rounded-xl bg-gradient-to-br from-purple-500 to-blue-600 flex items-center justify-center overflow-hidden transition-all',
                     hasPos
                       ? `border-[3px] ${scheme.border}`
                       : 'border-2 border-zinc-800'
@@ -361,13 +410,30 @@ export function UnifiedCard({ data }: { data: UnifiedCardData }) {
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap mb-1">
                 <h3 className="text-xl font-bold text-white tracking-tight">{data.title}</h3>
+                {data.ticker && (
+                  <span className="font-led-dot text-sm md:text-base text-[#D1FD0A] tracking-wider">${data.ticker}</span>
+                )}
+                <IconLab className="w-5 h-5 text-[#D1FD0A]" title="Verified Project" />
+                <IconTopPerformer className="w-5 h-5 text-[#D1FD0A]" title="Top Performer" />
+              </div>
+              <div className="flex items-center gap-2 mb-1">
                 <span className={cn('px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider shadow-sm backdrop-blur-sm', statusColor)}>
                   {statusLabel}
                 </span>
-                <span className={cn('px-2.5 py-1 rounded-md border text-xs font-semibold uppercase tracking-wide flex items-center gap-1', scheme.badge)}>
-                  <IconComponent className="w-3 h-3" />
-                  {scheme.name}
-                </span>
+
+                {/* Status Icons */}
+                {(data.isLab || data.isExperimental) && (
+                  <IconLab className="w-4 h-4 text-[#D1FD0A]" title="Lab Project" />
+                )}
+                {data.beliefScore >= 90 && (
+                  <IconTopPerformer className="w-4 h-4 text-[#D1FD0A]" title="Top Performer" />
+                )}
+                {data.type === 'ccm' && (
+                  <Star className="w-4 h-4 text-[#D1FD0A]" title="Creator Project" />
+                )}
+                {data.type === 'meme' && (
+                  <IconCult className="w-4 h-4 text-[#D1FD0A]" title="CULT" />
+                )}
               </div>
               {data.subtitle && <p className="text-sm text-zinc-500 line-clamp-2 leading-relaxed">{data.subtitle}</p>}
             </div>
@@ -375,31 +441,35 @@ export function UnifiedCard({ data }: { data: UnifiedCardData }) {
             {/* Action Icons + Contributors + Ownership Pill */}
             <div className="flex flex-col items-end gap-2">
               <div className="flex items-center gap-2">
-                {/* Contributors */}
-                {data.contributors && data.contributors.length > 0 && (
+                {/* Contributors - With Twitter avatars */}
+                {(data.contributors || data.networkMembers) && (data.contributors?.length > 0 || data.networkMembers?.length > 0) && (
                   <div className="flex items-center -space-x-2 mr-2">
-                    {data.contributors.slice(0, 3).map((contributor, idx) => (
+                    {(data.contributors || data.networkMembers || []).slice(0, 3).map((contributor: any, idx: number) => (
                       <div
-                        key={idx}
-                        className="relative w-7 h-7 rounded-full border-2 border-zinc-900 bg-gradient-to-br from-purple-500 to-blue-600 overflow-hidden hover:z-10 transition-transform hover:scale-110"
-                        title={contributor.name}
+                        key={contributor.id || idx}
+                        className="relative w-7 h-7 rounded-full border-2 border-zinc-900 bg-gradient-to-br from-purple-500 to-blue-600 overflow-hidden hover:z-10 transition-transform hover:scale-110 cursor-pointer"
+                        title={contributor.name || contributor.handle || `@${contributor.twitterHandle}`}
+                        onClick={() => {
+                          if (contributor.twitterHandle) {
+                            window.open(`https://twitter.com/${contributor.twitterHandle}`, '_blank')
+                          }
+                        }}
                       >
-                        {contributor.avatar ? (
-                          <img
-                            src={contributor.avatar}
-                            alt={contributor.name}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-white text-xs font-bold">
-                            {contributor.name.charAt(0).toUpperCase()}
-                          </div>
-                        )}
+                        <img
+                          src={
+                            contributor.twitterAvatar ||
+                            contributor.avatar ||
+                            (contributor.twitterHandle ? `https://unavatar.io/twitter/${contributor.twitterHandle}` : null) ||
+                            `https://api.dicebear.com/7.x/avataaars/svg?seed=${contributor.id || contributor.name || idx}`
+                          }
+                          alt={contributor.name || contributor.handle || `Contributor ${idx + 1}`}
+                          className="w-full h-full object-cover"
+                        />
                       </div>
                     ))}
-                    {data.contributors.length > 3 && (
+                    {(data.contributorsCount || data.contributors?.length || data.networkMembers?.length || 0) > 3 && (
                       <div className="w-7 h-7 rounded-full border-2 border-zinc-900 bg-zinc-800 flex items-center justify-center text-zinc-400 text-[10px] font-bold">
-                        +{data.contributors.length - 3}
+                        +{(data.contributorsCount || data.contributors?.length || data.networkMembers?.length || 0) - 3}
                       </div>
                     )}
                   </div>
@@ -415,10 +485,10 @@ export function UnifiedCard({ data }: { data: UnifiedCardData }) {
                   )}
                   aria-label={data.notificationEnabled ? "Unsubscribe" : "Subscribe"}
                 >
-                  <Bell
+                  <IconNotification
                     className={cn(
                       "w-4 h-4 transition-colors",
-                      data.notificationEnabled ? scheme.badge.includes('green') ? 'text-green-400 fill-green-400' : scheme.badge.includes('purple') ? 'text-purple-400 fill-purple-400' : 'text-orange-400 fill-orange-400' : "text-zinc-400"
+                      data.notificationEnabled ? 'text-[#D1FD0A] fill-[#D1FD0A]' : "text-zinc-400"
                     )}
                   />
                 </button>
@@ -442,100 +512,166 @@ export function UnifiedCard({ data }: { data: UnifiedCardData }) {
             </div>
           </div>
 
-          {/* Stats Row */}
-          <div className="flex items-center gap-3 mb-3 text-xs">
-            {data.viewCount !== undefined && (
-              <div className="flex items-center gap-1 text-zinc-400">
-                <Eye className="w-3.5 h-3.5" />
-                <span>{formatNumber(data.viewCount)}</span>
-              </div>
-            )}
-
-            {/* 24h Price Change */}
-            {data.priceChange24h !== undefined && data.priceChange24h !== null && (
-              <div
-                className={cn(
-                  'flex items-center gap-1 px-2 py-1 rounded border font-semibold',
-                  data.priceChange24h >= 0
-                    ? 'bg-cyan-500/10 text-cyan-300 border-cyan-500/30'
-                    : 'bg-red-500/10 text-red-300 border-red-500/30'
+          {/* Stats Row with Social Icons */}
+          <div className="flex items-center justify-between gap-3 mb-3 text-xs">
+            <div className="flex items-center gap-3">
+              {/* Social Icons - Clickable when URLs exist */}
+              <div className="flex items-center gap-1.5">
+                {data.websiteUrl || data.socialLinks?.website ? (
+                  <Globe
+                    className="w-5 h-5 text-[#D1FD0A] cursor-pointer hover:text-[#B8E309] transition-colors"
+                    onClick={() => window.open(data.websiteUrl || data.socialLinks?.website, '_blank')}
+                    title={data.websiteUrl || data.socialLinks?.website}
+                  />
+                ) : (
+                  <Globe className="w-5 h-5 text-zinc-600 opacity-30" />
                 )}
-              >
-                <TrendingUp
-                  className={cn('w-3.5 h-3.5', data.priceChange24h < 0 && 'rotate-180')}
-                />
-                <span>
-                  {data.priceChange24h >= 0 ? '+' : ''}
-                  {data.priceChange24h.toFixed(1)}%
-                </span>
+
+                {data.twitterUrl || data.socialLinks?.twitter || data.creator?.twitterHandle ? (
+                  <IconTwitter
+                    className="w-5 h-5 text-[#D1FD0A] cursor-pointer hover:text-[#B8E309] transition-colors"
+                    onClick={() => window.open(data.twitterUrl || data.socialLinks?.twitter || `https://twitter.com/${data.creator?.twitterHandle}`, '_blank')}
+                    title={data.twitterUrl || data.socialLinks?.twitter}
+                  />
+                ) : (
+                  <IconTwitter className="w-5 h-5 text-zinc-600 opacity-30" />
+                )}
+
+                {data.telegramUrl || data.socialLinks?.telegram ? (
+                  <IconTelegram
+                    className="w-5 h-5 text-[#D1FD0A] cursor-pointer hover:text-[#B8E309] transition-colors"
+                    onClick={() => window.open(data.telegramUrl || data.socialLinks?.telegram, '_blank')}
+                    title={data.telegramUrl || data.socialLinks?.telegram}
+                  />
+                ) : (
+                  <IconTelegram className="w-5 h-5 text-zinc-600 opacity-30" />
+                )}
+
+                {data.githubUrl || data.socialLinks?.github ? (
+                  <Github
+                    className="w-5 h-5 text-[#D1FD0A] cursor-pointer hover:text-[#B8E309] transition-colors"
+                    onClick={() => window.open(data.githubUrl || data.socialLinks?.github, '_blank')}
+                    title={data.githubUrl || data.socialLinks?.github}
+                  />
+                ) : (
+                  <Github className="w-5 h-5 text-zinc-600 opacity-30" />
+                )}
               </div>
-            )}
+
+              {/* Views - Aggregated from clips */}
+              {(data.clipViews || data.viewCount || data.clips) !== undefined && (
+                <div className="flex items-center gap-1">
+                  <IconAim className="w-3.5 h-3.5 icon-muted" />
+                  <span className="font-led-dot text-xl text-primary">
+                    {formatNumber(
+                      data.clipViews ||
+                      data.clips?.reduce((acc, clip) => acc + (clip.views || 0), 0) ||
+                      data.viewCount ||
+                      0
+                    )}
+                  </span>
+                </div>
+              )}
+
+              {/* Holders - Real key holders */}
+              {(data.keyHolders || data.holders) !== undefined && (
+                <div className="flex items-center gap-1">
+                  <Users className="w-3.5 h-3.5 icon-muted" />
+                  <span className="font-led-dot text-xl text-primary">
+                    {data.keyHolders?.length || data.holders || 0}
+                  </span>
+                </div>
+              )}
+
+              {/* 24h Price Change - No Box */}
+              {data.priceChange24h !== undefined && data.priceChange24h !== null && (
+                <div className={cn(
+                  'flex items-center gap-1 font-semibold',
+                  data.priceChange24h >= 0 ? 'text-[#D1FD0A]' : 'text-red-400'
+                )}>
+                  {data.priceChange24h >= 0 ? (
+                    <IconPriceUp className="w-3.5 h-3.5" />
+                  ) : (
+                    <IconPriceDown className="w-3.5 h-3.5" />
+                  )}
+                  <span className="font-led-dot text-lg">
+                    {data.priceChange24h >= 0 ? '+' : ''}
+                    {data.priceChange24h.toFixed(1)}%
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
 
-          {/* Conviction Bar */}
+          {/* Motion Bar */}
           <div className="mb-4">
-            <div className="flex items-center justify-between text-xs mb-1.5">
-              <span className="text-zinc-400">Community Confidence</span>
-              <div className="flex items-center gap-1.5">
-                <span className={cn(
-                  "font-bold text-sm",
-                  data.beliefScore >= 70 ? "text-green-400" : data.beliefScore >= 50 ? "text-amber-400" : "text-zinc-400"
-                )}>
-                  {Math.round(data.beliefScore)}%
-                </span>
+            <div className="flex items-center gap-3 mb-1.5">
+              <IconMotion className="w-5 h-5 text-[#D1FD0A]" />
+              <span className="text-xs text-zinc-400">Motion</span>
+              <div className="flex-1 h-2.5 rounded-full bg-zinc-800 overflow-hidden border border-zinc-700/50 relative group cursor-help">
+                <div
+                  className={cn(
+                    "h-full transition-all duration-500 relative",
+                    scheme.gradient
+                  )}
+                  style={{ width: `${Math.max(0, Math.min(100, data.beliefScore))}%` }}
+                />
               </div>
-            </div>
-            <div className="h-2.5 rounded-full bg-zinc-800 overflow-hidden border border-zinc-700/50 relative group cursor-help">
-              <div
-                className={cn(
-                  "h-full transition-all duration-500 relative",
-                  scheme.gradient
-                )}
-                style={{ width: `${Math.max(0, Math.min(100, data.beliefScore))}%` }}
-              />
+              <span className="font-led-dot text-xl text-primary">
+                {Math.round(data.beliefScore)}%
+              </span>
             </div>
           </div>
 
           {/* Action Buttons */}
           <div className="flex items-center gap-2">
-            {/* Primary CTA - Type-colored */}
+            {/* Primary CTA - btdemo styled */}
             <button
               onClick={handleBuyOrManage}
               data-cta={hasPos ? 'manage' : 'buy'}
-              className={cn(
-                'flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-base font-semibold transition-all active:scale-95',
-                scheme.gradient,
-                scheme.buttonHover,
-                'text-black hover:scale-[1.02]'
-              )}
+              className="bg-[#D1FD0A] hover:bg-[#B8E309] text-black font-bold px-6 py-3 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-primary/50 flex items-center justify-center gap-2"
             >
-              <>
-                Buy Keys
-                {data.currentPrice && <span className="opacity-90 font-normal">@{data.currentPrice.toFixed(3)}</span>}
-              </>
+              <span className="text-black font-bold">BUY</span>
+              {(data.contractPrice || data.priceFromChain || data.currentPrice) && (
+                <>
+                  <IconSolana size={16} className="text-black opacity-80" />
+                  <span className="font-led-dot text-xl text-black">
+                    {(data.contractPrice || data.priceFromChain || data.currentPrice || 0).toFixed(3)}
+                  </span>
+                </>
+              )}
             </button>
 
-            {/* Secondary Actions */}
+            {/* Secondary Actions - btdemo styled */}
+            <button
+              onClick={data.onClipClick}
+              className="bg-zinc-800 hover:bg-zinc-700 font-semibold px-5 py-3 rounded-xl transition-all duration-300 border-2 border-[#D1FD0A] flex items-center justify-center gap-2"
+              title="Submit Clip"
+            >
+              <Film className="w-5 h-5 text-[#D1FD0A]" />
+              <span className="text-[#D1FD0A]">+ Clips</span>
+            </button>
+
             <button
               onClick={data.onCollaborate}
-              className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-zinc-800/80 hover:bg-zinc-700 border border-zinc-700/50 hover:border-zinc-600 text-zinc-300 text-sm font-medium transition-all active:scale-95"
+              className="bg-zinc-800 hover:bg-zinc-700 font-semibold px-5 py-3 rounded-xl transition-all duration-300 border-2 border-[#D1FD0A] flex items-center justify-center gap-2"
             >
-              <Users className="w-5 h-5" />
-              <span className="hidden sm:inline">Collaborate</span>
+              <Users className="w-5 h-5 text-[#D1FD0A]" />
+              <span className="hidden sm:inline text-[#D1FD0A]">Collaborate</span>
             </button>
 
             <button
               onClick={data.onDetails || (() => router.push(`/curve/${data.id}`))}
-              className="px-5 py-3 rounded-xl bg-zinc-800/80 hover:bg-zinc-700 border border-zinc-700/50 hover:border-zinc-600 text-zinc-300 text-sm font-medium transition-all active:scale-95"
+              className="bg-zinc-800 hover:bg-zinc-700 font-semibold px-5 py-3 rounded-xl transition-all duration-300 border-2 border-[#D1FD0A] flex items-center justify-center"
             >
-              Details
+              <span className="text-[#D1FD0A]">Details</span>
             </button>
           </div>
         </div>
       </div>
 
       {/* Buy/Sell/Manage Modal */}
-      {data.currentPrice && (
+      {(data.contractPrice || data.priceFromChain || data.currentPrice) && (
         <BuySellModal
           open={modalOpen}
           onClose={() => setModalOpen(false)}
@@ -543,7 +679,7 @@ export function UnifiedCard({ data }: { data: UnifiedCardData }) {
           data={{
             title: data.title,
             logoUrl: data.logoUrl,
-            currentPrice: data.currentPrice,
+            currentPrice: data.contractPrice || data.priceFromChain || data.currentPrice || 0,
             myKeys: data.myKeys || 0,
             mySharePct: data.mySharePct || 0,
             totalSupply: 1000,

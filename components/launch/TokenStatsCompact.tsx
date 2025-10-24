@@ -60,7 +60,7 @@ export function TokenStatsCompact({ stats, loading, className = '' }: TokenStats
       {stats.vol24hUsd !== undefined && (
         <div className="bg-white/[0.02] rounded-xl p-3 border border-white/5">
           <div className="flex items-center gap-1 mb-1">
-            <TrendingUp className="w-3 h-3 text-purple-400" />
+            <TrendingUp className="w-3 h-3 text-[#D1FD0A]" />
             <span className="text-[10px] text-white/50 uppercase font-semibold tracking-wide">VOL</span>
           </div>
           <div className="text-lg font-bold text-white">{fmtUsd(stats.vol24hUsd)}</div>

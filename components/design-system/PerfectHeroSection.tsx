@@ -199,7 +199,7 @@ export default function PerfectHeroSection({ onLaunchApp }: { onLaunchApp?: () =
 
   return (
     <section className="relative bg-black overflow-hidden pb-12">
-      {/* Background Gradient - Subtle Purple Mesh */}
+      {/* Background Gradient - Subtle Lime Mesh */}
       <div className="absolute inset-0">
         <div
           className="absolute inset-0"

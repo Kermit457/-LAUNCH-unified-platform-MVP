@@ -11,7 +11,7 @@ export function HallOfFame({ entries }: HallOfFameProps) {
     if (rank === 1) return { icon: Trophy, color: 'from-yellow-400 to-yellow-600', text: 'text-yellow-900' }
     if (rank === 2) return { icon: Medal, color: 'from-gray-300 to-gray-500', text: 'text-gray-900' }
     if (rank === 3) return { icon: Medal, color: 'from-orange-400 to-orange-600', text: 'text-orange-900' }
-    return { icon: Medal, color: 'from-purple-500 to-pink-600', text: 'text-white' }
+    return { icon: Medal, color: 'from-lime-500 to-pink-600', text: 'text-white' }
   }
 
   return (
@@ -55,7 +55,7 @@ export function HallOfFame({ entries }: HallOfFameProps) {
               </div>
 
               {/* Avatar */}
-              <div className="w-16 h-16 mx-auto mb-3 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-white font-bold text-xl">
+              <div className="w-16 h-16 mx-auto mb-3 rounded-full bg-gradient-to-br from-lime-500 to-pink-600 flex items-center justify-center text-white font-bold text-xl">
                 {entry.avatar || entry.handle.slice(0, 2).toUpperCase()}
               </div>
 

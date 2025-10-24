@@ -121,7 +121,7 @@ export function CampaignTable({ campaigns, onPause, onResume, onEdit, onTopUp, o
                             const amount = prompt('Enter top-up amount in USDC:')
                             if (amount) onTopUp(campaign.id, parseFloat(amount))
                           }}
-                          className="px-3 py-1.5 rounded-lg bg-purple-500 hover:bg-purple-600 text-white text-sm font-medium transition-all"
+                          className="px-3 py-1.5 rounded-lg bg-lime-500 hover:bg-lime-600 text-white text-sm font-medium transition-all"
                         >
                           Top-up
                         </button>
@@ -238,7 +238,7 @@ export function SubmissionTable({
                     href={(sub as any).mediaUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-sm text-purple-400 hover:text-purple-300"
+                    className="inline-flex items-center gap-1 text-sm text-lime-400 hover:text-lime-300"
                   >
                     <ExternalLink className="w-3 h-3" />
                     Open
@@ -331,7 +331,7 @@ export function PayoutTable({ payouts, selectedIds = [], onSelectChange }: Payou
   const getMintBadge = (mint: 'USDC' | 'SOL') => (
     <span className={cn(
       'inline-flex items-center px-2 py-0.5 rounded text-xs font-bold',
-      mint === 'USDC' ? 'bg-green-500/20 text-green-300' : 'bg-purple-500/20 text-purple-300'
+      mint === 'USDC' ? 'bg-green-500/20 text-green-300' : 'bg-lime-500/20 text-lime-300'
     )}>
       {mint}
     </span>

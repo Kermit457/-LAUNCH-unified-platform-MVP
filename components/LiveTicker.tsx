@@ -2,29 +2,65 @@
 
 export function LiveTicker() {
   const activities = [
-    "🚀 BuilderX just hit $120k mcap",
-    "🎥 CreatorY earned $1.2k in raids",
-    "🪙 $AIKIT launched on Base",
-    "⚡ 50 new projects boosted in the last hour",
-    "🔥 $MEME trending #1 on LaunchOS",
-    "💎 AgencyZ completed 10 campaigns",
-    "🎯 PredictionPro won $5k",
-    "🌟 100+ streamers went live",
+    { user: "@sarah_dev", action: "joined", value: "$RUBY", highlight: true },
+    { user: "$BONK", action: "hit", value: "85%", metric: "motion score" },
+    { user: "$TRUMP", action: "reached", value: "launch threshold", highlight: true },
+    { user: "12 buys", action: "on", value: "$BASED" },
+    { user: "Pepe Lambo", action: "", value: "+18%", metric: "gains" },
+    { user: "$MEME", action: "trending", value: "#1", metric: "on LaunchOS" },
+    { user: "BuilderX", action: "hit", value: "$120K", metric: "mcap" },
+    { user: "CreatorY", action: "earned", value: "$1.2K", metric: "in raids" },
+    { user: "$AIKIT", action: "launched", value: "on Base", highlight: true },
+    { user: "50", action: "new projects", value: "boosted", metric: "last hour" },
+    { user: "AgencyZ", action: "completed", value: "10", metric: "campaigns" },
+    { user: "PredictionPro", action: "won", value: "$5K", highlight: true },
+    { user: "100+", action: "streamers", value: "went live" },
   ]
 
   // Duplicate for infinite scroll
   const duplicatedActivities = [...activities, ...activities]
 
   return (
-    <div className="w-full bg-gradient-to-r from-launchos-fuchsia/10 via-launchos-violet/10 to-launchos-cyan/10 border-y border-white/10 py-4 overflow-hidden">
+    <div className="w-full bg-black/95 border-y-2 border-[#D1FD0A]/30 py-2 overflow-hidden relative">
+      {/* Glow effect */}
+      <div className="absolute inset-0 bg-gradient-to-r from-[#D1FD0A]/5 via-[#D1FD0A]/10 to-[#D1FD0A]/5 animate-pulse" />
+
       <div className="ticker-wrapper">
-        <div className="ticker-content flex gap-12">
+        <div className="ticker-content-flash flex gap-8">
           {duplicatedActivities.map((activity, index) => (
             <span
               key={index}
-              className="inline-flex items-center gap-2 text-white/80 font-medium whitespace-nowrap px-6"
+              className="inline-flex items-center gap-1.5 whitespace-nowrap px-6 group"
             >
-              {activity}
+              {/* User/Token name */}
+              <span className={`font-bold ${activity.highlight ? 'text-[#D1FD0A] animate-pulse-glow' : 'text-white'}`}>
+                {activity.user}
+              </span>
+
+              {/* Action */}
+              {activity.action && (
+                <span className="text-zinc-400">
+                  {activity.action}
+                </span>
+              )}
+
+              {/* Value - with LED font for numbers */}
+              <span className={`font-bold ${
+                activity.value.includes('$') || activity.value.includes('%') || activity.value.includes('#') || activity.value.includes('+')
+                  ? 'font-led-dot text-[#D1FD0A] text-lg tracking-wider animate-flash'
+                  : activity.highlight
+                    ? 'text-[#D1FD0A]'
+                    : 'text-white'
+              }`}>
+                {activity.value}
+              </span>
+
+              {/* Metric */}
+              {activity.metric && (
+                <span className="text-zinc-500">
+                  {activity.metric}
+                </span>
+              )}
             </span>
           ))}
         </div>

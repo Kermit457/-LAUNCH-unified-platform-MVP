@@ -111,7 +111,7 @@ export function LandingFooter() {
         {/* Bottom Bar */}
         <div className="flex flex-col md:flex-row items-center justify-between pt-8 border-t border-white/10">
           <div className="flex items-center gap-3 mb-4 md:mb-0">
-            <div className="text-2xl font-bold bg-gradient-to-r from-fuchsia-500 to-cyan-500 bg-clip-text text-transparent">
+            <div className="text-2xl font-bold bg-gradient-to-r from-lime-500 to-cyan-500 bg-clip-text text-transparent">
               LaunchOS
             </div>
             <span className="text-zinc-500 text-sm">© 2025 Built on Solana.</span>

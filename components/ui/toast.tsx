@@ -82,7 +82,7 @@ function ToastItem({ toast, onRemove }: { toast: Toast; onRemove: (id: string) =
       case 'error':
         return <AlertCircle className="w-5 h-5 text-red-400" />
       case 'vote':
-        return <ArrowBigUp className="w-5 h-5 text-fuchsia-400 fill-fuchsia-400" />
+        return <ArrowBigUp className="w-5 h-5 text-lime-400 fill-lime-400" />
       case 'comment':
         return <MessageCircle className="w-5 h-5 text-cyan-400" />
       case 'info':
@@ -98,7 +98,7 @@ function ToastItem({ toast, onRemove }: { toast: Toast; onRemove: (id: string) =
       case 'error':
         return 'bg-red-500/10 border-red-500/30'
       case 'vote':
-        return 'bg-fuchsia-500/10 border-fuchsia-500/30'
+        return 'bg-lime-500/10 border-lime-500/30'
       case 'comment':
         return 'bg-cyan-500/10 border-cyan-500/30'
       case 'info':

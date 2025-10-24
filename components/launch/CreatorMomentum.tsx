@@ -28,7 +28,7 @@ export function CreatorMomentum({
       value: formatViews(totalViews),
       change: viewsChange24h,
       icon: Video,
-      color: 'text-purple-400'
+      color: 'text-[#D1FD0A]'
     },
     {
       label: 'Engagement Rate',
@@ -47,14 +47,14 @@ export function CreatorMomentum({
 
   return (
     <div className={cn(
-      'glass-premium p-4 rounded-2xl border border-purple-500/20 bg-purple-500/5',
+      'glass-premium p-4 rounded-2xl border border-[#D1FD0A]/20 bg-[#D1FD0A]/5',
       className
     )}>
       <div className="flex items-center gap-2 mb-3">
-        <Video className="w-5 h-5 text-purple-400" />
-        <h3 className="text-sm font-bold text-purple-400">Creator Momentum</h3>
+        <Video className="w-5 h-5 text-[#D1FD0A]" />
+        <h3 className="text-sm font-bold text-[#D1FD0A]">Creator Momentum</h3>
         <div className="ml-auto text-xs text-zinc-500">
-          Powered by <span className="text-purple-400">/clip</span>
+          Powered by <span className="text-[#D1FD0A]">/clip</span>
         </div>
       </div>
 

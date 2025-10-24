@@ -3,28 +3,28 @@
 
 const DICEBEAR_BASE = 'https://api.dicebear.com/7.x'
 
-// Gradient color schemes for creator avatars (purple/cyan/pink theme)
+// Gradient color schemes for creator avatars (lime/cyan/pink theme)
 const AVATAR_GRADIENTS = [
-  '8b5cf6,a855f7', // Purple
-  'ec4899,8b5cf6', // Pink-Purple
-  'a855f7,06b6d4', // Purple-Cyan
-  '8b5cf6,ec4899', // Purple-Pink
-  'd946ef,8b5cf6', // Magenta-Purple
-  '06b6d4,8b5cf6', // Cyan-Purple
-  'a855f7,ec4899', // Purple-Pink
-  '8b5cf6,06b6d4', // Purple-Cyan
-  'ec4899,a855f7', // Pink-Purple
-  '06b6d4,a855f7', // Cyan-Purple
+  '8b5cf6,a855f7', // Lime
+  'ec4899,8b5cf6', // Pink-Lime
+  'a855f7,06b6d4', // Lime-Cyan
+  '8b5cf6,ec4899', // Lime-Pink
+  'd946ef,8b5cf6', // Magenta-Lime
+  '06b6d4,8b5cf6', // Cyan-Lime
+  'a855f7,ec4899', // Lime-Pink
+  '8b5cf6,06b6d4', // Lime-Cyan
+  'ec4899,a855f7', // Pink-Lime
+  '06b6d4,a855f7', // Cyan-Lime
 ]
 
 // Gradient color schemes for project logos
 const LOGO_GRADIENTS = [
   'ff6b6b,ffd93d,6bcf7f', // Sunset (orange/yellow/green)
-  'a855f7,ec4899,8b5cf6', // Neon (purple/pink)
+  'a855f7,ec4899,8b5cf6', // Neon (lime/pink)
   '3b82f6,06b6d4,8b5cf6', // Ocean (blue/cyan)
   '10b981,34d399,6ee7b7', // Mint (green)
   'ef4444,f97316,fbbf24', // Fire (red/orange/yellow)
-  '8b5cf6,d946ef,ec4899', // Cyber (purple/magenta)
+  '8b5cf6,d946ef,ec4899', // Cyber (lime/magenta)
   'eab308,facc15,fde047', // Volt (yellow)
   '06b6d4,0ea5e9,38bdf8', // Wave (cyan)
   'fb7185,f472b6,ec4899', // Coral (pink)

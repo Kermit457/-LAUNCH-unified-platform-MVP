@@ -44,7 +44,7 @@ export class ErrorBoundary extends Component<Props, State> {
       }
 
       return (
-        <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-black via-purple-950/20 to-black">
+        <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-black via-lime-950/20 to-black">
           <div className="max-w-lg w-full">
             <div className="glass-card p-8 text-center">
               {/* Error Icon */}
@@ -78,7 +78,7 @@ export class ErrorBoundary extends Component<Props, State> {
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <button
                   onClick={this.handleReset}
-                  className="px-6 py-3 bg-launchos-fuchsia hover:bg-launchos-fuchsia/80 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2"
+                  className="px-6 py-3 bg-launchos-lime hover:bg-launchos-lime/80 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2"
                 >
                   <RefreshCw className="w-4 h-4" />
                   Try Again

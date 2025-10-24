@@ -54,7 +54,7 @@ export function GlobalNavigation() {
       {/* Main Navigation Container */}
       <div className="relative">
         {/* Glassmorphic Background */}
-        <div className="absolute inset-0 bg-zinc-900/90 backdrop-blur-2xl rounded-full border border-zinc-800/60 shadow-2xl" />
+        <div className="absolute inset-0 btdemo-glass rounded-full shadow-2xl" />
 
         {/* Navigation Items */}
         <div className="relative flex items-center gap-2 px-4 py-3">
@@ -70,18 +70,18 @@ export function GlobalNavigation() {
                   relative flex items-center justify-center gap-2 rounded-full transition-all
                   ${item.iconOnly ? 'w-10 h-10' : 'px-5 py-2.5'}
                   ${isActive
-                    ? 'text-white'
-                    : 'text-zinc-400 hover:text-zinc-200'
+                    ? 'text-btdemo-canvas'
+                    : 'text-btdemo-text-muted hover:text-btdemo-text'
                   }
                 `}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                {/* Active Background - Purple/Violet Gradient */}
+                {/* Active Background - Lime Gradient */}
                 {isActive && (
                   <motion.div
                     layoutId="activeTab"
-                    className="absolute inset-0 bg-gradient-to-r from-violet-600 to-purple-600 rounded-full"
+                    className="absolute inset-0 bg-btdemo-primary rounded-full btdemo-glow-pulse"
                     transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                   />
                 )}

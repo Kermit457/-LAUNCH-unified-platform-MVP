@@ -19,7 +19,7 @@ const icons = {
 
 const colors = {
   success: 'from-green-500/20 to-emerald-500/20 border-green-500/30 text-green-400',
-  error: 'from-red-500/20 to-pink-500/20 border-red-500/30 text-red-400',
+  error: 'from-red-500/20 to-red-600/20 border-red-500/30 text-red-400',
   info: 'from-blue-500/20 to-cyan-500/20 border-blue-500/30 text-blue-400',
   warning: 'from-yellow-500/20 to-amber-500/20 border-yellow-500/30 text-yellow-400',
 }

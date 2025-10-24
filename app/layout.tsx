@@ -17,6 +17,7 @@ import { PWAInitializer } from '@/components/PWAInitializer'
 import MobileTabBar from '@/components/MobileTabBar'
 import { BRAND } from '@/lib/brand'
 import { Toaster } from 'sonner'
+import { BTDemoBackground } from '@/components/BTDemoBackground'
 
 export const metadata: Metadata = {
   title: `${BRAND.name} - ${BRAND.tagline}`,
@@ -96,7 +97,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="smooth-scroll">
-      <body className="antialiased bg-black">
+      <body className="antialiased bg-btdemo-canvas">
+        <BTDemoBackground />
         <PrivyProviderWrapper>
           <PrivySyncWrapper>
             <AuthProvider>
@@ -111,7 +113,7 @@ export default function RootLayout({
                         <GlobalActivationModal />
                         <DebugPanel />
                         <TopNav />
-                        <main className="text-white pb-[calc(64px+env(safe-area-inset-bottom))] md:pb-0">
+                        <main className="text-btdemo-text relative z-10 pb-[calc(64px+env(safe-area-inset-bottom))] md:pb-0">
                           {children}
                         </main>
                         <MobileTabBar />

@@ -132,10 +132,10 @@ export function MediaUpload({
         {/* Upload Status Overlay */}
         {uploading && (
           <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center gap-2">
-            <Loader2 className="w-12 h-12 text-fuchsia-400 animate-spin" />
+            <Loader2 className="w-12 h-12 text-lime-400 animate-spin" />
             <div className="w-48 h-2 bg-white/10 rounded-full overflow-hidden">
               <div
-                className="h-full bg-fuchsia-500 transition-all duration-300"
+                className="h-full bg-lime-500 transition-all duration-300"
                 style={{ width: `${uploadProgress}%` }}
               />
             </div>

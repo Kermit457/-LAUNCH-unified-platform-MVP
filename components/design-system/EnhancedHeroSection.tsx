@@ -329,7 +329,7 @@ export default function EnhancedHeroSection({ onLaunchApp }: { onLaunchApp?: () 
       id: 'launch',
       icon: Rocket,
       label: 'Launch',
-      gradient: 'from-violet-500 to-purple-600',
+      gradient: 'from-violet-500 to-lime-600',
       borderColor: 'rgb(139, 92, 246)',
       notifications: 3,
       isNew: true
@@ -398,7 +398,7 @@ export default function EnhancedHeroSection({ onLaunchApp }: { onLaunchApp?: () 
       id: 'obs',
       icon: Radio,
       label: 'OBS',
-      gradient: 'from-indigo-500 to-purple-600',
+      gradient: 'from-indigo-500 to-lime-600',
       borderColor: 'rgb(99, 102, 241)'
     },
     {
@@ -443,7 +443,7 @@ export default function EnhancedHeroSection({ onLaunchApp }: { onLaunchApp?: () 
         {/* Dynamic gradient background */}
         <div className="absolute inset-0 overflow-hidden">
           <motion.div
-            className="absolute top-0 right-0 w-[800px] h-[800px] bg-purple-600/30 rounded-full blur-[200px]"
+            className="absolute top-0 right-0 w-[800px] h-[800px] bg-lime-600/30 rounded-full blur-[200px]"
             animate={{
               x: [0, 50, 0],
               y: [0, -30, 0],

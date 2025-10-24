@@ -157,13 +157,13 @@ export function SubmitClipModal({
   return (
     <>
       <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50" onClick={handleClose} />
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-3 md:p-4 pointer-events-none overflow-y-auto">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-3 md:p-4 pointer-events-none overflow-y-auto custom-scrollbar">
         <div className="w-full max-w-lg bg-neutral-950/95 backdrop-blur-xl rounded-xl md:rounded-2xl border border-white/10 shadow-2xl pointer-events-auto animate-in zoom-in-95 duration-200 my-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
           {/* Header */}
           <div className="border-b border-white/10 p-3 md:p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5 md:gap-2">
-                <Play className="w-4 h-4 md:w-5 md:h-5 text-fuchsia-400" />
+                <Play className="w-4 h-4 md:w-5 md:h-5 text-[#D1FD0A]" />
                 <h2 className="text-base md:text-lg font-bold text-white">Submit Clip</h2>
               </div>
               <button onClick={handleClose} className="p-1.5 md:p-2 hover:bg-white/5 rounded-lg transition-colors">
@@ -194,7 +194,7 @@ export function SubmitClipModal({
                   value={embedUrl}
                   onChange={(e) => handleUrlChange(e.target.value)}
                   placeholder="https://twitter.com/... or https://tiktok.com/..."
-                  className="w-full pl-9 md:pl-10 pr-12 md:pr-16 py-2.5 md:py-3 rounded-lg md:rounded-xl bg-white/5 border border-white/10 text-white text-xs md:text-sm placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-500/50 focus:border-transparent"
+                  className="w-full pl-9 md:pl-10 pr-12 md:pr-16 py-2.5 md:py-3 rounded-lg md:rounded-xl bg-white/5 border border-white/10 text-white text-xs md:text-sm placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50 focus:border-transparent"
                 />
                 {isValidating ? (
                   <div className="absolute right-2.5 md:right-3 top-1/2 -translate-y-1/2">
@@ -231,10 +231,10 @@ export function SubmitClipModal({
                 </label>
 
                 {selectedCampaign ? (
-                  <div className="flex items-center gap-2 p-2.5 rounded-xl bg-purple-500/10 border border-purple-500/30">
+                  <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[#D1FD0A]/10 border border-[#D1FD0A]/30">
                     <div className="flex-1 min-w-0">
                       <div className="text-sm font-medium text-white truncate">{selectedCampaign.title}</div>
-                      <div className="text-xs text-white/60">
+                      <div className="text-xs text-white/60 font-led-dot">
                         ${selectedCampaign.prizePool / 1000} per 1000 views
                       </div>
                     </div>
@@ -258,11 +258,11 @@ export function SubmitClipModal({
                       }}
                       onFocus={() => setShowCampaignDropdown(true)}
                       placeholder="Search campaigns..."
-                      className="w-full pl-10 pr-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-500/50 focus:border-transparent"
+                      className="w-full pl-10 pr-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50 focus:border-transparent"
                     />
 
                     {showCampaignDropdown && filteredCampaigns.length > 0 && (
-                      <div className="absolute z-10 w-full mt-1 max-h-48 overflow-y-auto rounded-xl bg-neutral-900 border border-white/10 shadow-xl">
+                      <div className="absolute z-10 w-full mt-1 max-h-48 overflow-y-auto custom-scrollbar rounded-xl bg-neutral-900 border border-white/10 shadow-xl">
                         {filteredCampaigns.map((campaign) => (
                           <button
                             key={campaign.$id}
@@ -276,7 +276,7 @@ export function SubmitClipModal({
                           >
                             <div className="flex-1 min-w-0">
                               <div className="text-sm font-medium text-white truncate">{campaign.title}</div>
-                              <div className="text-xs text-white/60">
+                              <div className="text-xs text-white/60 font-led-dot">
                                 ${campaign.prizePool / 1000} per 1000 views
                               </div>
                             </div>
@@ -301,7 +301,7 @@ export function SubmitClipModal({
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Describe your clip..."
                 maxLength={200}
-                className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-500/50 focus:border-transparent"
+                className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50 focus:border-transparent"
               />
             </div>
 
@@ -312,7 +312,7 @@ export function SubmitClipModal({
               </label>
 
               {selectedProject ? (
-                <div className="flex items-center gap-2 p-2.5 rounded-xl bg-fuchsia-500/10 border border-fuchsia-500/30">
+                <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[#D1FD0A]/10 border border-[#D1FD0A]/30">
                   {selectedProject.logoUrl && (
                     <img src={selectedProject.logoUrl} alt={selectedProject.title} className="size-8 rounded-lg object-cover" />
                   )}
@@ -342,11 +342,11 @@ export function SubmitClipModal({
                     }}
                     onFocus={() => setShowProjectDropdown(true)}
                     placeholder="Search projects or enter custom name..."
-                    className="w-full pl-10 pr-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-fuchsia-500/50 focus:border-transparent"
+                    className="w-full pl-10 pr-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50 focus:border-transparent"
                   />
 
                   {showProjectDropdown && filteredProjects.length > 0 && (
-                    <div className="absolute z-10 w-full mt-1 max-h-48 overflow-y-auto rounded-xl bg-neutral-900 border border-white/10 shadow-xl">
+                    <div className="absolute z-10 w-full mt-1 max-h-48 overflow-y-auto custom-scrollbar rounded-xl bg-neutral-900 border border-white/10 shadow-xl">
                       {filteredProjects.map((project) => (
                         <button
                           key={project.$id}
@@ -382,7 +382,7 @@ export function SubmitClipModal({
             </div>
 
             {/* Info Box */}
-            <div className="rounded-xl bg-fuchsia-500/10 border border-fuchsia-500/20 p-3">
+            <div className="rounded-xl bg-[#D1FD0A]/10 border border-[#D1FD0A]/20 p-3">
               <p className="text-xs text-white/80 leading-relaxed">
                 💡 Your clip will be embedded from the original platform. Make sure your post is public!
                 {(selectedCampaign || preSelectedCampaignId) && ' It will be pending approval from the campaign owner.'}

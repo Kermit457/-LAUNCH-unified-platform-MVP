@@ -80,10 +80,10 @@ export function EarnCard(props: EarnCardProps) {
   const typeConfig = {
     campaign: {
       label: '📹 Campaign',
-      color: 'from-purple-500 to-pink-500',
-      bgColor: 'bg-purple-500/20',
-      borderColor: 'border-purple-500/30',
-      textColor: 'text-purple-300',
+      color: 'from-lime-500 to-pink-500',
+      bgColor: 'bg-lime-500/20',
+      borderColor: 'border-lime-500/30',
+      textColor: 'text-lime-300',
       ctaLabel: 'Join Campaign'
     },
     raid: {

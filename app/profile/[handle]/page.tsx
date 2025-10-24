@@ -26,18 +26,18 @@ export default function PublicProfilePage() {
         <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 mb-6">
           <div className="flex items-start justify-between mb-6">
             <div className="flex items-center gap-4">
-              <div className="w-20 h-20 rounded-full bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 flex items-center justify-center text-white font-bold text-2xl">
+              <div className="w-20 h-20 rounded-full bg-gradient-to-r from-lime-500 via-lime-500 to-cyan-500 flex items-center justify-center text-white font-bold text-2xl">
                 {handle.slice(0, 2).toUpperCase()}
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h1 className="text-3xl font-bold bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent">@{handle}</h1>
+                  <h1 className="text-3xl font-bold bg-gradient-to-r from-lime-500 via-lime-500 to-cyan-500 bg-clip-text text-transparent">@{handle}</h1>
                   <svg className="w-6 h-6 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
                 </div>
                 <div className="flex items-center gap-2 mt-2">
-                  <span className="px-3 py-1 rounded-full text-sm font-medium bg-purple-500/20 text-purple-300">
+                  <span className="px-3 py-1 rounded-full text-sm font-medium bg-lime-500/20 text-lime-300">
                     Creator
                   </span>
                   <span className="px-3 py-1 rounded-full text-sm font-medium bg-green-500/20 text-green-300">
@@ -50,7 +50,7 @@ export default function PublicProfilePage() {
               <button className="p-3 rounded-lg bg-white/5 hover:bg-white/10 text-white transition-all">
                 <Share2 className="w-5 h-5" />
               </button>
-              <button className="px-6 py-3 rounded-lg bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 hover:from-fuchsia-600 hover:via-purple-600 hover:to-cyan-600 text-white font-medium transition-all flex items-center gap-2">
+              <button className="px-6 py-3 rounded-lg bg-gradient-to-r from-lime-500 via-lime-500 to-cyan-500 hover:from-lime-600 hover:via-lime-600 hover:to-cyan-600 text-white font-medium transition-all flex items-center gap-2">
                 <UserPlus className="w-5 h-5" />
                 Follow
               </button>
@@ -93,7 +93,7 @@ export default function PublicProfilePage() {
           <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-6">
             <div className="text-sm text-zinc-500 mb-1 uppercase tracking-wide">Active Campaigns</div>
             <div className="text-3xl font-bold text-white">4</div>
-            <div className="text-xs text-purple-300 mt-1">Live now</div>
+            <div className="text-xs text-lime-300 mt-1">Live now</div>
           </div>
           <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-6">
             <div className="text-sm text-zinc-500 mb-1 uppercase tracking-wide">Conviction Score</div>
@@ -104,7 +104,7 @@ export default function PublicProfilePage() {
 
         {/* Active Campaigns */}
         <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-6">
-          <h2 className="text-xl font-bold bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent mb-4">Active Campaigns</h2>
+          <h2 className="text-xl font-bold bg-gradient-to-r from-lime-500 via-lime-500 to-cyan-500 bg-clip-text text-transparent mb-4">Active Campaigns</h2>
           <div className="space-y-3">
             {['Solana Summer Clips', 'Pump.fun Raid Campaign', 'NFT Launch Clips'].map((name, i) => (
               <div key={i} className="flex items-center justify-between p-4 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">

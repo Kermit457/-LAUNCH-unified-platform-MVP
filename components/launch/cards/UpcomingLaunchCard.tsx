@@ -81,7 +81,7 @@ export function UpcomingLaunchCard({
         {/* Boost */}
         <button
           onClick={() => onBoost?.(data.id)}
-          className="flex-1 min-w-[100px] h-9 px-3 rounded-xl bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 hover:from-fuchsia-600 hover:via-purple-600 hover:to-cyan-600 text-white text-sm font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-fuchsia-400/50 flex items-center justify-center gap-1.5"
+          className="flex-1 min-w-[100px] h-9 px-3 rounded-xl bg-gradient-to-r from-lime-500 via-lime-500 to-cyan-500 hover:from-lime-600 hover:via-lime-600 hover:to-cyan-600 text-white text-sm font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-lime-400/50 flex items-center justify-center gap-1.5"
           data-cta="card-boost-upcoming"
         >
           <TrendingUp className="w-4 h-4" />

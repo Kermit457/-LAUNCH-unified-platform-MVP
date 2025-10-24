@@ -143,7 +143,7 @@ export function CommentsModal({ open, onClose, launchId, launchTitle }: Comments
               // Not signed in - Show connect button
               <button
                 onClick={signIn}
-                className="w-full h-11 rounded-xl bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 hover:from-fuchsia-600 hover:via-purple-600 hover:to-cyan-600 text-white font-semibold transition-all flex items-center justify-center gap-2"
+                className="w-full h-11 rounded-xl bg-gradient-to-r from-lime-500 via-lime-500 to-cyan-500 hover:from-lime-600 hover:via-lime-600 hover:to-cyan-600 text-white font-semibold transition-all flex items-center justify-center gap-2"
                 data-cta="modal-connect-to-comment"
               >
                 <LogIn className="w-5 h-5" />
@@ -170,7 +170,7 @@ export function CommentsModal({ open, onClose, launchId, launchTitle }: Comments
                   onChange={(e) => setText(e.target.value)}
                   placeholder="Share your thoughts..."
                   maxLength={400}
-                  className="w-full resize-none h-24 rounded-xl bg-design-zinc-900/50 border border-design-zinc-800 px-3 py-2 text-white placeholder:text-design-zinc-500 focus:border-design-purple-500/50 focus:ring-2 focus:ring-design-purple-500/20 outline-none transition-all"
+                  className="w-full resize-none h-24 rounded-xl bg-design-zinc-900/50 border border-design-zinc-800 px-3 py-2 text-white placeholder:text-design-zinc-500 focus:border-design-lime-500/50 focus:ring-2 focus:ring-design-lime-500/20 outline-none transition-all"
                 />
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-design-zinc-500">
@@ -179,7 +179,7 @@ export function CommentsModal({ open, onClose, launchId, launchTitle }: Comments
                   <button
                     type="submit"
                     disabled={!text.trim()}
-                    className="px-4 py-2 rounded-xl bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 hover:from-fuchsia-600 hover:via-purple-600 hover:to-cyan-600 text-white font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                    className="px-4 py-2 rounded-xl bg-gradient-to-r from-lime-500 via-lime-500 to-cyan-500 hover:from-lime-600 hover:via-lime-600 hover:to-cyan-600 text-white font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                     data-cta="modal-post-comment"
                   >
                     <Send className="w-4 h-4" />

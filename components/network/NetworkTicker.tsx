@@ -79,7 +79,7 @@ const eventConfig: Record<NetworkEventType, { icon: typeof Zap, color: string, f
   },
   referral_converted: {
     icon: TrendingUp,
-    color: 'text-[#8800FF]',
+    color: 'text-[#D1FD0A]',
     format: (e) => `${e.actor}'s referral ${e.target} activated curve`
   }
 }

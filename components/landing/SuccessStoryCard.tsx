@@ -6,20 +6,20 @@ interface SuccessStoryCardProps {
   stat: string
   quote: string
   category: string
-  color: 'fuchsia' | 'cyan' | 'purple'
+  color: 'lime' | 'cyan' | 'lime'
 }
 
 export function SuccessStoryCard({ name, logo, stat, quote, category, color }: SuccessStoryCardProps) {
   const colorClasses = {
-    fuchsia: 'from-fuchsia-500/20 to-fuchsia-500/5 border-fuchsia-500/30',
+    lime: 'from-lime-500/20 to-lime-500/5 border-lime-500/30',
     cyan: 'from-cyan-500/20 to-cyan-500/5 border-cyan-500/30',
-    purple: 'from-purple-500/20 to-purple-500/5 border-purple-500/30'
+    lime: 'from-lime-500/20 to-lime-500/5 border-lime-500/30'
   }
 
   const badgeColors = {
-    fuchsia: 'bg-fuchsia-500/20 text-fuchsia-300 border-fuchsia-500/40',
+    lime: 'bg-lime-500/20 text-lime-300 border-lime-500/40',
     cyan: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40',
-    purple: 'bg-purple-500/20 text-purple-300 border-purple-500/40'
+    lime: 'bg-lime-500/20 text-lime-300 border-lime-500/40'
   }
 
   return (
@@ -38,7 +38,7 @@ export function SuccessStoryCard({ name, logo, stat, quote, category, color }: S
       </div>
 
       {/* Stat */}
-      <div className="text-3xl font-bold bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent mb-6">
+      <div className="text-3xl font-bold bg-gradient-to-r from-lime-500 via-lime-500 to-cyan-500 bg-clip-text text-transparent mb-6">
         {stat}
       </div>
 

@@ -54,7 +54,7 @@ export function LinkPills({ links }: LinkPillsProps) {
           href={links[social.key]}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-fuchsia-400/50"
+          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50"
           aria-label={`Visit ${social.label}`}
         >
           {social.icon}

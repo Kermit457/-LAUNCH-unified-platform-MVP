@@ -36,9 +36,9 @@
   --accent-blue: #0088FF;
   --accent-blue-rgb: 0, 136, 255;
 
-  /* Purple - Premium features */
-  --accent-purple: #8800FF;
-  --accent-purple-rgb: 136, 0, 255;
+  /* Lime - Premium features */
+  --accent-lime: #D1FD0A;
+  --accent-lime-rgb: 136, 0, 255;
 
   /* ============================================
      GRADIENT COMBINATIONS
@@ -53,14 +53,14 @@
   --gradient-red-orange: linear-gradient(135deg, #FF0040, #FF8800);
   --gradient-orange-yellow: linear-gradient(135deg, #FF8800, #FFD700);
   --gradient-blue-cyan: linear-gradient(135deg, #0088FF, #00FFFF);
-  --gradient-purple-blue: linear-gradient(135deg, #8800FF, #0088FF);
-  --gradient-purple-pink: linear-gradient(135deg, #8800FF, #FF0040);
+  --gradient-lime-blue: linear-gradient(135deg, #D1FD0A, #0088FF);
+  --gradient-lime-pink: linear-gradient(135deg, #D1FD0A, #FF0040);
 
   /* Rainbow Gradient */
   --gradient-rainbow: linear-gradient(135deg, #00FFFF, #00FF88, #FFD700, #FF8800, #FF0040);
 
-  /* Premium Gradient (Cyan to Purple) */
-  --gradient-premium: linear-gradient(135deg, #00FFFF, #8800FF);
+  /* Premium Gradient (Cyan to Lime) */
+  --gradient-premium: linear-gradient(135deg, #00FFFF, #D1FD0A);
 
   /* ============================================
      CONTEXTUAL COLORS
@@ -86,8 +86,8 @@
   --color-info-bg: rgba(0, 136, 255, 0.1);
   --color-info-border: rgba(0, 136, 255, 0.3);
 
-  /* Premium (Purple) */
-  --color-premium: var(--accent-purple);
+  /* Premium (Lime) */
+  --color-premium: var(--accent-lime);
   --color-premium-bg: rgba(136, 0, 255, 0.1);
   --color-premium-border: rgba(136, 0, 255, 0.3);
 
@@ -102,7 +102,7 @@
   --tw-accent-red: #FF0040;
   --tw-accent-orange: #FF8800;
   --tw-accent-blue: #0088FF;
-  --tw-accent-purple: #8800FF;
+  --tw-accent-lime: #D1FD0A;
 }
 
 /* ============================================
@@ -115,7 +115,7 @@
 .text-accent-red { color: var(--accent-red); }
 .text-accent-orange { color: var(--accent-orange); }
 .text-accent-blue { color: var(--accent-blue); }
-.text-accent-purple { color: var(--accent-purple); }
+.text-accent-lime { color: var(--accent-lime); }
 
 .bg-primary-cyan { background-color: var(--primary-cyan); }
 .bg-primary-green { background-color: var(--primary-green); }
@@ -123,7 +123,7 @@
 .bg-accent-red { background-color: var(--accent-red); }
 .bg-accent-orange { background-color: var(--accent-orange); }
 .bg-accent-blue { background-color: var(--accent-blue); }
-.bg-accent-purple { background-color: var(--accent-purple); }
+.bg-accent-lime { background-color: var(--accent-lime); }
 
 /* Gradient backgrounds */
 .bg-gradient-cyan-green { background: var(--gradient-cyan-green); }
@@ -132,8 +132,8 @@
 .bg-gradient-red-orange { background: var(--gradient-red-orange); }
 .bg-gradient-orange-yellow { background: var(--gradient-orange-yellow); }
 .bg-gradient-blue-cyan { background: var(--gradient-blue-cyan); }
-.bg-gradient-purple-blue { background: var(--gradient-purple-blue); }
-.bg-gradient-purple-pink { background: var(--gradient-purple-pink); }
+.bg-gradient-lime-blue { background: var(--gradient-lime-blue); }
+.bg-gradient-lime-pink { background: var(--gradient-lime-pink); }
 .bg-gradient-rainbow { background: var(--gradient-rainbow); }
 .bg-gradient-premium { background: var(--gradient-premium); }
 

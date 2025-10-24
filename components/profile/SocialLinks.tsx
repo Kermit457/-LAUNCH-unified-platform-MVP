@@ -45,7 +45,7 @@ export function SocialLinks({ socials }: SocialLinksProps) {
           href={link.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 hover:border-fuchsia-500/50 flex items-center justify-center text-zinc-400 hover:text-white transition-all group"
+          className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 hover:border-lime-500/50 flex items-center justify-center text-zinc-400 hover:text-white transition-all group"
           aria-label={link.label}
         >
           {link.icon}

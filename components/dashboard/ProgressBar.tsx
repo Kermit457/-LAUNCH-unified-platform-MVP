@@ -27,7 +27,7 @@ export function ProgressBar({ value, max, label, showPercentage = true, classNam
             'h-full rounded-full transition-all',
             percentage >= 90 ? 'bg-red-500' :
             percentage >= 70 ? 'bg-yellow-500' :
-            'bg-gradient-to-r from-purple-500 to-pink-600'
+            'bg-gradient-to-r from-[#D1FD0A] to-[#B8E008]'
           )}
           style={{ width: `${percentage}%` }}
         />

@@ -6,9 +6,9 @@ interface RoleChipProps {
 
 const roleColors: Record<string, { bg: string; text: string; border: string }> = {
   Streamer: {
-    bg: 'bg-purple-500/15',
-    text: 'text-purple-300',
-    border: 'border-purple-500/30',
+    bg: 'bg-[#D1FD0A]/15',
+    text: 'text-[#D1FD0A]',
+    border: 'border-[#D1FD0A]/30',
   },
   Degen: {
     bg: 'bg-red-500/15',

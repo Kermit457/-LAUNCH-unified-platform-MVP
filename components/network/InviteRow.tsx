@@ -40,7 +40,7 @@ export function InviteRow({
   return (
     <div className={cn(
       'p-3 rounded-lg border transition-colors',
-      selected ? 'bg-purple-500/20 border-purple-500/50' : 'bg-white/5 border-white/10 hover:bg-white/10'
+      selected ? 'bg-[#D1FD0A]/20 border-[#D1FD0A]/50' : 'bg-white/5 border-white/10 hover:bg-white/10'
     )}>
       <div className="flex items-start gap-3">
         {/* Checkbox */}
@@ -49,12 +49,12 @@ export function InviteRow({
             type="checkbox"
             checked={selected}
             onChange={onToggleSelect}
-            className="mt-1 rounded border-white/20 bg-white/5 focus:ring-2 focus:ring-fuchsia-400/80"
+            className="mt-1 rounded border-white/20 bg-white/5 focus:ring-2 focus:ring-[#D1FD0A]/50"
           />
         )}
 
         {/* Avatar */}
-        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-fuchsia-500 via-purple-500 to-cyan-500 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#D1FD0A] to-[#B8E008] flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
           {invite.fromHandle.slice(1, 3).toUpperCase()}
         </div>
 
@@ -72,7 +72,7 @@ export function InviteRow({
           {/* Pills for role/offer */}
           <div className="flex items-center gap-2 mb-2">
             {invite.role && (
-              <span className="px-2 py-0.5 rounded-full text-xs bg-purple-500/20 text-purple-300 border border-purple-500/30 capitalize">
+              <span className="px-2 py-0.5 rounded-full text-xs bg-[#D1FD0A]/20 text-[#D1FD0A] border border-[#D1FD0A]/30 capitalize">
                 {invite.role}
               </span>
             )}
@@ -108,7 +108,7 @@ export function InviteRow({
                 <>
                   <button
                     onClick={onAccept}
-                    className="px-3 py-1 rounded-lg bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 text-white text-xs font-medium hover:opacity-90 transition-all focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
+                    className="px-3 py-1 rounded-lg bg-gradient-to-r from-[#D1FD0A] to-[#B8E008] text-black text-xs font-medium hover:opacity-90 transition-all focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50"
                     aria-label="Accept invite"
                   >
                     <Check className="w-3 h-3 inline mr-1" />
@@ -116,14 +116,14 @@ export function InviteRow({
                   </button>
                   <button
                     onClick={onChat}
-                    className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
+                    className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50"
                     aria-label="Chat"
                   >
                     <MessageSquare className="w-4 h-4" />
                   </button>
                   <button
                     onClick={onDecline}
-                    className="p-1.5 rounded-lg bg-white/5 hover:bg-red-500/20 text-white/70 hover:text-red-300 transition-all focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
+                    className="p-1.5 rounded-lg bg-white/5 hover:bg-red-500/20 text-white/70 hover:text-red-300 transition-all focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50"
                     aria-label="Decline"
                   >
                     <X className="w-4 h-4" />
@@ -135,7 +135,7 @@ export function InviteRow({
               <div className="relative">
                 <button
                   onClick={() => setShowMenu(!showMenu)}
-                  className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
+                  className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50"
                   aria-label="More options"
                 >
                   <MoreVertical className="w-4 h-4" />

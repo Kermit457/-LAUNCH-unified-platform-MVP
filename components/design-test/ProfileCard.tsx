@@ -37,12 +37,12 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
       className="relative group"
     >
       {/* Glow */}
-      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-violet-500/20 to-lime-500/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
 
       <div className="relative p-5 rounded-2xl bg-zinc-900/60 backdrop-blur-xl border border-zinc-800 group-hover:border-violet-500/30 transition-all">
         {/* Avatar */}
         <div className="flex items-start gap-4 mb-4">
-          <div className="w-14 h-14 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center text-white font-bold text-xl flex-shrink-0">
+          <div className="w-14 h-14 rounded-full bg-gradient-to-br from-violet-500 to-lime-500 flex items-center justify-center text-white font-bold text-xl flex-shrink-0">
             {profile.name.charAt(0)}
           </div>
           <div className="flex-1 min-w-0">

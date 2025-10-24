@@ -45,8 +45,8 @@ const typeConfig: Record<OpportunityType, {
     defaultIcon: <Target className="w-6 h-6" />,
   },
   raid: {
-    gradient: 'from-violet-500 to-fuchsia-500',
-    glowColor: 'from-violet-500/20 to-fuchsia-500/20',
+    gradient: 'from-violet-500 to-lime-500',
+    glowColor: 'from-violet-500/20 to-lime-500/20',
     accentColor: 'text-violet-400',
     defaultIcon: <Zap className="w-6 h-6" />,
   },

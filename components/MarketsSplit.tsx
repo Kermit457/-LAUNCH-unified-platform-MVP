@@ -32,7 +32,7 @@ export function MarketsSplit() {
         {/* ICM - Internet Capital Market */}
         <div className="glass-launchos p-8 rounded-2xl neon-glow-hover transition-all duration-300">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-launchos-fuchsia to-launchos-violet flex items-center justify-center">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-launchos-lime to-launchos-violet flex items-center justify-center">
               <Coins className="w-6 h-6 text-white" />
             </div>
             <div>
@@ -48,8 +48,8 @@ export function MarketsSplit() {
           <div className="space-y-3 mb-8">
             {icmFeatures.map((feature) => (
               <div key={feature.text} className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-launchos-fuchsia/20 to-launchos-violet/20 flex items-center justify-center">
-                  <feature.icon className="w-4 h-4 text-launchos-fuchsia" />
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-launchos-lime/20 to-launchos-violet/20 flex items-center justify-center">
+                  <feature.icon className="w-4 h-4 text-launchos-lime" />
                 </div>
                 <span className="text-white/80">{feature.text}</span>
               </div>
@@ -58,7 +58,7 @@ export function MarketsSplit() {
 
           <Link href="/discover?market=icm">
             <Button
-              className="w-full bg-gradient-to-r from-launchos-fuchsia to-launchos-violet text-white font-semibold py-6 rounded-xl hover:scale-105 transition-all duration-300 neon-glow-hover"
+              className="w-full bg-gradient-to-r from-launchos-lime to-launchos-violet text-white font-semibold py-6 rounded-xl hover:scale-105 transition-all duration-300 neon-glow-hover"
             >
               Launch Token
             </Button>

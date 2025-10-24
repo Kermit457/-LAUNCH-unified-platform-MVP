@@ -72,7 +72,7 @@ export function LaunchHeaderCompact({
           {logoUrl ? (
             <img src={logoUrl} alt={title} className="w-full h-full object-cover" />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-fuchsia-500 to-cyan-500 flex items-center justify-center text-white text-xl font-bold">
+            <div className="w-full h-full bg-gradient-to-br from-[#D1FD0A] to-[#B8E008] flex items-center justify-center text-white text-xl font-bold">
               {title.slice(0, 2).toUpperCase()}
             </div>
           )}
@@ -101,7 +101,7 @@ export function LaunchHeaderCompact({
           <span
             className={`px-2.5 py-1 rounded-lg border text-xs font-bold
               ${scope === 'ICM'
-                ? 'bg-purple-500/10 border-purple-500/30 text-purple-300'
+                ? 'bg-[#D1FD0A]/10 border-[#D1FD0A]/30 text-[#D1FD0A]'
                 : 'bg-cyan-500/10 border-cyan-500/30 text-cyan-300'
               }`}
           >
@@ -183,7 +183,7 @@ export function LaunchHeaderCompact({
       <div className="space-y-1.5">
         <div className="h-2 rounded-full bg-white/5 overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 transition-all duration-500"
+            className="h-full bg-gradient-to-r from-[#D1FD0A] to-[#B8E008] transition-all duration-500"
             style={{ width: `${convictionPct}%` }}
           />
         </div>

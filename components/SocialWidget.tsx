@@ -129,7 +129,7 @@ export default function SocialWidget({ streamer }: { streamer: string }) {
                       className={`h-full transition-all duration-500 ${
                         goalReached
                           ? 'bg-gradient-to-r from-green-400 to-emerald-500'
-                          : 'bg-gradient-to-r from-indigo-500 to-purple-600'
+                          : 'bg-gradient-to-r from-indigo-500 to-lime-600'
                       }`}
                       style={{ width: `${Math.min(percentage, 100)}%` }}
                     />

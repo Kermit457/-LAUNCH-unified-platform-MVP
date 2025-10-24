@@ -94,7 +94,7 @@ export function StreamModal({ isOpen, onClose, coin, formatMarketCap, formatTime
                   }}
                 />
               ) : (
-                <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-white font-bold text-2xl">
+                <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-lime-500 to-pink-600 flex items-center justify-center text-white font-bold text-2xl">
                   {coin.symbol.slice(0, 2)}
                 </div>
               )}
@@ -138,7 +138,7 @@ export function StreamModal({ isOpen, onClose, coin, formatMarketCap, formatTime
                   {coin.profile_image ? (
                     <img src={coin.profile_image} alt={coin.username} className="w-10 h-10 rounded-full" />
                   ) : (
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-white font-bold">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-lime-500 to-pink-600 flex items-center justify-center text-white font-bold">
                       {coin.username.slice(0, 1).toUpperCase()}
                     </div>
                   )}
@@ -205,7 +205,7 @@ export function StreamModal({ isOpen, onClose, coin, formatMarketCap, formatTime
               href={`https://pump.fun/${coin.mint}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-design-purple-500 to-design-pink-600 hover:from-design-purple-600 hover:to-design-pink-700 text-white font-bold transition-all shadow-lg"
+              className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-design-lime-500 to-design-pink-600 hover:from-design-lime-600 hover:to-design-pink-700 text-white font-bold transition-all shadow-lg"
             >
               <ExternalLink className="w-4 h-4" />
               View on pump.fun

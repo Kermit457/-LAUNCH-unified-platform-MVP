@@ -130,7 +130,7 @@ export default function PredictionsControl() {
                 type="text"
                 value={streamerId}
                 onChange={(e) => setStreamerId(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-lime-500 focus:outline-none"
                 placeholder="0x1234... or username"
                 required
               />
@@ -142,7 +142,7 @@ export default function PredictionsControl() {
                 type="text"
                 value={question}
                 onChange={(e) => setQuestion(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-lime-500 focus:outline-none"
                 placeholder="BTC next 15m?"
                 required
               />
@@ -157,7 +157,7 @@ export default function PredictionsControl() {
                       type="text"
                       value={option}
                       onChange={(e) => updateOption(index, e.target.value)}
-                      className="flex-1 px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                      className="flex-1 px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-lime-500 focus:outline-none"
                       placeholder={`Option ${index + 1}`}
                     />
                     {options.length > 2 && (
@@ -184,7 +184,7 @@ export default function PredictionsControl() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 rounded-lg font-semibold transition disabled:opacity-50"
+              className="w-full px-6 py-3 bg-gradient-to-r from-lime-600 to-blue-600 hover:from-lime-700 hover:to-blue-700 rounded-lg font-semibold transition disabled:opacity-50"
             >
               {loading ? 'Creating...' : 'Create Prediction'}
             </button>
@@ -201,17 +201,17 @@ export default function PredictionsControl() {
           <div className="space-y-2 text-sm font-mono bg-gray-900/50 p-4 rounded-lg">
             <div>
               <span className="text-gray-400">Lock:</span>{' '}
-              <code className="text-purple-400">POST /api/predictions/:id/lock</code>
+              <code className="text-lime-400">POST /api/predictions/:id/lock</code>
             </div>
             <div>
               <span className="text-gray-400">Settle:</span>{' '}
-              <code className="text-purple-400">
+              <code className="text-lime-400">
                 POST /api/predictions/:id/settle
               </code>
             </div>
             <div>
               <span className="text-gray-400">Results:</span>{' '}
-              <code className="text-purple-400">
+              <code className="text-lime-400">
                 GET /api/predictions/:id/results
               </code>
             </div>

@@ -103,7 +103,7 @@ export function TopNav() {
             {!connected && (
               <button
                 onClick={connect}
-                className="px-6 py-2.5 rounded-xl bg-[#FFD700] text-black font-bold hover:scale-105 hover:bg-[#FFED4E] transition-all"
+                className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#D1FD0A] to-[#B8E008] text-black font-bold hover:scale-105 hover:from-[#B8E008] hover:to-[#A0C007] transition-all"
               >
                 Connect Wallet
               </button>
@@ -139,7 +139,7 @@ export function TopNav() {
                       {[
                         { icon: '🔥', text: '$DEGEN reached new ATH!', time: '2m ago', color: 'text-orange-400' },
                         { icon: '💰', text: 'You earned 50 XP from referral', time: '1h ago', color: 'text-green-400' },
-                        { icon: '🎉', text: '@elonmusk launched new keys', time: '3h ago', color: 'text-purple-400' }
+                        { icon: '🎉', text: '@elonmusk launched new keys', time: '3h ago', color: 'text-[#D1FD0A]' }
                       ].map((notif, i) => (
                         <button
                           key={i}
@@ -156,7 +156,7 @@ export function TopNav() {
                       ))}
                     </div>
                     <div className="p-3 border-t border-zinc-800 text-center">
-                      <button className="text-sm text-purple-400 hover:text-purple-300 font-medium">
+                      <button className="text-sm text-[#D1FD0A] hover:text-[#B8E008] font-medium">
                         View all notifications
                       </button>
                     </div>
@@ -208,8 +208,8 @@ export function TopNav() {
                           <div className="font-bold text-white flex items-center gap-2">
                             {user.name}
                             {user.verified && (
-                              <div className="w-4 h-4 bg-purple-500 rounded-full flex items-center justify-center">
-                                <span className="text-white text-[10px]">✓</span>
+                              <div className="w-4 h-4 bg-[#D1FD0A] rounded-full flex items-center justify-center">
+                                <span className="text-black text-[10px]">✓</span>
                               </div>
                             )}
                           </div>

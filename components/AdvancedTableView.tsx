@@ -2,7 +2,20 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Twitter, MessageCircle, Globe, TrendingUp, TrendingDown, ArrowUp, Eye, MessageSquare, Users } from 'lucide-react'
+import {
+  IconUpvote,
+  IconAim,
+  IconPriceUp,
+  IconPriceDown,
+  IconTwitter,
+  IconWeb,
+  IconTelegram,
+  IconSolana,
+  IconLightning,
+  IconLab,
+  IconTopPerformer,
+  IconNetwork
+} from '@/lib/icons'
 import { cn } from '@/lib/cn'
 import type { AdvancedListingData } from '@/lib/advancedTradingData'
 import { formatTimeAgo, formatSOL } from '@/lib/advancedTradingData'
@@ -21,21 +34,25 @@ export function AdvancedTableView({ listings, onBuyClick, onCollaborateClick, on
       <table className="w-full min-w-[600px] md:min-w-[900px] border-separate border-spacing-0">
         <thead>
           <tr className="text-[10px] md:text-xs font-medium text-zinc-400 uppercase tracking-wider">
+            <th className="px-2 md:px-4 py-2 md:py-3 text-left border-b border-zinc-800 min-w-[40px] md:min-w-[60px]">
+              Rank
+            </th>
             <th className="sticky left-0 z-10 bg-black/90 backdrop-blur-xl px-2 md:px-4 py-2 md:py-3 text-left border-b border-zinc-800 min-w-[140px] md:min-w-[280px]">
               Token
             </th>
-            <th className="px-2 md:px-4 py-2 md:py-3 text-left border-b border-zinc-800 min-w-[50px] md:min-w-[80px]">Age</th>
             <th className="px-2 md:px-4 py-2 md:py-3 text-center border-b border-zinc-800 min-w-[70px] md:min-w-[100px]">Motion</th>
             <th className="px-2 md:px-4 py-2 md:py-3 text-center border-b border-zinc-800 min-w-[60px] md:min-w-[100px]">
-              <ArrowUp className="w-3 h-3 md:w-4 md:h-4 mx-auto" />
+              Upvote
             </th>
             <th className="hidden md:table-cell px-4 py-3 text-center border-b border-zinc-800 min-w-[80px]">
-              <Eye className="w-4 h-4 mx-auto" />
+              Views
             </th>
-            <th className="hidden md:table-cell px-4 py-3 text-center border-b border-zinc-800 min-w-[80px]">
-              <MessageSquare className="w-4 h-4 mx-auto" />
+            <th className="hidden md:table-cell px-4 py-3 text-center border-b border-zinc-800 min-w-[100px]">
+              Comments
             </th>
-            <th className="hidden md:table-cell px-4 py-3 text-center border-b border-zinc-800 min-w-[100px]">Holders</th>
+            <th className="hidden md:table-cell px-4 py-3 text-center border-b border-zinc-800 min-w-[100px]">
+              Holders
+            </th>
             <th className="px-2 md:px-4 py-2 md:py-3 text-right border-b border-zinc-800 min-w-[80px] md:min-w-[120px]">Price</th>
             <th className="hidden sm:table-cell px-2 md:px-4 py-2 md:py-3 text-left border-b border-zinc-800 min-w-[100px] md:min-w-[150px]">Creator</th>
             <th className="px-2 md:px-4 py-2 md:py-3 text-center border-b border-zinc-800 min-w-[100px] md:min-w-[150px]">Actions</th>
@@ -47,6 +64,7 @@ export function AdvancedTableView({ listings, onBuyClick, onCollaborateClick, on
               key={listing.id}
               listing={listing}
               index={index}
+              rank={index + 1}
               onBuyClick={onBuyClick}
               onCollaborateClick={onCollaborateClick}
               onCommentClick={onCommentClick}
@@ -62,6 +80,7 @@ export function AdvancedTableView({ listings, onBuyClick, onCollaborateClick, on
 function TableRow({
   listing,
   index,
+  rank,
   onBuyClick,
   onCollaborateClick,
   onCommentClick,
@@ -69,6 +88,7 @@ function TableRow({
 }: {
   listing: AdvancedListingData
   index: number
+  rank: number
   onBuyClick?: (listing: AdvancedListingData, amount: number) => void
   onCollaborateClick?: (listing: AdvancedListingData) => void
   onCommentClick?: (listing: AdvancedListingData) => void
@@ -78,28 +98,28 @@ function TableRow({
   const [hasVoted, setHasVoted] = useState(listing.hasVoted || false)
   const [upvotes, setUpvotes] = useState(listing.upvotes)
 
-  // Type-based styling - ICM Motion Color Palette
+  // Type-based styling - btdemo design
   const typeColors = {
     icm: {
-      bg: 'from-[#00FF88]/10 to-[#00FF88]/5',
-      border: 'border-[#00FF88]/30',
-      text: 'text-[#00FF88]',
-      glow: 'shadow-[#00FF88]/20',
-      badge: 'bg-[#00FF88]/20 text-[#00FF88] border-[#00FF88]/30'
+      bg: 'from-[#D1FD0A]/10 to-[#D1FD0A]/5',
+      border: 'border-[#D1FD0A]/30',
+      text: 'text-[#D1FD0A]',
+      glow: 'shadow-[#D1FD0A]/20',
+      badge: 'bg-[#D1FD0A]/20 text-[#D1FD0A] border-[#D1FD0A]/30'
     },
     ccm: {
-      bg: 'from-[#00FFFF]/10 to-[#00FFFF]/5',
-      border: 'border-[#00FFFF]/30',
-      text: 'text-[#00FFFF]',
-      glow: 'shadow-[#00FFFF]/20',
-      badge: 'bg-[#00FFFF]/20 text-[#00FFFF] border-[#00FFFF]/30'
+      bg: 'from-[#D1FD0A]/10 to-[#D1FD0A]/5',
+      border: 'border-[#D1FD0A]/30',
+      text: 'text-[#D1FD0A]',
+      glow: 'shadow-[#D1FD0A]/20',
+      badge: 'bg-[#D1FD0A]/20 text-[#D1FD0A] border-[#D1FD0A]/30'
     },
     meme: {
-      bg: 'from-[#FFD700]/10 to-[#FFD700]/5',
-      border: 'border-[#FFD700]/30',
-      text: 'text-[#FFD700]',
-      glow: 'shadow-[#FFD700]/20',
-      badge: 'bg-[#FFD700]/20 text-[#FFD700] border-[#FFD700]/30'
+      bg: 'from-[#D1FD0A]/10 to-[#D1FD0A]/5',
+      border: 'border-[#D1FD0A]/30',
+      text: 'text-[#D1FD0A]',
+      glow: 'shadow-[#D1FD0A]/20',
+      badge: 'bg-[#D1FD0A]/20 text-[#D1FD0A] border-[#D1FD0A]/30'
     }
   }
 
@@ -115,14 +135,14 @@ function TableRow({
     setUpvotes(prev => hasVoted ? prev - 1 : prev + 1)
   }
 
-  // Status badge colors - ICM Motion Palette
+  // Status badge colors - btdemo design
   const statusColors = {
-    live: 'bg-[#FF0040]/20 text-[#FF0040] border-[#FF0040]/40',        // Red
-    active: 'bg-[#00FF88]/20 text-[#00FF88] border-[#00FF88]/40',      // Green
-    upcoming: 'bg-[#0088FF]/20 text-[#0088FF] border-[#0088FF]/40',    // Blue
-    frozen: 'bg-[#00FFFF]/20 text-[#00FFFF] border-[#00FFFF]/40',      // Cyan
-    ended: 'bg-zinc-500/20 text-zinc-400 border-zinc-500/40',          // Zinc (neutral)
-    launched: 'bg-[#FFD700]/20 text-[#FFD700] border-[#FFD700]/40'     // Yellow
+    live: 'bg-[#D1FD0A]/20 text-[#D1FD0A] border-[#D1FD0A]/40',        // Lime
+    active: 'bg-[#D1FD0A]/20 text-[#D1FD0A] border-[#D1FD0A]/40',      // Lime
+    upcoming: 'bg-zinc-500/20 text-zinc-400 border-zinc-500/40',       // Zinc
+    frozen: 'bg-orange-500/20 text-orange-400 border-orange-500/40',   // Orange
+    ended: 'bg-zinc-500/20 text-zinc-400 border-zinc-500/40',          // Zinc
+    launched: 'bg-[#D1FD0A]/20 text-[#D1FD0A] border-[#D1FD0A]/40'     // Lime
   }
 
   return (
@@ -138,6 +158,11 @@ function TableRow({
         isHovered && "bg-zinc-900/50"
       )}
     >
+      {/* Rank Column */}
+      <td className="px-2 md:px-4 py-3 border-b border-zinc-800/50">
+        <span className="font-led-dot text-[#D1FD0A] text-base">#{rank}</span>
+      </td>
+
       {/* Token Column */}
       <td className={cn(
         "sticky left-0 z-10 px-2 md:px-4 py-3 border-b border-zinc-800/50",
@@ -173,12 +198,14 @@ function TableRow({
               <h3 className="font-bold text-white text-xs md:text-sm truncate">
                 {listing.title}
               </h3>
-              <span className={cn("text-[10px] md:text-xs font-mono", colors.text)}>
-                {listing.ticker}
-              </span>
+              {listing.ticker && (
+                <span className="font-led-dot text-xs md:text-sm text-[#D1FD0A] tracking-wider">
+                  ${listing.ticker}
+                </span>
+              )}
             </div>
 
-            {/* Status Badge + Social Links */}
+            {/* Status Badge */}
             <div className="flex items-center gap-1 md:gap-2">
               <span className={cn(
                 "px-1.5 md:px-2 py-0.5 rounded text-[10px] md:text-xs font-medium border",
@@ -186,56 +213,15 @@ function TableRow({
               )}>
                 {(listing.status || 'ACTIVE').toUpperCase()}
               </span>
-
-              {listing.twitterUrl && (
-                <a
-                  href={listing.twitterUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-zinc-500 hover:text-blue-400 transition-colors hidden md:inline-block"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <Twitter className="w-3.5 h-3.5" />
-                </a>
-              )}
-              {listing.metrics.telegram && (
-                <a
-                  href={listing.metrics.telegram}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-zinc-500 hover:text-blue-400 transition-colors hidden md:inline-block"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <MessageCircle className="w-3.5 h-3.5" />
-                </a>
-              )}
-              {listing.metrics.website && (
-                <a
-                  href={listing.metrics.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-zinc-500 hover:text-blue-400 transition-colors hidden md:inline-block"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <Globe className="w-3.5 h-3.5" />
-                </a>
-              )}
             </div>
           </div>
         </div>
       </td>
 
-      {/* Age Column */}
-      <td className="px-2 md:px-4 py-3 border-b border-zinc-800/50">
-        <div className="text-xs md:text-sm font-medium text-zinc-300 whitespace-nowrap">
-          {timeAgo}
-        </div>
-      </td>
-
-      {/* Belief Score Column */}
+      {/* Motion Score Column */}
       <td className="px-2 md:px-4 py-3 border-b border-zinc-800/50">
         <div className="flex flex-col items-center gap-0.5 md:gap-1">
-          <div className={cn("text-lg md:text-2xl font-bold", colors.text)}>
+          <div className="font-led-dot text-xl md:text-2xl text-primary">
             {listing.beliefScore}
           </div>
           <div className="w-12 md:w-16 h-1 md:h-1.5 bg-zinc-800 rounded-full overflow-hidden">
@@ -243,12 +229,7 @@ function TableRow({
               initial={{ width: 0 }}
               animate={{ width: `${listing.beliefScore}%` }}
               transition={{ duration: 0.8, delay: index * 0.02 }}
-              className={cn(
-                "h-full rounded-full",
-                listing.type === 'icm' && "bg-[#00FF88]",
-                listing.type === 'ccm' && "bg-[#00FFFF]",
-                listing.type === 'meme' && "bg-[#FFD700]"
-              )}
+              className="h-full rounded-full bg-[#D1FD0A]"
             />
           </div>
         </div>
@@ -265,17 +246,17 @@ function TableRow({
           className={cn(
             "flex flex-col items-center gap-0.5 md:gap-1 px-2 md:px-3 py-1.5 md:py-2 rounded-lg transition-all group/vote mx-auto cursor-pointer",
             hasVoted
-              ? cn("bg-gradient-to-br", colors.bg, colors.border, "border")
+              ? "bg-[#D1FD0A]/20 border-[#D1FD0A]/40 border"
               : "bg-zinc-800/50 hover:bg-zinc-800 border border-zinc-700"
           )}
         >
-          <ArrowUp className={cn(
+          <IconUpvote className={cn(
             "w-3 h-3 md:w-4 md:h-4 transition-all",
-            hasVoted ? colors.text : "text-zinc-400 group-hover/vote:text-white group-hover/vote:-translate-y-0.5"
+            hasVoted ? "text-[#D1FD0A]" : "text-zinc-400 group-hover/vote:text-[#D1FD0A] group-hover/vote:-translate-y-0.5"
           )} />
           <span className={cn(
-            "text-xs md:text-sm font-bold",
-            hasVoted ? colors.text : "text-white"
+            "font-led-dot text-lg",
+            hasVoted ? "text-[#D1FD0A]" : "text-primary"
           )}>
             {upvotes}
           </span>
@@ -283,76 +264,72 @@ function TableRow({
       </td>
 
       {/* Views Column */}
-      <td className="px-4 py-3 border-b border-zinc-800/50 text-center">
-        <div className="flex items-center justify-center gap-1 text-zinc-400">
-          <span className="text-sm font-medium text-white">
+      <td className="hidden md:table-cell px-4 py-3 border-b border-zinc-800/50 text-center">
+        <div className="flex items-center justify-center gap-1">
+          <span className="font-led-dot text-sm text-primary">
             {listing.viewCount ? (listing.viewCount / 1000).toFixed(1) : '0'}k
           </span>
         </div>
       </td>
 
       {/* Comments Column */}
-      <td className="px-4 py-3 border-b border-zinc-800/50 text-center">
+      <td className="hidden md:table-cell px-4 py-3 border-b border-zinc-800/50 text-center">
         <button
           onClick={(e) => {
             e.stopPropagation()
             onCommentClick?.(listing)
           }}
-          className="flex items-center justify-center gap-1 text-zinc-400 hover:text-white transition-colors mx-auto cursor-pointer"
+          className="font-led-dot text-sm text-primary hover:text-[#D1FD0A] transition-colors cursor-pointer"
         >
-          <span className="text-sm font-medium">
-            {listing.commentsCount || 0}
-          </span>
+          {listing.commentsCount || 0}
         </button>
       </td>
 
       {/* Holders Column */}
-      <td className="px-4 py-3 border-b border-zinc-800/50 text-center">
-        <div className="flex items-center justify-center gap-1">
-          <Users className="w-3.5 h-3.5 text-zinc-500" />
-          <span className="text-sm font-medium text-white" suppressHydrationWarning>
-            {listing.holders?.toLocaleString() || '0'}
-          </span>
-        </div>
+      <td className="hidden md:table-cell px-4 py-3 border-b border-zinc-800/50 text-center">
+        <span className="font-led-dot text-lg text-primary" suppressHydrationWarning>
+          {listing.holders || 0}
+        </span>
       </td>
 
       {/* Price Column */}
       <td className="px-2 md:px-4 py-3 border-b border-zinc-800/50 text-right">
         <div className="space-y-0.5">
-          <div className="font-semibold text-white text-xs md:text-sm">
-            {formatSOL(listing.currentPrice || 0)}
+          <div className="flex items-center justify-end gap-1">
+            <IconSolana className="w-3.5 h-3.5 text-[#D1FD0A]" />
+            <span className="font-led-dot text-lg md:text-xl text-primary">
+              {(listing.currentPrice || 0).toFixed(3)}
+            </span>
           </div>
           {listing.priceChange24h !== undefined && (
             <div className={cn(
-              "flex items-center justify-end gap-0.5 md:gap-1 text-[10px] md:text-xs font-medium",
-              isPositive ? "text-green-400" : "text-red-400"
+              "flex items-center justify-end gap-0.5 md:gap-1 text-[10px] md:text-xs",
+              isPositive ? "text-[#D1FD0A]" : "text-red-400"
             )}>
               {isPositive ? (
-                <TrendingUp className="w-2.5 h-2.5 md:w-3 md:h-3" />
+                <IconPriceUp className="w-2.5 h-2.5 md:w-3 md:h-3" />
               ) : (
-                <TrendingDown className="w-2.5 h-2.5 md:w-3 md:h-3" />
+                <IconPriceDown className="w-2.5 h-2.5 md:w-3 md:h-3" />
               )}
-              {isPositive ? '+' : ''}{listing.priceChange24h.toFixed(1)}%
+              <span className="font-led-dot text-sm">
+                {isPositive ? '+' : ''}{listing.priceChange24h.toFixed(1)}%
+              </span>
             </div>
           )}
         </div>
       </td>
 
       {/* Creator Column */}
-      <td className="px-2 md:px-4 py-3 border-b border-zinc-800/50">
-        <div className="flex items-center gap-1.5 md:gap-2">
+      <td className="hidden sm:table-cell px-2 md:px-4 py-3 border-b border-zinc-800/50">
+        <div className="relative group flex items-center justify-center">
           <img
             src={listing.metrics.creatorAvatar}
             alt={listing.metrics.creatorName}
-            className="w-6 h-6 md:w-8 md:h-8 rounded-full"
+            className="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-[#D1FD0A]/30 hover:border-[#D1FD0A] transition-all cursor-pointer"
           />
-          <div className="min-w-0">
-            <div className="text-xs md:text-sm font-medium text-white truncate">
-              {listing.metrics.creatorName}
-            </div>
-            <div className="text-[10px] md:text-xs text-zinc-500 font-mono truncate hidden md:block">
-              {listing.metrics.creatorWallet}
-            </div>
+          {/* Tooltip on hover */}
+          <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-2 py-1 bg-black/95 border border-[#D1FD0A]/30 rounded-lg text-xs font-bold text-[#D1FD0A] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+            {listing.metrics.creatorName}
           </div>
         </div>
       </td>
@@ -366,26 +343,22 @@ function TableRow({
                 e.stopPropagation()
                 onBuyClick?.(listing, 0.1)
               }}
-              className={cn(
-                "px-2 md:px-4 py-1.5 md:py-2 rounded-lg font-bold text-[11px] md:text-sm transition-all whitespace-nowrap hover:scale-105",
-                listing.type === 'icm' && "bg-[#00FF88] text-black",
-                listing.type === 'ccm' && "bg-[#00FFFF] text-black",
-                listing.type === 'meme' && "bg-[#FFD700] text-black"
-              )}
+              className="bg-[#D1FD0A] hover:bg-[#B8E309] text-black font-bold px-3 md:px-4 py-1.5 md:py-2 rounded-lg transition-all duration-300 text-[11px] md:text-sm whitespace-nowrap hover:shadow-lg hover:shadow-primary/50 flex items-center gap-1"
             >
-              Buy Keys
+              <span>BUY</span>
+              <IconSolana size={14} className="text-black opacity-80" />
             </button>
 
-            {/* Collaborate / DM Icon Button */}
+            {/* View Details Button - btdemo styled */}
             <button
               onClick={(e) => {
                 e.stopPropagation()
                 onCollaborateClick?.(listing)
               }}
-              className="px-2 py-2 rounded-lg transition-all bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 hover:border-[#8800FF]/50 text-zinc-400 hover:text-[#8800FF] flex items-center justify-center"
-              title="Collaborate"
+              className="px-3 py-2 rounded-lg transition-all duration-300 bg-zinc-800 hover:bg-zinc-700 border-2 border-[#D1FD0A] flex items-center justify-center"
+              title="View Details"
             >
-              <MessageCircle className="w-4 h-4" />
+              <span className="text-[#D1FD0A] text-sm font-semibold">Details</span>
             </button>
           </div>
 

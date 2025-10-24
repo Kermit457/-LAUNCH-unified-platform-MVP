@@ -21,7 +21,7 @@ export function InactiveCurveBanner({
     <motion.div
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="relative overflow-hidden rounded-3xl border-2 border-purple-500/30 bg-gradient-to-br from-purple-900/20 via-zinc-900/50 to-pink-900/20 backdrop-blur-xl mb-8"
+      className="relative overflow-hidden rounded-3xl border-2 border-[#D1FD0A]/30 bg-gradient-to-br from-[#D1FD0A]/10 via-zinc-900/50 to-[#B8E008]/10 backdrop-blur-xl mb-8"
     >
       {/* Animated Background Glow */}
       <div className="absolute inset-0 opacity-30">
@@ -31,7 +31,7 @@ export function InactiveCurveBanner({
             rotate: [0, 90, 0]
           }}
           transition={{ duration: 10, repeat: Infinity }}
-          className="absolute top-0 right-0 w-64 h-64 bg-purple-500/30 rounded-full blur-3xl"
+          className="absolute top-0 right-0 w-64 h-64 bg-[#D1FD0A]/30 rounded-full blur-3xl"
         />
         <motion.div
           animate={{
@@ -39,7 +39,7 @@ export function InactiveCurveBanner({
             rotate: [0, -90, 0]
           }}
           transition={{ duration: 15, repeat: Infinity }}
-          className="absolute bottom-0 left-0 w-48 h-48 bg-pink-500/30 rounded-full blur-3xl"
+          className="absolute bottom-0 left-0 w-48 h-48 bg-[#B8E008]/30 rounded-full blur-3xl"
         />
       </div>
 
@@ -47,7 +47,7 @@ export function InactiveCurveBanner({
         <div className="flex items-start gap-6">
           {/* Icon */}
           <div className="flex-shrink-0">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-lg shadow-purple-500/30">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#D1FD0A] to-[#B8E008] flex items-center justify-center shadow-lg shadow-[#D1FD0A]/30">
               <Sparkles className="w-8 h-8 text-white" />
             </div>
           </div>

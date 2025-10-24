@@ -145,7 +145,7 @@ export function CommentsDrawer({ project, open, onClose, onAddComment }: Comment
         <div className="border-b border-design-zinc-800 p-4">
           <div className="flex items-center justify-between mb-2">
             <h2 className="text-xl font-bold text-white flex items-center gap-2">
-              <MessageCircle className="w-5 h-5 text-design-purple-400" />
+              <MessageCircle className="w-5 h-5 text-[#D1FD0A]" />
               Comments
             </h2>
             <button
@@ -162,7 +162,7 @@ export function CommentsDrawer({ project, open, onClose, onAddComment }: Comment
         </div>
 
         {/* Comments List */}
-        <div id="comments-list" className="flex-1 overflow-y-auto p-4 space-y-4">
+        <div id="comments-list" className="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-4">
           {isLoading ? (
             // Loading skeleton
             <>
@@ -187,7 +187,7 @@ export function CommentsDrawer({ project, open, onClose, onAddComment }: Comment
               <GlassCard key={comment.id} className="p-4 space-y-2">
                 {/* Author & Time */}
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-design-pink-500 to-design-purple-600 flex items-center justify-center text-white font-bold text-sm">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#D1FD0A] to-[#B8E008] flex items-center justify-center text-black font-bold text-sm">
                     {comment.author[0]?.toUpperCase() || '?'}
                   </div>
                   <div>
@@ -232,7 +232,7 @@ export function CommentsDrawer({ project, open, onClose, onAddComment }: Comment
                   rows={3}
                   required
                   disabled={isSubmitting}
-                  className="w-full px-3 py-2 rounded-lg bg-design-zinc-900/50 border border-design-zinc-800 text-white placeholder:text-design-zinc-500 focus:outline-none focus:ring-2 focus:ring-design-purple-500/50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full px-3 py-2 rounded-lg bg-design-zinc-900/50 border border-design-zinc-800 text-white placeholder:text-design-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50 disabled:opacity-50 disabled:cursor-not-allowed"
                 />
                 <div className="flex justify-end text-xs text-design-zinc-500">
                   {text.length}/500

@@ -38,7 +38,7 @@ export function MessageList({ messages, currentUserId = 'current_user' }: Messag
   }
 
   return (
-    <div ref={scrollRef} className="flex-1 overflow-y-auto p-2 md:p-4 space-y-2 md:space-y-3 pb-safe">
+    <div ref={scrollRef} className="flex-1 overflow-y-auto custom-scrollbar p-2 md:p-4 space-y-2 md:space-y-3 pb-safe">
       {messages.map((message, index) => {
         const isOwn = message.fromUserId === currentUserId
         const prevMessage = index > 0 ? messages[index - 1] : null
@@ -55,7 +55,7 @@ export function MessageList({ messages, currentUserId = 'current_user' }: Messag
           >
             {/* Avatar */}
             {showAvatar && (
-              <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-gradient-to-br from-[#8800FF] via-purple-500 to-[#00FFFF] flex items-center justify-center text-white font-bold text-xs flex-shrink-0">
+              <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-gradient-to-br from-[#D1FD0A] via-lime-500 to-[#00FFFF] flex items-center justify-center text-white font-bold text-xs flex-shrink-0">
                 {message.fromHandle?.slice(1, 3).toUpperCase() || 'US'}
               </div>
             )}
@@ -80,7 +80,7 @@ export function MessageList({ messages, currentUserId = 'current_user' }: Messag
                   className={cn(
                     'rounded-2xl px-3 py-2 md:px-4 md:py-2.5',
                     isOwn
-                      ? 'bg-gradient-to-r from-[#8800FF]/30 via-purple-500/20 to-[#00FFFF]/20 border border-[#8800FF]/40'
+                      ? 'bg-gradient-to-r from-[#D1FD0A]/30 via-lime-500/20 to-[#00FFFF]/20 border border-[#D1FD0A]/40'
                       : 'bg-zinc-800/60 border border-zinc-700/50'
                   )}
                 >

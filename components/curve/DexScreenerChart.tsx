@@ -34,7 +34,7 @@ export const DexScreenerChart = ({ tokenMint, height = 500 }: DexScreenerChartPr
           href={`https://dexscreener.com/solana/${tokenMint}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-1 text-xs text-purple-400 hover:text-purple-300 transition-colors"
+          className="flex items-center gap-1 text-xs text-lime-400 hover:text-lime-300 transition-colors"
         >
           Open in DexScreener
           <ExternalLink className="w-3 h-3" />

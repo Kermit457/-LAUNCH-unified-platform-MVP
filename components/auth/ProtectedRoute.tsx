@@ -29,7 +29,7 @@ export function ProtectedRoute({ children, redirectTo = '/login' }: ProtectedRou
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <Rocket className="w-16 h-16 mx-auto mb-4 text-fuchsia-400 animate-pulse" />
+          <Rocket className="w-16 h-16 mx-auto mb-4 text-lime-400 animate-pulse" />
           <p className="text-zinc-400">Loading...</p>
         </div>
       </div>

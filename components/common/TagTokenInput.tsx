@@ -52,19 +52,19 @@ export function TagTokenInput({
         Required Tags/Mentions
       </label>
 
-      <div className="min-h-[48px] p-2 rounded-xl bg-white/5 border border-white/10 focus-within:ring-2 focus-within:ring-fuchsia-400/80 transition-all">
+      <div className="min-h-[48px] p-2 rounded-xl bg-white/5 border border-white/10 focus-within:ring-2 focus-within:ring-lime-400/80 transition-all">
         <div className="flex flex-wrap gap-2">
           {tokens.map((token, index) => (
             <div
               key={index}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-purple-500/20 border border-purple-500/40 text-purple-300 text-sm"
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-lime-500/20 border border-lime-500/40 text-lime-300 text-sm"
             >
               {getTokenIcon(token)}
               <span>{token}</span>
               <button
                 type="button"
                 onClick={() => removeToken(index)}
-                className="ml-0.5 hover:text-purple-100 transition-colors"
+                className="ml-0.5 hover:text-lime-100 transition-colors"
               >
                 <X className="w-3 h-3" />
               </button>

@@ -1,0 +1,242 @@
+/**
+ * BTDemo Design System
+ * Core theme for ICM Motion Platform
+ */
+
+:root {
+  /* ============================================
+     BTDEMO CORE COLORS
+     ============================================ */
+
+  /* Canvas - Pure black for maximum contrast */
+  --btdemo-canvas: #000000;
+  --btdemo-canvas-rgb: 0, 0, 0;
+
+  /* Primary - Lime is the MAIN color */
+  --btdemo-primary: #D1FD0A;
+  --btdemo-primary-rgb: 209, 253, 10;
+
+  /* Secondary - Greenish for accents only */
+  --btdemo-secondary: #00FF88;
+  --btdemo-secondary-rgb: 0, 255, 136;
+
+  /* Glass Card Backgrounds */
+  --btdemo-card: rgba(8, 8, 9, 0.6);
+  --btdemo-card-solid: #080809;
+  --btdemo-card-hover: rgba(8, 8, 9, 0.8);
+
+  /* Borders */
+  --btdemo-border: #3B3B3B;
+  --btdemo-border-rgb: 59, 59, 59;
+  --btdemo-border-active: #D1FD0A;
+
+  /* Text Colors */
+  --btdemo-text: #FFFFFF;
+  --btdemo-text-muted: rgba(255, 255, 255, 0.6);
+  --btdemo-text-dim: rgba(255, 255, 255, 0.4);
+
+  /* Status Colors */
+  --btdemo-success: #00FF88;
+  --btdemo-error: #FF0040;
+  --btdemo-warning: #FFD700;
+  --btdemo-info: #0088FF;
+
+  /* ============================================
+     GLASSMORPHISM EFFECTS
+     ============================================ */
+
+  --btdemo-blur-xs: 2px;
+  --btdemo-blur-sm: 3.5px;
+  --btdemo-blur-md: 8px;
+  --btdemo-blur-lg: 12.5px;
+  --btdemo-blur-xl: 20px;
+  --btdemo-blur-bg: 325px;
+
+  /* ============================================
+     GLOW EFFECTS
+     ============================================ */
+
+  --btdemo-glow-primary: 0 0 20px rgba(209, 253, 10, 0.5);
+  --btdemo-glow-primary-intense: 0 0 40px rgba(209, 253, 10, 0.7);
+  --btdemo-glow-success: 0 0 20px rgba(0, 255, 136, 0.5);
+  --btdemo-glow-error: 0 0 20px rgba(255, 0, 64, 0.5);
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+
+/* Glass Cards */
+.btdemo-glass {
+  background: var(--btdemo-card);
+  border: 0.8px solid var(--btdemo-border);
+  backdrop-filter: blur(var(--btdemo-blur-sm));
+  -webkit-backdrop-filter: blur(var(--btdemo-blur-sm));
+}
+
+.btdemo-glass-strong {
+  background: var(--btdemo-card-hover);
+  border: 0.8px solid var(--btdemo-border);
+  backdrop-filter: blur(var(--btdemo-blur-md));
+  -webkit-backdrop-filter: blur(var(--btdemo-blur-md));
+}
+
+/* Glow Buttons */
+.btdemo-btn-glow {
+  background: var(--btdemo-primary);
+  color: var(--btdemo-canvas);
+  font-weight: 700;
+  position: relative;
+  overflow: visible;
+}
+
+.btdemo-btn-glow::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: var(--btdemo-primary);
+  filter: blur(var(--btdemo-blur-lg));
+  opacity: 0.6;
+  z-index: -1;
+  border-radius: inherit;
+}
+
+.btdemo-btn-glow:hover::before {
+  opacity: 0.8;
+  filter: blur(var(--btdemo-blur-xl));
+}
+
+/* Glass Button */
+.btdemo-btn-glass {
+  background: var(--btdemo-card);
+  color: var(--btdemo-text);
+  border: 0.8px solid var(--btdemo-border);
+  backdrop-filter: blur(var(--btdemo-blur-xs));
+  -webkit-backdrop-filter: blur(var(--btdemo-blur-xs));
+  font-weight: 700;
+}
+
+.btdemo-btn-glass:hover {
+  background: var(--btdemo-card-hover);
+  border-color: var(--btdemo-primary);
+}
+
+/* Background Blobs */
+.btdemo-blob-1 {
+  position: absolute;
+  width: 325px;
+  height: 325px;
+  background: #2C2E2F;
+  filter: blur(var(--btdemo-blur-bg));
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.btdemo-blob-2 {
+  position: absolute;
+  width: 325px;
+  height: 325px;
+  background: #435200;
+  filter: blur(var(--btdemo-blur-bg));
+  opacity: 0.2;
+  pointer-events: none;
+}
+
+/* Text Glow */
+.btdemo-text-glow {
+  color: var(--btdemo-primary);
+  text-shadow: var(--btdemo-glow-primary);
+}
+
+.btdemo-text-glow-intense {
+  color: var(--btdemo-primary);
+  text-shadow: var(--btdemo-glow-primary-intense);
+}
+
+/* Stats Display */
+.btdemo-stat-value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--btdemo-text);
+  font-family: "Helvetica Now Display", "Helvetica Neue", system-ui;
+  letter-spacing: -0.02em;
+}
+
+.btdemo-stat-label {
+  font-size: 0.875rem;
+  color: var(--btdemo-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Card Hover Effects */
+.btdemo-card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btdemo-card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 40px rgba(209, 253, 10, 0.1);
+  border-color: var(--btdemo-primary);
+}
+
+/* Active State */
+.btdemo-active {
+  border-color: var(--btdemo-primary) !important;
+  box-shadow: var(--btdemo-glow-primary);
+}
+
+/* Typography */
+.btdemo-heading {
+  font-family: "Helvetica Now Display", "Helvetica Neue", system-ui;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--btdemo-text);
+}
+
+/* Scrollbar Styling */
+.btdemo-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.btdemo-scrollbar::-webkit-scrollbar-track {
+  background: var(--btdemo-card);
+  border-radius: 4px;
+}
+
+.btdemo-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--btdemo-border);
+  border-radius: 4px;
+}
+
+.btdemo-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--btdemo-primary);
+}
+
+/* Animation Classes */
+@keyframes btdemo-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.btdemo-pulse {
+  animation: btdemo-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes btdemo-glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(209, 253, 10, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(209, 253, 10, 0.8);
+  }
+}
+
+.btdemo-glow-pulse {
+  animation: btdemo-glow-pulse 2s ease-in-out infinite;
+}

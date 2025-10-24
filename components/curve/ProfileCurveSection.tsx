@@ -79,7 +79,7 @@ export const ProfileCurveSection = ({
       <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
         <div className="flex items-center justify-center py-12">
           <div className="text-center">
-            <div className="w-12 h-12 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin mx-auto mb-4" />
+            <div className="w-12 h-12 border-4 border-lime-500/30 border-t-lime-500 rounded-full animate-spin mx-auto mb-4" />
             <div className="text-gray-400">Loading creator curve...</div>
           </div>
         </div>
@@ -103,7 +103,7 @@ export const ProfileCurveSection = ({
     <div className="space-y-6">
       {/* Section Header */}
       <div>
-        <h2 className="text-2xl font-bold bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent mb-2">
+        <h2 className="text-2xl font-bold bg-gradient-to-r from-lime-500 via-lime-500 to-cyan-500 bg-clip-text text-transparent mb-2">
           Creator Keys
         </h2>
         <p className="text-zinc-400 text-sm">
@@ -169,7 +169,7 @@ export const ProfileCurveSection = ({
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-gradient-to-br from-purple-500/10 to-blue-500/10 border border-purple-500/30 rounded-2xl p-6"
+              className="bg-gradient-to-br from-lime-500/10 to-blue-500/10 border border-lime-500/30 rounded-2xl p-6"
             >
               <h3 className="text-lg font-bold text-white mb-4">Your Position</h3>
               <div className="space-y-3">
@@ -212,7 +212,7 @@ export const ProfileCurveSection = ({
           <div className="space-y-3">
             <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-4">
               <div className="flex items-center gap-3 mb-2">
-                <TrendingUp className="w-5 h-5 text-purple-400" />
+                <TrendingUp className="w-5 h-5 text-lime-400" />
                 <span className="text-gray-400 text-sm">Current Price</span>
               </div>
               <div className="text-2xl font-bold text-white">

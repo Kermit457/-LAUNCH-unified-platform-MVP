@@ -12,7 +12,7 @@ export function StickyCTA() {
             {/* Start Launch */}
             <Link href="/discover">
               <button
-                className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-launchos-fuchsia to-launchos-violet text-white font-semibold rounded-xl hover:scale-105 transition-all duration-300 shadow-neon-fuchsia hover:shadow-neon-violet"
+                className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-launchos-lime to-launchos-violet text-white font-semibold rounded-xl hover:scale-105 transition-all duration-300 shadow-neon-lime hover:shadow-neon-violet"
                 data-cta="sticky-start-launch"
               >
                 <Rocket className="w-4 h-4" />
@@ -23,7 +23,7 @@ export function StickyCTA() {
             {/* View Live Feed */}
             <Link href="/discover">
               <button
-                className="flex items-center gap-2 px-6 py-3 neon-border-fuchsia bg-transparent text-white font-semibold rounded-xl hover:bg-white/5 hover:scale-105 transition-all duration-300"
+                className="flex items-center gap-2 px-6 py-3 neon-border-lime bg-transparent text-white font-semibold rounded-xl hover:bg-white/5 hover:scale-105 transition-all duration-300"
                 data-cta="sticky-live-feed"
               >
                 <Activity className="w-4 h-4" />

@@ -33,11 +33,11 @@ const iconMap: Record<Activity['kind'], LucideIcon> = {
 }
 
 const colorMap: Record<Activity['kind'], string> = {
-  submission: 'from-purple-500/20 to-pink-500/20 text-purple-400 border-purple-500/30',
+  submission: 'from-lime-500/20 to-pink-500/20 text-lime-400 border-lime-500/30',
   campaign_live: 'from-yellow-500/20 to-orange-500/20 text-yellow-400 border-yellow-500/30',
   payout: 'from-green-500/20 to-emerald-500/20 text-green-400 border-green-500/30',
   approval: 'from-blue-500/20 to-cyan-500/20 text-blue-400 border-blue-500/30',
-  topup: 'from-fuchsia-500/20 to-purple-500/20 text-fuchsia-400 border-fuchsia-500/30',
+  topup: 'from-lime-500/20 to-lime-500/20 text-lime-400 border-lime-500/30',
 }
 
 export function ActivityList({ activities }: ActivityListProps) {

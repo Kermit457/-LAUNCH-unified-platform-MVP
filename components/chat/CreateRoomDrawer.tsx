@@ -62,7 +62,7 @@ export function CreateRoomDrawer({
             {selectedConnections.map(conn => (
               <div
                 key={conn.userId}
-                className="px-2.5 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 text-xs flex items-center gap-1"
+                className="px-2.5 py-1 rounded-full bg-[#D1FD0A]/20 text-[#D1FD0A] border border-[#D1FD0A]/30 text-xs flex items-center gap-1"
               >
                 {conn.handle}
               </div>
@@ -84,7 +84,7 @@ export function CreateRoomDrawer({
                 value={roomName}
                 onChange={(e) => setRoomName(e.target.value)}
                 placeholder="e.g., Solana Builders"
-                className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
+                className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50"
               />
             </div>
           </div>
@@ -97,7 +97,7 @@ export function CreateRoomDrawer({
             <select
               value={projectId}
               onChange={(e) => setProjectId(e.target.value)}
-              className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
+              className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50"
             >
               <option value="">None</option>
               <option value="proj_1">NFT Launch</option>
@@ -113,7 +113,7 @@ export function CreateRoomDrawer({
             <select
               value={campaignId}
               onChange={(e) => setCampaignId(e.target.value)}
-              className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
+              className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#D1FD0A]/50"
             >
               <option value="">None</option>
               <option value="camp_1">Solana Summer Clips</option>
@@ -132,7 +132,7 @@ export function CreateRoomDrawer({
             </button>
             <button
               type="submit"
-              className="flex-1 px-4 py-2 rounded-lg bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 text-white font-medium hover:opacity-90 transition-all"
+              className="flex-1 px-4 py-2 rounded-lg bg-gradient-to-r from-[#D1FD0A] to-[#B8E008] text-black font-medium hover:opacity-90 transition-all"
             >
               Create Room
             </button>

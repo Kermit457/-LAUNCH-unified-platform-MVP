@@ -51,7 +51,7 @@ export function TokenInput({
       {label && (
         <label className="block text-sm font-medium text-white">
           {label}
-          {required && <span className="text-fuchsia-400 ml-1">*</span>}
+          {required && <span className="text-lime-400 ml-1">*</span>}
         </label>
       )}
       <div className="relative">
@@ -66,7 +66,7 @@ export function TokenInput({
           required={required}
           className={cn(
             "w-full h-12 pl-12 pr-20 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/40",
-            "focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80 transition-all"
+            "focus:outline-none focus:ring-2 focus:ring-lime-400/80 transition-all"
           )}
         />
         <div className="absolute right-4 top-1/2 -translate-y-1/2">

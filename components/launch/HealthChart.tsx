@@ -82,7 +82,7 @@ export function HealthChart({ data }: HealthChartProps) {
         <div className="space-y-1 text-xs">
           <div className="flex items-center justify-between gap-6 pb-1 border-b border-white/10">
             <span className="text-white/70">Conviction:</span>
-            <span className="text-fuchsia-400 font-bold">{point.conviction.toFixed(1)}%</span>
+            <span className="text-[#D1FD0A] font-bold">{point.conviction.toFixed(1)}%</span>
           </div>
 
           {point.activity_usd > 0 && (
@@ -106,7 +106,7 @@ export function HealthChart({ data }: HealthChartProps) {
           {point.buybacks_usd > 0 && (
             <div className="flex items-center justify-between gap-6">
               <span className="text-white/70">Buybacks:</span>
-              <span className="text-purple-400 font-semibold">${point.buybacks_usd.toLocaleString('en-US')}</span>
+              <span className="text-[#D1FD0A] font-semibold">${point.buybacks_usd.toLocaleString('en-US')}</span>
             </div>
           )}
           {point.contributors > 0 && (
@@ -166,10 +166,10 @@ export function HealthChart({ data }: HealthChartProps) {
           <button
             onClick={() => toggleSeries('conviction')}
             className={`flex items-center gap-1.5 px-2 py-1 rounded transition-colors ${
-              visibleSeries.conviction ? 'text-fuchsia-400' : 'text-white/40'
+              visibleSeries.conviction ? 'text-[#D1FD0A]' : 'text-white/40'
             }`}
           >
-            <div className={`w-3 h-0.5 ${visibleSeries.conviction ? 'bg-fuchsia-400' : 'bg-white/40'}`} />
+            <div className={`w-3 h-0.5 ${visibleSeries.conviction ? 'bg-[#D1FD0A]' : 'bg-white/40'}`} />
             Conviction
           </button>
           <button
@@ -202,10 +202,10 @@ export function HealthChart({ data }: HealthChartProps) {
           <button
             onClick={() => toggleSeries('buybacks_usd')}
             className={`flex items-center gap-1.5 px-2 py-1 rounded transition-colors ${
-              visibleSeries.buybacks_usd ? 'text-purple-400' : 'text-white/40'
+              visibleSeries.buybacks_usd ? 'text-[#D1FD0A]' : 'text-white/40'
             }`}
           >
-            <div className={`w-3 h-3 ${visibleSeries.buybacks_usd ? 'bg-purple-400/30 border border-purple-400' : 'bg-white/10 border border-white/40'}`} />
+            <div className={`w-3 h-3 ${visibleSeries.buybacks_usd ? 'bg-[#D1FD0A]/30 border border-[#D1FD0A]' : 'bg-white/10 border border-white/40'}`} />
             Buybacks
           </button>
           <button

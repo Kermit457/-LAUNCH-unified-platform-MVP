@@ -308,7 +308,7 @@ export function NetWorthHero({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="p-5 rounded-2xl bg-zinc-900/60 backdrop-blur-xl border border-zinc-800 hover:border-purple-500/50 transition-all group relative"
+          className="p-5 rounded-2xl bg-zinc-900/60 backdrop-blur-xl border border-zinc-800 hover:border-lime-500/50 transition-all group relative"
         >
           {pendingCollabsCount > 0 && (
             <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center text-xs font-bold text-white">
@@ -316,10 +316,10 @@ export function NetWorthHero({
             </div>
           )}
           <div className="flex items-center gap-2 mb-3">
-            <Users2 className="w-5 h-5 text-purple-400" />
+            <Users2 className="w-5 h-5 text-lime-400" />
             <span className="text-xs text-zinc-500 font-medium">Collaborations</span>
           </div>
-          <div className="text-2xl font-bold text-purple-400 mb-1">
+          <div className="text-2xl font-bold text-lime-400 mb-1">
             {collaborationsCount}
           </div>
           <div className="text-xs text-zinc-600">

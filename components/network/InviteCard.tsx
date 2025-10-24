@@ -57,7 +57,7 @@ export function InviteCard({
   return (
     <div className="flex items-center gap-4 p-4 rounded-xl bg-white/5 border border-white/10 hover:border-white/20 transition-all">
       {/* Avatar */}
-      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-fuchsia-500 to-cyan-500 flex items-center justify-center font-bold text-white text-sm flex-shrink-0 overflow-hidden">
+      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#D1FD0A] to-[#B8E008] flex items-center justify-center font-bold text-black text-sm flex-shrink-0 overflow-hidden">
         {senderAvatar ? (
           <img src={senderAvatar} alt={displayName} className="w-full h-full object-cover" />
         ) : (

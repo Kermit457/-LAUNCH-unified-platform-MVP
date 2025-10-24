@@ -94,7 +94,7 @@ export function VoteButton({
           'inline-flex items-center gap-2 rounded-lg font-bold transition-all duration-200',
           'border border-white/10 hover:border-white/30',
           hasVoted
-            ? 'bg-gradient-to-r from-pink-500/20 to-purple-500/20 text-pink-400 border-pink-500/30'
+            ? 'bg-gradient-to-r from-[#D1FD0A]/20 to-[#B8E008]/20 text-[#D1FD0A] border-[#D1FD0A]/30'
             : 'bg-white/5 hover:bg-white/10 text-white/70 hover:text-white cursor-pointer hover:-translate-y-0.5',
           isLoading && 'opacity-50 cursor-wait',
           !authenticated && 'opacity-50 cursor-not-allowed',
@@ -122,7 +122,7 @@ export function VoteButton({
         'flex flex-col items-center gap-1 rounded-xl font-bold transition-all duration-200',
         'border border-white/10 hover:border-white/30',
         hasVoted
-          ? 'bg-gradient-to-br from-pink-500/20 to-purple-500/20 text-pink-400 border-pink-500/30'
+          ? 'bg-gradient-to-br from-[#D1FD0A]/20 to-[#B8E008]/20 text-[#D1FD0A] border-[#D1FD0A]/30'
           : 'bg-white/5 hover:bg-white/10 text-white/70 hover:text-white cursor-pointer hover:-translate-y-1',
         isLoading && 'opacity-50 cursor-wait',
         !authenticated && 'opacity-50 cursor-not-allowed',

@@ -52,7 +52,7 @@ export const NAV_ITEMS: NavItem[] = [
     label: 'Clip',
     href: '/clip',
     icon: Scissors,
-    color: 'text-[#E700FF]', // Fuchsia
+    color: 'text-[#E700FF]', // Lime
     showInNav: true,
   },
   {
@@ -67,7 +67,7 @@ export const NAV_ITEMS: NavItem[] = [
     label: 'Chat',
     href: '/chat',
     icon: MessageCircle,
-    color: 'text-[#8800FF]', // Purple
+    color: 'text-[#D1FD0A]', // Lime
     showInNav: true,
     requiresAuth: true,
     featureFlag: 'ENABLE_CHAT',

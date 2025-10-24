@@ -13,7 +13,7 @@ export function AnimatedBackground() {
         }}
       />
 
-      {/* Blob 1 - Top Left - Pink/Purple */}
+      {/* Blob 1 - Top Left - Pink/Lime */}
       <div
         className="absolute top-0 left-0 w-96 h-96 rounded-full blur-3xl opacity-20"
         style={{
@@ -22,7 +22,7 @@ export function AnimatedBackground() {
         }}
       />
 
-      {/* Blob 2 - Top Right - Purple/Blue */}
+      {/* Blob 2 - Top Right - Lime/Blue */}
       <div
         className="absolute top-20 right-20 w-80 h-80 rounded-full blur-3xl opacity-20"
         style={{

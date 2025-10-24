@@ -3,122 +3,29 @@
  * Fetches and transforms Appwrite data for Discover page listings
  */
 
-import { databases, DB_ID, COLLECTIONS } from '@/lib/appwrite/client'
+import { databases } from '@/lib/appwrite/client'
 import { Query } from 'appwrite'
 import type { UnifiedCardData } from '@/components/UnifiedCard'
 import type { AdvancedListingData } from '@/lib/advancedTradingData'
-import type { Curve } from '@/types/curve'
-import type { Launch } from './launches'
-import { getLaunches } from './launches'
-import { CurveService } from './curves'
-import { getUserProfile } from './users'
+
+const DB_ID = process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID || 'launchos_db'
+const COLLECTIONS = {
+  PROJECTS: 'projects',
+  CLIPS: 'clips',
+  CONTRIBUTORS: 'contributors',
+  VOTES: 'votes',
+  HOLDERS: 'holders',
+  SOCIAL_LINKS: 'social_links',
+  USERS: 'users'
+}
 
 export interface DiscoverFilters {
-  type?: 'all' | 'icm' | 'ccm' | 'meme'
-  status?: 'all' | 'live' | 'active' | 'upcoming' | 'frozen'
+  type?: 'all' | 'token' | 'nft' | 'ccm'
+  status?: 'all' | 'live' | 'active' | 'experimental'
   sortBy?: 'trending' | 'new' | 'volume' | 'conviction' | 'active' | 'live'
   searchQuery?: string
   limit?: number
   offset?: number
-}
-
-/**
- * Transform Launch + Curve data to UnifiedCardData format
- */
-function transformToUnifiedCard(
-  launch: Launch,
-  curve: Curve | null,
-  userProfile: any
-): UnifiedCardData {
-  const type = launch.scope === 'ICM' ? 'icm' : launch.scope === 'CCM' ? 'ccm' : 'meme'
-
-  return {
-    id: launch.$id,
-    type,
-    title: launch.title,
-    subtitle: launch.subtitle || launch.description || '',
-    ticker: launch.tokenSymbol || '',
-    logoUrl: launch.logoUrl || launch.tokenImage || `https://api.dicebear.com/7.x/shapes/svg?seed=${launch.title}&backgroundColor=10b981`,
-    status: launch.status,
-    beliefScore: Math.round(launch.convictionPct || 0),
-    upvotes: launch.upvotes || 0,
-    commentsCount: launch.commentsCount || 0,
-    viewCount: launch.viewCount || 0,
-    holders: curve?.holders || launch.holders || 0,
-    keysSupply: curve?.supply || 0,
-    priceChange24h: curve?.priceChange24h || launch.priceChange24h || 0,
-    currentPrice: curve?.price || 0.01,
-    myKeys: 0, // TODO: Query from CURVE_HOLDERS for current user
-    mySharePct: 0, // TODO: Calculate from holdings
-    estLaunchTokens: null,
-    contributors: userProfile ? [{
-      name: userProfile.displayName || userProfile.username || 'Anonymous',
-      avatar: userProfile.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${launch.createdBy}`
-    }] : [],
-    twitterUrl: userProfile?.twitter ? `https://twitter.com/${userProfile.twitter}` : undefined,
-    hasVoted: false, // TODO: Check VOTES collection for current user
-    notificationEnabled: false,
-    creatorId: launch.createdBy,
-  }
-}
-
-/**
- * Transform Launch + Curve data to AdvancedListingData format (for table view)
- */
-function transformToAdvancedListing(
-  launch: Launch,
-  curve: Curve | null,
-  userProfile: any
-): AdvancedListingData {
-  const type = launch.scope === 'ICM' ? 'icm' : launch.scope === 'CCM' ? 'ccm' : 'meme'
-
-  return {
-    id: launch.$id,
-    type,
-    title: launch.title,
-    subtitle: launch.subtitle || launch.description,
-    ticker: launch.tokenSymbol,
-    logoUrl: launch.logoUrl || launch.tokenImage || `https://api.dicebear.com/7.x/shapes/svg?seed=${launch.title}`,
-    status: launch.status,
-
-    // Metrics
-    currentPrice: curve?.price || 0.01,
-    priceChange24h: curve?.priceChange24h || launch.priceChange24h || 0,
-    holders: curve?.holders || launch.holders || 0,
-    upvotes: launch.upvotes || 0,
-    commentsCount: launch.commentsCount || 0,
-    viewCount: launch.viewCount || 0,
-    beliefScore: Math.round(launch.convictionPct || 0),
-
-    // Holdings
-    myKeys: 0, // TODO: Query from CURVE_HOLDERS
-    mySharePct: 0,
-
-    // Advanced metrics
-    metrics: {
-      volume24h: curve?.volume24h || 0,
-      volumeTotal: curve?.volumeTotal || 0,
-      marketCap: curve?.marketCap || 0,
-      holders: curve?.holders || launch.holders || 0,
-      supply: curve?.supply || 0,
-      price: curve?.price || 0.01,
-      priceChange24h: curve?.priceChange24h || launch.priceChange24h || 0,
-      liquidity: curve?.reserve || 0,
-      createdAt: new Date(launch.$createdAt).getTime(),
-      lastActivity: curve?.updatedAt ? new Date(curve.updatedAt).getTime() : new Date(launch.$createdAt).getTime(),
-      creatorName: userProfile?.displayName || userProfile?.username || 'Anonymous',
-      creatorAvatar: userProfile?.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${launch.createdBy}`,
-      creatorWallet: launch.createdBy,
-      graduationPercent: Math.min(100, ((curve?.marketCap || 0) / 69000) * 100), // $69k graduation target
-      txCount24h: 0, // TODO: Track transactions
-      top10HoldersPct: 0, // TODO: Calculate from holders
-      creatorHeldPct: 0, // TODO: Calculate from holder data
-      snipersPct: 0, // TODO: Calculate early buyers
-    },
-
-    hasVoted: false, // TODO: Check VOTES collection
-    creatorId: launch.createdBy,
-  }
 }
 
 /**
@@ -131,26 +38,14 @@ export async function getDiscoverListings(filters: DiscoverFilters = {}): Promis
   try {
     const queries: any[] = []
 
-    // Apply type filter (ICM vs CCM, meme would be a tag or separate collection)
+    // Apply type filter
     if (filters.type && filters.type !== 'all') {
-      if (filters.type === 'icm') {
-        queries.push(Query.equal('scope', 'ICM'))
-      } else if (filters.type === 'ccm') {
-        queries.push(Query.equal('scope', 'CCM'))
-      }
-      // MEME type would need additional logic
+      queries.push(Query.equal('type', filters.type))
     }
 
     // Apply status filter
     if (filters.status && filters.status !== 'all') {
-      if (filters.status === 'active' || filters.status === 'live') {
-        queries.push(Query.equal('status', 'live'))
-      } else if (filters.status === 'upcoming') {
-        queries.push(Query.equal('status', 'upcoming'))
-      } else if (filters.status === 'frozen') {
-        // Frozen status would come from curve state
-        // We'll filter this after fetching curves
-      }
+      queries.push(Query.equal('status', filters.status))
     }
 
     // Apply search
@@ -164,63 +59,178 @@ export async function getDiscoverListings(filters: DiscoverFilters = {}): Promis
       queries.push(Query.offset(filters.offset))
     }
 
-    // Default sort: recent
-    let sortQuery = Query.orderDesc('$createdAt')
+    // Default sort: belief score
+    let sortQuery = Query.orderDesc('beliefScore')
 
     // Apply sort
     switch (filters.sortBy) {
       case 'trending':
-        sortQuery = Query.orderDesc('viewCount')
+      case 'active':
+      case 'live':
+        sortQuery = Query.orderDesc('beliefScore')
         break
       case 'conviction':
-        sortQuery = Query.orderDesc('convictionPct')
-        break
-      case 'volume':
-        sortQuery = Query.orderDesc('volume24h')
+        sortQuery = Query.orderDesc('beliefScore')
         break
       case 'new':
-      default:
         sortQuery = Query.orderDesc('$createdAt')
+        break
+      default:
+        sortQuery = Query.orderDesc('beliefScore')
         break
     }
     queries.push(sortQuery)
 
-    // Fetch launches from Appwrite
+    // Fetch projects from Appwrite
     const response = await databases.listDocuments(
       DB_ID,
-      COLLECTIONS.LAUNCHES,
+      COLLECTIONS.PROJECTS,
       queries
     )
 
-    const launches = response.documents as unknown as Launch[]
+    const projects = response.documents
 
-    // Fetch associated curves and user profiles
+    // Fetch associated data for each project
     const unifiedData: UnifiedCardData[] = []
     const advancedData: AdvancedListingData[] = []
 
-    for (const launch of launches) {
-      // Get curve data if it exists
-      const curve = await CurveService.getCurveByOwner('project', launch.$id)
+    for (const project of projects) {
+      try {
+        // Fetch related data in parallel
+        const [clips, contributors, holders, votes, socialLinks] = await Promise.all([
+          databases.listDocuments(DB_ID, COLLECTIONS.CLIPS, [
+            Query.equal('projectId', project.$id),
+            Query.limit(10)
+          ]).catch(() => ({ documents: [] })),
 
-      // Get creator profile
-      const userProfile = await getUserProfile(launch.createdBy)
+          databases.listDocuments(DB_ID, COLLECTIONS.CONTRIBUTORS, [
+            Query.equal('projectId', project.$id),
+            Query.limit(10)
+          ]).catch(() => ({ documents: [] })),
 
-      // Transform to both formats
-      const unified = transformToUnifiedCard(launch, curve, userProfile)
-      const advanced = transformToAdvancedListing(launch, curve, userProfile)
+          databases.listDocuments(DB_ID, COLLECTIONS.HOLDERS, [
+            Query.equal('projectId', project.$id),
+            Query.limit(100)
+          ]).catch(() => ({ documents: [] })),
 
-      // Apply frozen filter if needed
-      if (filters.status === 'frozen' && curve?.state !== 'frozen') {
-        continue
+          databases.listDocuments(DB_ID, COLLECTIONS.VOTES, [
+            Query.equal('projectId', project.$id)
+          ]).catch(() => ({ documents: [] })),
+
+          databases.listDocuments(DB_ID, COLLECTIONS.SOCIAL_LINKS, [
+            Query.equal('projectId', project.$id),
+            Query.limit(1)
+          ]).catch(() => ({ documents: [] }))
+        ])
+
+        // Calculate total clip views
+        const totalViews = clips.documents.reduce((sum: number, clip: any) => sum + (clip.views || 0), 0)
+
+        // Get creator info
+        let creatorInfo: any = {}
+        if (project.creatorId) {
+          try {
+            const creator = await databases.getDocument(DB_ID, COLLECTIONS.USERS, project.creatorId)
+            creatorInfo = creator
+          } catch (e) {
+            // Creator not found, use defaults
+          }
+        }
+
+        // Get social links
+        const social = socialLinks.documents[0] || {}
+
+        // Transform to UnifiedCardData
+        const unified: UnifiedCardData = {
+          id: project.$id,
+          type: project.type === 'token' ? 'icm' : project.type === 'nft' ? 'meme' : 'ccm',
+          title: project.title,
+          subtitle: project.subtitle || '',
+          ticker: project.ticker,
+          logoUrl: project.logoUrl || `https://api.dicebear.com/7.x/shapes/svg?seed=${project.title}`,
+          status: project.status,
+          beliefScore: project.beliefScore || 0,
+          upvotes: votes.documents.length,
+          commentsCount: 0,
+          viewCount: totalViews,
+          holders: holders.documents.length,
+          keysSupply: project.totalSupply || 0,
+          priceChange24h: 0,
+          currentPrice: 0.01,
+          myKeys: 0,
+          mySharePct: 0,
+          estLaunchTokens: null,
+          contributors: contributors.documents.slice(0, 4).map((c: any) => ({
+            name: c.name,
+            avatar: c.twitterAvatar || c.avatar || `https://unavatar.io/twitter/${c.twitterHandle}`,
+            twitterHandle: c.twitterHandle
+          })),
+          websiteUrl: social.website,
+          twitterUrl: social.twitter,
+          telegramUrl: null,
+          githubUrl: social.github,
+          hasVoted: false,
+          notificationEnabled: false,
+          creatorId: project.creatorId,
+        }
+
+        // Transform to AdvancedListingData
+        const advanced: AdvancedListingData = {
+          id: project.$id,
+          type: project.type === 'token' ? 'icm' : project.type === 'nft' ? 'meme' : 'ccm',
+          title: project.title,
+          subtitle: project.subtitle,
+          ticker: project.ticker,
+          logoUrl: project.logoUrl || `https://api.dicebear.com/7.x/shapes/svg?seed=${project.title}`,
+          status: project.status,
+          currentPrice: 0.01,
+          priceChange24h: 0,
+          holders: holders.documents.length,
+          upvotes: votes.documents.length,
+          commentsCount: 0,
+          viewCount: totalViews,
+          beliefScore: project.beliefScore || 0,
+          myKeys: 0,
+          mySharePct: 0,
+          metrics: {
+            volume24h: 0,
+            volumeTotal: 0,
+            marketCap: 0,
+            holders: holders.documents.length,
+            supply: project.totalSupply || 0,
+            price: 0.01,
+            priceChange24h: 0,
+            liquidity: 0,
+            createdAt: new Date(project.$createdAt).getTime(),
+            lastActivity: new Date(project.$createdAt).getTime(),
+            creatorName: creatorInfo.displayName || creatorInfo.username || project.creatorName || 'Anonymous',
+            creatorAvatar: creatorInfo.avatar || project.creatorAvatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${project.creatorId}`,
+            creatorWallet: project.creatorId,
+            graduationPercent: 0,
+            txCount24h: 0,
+            top10HoldersPct: 0,
+            creatorHeldPct: 0,
+            snipersPct: 0,
+            websiteUrl: social.website,
+            twitterUrl: social.twitter,
+            githubUrl: social.github,
+            contributors: contributors.documents.slice(0, 4).map((c: any) => ({
+              id: c.$id,
+              name: c.name,
+              avatar: c.twitterAvatar || c.avatar,
+              twitterHandle: c.twitterHandle
+            })),
+            contributorsCount: contributors.documents.length
+          },
+          hasVoted: false,
+          creatorId: project.creatorId,
+        }
+
+        unifiedData.push(unified)
+        advancedData.push(advanced)
+      } catch (err) {
+        console.error(`Error processing project ${project.$id}:`, err)
       }
-
-      unifiedData.push(unified)
-      advancedData.push(advanced)
-    }
-
-    // Post-processing sort for volume (since it comes from curves)
-    if (filters.sortBy === 'volume') {
-      advancedData.sort((a, b) => b.metrics.volume24h - a.metrics.volume24h)
     }
 
     return {
@@ -246,25 +256,16 @@ export async function getUserHoldings(userId: string): Promise<{
   try {
     const response = await databases.listDocuments(
       DB_ID,
-      COLLECTIONS.CURVE_HOLDERS,
+      COLLECTIONS.HOLDERS,
       [
         Query.equal('userId', userId),
-        Query.greaterThan('balance', 0),
         Query.limit(100)
       ]
     )
 
-    let totalValue = 0
-    for (const holding of response.documents) {
-      // Get curve to get current price
-      const curve = await CurveService.getCurveById(holding.curveId as string)
-      if (curve) {
-        totalValue += (holding.balance as number) * curve.price
-      }
-    }
-
+    // For now, just return count. Price calculation would require blockchain data
     return {
-      totalValue,
+      totalValue: 0,
       holdingsCount: response.documents.length
     }
   } catch (error) {

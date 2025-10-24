@@ -139,7 +139,7 @@ export const TradePanel = ({
           </label>
           <button
             onClick={handleMaxClick}
-            className="text-purple-400 hover:text-purple-300 font-medium"
+            className="text-lime-400 hover:text-lime-300 font-medium"
           >
             MAX
           </button>
@@ -158,7 +158,7 @@ export const TradePanel = ({
               w-full px-4 py-3 bg-black/30 border border-white/10 rounded-xl
               text-white text-lg font-medium
               placeholder:text-gray-600
-              focus:outline-none focus:border-purple-500/50
+              focus:outline-none focus:border-lime-500/50
               disabled:opacity-50 disabled:cursor-not-allowed
             "
           />

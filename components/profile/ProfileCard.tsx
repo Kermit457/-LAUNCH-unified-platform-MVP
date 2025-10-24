@@ -127,12 +127,12 @@ export function ProfileCard({
     <div
       className={cn(
         "relative rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl transition-all duration-300",
-        !isMinimal && "hover:border-fuchsia-500/30 hover:shadow-[0_0_30px_rgba(168,85,247,0.3)] hover:scale-[1.02]",
+        !isMinimal && "hover:border-lime-500/30 hover:shadow-[0_0_30px_rgba(168,85,247,0.3)] hover:scale-[1.02]",
         isMinimal ? "p-3" : isCompact ? "p-4" : "p-6"
       )}
     >
       {/* Glow effect */}
-      <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-fuchsia-500/0 via-purple-500/0 to-cyan-500/0 group-hover:from-fuchsia-500/5 group-hover:via-purple-500/5 group-hover:to-cyan-500/5 transition-all pointer-events-none" />
+      <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-lime-500/0 via-lime-500/0 to-cyan-500/0 group-hover:from-lime-500/5 group-hover:via-lime-500/5 group-hover:to-cyan-500/5 transition-all pointer-events-none" />
 
       <div className="relative">
         {/* Header Section */}
@@ -140,11 +140,11 @@ export function ProfileCard({
           {/* Avatar */}
           <Link href={`/profile/${username}`}>
             <div className="relative group/avatar cursor-pointer">
-              <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-white/20 group-hover/avatar:border-fuchsia-500/50 group-hover/avatar:scale-110 transition-all">
+              <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-white/20 group-hover/avatar:border-lime-500/50 group-hover/avatar:scale-110 transition-all">
                 {avatar ? (
                   <img src={avatar} alt={displayName} className="w-full h-full object-cover" />
                 ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-fuchsia-500 to-cyan-500 flex items-center justify-center text-white font-bold text-xl">
+                  <div className="w-full h-full bg-gradient-to-br from-lime-500 to-cyan-500 flex items-center justify-center text-white font-bold text-xl">
                     {displayName.slice(0, 2).toUpperCase()}
                   </div>
                 )}
@@ -242,7 +242,7 @@ export function ProfileCard({
                       : "px-6 py-2.5 text-sm",
                     inviteSent
                       ? "bg-white/10 text-zinc-400 cursor-not-allowed"
-                      : "bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 hover:shadow-[0_0_20px_rgba(147,51,234,0.4)] text-white"
+                      : "bg-gradient-to-r from-lime-500 to-blue-500 hover:from-lime-600 hover:to-blue-600 hover:shadow-[0_0_20px_rgba(147,51,234,0.4)] text-white"
                   )}
                 >
                   {inviteSent ? '✓ Invited' : 'Invite'}
@@ -261,7 +261,7 @@ export function ProfileCard({
                     isCompact
                       ? "px-4 py-2 text-xs"
                       : "px-6 py-2.5 text-sm",
-                    "bg-gradient-to-r from-pink-500 to-violet-500 hover:from-pink-600 hover:to-violet-600 hover:shadow-[0_0_20px_rgba(236,72,153,0.4)] text-white"
+                    "bg-gradient-to-r from-[#D1FD0A] to-[#B8E008] hover:from-[#B8E008] hover:to-[#A1C507] hover:shadow-[0_0_20px_rgba(209,253,10,0.4)] text-black"
                   )}
                 >
                   Message

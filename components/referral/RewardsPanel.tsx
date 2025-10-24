@@ -99,14 +99,14 @@ export const RewardsPanel = ({ variant = 'full' }: RewardsPanelProps) => {
       >
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <Gift className="w-5 h-5 text-purple-400" />
+            <Gift className="w-5 h-5 text-lime-400" />
             <div>
               <p className="text-sm font-medium text-white">Rewards</p>
               <p className="text-xs text-zinc-500">{pendingRewards.length} pending</p>
             </div>
           </div>
           <div className="text-right">
-            <p className="text-lg font-bold text-purple-400">${totalPending.toFixed(2)}</p>
+            <p className="text-lg font-bold text-lime-400">${totalPending.toFixed(2)}</p>
           </div>
         </div>
 
@@ -114,7 +114,7 @@ export const RewardsPanel = ({ variant = 'full' }: RewardsPanelProps) => {
           <button
             onClick={handleClaimAll}
             disabled={claiming || !walletAddress}
-            className="w-full bg-purple-500 hover:bg-purple-600 disabled:bg-zinc-800 disabled:text-zinc-500 text-white text-sm font-medium py-2 rounded-lg transition-colors flex items-center justify-center gap-2"
+            className="w-full bg-lime-500 hover:bg-lime-600 disabled:bg-zinc-800 disabled:text-zinc-500 text-white text-sm font-medium py-2 rounded-lg transition-colors flex items-center justify-center gap-2"
           >
             {claiming ? (
               <>Claiming...</>
@@ -146,11 +146,11 @@ export const RewardsPanel = ({ variant = 'full' }: RewardsPanelProps) => {
       className="bg-zinc-950 rounded-2xl border border-zinc-800 overflow-hidden"
     >
       {/* Header */}
-      <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border-b border-zinc-800 p-6">
+      <div className="bg-gradient-to-r from-[#D1FD0A]/10 to-[#B8E008]/10 border-b border-zinc-800 p-6">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
-            <div className="bg-purple-500/20 p-2 rounded-lg">
-              <Gift className="w-6 h-6 text-purple-400" />
+            <div className="bg-lime-500/20 p-2 rounded-lg">
+              <Gift className="w-6 h-6 text-lime-400" />
             </div>
             <div>
               <h3 className="text-xl font-bold text-white">Your Rewards</h3>
@@ -163,7 +163,7 @@ export const RewardsPanel = ({ variant = 'full' }: RewardsPanelProps) => {
         <div className="grid grid-cols-3 gap-4">
           <div className="bg-zinc-900/50 rounded-lg p-3">
             <p className="text-xs text-zinc-500 mb-1">Pending</p>
-            <p className="text-lg font-bold text-purple-400">${stats?.pendingAmount.toFixed(2) || '0.00'}</p>
+            <p className="text-lg font-bold text-lime-400">${stats?.pendingAmount.toFixed(2) || '0.00'}</p>
             <p className="text-xs text-zinc-600">{stats?.pendingCount || 0} rewards</p>
           </div>
 
@@ -183,12 +183,12 @@ export const RewardsPanel = ({ variant = 'full' }: RewardsPanelProps) => {
 
       {/* Claim All Button */}
       {hasPendingRewards && (
-        <div className="bg-purple-500/5 border-b border-zinc-800 p-4">
+        <div className="bg-lime-500/5 border-b border-zinc-800 p-4">
           <div className="flex items-center gap-3">
             <button
               onClick={handleClaimAll}
               disabled={claiming || !walletAddress}
-              className="flex-1 bg-purple-500 hover:bg-purple-600 disabled:bg-zinc-800 disabled:text-zinc-500 text-white font-medium py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
+              className="flex-1 bg-lime-500 hover:bg-lime-600 disabled:bg-zinc-800 disabled:text-zinc-500 text-white font-medium py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
             >
               {claiming ? (
                 <>
@@ -223,7 +223,7 @@ export const RewardsPanel = ({ variant = 'full' }: RewardsPanelProps) => {
           onClick={() => setSelectedTab('pending')}
           className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${
             selectedTab === 'pending'
-              ? 'text-white border-b-2 border-purple-500'
+              ? 'text-white border-b-2 border-lime-500'
               : 'text-zinc-500 hover:text-zinc-400'
           }`}
         >
@@ -233,7 +233,7 @@ export const RewardsPanel = ({ variant = 'full' }: RewardsPanelProps) => {
           onClick={() => setSelectedTab('claimed')}
           className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${
             selectedTab === 'claimed'
-              ? 'text-white border-b-2 border-purple-500'
+              ? 'text-white border-b-2 border-lime-500'
               : 'text-zinc-500 hover:text-zinc-400'
           }`}
         >
@@ -256,7 +256,7 @@ export const RewardsPanel = ({ variant = 'full' }: RewardsPanelProps) => {
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
-                        <Clock className="w-4 h-4 text-purple-400" />
+                        <Clock className="w-4 h-4 text-lime-400" />
                         <p className="text-sm font-medium text-white capitalize">
                           {reward.type.replace('_', ' ')}
                         </p>
@@ -266,13 +266,13 @@ export const RewardsPanel = ({ variant = 'full' }: RewardsPanelProps) => {
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-lg font-bold text-purple-400">
+                      <p className="text-lg font-bold text-lime-400">
                         ${reward.amount.toFixed(2)}
                       </p>
                       <button
                         onClick={() => handleClaimSingle(reward.id)}
                         disabled={claiming || !walletAddress}
-                        className="text-xs text-purple-400 hover:text-purple-300 disabled:text-zinc-600 mt-1"
+                        className="text-xs text-lime-400 hover:text-lime-300 disabled:text-zinc-600 mt-1"
                       >
                         Claim
                       </button>

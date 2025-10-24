@@ -50,12 +50,12 @@ export function ProjectCard(props: ProjectCardProps) {
   // Type-specific styling
   const typeColors = {
     launch: 'from-blue-500 to-cyan-500',
-    campaign: 'from-purple-500 to-pink-500',
+    campaign: 'from-lime-500 to-pink-500',
     raid: 'from-red-500 to-orange-500',
     prediction: 'from-green-500 to-emerald-500',
     ad: 'from-yellow-500 to-amber-500',
     quest: 'from-indigo-500 to-violet-500',
-    spotlight: 'from-fuchsia-500 to-pink-500'
+    spotlight: 'from-lime-500 to-pink-500'
   };
 
   const typeLabels = {
@@ -72,8 +72,8 @@ export function ProjectCard(props: ProjectCardProps) {
   if (project.type === 'launch') {
     const confidencePct = project.beliefScore || 0;
     const isCCM = project.marketType === 'ccm';
-    const borderColor = isCCM ? 'border-purple-500/40 hover:border-purple-500/60' : 'border-yellow-500/40 hover:border-yellow-500/60';
-    const focusRing = isCCM ? 'focus:ring-purple-400' : 'focus:ring-yellow-400';
+    const borderColor = isCCM ? 'border-lime-500/40 hover:border-lime-500/60' : 'border-yellow-500/40 hover:border-yellow-500/60';
+    const focusRing = isCCM ? 'focus:ring-lime-400' : 'focus:ring-yellow-400';
     const marketLabel = isCCM ? 'CCM' : 'ICM';
     const MarketIcon = isCCM ? Video : Coins;
 
@@ -105,7 +105,7 @@ export function ProjectCard(props: ProjectCardProps) {
                 className={cn(
                   "flex flex-col items-center justify-center w-12 h-12 rounded-xl transition-colors focus:outline-none focus:ring-2",
                   project.type === 'launch' && hasVoted
-                    ? "bg-fuchsia-500/20 border border-fuchsia-500/40 text-fuchsia-400"
+                    ? "bg-lime-500/20 border border-lime-500/40 text-lime-400"
                     : "bg-neutral-800 hover:bg-neutral-700",
                   focusRing,
                   isVoting && "opacity-50 cursor-not-allowed",
@@ -113,7 +113,7 @@ export function ProjectCard(props: ProjectCardProps) {
                 )}
                 aria-label="Upvote"
               >
-                <ArrowBigUp className={cn("w-5 h-5", project.type === 'launch' && hasVoted && "fill-fuchsia-400")} />
+                <ArrowBigUp className={cn("w-5 h-5", project.type === 'launch' && hasVoted && "fill-lime-400")} />
                 <span className="text-xs mt-0.5">{project.type === 'launch' ? voteCount : localUpvotes}</span>
               </button>
 
@@ -161,8 +161,8 @@ export function ProjectCard(props: ProjectCardProps) {
                   <div className={cn(
                     "flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px]",
                     project.type === 'launch' && hasVoted
-                      ? "bg-fuchsia-500/20 text-fuchsia-400"
-                      : "bg-neutral-900 text-fuchsia-400"
+                      ? "bg-lime-500/20 text-lime-400"
+                      : "bg-neutral-900 text-lime-400"
                   )}>
                     <TrendingUp className="w-3 h-3" />
                     {project.type === 'launch' ? voteCount : localUpvotes}
@@ -214,13 +214,13 @@ export function ProjectCard(props: ProjectCardProps) {
                         focusRing,
                         isBookmarked
                           ? isCCM
-                            ? "bg-purple-500/20 text-purple-400"
+                            ? "bg-lime-500/20 text-lime-400"
                             : "bg-yellow-500/20 text-yellow-400"
                           : "bg-neutral-800 hover:bg-neutral-700 text-white/70"
                       )}
                       aria-label="Bookmark"
                     >
-                      <Bookmark className={cn("w-3.5 h-3.5", isBookmarked && (isCCM ? "fill-purple-400" : "fill-yellow-400"))} />
+                      <Bookmark className={cn("w-3.5 h-3.5", isBookmarked && (isCCM ? "fill-lime-400" : "fill-yellow-400"))} />
                     </button>
                     <button
                       className={cn("p-1.5 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-white/70 transition-colors focus:outline-none focus:ring-2", focusRing)}
@@ -258,7 +258,7 @@ export function ProjectCard(props: ProjectCardProps) {
                     className={cn(
                       "flex-1 px-3 h-9 rounded-xl bg-gradient-to-r inline-flex items-center justify-center gap-1.5 text-xs font-medium transition-colors focus:outline-none focus:ring-2 whitespace-nowrap",
                       isCCM
-                        ? "from-purple-500 to-fuchsia-500 hover:from-purple-400 hover:to-fuchsia-400 focus:ring-purple-400"
+                        ? "from-lime-500 to-lime-500 hover:from-lime-400 hover:to-lime-400 focus:ring-lime-400"
                         : "from-sky-500 to-blue-500 hover:from-sky-400 hover:to-blue-400 focus:ring-blue-400"
                     )}
                   >
@@ -361,7 +361,7 @@ export function ProjectCard(props: ProjectCardProps) {
         </div>
       ) : project.pill ? (
         <div className="mb-3">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-launchos-fuchsia/20 to-launchos-violet/20 rounded-lg border border-launchos-fuchsia/30">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-launchos-lime/20 to-launchos-violet/20 rounded-lg border border-launchos-lime/30">
             <span className="text-sm font-bold gradient-text-launchos">{project.pill.label}</span>
           </div>
         </div>
@@ -374,7 +374,7 @@ export function ProjectCard(props: ProjectCardProps) {
         </span>
 
         {project.pill && (
-          <span className="px-2 py-1 bg-gradient-to-r from-pink-500/20 to-purple-500/20 border border-pink-500/30 rounded-full text-xs font-bold text-pink-300">
+          <span className="px-2 py-1 bg-gradient-to-r from-pink-500/20 to-lime-500/20 border border-pink-500/30 rounded-full text-xs font-bold text-pink-300">
             {project.pill.label}
           </span>
         )}

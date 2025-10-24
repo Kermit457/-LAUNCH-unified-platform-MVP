@@ -35,12 +35,12 @@ export function LiveFeedGrid({ projects, limit = 6 }: LiveFeedGridProps) {
 
   const typeColors = {
     launch: 'from-blue-500 to-cyan-500',
-    campaign: 'from-purple-500 to-pink-500',
+    campaign: 'from-lime-500 to-pink-500',
     raid: 'from-red-500 to-orange-500',
     prediction: 'from-green-500 to-emerald-500',
     ad: 'from-yellow-500 to-amber-500',
     quest: 'from-indigo-500 to-violet-500',
-    spotlight: 'from-fuchsia-500 to-pink-500'
+    spotlight: 'from-lime-500 to-pink-500'
   }
 
   const typeEmoji = {
@@ -66,7 +66,7 @@ export function LiveFeedGrid({ projects, limit = 6 }: LiveFeedGridProps) {
         {topProjects.map((project) => (
           <div
             key={project.id || (project as any).launchId || (project as any).$id}
-            className="glass-launchos p-4 hover:border-launchos-fuchsia/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-neon-fuchsia group cursor-pointer"
+            className="glass-launchos p-4 hover:border-launchos-lime/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-neon-lime group cursor-pointer"
           >
             {/* Header */}
             <div className="flex items-start gap-3 mb-3">
@@ -114,7 +114,7 @@ export function LiveFeedGrid({ projects, limit = 6 }: LiveFeedGridProps) {
             <div className="flex items-center justify-between pt-3 border-t border-white/10">
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-1 text-xs">
-                  <TrendingUp size={12} className="text-launchos-fuchsia" />
+                  <TrendingUp size={12} className="text-launchos-lime" />
                   <span className="font-bold text-white">{project.upvotes || 0}</span>
                 </div>
                 {project.boosted && (

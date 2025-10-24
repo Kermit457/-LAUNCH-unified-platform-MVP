@@ -92,7 +92,7 @@ export function FileDropzone({
           className={cn(
             "relative border-2 border-dashed rounded-xl p-8 text-center transition-all cursor-pointer",
             isDragging
-              ? "border-fuchsia-500/50 bg-fuchsia-500/10"
+              ? "border-lime-500/50 bg-lime-500/10"
               : "border-white/20 bg-white/5 hover:border-white/40 hover:bg-white/10"
           )}
         >

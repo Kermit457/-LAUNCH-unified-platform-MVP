@@ -91,7 +91,7 @@ export function BuySellModal({ open, onClose, mode, data, onBuy, onSell }: BuySe
         <div className="flex items-center justify-between p-6 border-b border-white/10">
           <div className="flex items-center gap-3">
             {data.logoUrl && (
-              <div className="w-12 h-12 rounded-xl overflow-hidden bg-gradient-to-br from-purple-500 to-blue-600">
+              <div className="w-12 h-12 rounded-xl overflow-hidden bg-gradient-to-br from-[#D1FD0A] to-[#B8E008]">
                 <img src={data.logoUrl} alt={data.title} className="w-full h-full object-cover" />
               </div>
             )}
@@ -149,11 +149,11 @@ export function BuySellModal({ open, onClose, mode, data, onBuy, onSell }: BuySe
               <div className="mt-3 pt-3 border-t border-zinc-700 space-y-2">
                 <div>
                   <div className="text-xs text-zinc-500 mb-1">Est. Launch Tokens</div>
-                  <div className="text-sm font-bold text-purple-400">{formatNumber(data.estLaunchTokens)}</div>
+                  <div className="text-sm font-bold text-[#D1FD0A]">{formatNumber(data.estLaunchTokens)}</div>
                 </div>
-                <div className="flex items-center justify-between p-2 rounded-lg bg-purple-500/10 border border-purple-500/20">
-                  <span className="text-xs text-purple-400">Per Key</span>
-                  <span className="text-xs font-bold text-purple-300">
+                <div className="flex items-center justify-between p-2 rounded-lg bg-[#D1FD0A]/10 border border-[#D1FD0A]/20">
+                  <span className="text-xs text-[#D1FD0A]">Per Key</span>
+                  <span className="text-xs font-bold text-[#B8E008]">
                     {data.myKeys > 0 ? new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }).format(data.estLaunchTokens / data.myKeys) : '0'} tokens
                   </span>
                 </div>
@@ -268,15 +268,15 @@ export function BuySellModal({ open, onClose, mode, data, onBuy, onSell }: BuySe
                       <ArrowRight className="w-3 h-3 text-zinc-500" />
                     </>
                   )}
-                  <span className="font-bold text-purple-400">{formatNumber(Math.floor(estimatedNewTokens))}</span>
+                  <span className="font-bold text-[#D1FD0A]">{formatNumber(Math.floor(estimatedNewTokens))}</span>
                 </div>
               </div>
 
               {/* Per Key Rate */}
-              <div className="mt-2 p-2 rounded-lg bg-purple-500/10 border border-purple-500/20">
+              <div className="mt-2 p-2 rounded-lg bg-[#D1FD0A]/10 border border-[#D1FD0A]/20">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-purple-300">Per Key</span>
-                  <span className="text-xs font-bold text-purple-400">
+                  <span className="text-xs text-[#B8E008]">Per Key</span>
+                  <span className="text-xs font-bold text-[#D1FD0A]">
                     ≈ {formatNumber(Math.floor(estimatedNewTokens / newKeyCount))} tokens
                   </span>
                 </div>

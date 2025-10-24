@@ -69,7 +69,7 @@ export function OverviewHeader({
                 className="w-16 h-16 rounded-full object-cover border-2 border-white/20"
               />
             ) : (
-              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-fuchsia-500 via-purple-500 to-cyan-500 flex items-center justify-center text-white font-bold text-xl">
+              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-lime-500 via-lime-500 to-cyan-500 flex items-center justify-center text-white font-bold text-xl">
                 {displayName.slice(0, 2).toUpperCase()}
               </div>
             )}
@@ -87,7 +87,7 @@ export function OverviewHeader({
                   {avatar ? (
                     <img src={avatar} alt={name} className="w-full h-full object-cover" />
                   ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-fuchsia-500 to-purple-500 flex items-center justify-center">
+                    <div className="w-full h-full bg-gradient-to-br from-lime-500 to-lime-500 flex items-center justify-center">
                       <User className="w-3 h-3 text-white" />
                     </div>
                   )}
@@ -107,7 +107,7 @@ export function OverviewHeader({
                       {project.logoUrl ? (
                         <img src={project.logoUrl} alt={project.title} className="w-full h-full object-cover" />
                       ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-cyan-500 to-purple-500 flex items-center justify-center">
+                        <div className="w-full h-full bg-gradient-to-br from-cyan-500 to-lime-500 flex items-center justify-center">
                           <Rocket className="w-3 h-3 text-white" />
                         </div>
                       )}
@@ -139,7 +139,7 @@ export function OverviewHeader({
                     {project.logoUrl ? (
                       <img src={project.logoUrl} alt={project.title} className="w-full h-full object-cover" />
                     ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-cyan-500 to-purple-500 flex items-center justify-center">
+                      <div className="w-full h-full bg-gradient-to-br from-cyan-500 to-lime-500 flex items-center justify-center">
                         <Rocket className="w-3 h-3 text-white" />
                       </div>
                     )}
@@ -171,7 +171,7 @@ export function OverviewHeader({
               {mode === 'project' && selectedProject && (
                 <span className={`px-2 py-0.5 rounded text-xs font-bold ${
                   selectedProject.scope === 'ICM'
-                    ? 'bg-fuchsia-500/20 text-fuchsia-300 border border-fuchsia-500/40'
+                    ? 'bg-lime-500/20 text-lime-300 border border-lime-500/40'
                     : 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40'
                 }`}>
                   {selectedProject.scope}
@@ -182,7 +182,7 @@ export function OverviewHeader({
               {mode === 'user' && roles.map((role, i) => (
                 <span
                   key={i}
-                  className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-500/20 text-purple-300 border border-purple-500/30"
+                  className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-lime-500/20 text-lime-300 border border-lime-500/30"
                 >
                   {role}
                 </span>
@@ -202,12 +202,12 @@ export function OverviewHeader({
           <div className="relative z-[100]" ref={dropdownRef}>
             <button
               onClick={() => setDropdownOpen(!dropdownOpen)}
-              className="flex items-center justify-between gap-2 w-64 px-5 py-2.5 rounded-xl bg-gradient-to-r from-fuchsia-500/10 via-purple-500/10 to-cyan-500/10 hover:from-fuchsia-500/20 hover:via-purple-500/20 hover:to-cyan-500/20 border border-fuchsia-500/30 hover:border-fuchsia-400/50 transition-all focus:outline-none focus:ring-2 focus:ring-fuchsia-400 shadow-lg shadow-fuchsia-500/20"
+              className="flex items-center justify-between gap-2 w-64 px-5 py-2.5 rounded-xl bg-gradient-to-r from-lime-500/10 via-lime-500/10 to-cyan-500/10 hover:from-lime-500/20 hover:via-lime-500/20 hover:to-cyan-500/20 border border-lime-500/30 hover:border-lime-400/50 transition-all focus:outline-none focus:ring-2 focus:ring-lime-400 shadow-lg shadow-lime-500/20"
             >
               <div className="flex items-center gap-2">
                 {mode === 'user' ? (
                   <>
-                    <User className="w-5 h-5 text-fuchsia-400" />
+                    <User className="w-5 h-5 text-lime-400" />
                     <span className="text-sm font-bold text-white">User Mode</span>
                   </>
                 ) : (
@@ -217,12 +217,12 @@ export function OverviewHeader({
                   </>
                 )}
               </div>
-              <ChevronDown className={`w-4 h-4 text-fuchsia-400 transition-transform ml-auto ${dropdownOpen ? 'rotate-180' : ''}`} />
+              <ChevronDown className={`w-4 h-4 text-lime-400 transition-transform ml-auto ${dropdownOpen ? 'rotate-180' : ''}`} />
             </button>
 
             {/* Dropdown Menu */}
             {dropdownOpen && (
-              <div className="absolute right-0 mt-2 w-64 rounded-xl bg-[#0B0F1A] border border-fuchsia-500/20 shadow-2xl shadow-fuchsia-500/20 backdrop-blur-xl z-[100] overflow-hidden">
+              <div className="absolute right-0 mt-2 w-64 rounded-xl bg-[#0B0F1A] border border-lime-500/20 shadow-2xl shadow-lime-500/20 backdrop-blur-xl z-[100] overflow-hidden">
                 {/* User Mode Option */}
                 <button
                   onClick={() => {
@@ -230,10 +230,10 @@ export function OverviewHeader({
                     setDropdownOpen(false)
                   }}
                   className={`w-full px-4 py-3 text-left hover:bg-white/5 transition-all flex items-center gap-3 ${
-                    mode === 'user' ? 'bg-fuchsia-500/10 border-l-2 border-fuchsia-400' : ''
+                    mode === 'user' ? 'bg-lime-500/10 border-l-2 border-lime-400' : ''
                   }`}
                 >
-                  <User className="w-5 h-5 text-fuchsia-400" />
+                  <User className="w-5 h-5 text-lime-400" />
                   <div>
                     <div className="text-sm font-medium text-white">User Dashboard</div>
                     <div className="text-xs text-white/50">Campaigns & Earnings</div>
@@ -262,7 +262,7 @@ export function OverviewHeader({
                     {project.logoUrl ? (
                       <img src={project.logoUrl} alt={project.title} className="w-8 h-8 rounded-lg object-cover" />
                     ) : (
-                      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-fuchsia-500 to-cyan-500 flex items-center justify-center">
+                      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-lime-500 to-cyan-500 flex items-center justify-center">
                         <Rocket className="w-4 h-4 text-white" />
                       </div>
                     )}
@@ -285,7 +285,7 @@ export function OverviewHeader({
 
           {/* Share Button */}
           <button
-            className="p-2 rounded-lg text-white/70 hover:text-white hover:bg-white/5 transition-all focus:outline-none focus:ring-2 focus:ring-fuchsia-400/80"
+            className="p-2 rounded-lg text-white/70 hover:text-white hover:bg-white/5 transition-all focus:outline-none focus:ring-2 focus:ring-lime-400/80"
             aria-label="Share profile"
           >
             <Share2 className="w-5 h-5" />
