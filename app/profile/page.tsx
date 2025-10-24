@@ -1,23 +1,28 @@
 "use client"
 
-import { useState, useEffect } from 'react'
-import { ArrowDownToLine, ArrowUpFromLine, Share2, Image as ImageIcon, Twitter, Globe, Send, Plus, X, DollarSign, Users2 } from 'lucide-react'
+import { useState, useEffect, Suspense } from 'react'
+import { ArrowDownToLine, ArrowUpFromLine, Share2, Image as ImageIcon, Twitter, Globe, Send, Plus, X, DollarSign, Users2, Video } from 'lucide-react'
 import { IconCash, IconNetwork, IconRocket } from '@/lib/icons'
 import { usePrivy } from '@privy-io/react-auth'
 import { useToast } from '@/hooks/useToast'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { getUserProfile, updateUserProfile, createUserProfile } from '@/lib/appwrite/services/users'
 import { getNetworkInvites } from '@/lib/appwrite/services/network'
 import { CurveService } from '@/lib/appwrite/services/curves'
 import { useSolanaBalance } from '@/hooks/useSolanaBalance'
 import { databases, DB_ID, COLLECTIONS } from '@/lib/appwrite/client'
 import { Query } from 'appwrite'
+import { PendingClipsSection } from '@/components/clips/PendingClipsSection'
 
-export default function ProfilePage() {
+function ProfilePageContent() {
   const { user } = usePrivy()
   const { success, error: showError } = useToast()
   const router = useRouter()
+  const searchParams = useSearchParams()
   const { balance: solBalance, isLoading: isLoadingBalance } = useSolanaBalance()
+
+  // Tab state - get from URL or default to 'overview'
+  const [activeTab, setActiveTab] = useState<string>(searchParams?.get('tab') || 'overview')
 
   const [showProfileEditor, setShowProfileEditor] = useState(false)
   const [displayNameInput, setDisplayNameInput] = useState('')
@@ -382,7 +387,37 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* Referral Section */}
+        {/* Tab Navigation */}
+        <div className="mb-4 border-b border-zinc-800">
+          <div className="flex gap-1 overflow-x-auto">
+            <button
+              onClick={() => setActiveTab('overview')}
+              className={`px-4 py-2.5 text-sm font-medium transition-colors whitespace-nowrap ${
+                activeTab === 'overview'
+                  ? 'text-[#D1FD0A] border-b-2 border-[#D1FD0A]'
+                  : 'text-zinc-400 hover:text-white'
+              }`}
+            >
+              Overview
+            </button>
+            <button
+              onClick={() => setActiveTab('pending-clips')}
+              className={`px-4 py-2.5 text-sm font-medium transition-colors whitespace-nowrap flex items-center gap-2 ${
+                activeTab === 'pending-clips'
+                  ? 'text-[#D1FD0A] border-b-2 border-[#D1FD0A]'
+                  : 'text-zinc-400 hover:text-white'
+              }`}
+            >
+              <Video className="w-4 h-4" />
+              Pending Reviews
+            </button>
+          </div>
+        </div>
+
+        {/* Tab Content - Overview */}
+        {activeTab === 'overview' && (
+          <>
+            {/* Referral Section */}
         <div className="mb-3 p-3 rounded-xl bg-zinc-900/60 border border-zinc-800">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
@@ -518,6 +553,16 @@ export default function ProfilePage() {
             </div>
           ))}
         </div>
+          </>
+        )}
+
+        {/* Tab Content - Pending Clips */}
+        {activeTab === 'pending-clips' && user?.id && (
+          <PendingClipsSection
+            userId={user.id}
+            preSelectedProjectId={searchParams?.get('projectId') || undefined}
+          />
+        )}
 
         {/* Profile Editor Modal */}
         {showProfileEditor && (
@@ -725,5 +770,13 @@ export default function ProfilePage() {
 
       </div>
     </div>
+  )
+}
+
+export default function ProfilePage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="text-white">Loading...</div></div>}>
+      <ProfilePageContent />
+    </Suspense>
   )
 }

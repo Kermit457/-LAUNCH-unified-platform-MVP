@@ -19,6 +19,11 @@ interface SubmitClipModalProps {
   }) => void
   preSelectedCampaignId?: string
   preSelectedCampaignTitle?: string
+  // NEW: Project context passing
+  preSelectedProjectId?: string
+  preSelectedProjectTitle?: string
+  preSelectedProjectLogo?: string
+  autoTag?: boolean // If true, project selection is locked
 }
 
 export function SubmitClipModal({
@@ -26,7 +31,11 @@ export function SubmitClipModal({
   onClose,
   onSubmit,
   preSelectedCampaignId,
-  preSelectedCampaignTitle
+  preSelectedCampaignTitle,
+  preSelectedProjectId,
+  preSelectedProjectTitle,
+  preSelectedProjectLogo,
+  autoTag = false
 }: SubmitClipModalProps) {
   const [videoUrls, setVideoUrls] = useState([{ url: '', platform: null as string | null, error: '' }])
   const [title, setTitle] = useState('')
@@ -57,6 +66,35 @@ export function SubmitClipModal({
       }
     }
   }, [open, preSelectedCampaignId, campaigns])
+
+  // Set pre-selected project if provided
+  useEffect(() => {
+    if (open && preSelectedProjectId) {
+      if (projects.length > 0) {
+        // Try to find project in loaded projects
+        const project = projects.find(p => p.launchId === preSelectedProjectId)
+        if (project) {
+          setSelectedProject(project)
+        }
+      } else if (preSelectedProjectTitle) {
+        // If projects not loaded yet, create a placeholder Launch object
+        setSelectedProject({
+          launchId: preSelectedProjectId,
+          title: preSelectedProjectTitle,
+          logoUrl: preSelectedProjectLogo,
+          // Other required fields with defaults
+          $id: preSelectedProjectId,
+          scope: 'ICM',
+          createdBy: '',
+          convictionPct: 0,
+          commentsCount: 0,
+          upvotes: 0,
+          status: 'active',
+          $createdAt: new Date().toISOString()
+        } as Launch)
+      }
+    }
+  }, [open, preSelectedProjectId, preSelectedProjectTitle, preSelectedProjectLogo, projects])
 
   const handleUrlChange = async (index: number, url: string) => {
     const newUrls = [...videoUrls]
@@ -316,7 +354,8 @@ export function SubmitClipModal({
             {/* Tag Project (optional) */}
             <div>
               <label className="block text-sm font-medium text-white/80 mb-2">
-                Tag Project <span className="text-white/40 text-xs">(optional)</span>
+                Tag Project {!autoTag && <span className="text-white/40 text-xs">(optional)</span>}
+                {autoTag && <span className="text-xs text-[#D1FD0A]">• Auto-tagged from project</span>}
               </label>
 
               {selectedProject ? (
@@ -330,13 +369,15 @@ export function SubmitClipModal({
                       <div className="text-xs text-white/60">${selectedProject.tokenSymbol}</div>
                     )}
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => setSelectedProject(null)}
-                    className="p-1 hover:bg-white/10 rounded transition"
-                  >
-                    <X className="w-4 h-4 text-white/60" />
-                  </button>
+                  {!autoTag && (
+                    <button
+                      type="button"
+                      onClick={() => setSelectedProject(null)}
+                      className="p-1 hover:bg-white/10 rounded transition"
+                    >
+                      <X className="w-4 h-4 text-white/60" />
+                    </button>
+                  )}
                 </div>
               ) : (
                 <div className="relative">
@@ -394,7 +435,13 @@ export function SubmitClipModal({
               <p className="text-xs text-white/80 leading-relaxed">
                 💡 Your clip will be embedded from the original platform. Make sure your post is public!
                 {(selectedCampaign || preSelectedCampaignId) && ' It will be pending approval from the campaign owner.'}
+                {selectedProject && !selectedCampaign && ' It will be pending approval from the project owner.'}
               </p>
+              {selectedProject && (
+                <p className="text-xs text-white/60 leading-relaxed mt-1.5">
+                  🎯 You'll become a contributor to <span className="text-white/80 font-medium">{selectedProject.title}</span> when your clip is approved!
+                </p>
+              )}
             </div>
 
             {/* Actions */}

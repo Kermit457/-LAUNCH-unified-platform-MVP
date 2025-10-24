@@ -9,6 +9,12 @@ interface UseClipsOptions {
   limit?: number
   page?: number
   enabled?: boolean
+  // Advanced filters
+  platform?: string | string[]
+  minEngagement?: number
+  dateFrom?: string
+  dateTo?: string
+  search?: string
 }
 
 export function useClips(options?: UseClipsOptions) {

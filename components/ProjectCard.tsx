@@ -10,6 +10,8 @@ import { CommentsDrawer } from './CommentsDrawer';
 import { BeliefScore } from './BeliefScore';
 import { useRealtimeVotes } from '@/hooks/useRealtimeVotes';
 import { useToast } from '@/hooks/useToast';
+import { usePendingClipCount } from '@/hooks/usePendingClipCount';
+import { usePrivy } from '@privy-io/react-auth';
 
 interface ProjectCardProps extends Project {
   onUpdateProject?: (updatedProject: Project) => void;
@@ -17,6 +19,7 @@ interface ProjectCardProps extends Project {
 
 export function ProjectCard(props: ProjectCardProps) {
   const router = useRouter();
+  const { user } = usePrivy();
   const { onUpdateProject, ...p } = props;
   const [project, setProject] = useState<Project>(p);
   const [isBookmarked, setIsBookmarked] = useState(false);
@@ -25,6 +28,15 @@ export function ProjectCard(props: ProjectCardProps) {
   const [voteFlash, setVoteFlash] = useState(false);
 
   const { success, error: showError } = useToast();
+
+  // Check if current user owns this project (only for launch types)
+  const isOwner = project.type === 'launch' && user?.id && project.createdBy === user.id;
+
+  // Get pending clip count if user owns this project
+  const { data: pendingCount = 0 } = usePendingClipCount(
+    project.id,
+    isOwner // Only fetch if user owns the project
+  );
 
   // Real-time votes for launch-type projects
   const {
@@ -79,7 +91,20 @@ export function ProjectCard(props: ProjectCardProps) {
 
     return (
       <>
-        <div className={cn("w-full h-[220px] rounded-2xl border bg-neutral-950 text-neutral-100 shadow-md overflow-hidden transition-all", borderColor)}>
+        <div className={cn("w-full h-[220px] rounded-2xl border bg-neutral-950 text-neutral-100 shadow-md overflow-hidden transition-all relative", borderColor)}>
+          {/* Pending Clip Badge */}
+          {isOwner && pendingCount > 0 && (
+            <button
+              onClick={() => router.push(`/profile?tab=pending-clips&projectId=${project.id}`)}
+              className="absolute top-2 right-2 z-10 flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#D1FD0A] hover:bg-[#B8E309] text-black text-xs font-bold shadow-lg transition-all hover:scale-105 active:scale-95"
+              title="View pending clips"
+            >
+              <Video className="w-3.5 h-3.5" />
+              <span>{pendingCount}</span>
+              <span className="hidden sm:inline">pending</span>
+            </button>
+          )}
+
           <div className="flex h-full">
             {/* Left rail */}
             <div className="w-16 p-2 flex flex-col items-center gap-2 bg-neutral-900/60">

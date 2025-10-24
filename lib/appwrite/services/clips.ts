@@ -481,3 +481,66 @@ export async function getCampaignClips(campaignId: string, limit = 50): Promise<
 export async function getUserClips(userId: string, limit = 50): Promise<Clip[]> {
   return getClips({ submittedBy: userId, limit })
 }
+
+/**
+ * Submit a clip to a project with automatic contributor linking
+ * Returns the clip and whether the user is a new contributor
+ */
+export async function submitClipToProject(data: {
+  embedUrl: string
+  submittedBy: string
+  submitterName: string
+  submitterAvatar?: string
+  projectId: string
+  projectName: string
+  projectLogo?: string
+  title?: string
+}): Promise<{ clip: Clip, isNewContributor: boolean }> {
+  const { isProjectMember, addProjectMember, getProjectOwners } = await import('./project-members')
+
+  // 0. Check for duplicate submission (same URL to same project)
+  const existingClips = await databases.listDocuments(
+    DB_ID,
+    COLLECTIONS.CLIPS,
+    [
+      Query.equal('embedUrl', data.embedUrl),
+      Query.equal('projectId', data.projectId),
+      Query.limit(1)
+    ]
+  )
+
+  if (existingClips.documents.length > 0) {
+    throw new Error('You already submitted this clip to this project')
+  }
+
+  // 1. Create clip (status: pending for project clips)
+  const clip = await submitClip({
+    ...data,
+    creatorUsername: data.submitterName,
+    creatorAvatar: data.submitterAvatar
+  })
+
+  // 2. Check if already a project member
+  const isMember = await isProjectMember(data.projectId, data.submittedBy)
+
+  // 3. Add as contributor if new
+  if (!isMember) {
+    try {
+      await addProjectMember({
+        projectId: data.projectId,
+        userId: data.submittedBy,
+        role: 'contributor',
+        userName: data.submitterName,
+        userAvatar: data.submitterAvatar
+      })
+    } catch (error) {
+      console.error('Failed to add contributor:', error)
+      // Don't fail the entire submission if contributor linking fails
+    }
+  }
+
+  return {
+    clip,
+    isNewContributor: !isMember
+  }
+}

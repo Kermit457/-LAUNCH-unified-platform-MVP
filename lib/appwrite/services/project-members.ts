@@ -5,7 +5,7 @@ export interface ProjectMember {
   $id: string
   projectId: string
   userId: string
-  role: 'owner' | 'member'
+  role: 'owner' | 'member' | 'contributor'
   joinedAt: string
   userName?: string
   userAvatar?: string
@@ -74,14 +74,15 @@ export async function isProjectOwner(projectId: string, userId: string): Promise
 export async function addProjectMember(data: {
   projectId: string
   userId: string
-  role: 'owner' | 'member'
+  role: 'owner' | 'member' | 'contributor'
   userName?: string
   userAvatar?: string
 }) {
   // Check if already a member
   const existing = await isProjectMember(data.projectId, data.userId)
   if (existing) {
-    throw new Error('User is already a member of this project')
+    // If already exists, don't throw error - just return existing
+    return existing
   }
 
   const response = await databases.createDocument(
@@ -107,7 +108,7 @@ export async function addProjectMember(data: {
 export async function updateProjectMemberRole(
   projectId: string,
   userId: string,
-  newRole: 'owner' | 'member'
+  newRole: 'owner' | 'member' | 'contributor'
 ) {
   const member = await isProjectMember(projectId, userId)
   if (!member) {

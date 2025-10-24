@@ -47,12 +47,12 @@ export function useRealtimeCampaigns(enabled: boolean = true) {
         )
       }
 
-      // Also invalidate queries to ensure consistency
-      queryClient.invalidateQueries({ queryKey: ['campaigns'] })
+      // Note: Removed invalidateQueries here to prevent infinite loops
+      // Cache updates above are sufficient for realtime updates
     })
 
     return () => {
       unsubscribe()
     }
-  }, [enabled, queryClient])
+  }, [enabled])
 }

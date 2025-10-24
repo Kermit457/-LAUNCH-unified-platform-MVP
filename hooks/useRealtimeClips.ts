@@ -10,13 +10,27 @@ interface RealtimeEvent {
   payload: Clip
 }
 
+interface UseRealtimeClipsOptions {
+  enabled?: boolean
+  refreshMetrics?: boolean
+  refreshInterval?: number // in milliseconds
+}
+
 /**
  * Hook to subscribe to realtime updates for clips
  * Automatically updates React Query cache when clips change
+ * Optionally refreshes metrics periodically for live dashboard
  */
-export function useRealtimeClips(enabled: boolean = true) {
+export function useRealtimeClips(options: UseRealtimeClipsOptions = {}) {
+  const {
+    enabled = true,
+    refreshMetrics = false,
+    refreshInterval = 30000 // 30 seconds default
+  } = options
+
   const queryClient = useQueryClient()
 
+  // Realtime subscriptions for create/update/delete events
   useEffect(() => {
     if (!enabled) return
 
@@ -47,12 +61,29 @@ export function useRealtimeClips(enabled: boolean = true) {
         )
       }
 
-      // Also invalidate queries to ensure consistency
-      queryClient.invalidateQueries({ queryKey: ['clips'] })
+      // Note: Removed invalidateQueries here to prevent infinite loops
+      // Cache updates above are sufficient for realtime updates
     })
 
     return () => {
       unsubscribe()
     }
-  }, [enabled, queryClient])
+  }, [enabled])
+
+  // Periodic metric refresh for live dashboard
+  useEffect(() => {
+    if (!enabled || !refreshMetrics) return
+
+    // Refresh metrics immediately on mount
+    queryClient.invalidateQueries({ queryKey: ['clips'] })
+
+    // Set up periodic refresh
+    const interval = setInterval(() => {
+      queryClient.invalidateQueries({ queryKey: ['clips'] })
+    }, refreshInterval)
+
+    return () => {
+      clearInterval(interval)
+    }
+  }, [enabled, refreshMetrics, refreshInterval])
 }

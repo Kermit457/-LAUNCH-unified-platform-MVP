@@ -5,8 +5,9 @@ import dynamic from 'next/dynamic'
 import { Play } from 'lucide-react'
 import { IconSearch } from '@/lib/icons'
 import { createCampaign, type Campaign } from '@/lib/appwrite/services/campaigns'
-import { type Clip } from '@/lib/appwrite/services/clips'
+import { type Clip, submitClipToProject } from '@/lib/appwrite/services/clips'
 import { useWallet } from '@/contexts/WalletContext'
+import { useNotifications } from '@/lib/contexts/NotificationContext'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
@@ -22,6 +23,7 @@ import { PaginationControls } from '@/components/clips/PaginationControls'
 import { ClipCardGrid } from '@/components/clips/ClipCardGrid'
 import { ClipCardScroll } from '@/components/clips/ClipCardScroll'
 import { PendingReviewSection } from '@/components/clips/PendingReviewSection'
+import { AdvancedFilters } from '@/components/clips/AdvancedFilters'
 
 // Lazy-load heavy modals to reduce initial bundle size
 const CreateCampaignModal = dynamic(() => import('@/components/modals/CreateCampaignModal').then(mod => ({ default: mod.CreateCampaignModal })), {
@@ -49,19 +51,32 @@ export default function ClipsAndCampaignsPage() {
   const [collapsedCampaigns, setCollapsedCampaigns] = useState<Set<string>>(new Set())
   const [currentPage, setCurrentPage] = useState(1)
   const clipsPerPage = 15
+
+  // Advanced Filters State
+  const [filterPlatforms, setFilterPlatforms] = useState<string[]>([])
+  const [filterMinEngagement, setFilterMinEngagement] = useState<number | undefined>()
+  const [filterDateFrom, setFilterDateFrom] = useState<string | undefined>()
+  const [filterDateTo, setFilterDateTo] = useState<string | undefined>()
   const [viewMode, setViewMode] = useState<'scroll' | 'grid'>('grid')
   const [isMobile, setIsMobile] = useState(false)
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const touchStartRef = useRef<{ x: number; y: number; time: number } | null>(null)
   const { userId, user, userInfo, connected } = useWallet()
   const router = useRouter()
+  const { addNotification } = useNotifications()
 
   // 🚀 React Query Hooks - Replace manual state management
   const { data: clips = [], isLoading: clipsLoading } = useClips({
     status: 'active',
     sortBy: 'views',
     page: currentPage,
-    limit: clipsPerPage
+    limit: clipsPerPage,
+    // Advanced filters
+    search: searchQuery || undefined,
+    platform: filterPlatforms.length > 0 ? filterPlatforms : undefined,
+    minEngagement: filterMinEngagement,
+    dateFrom: filterDateFrom,
+    dateTo: filterDateTo
   })
 
   const { data: campaigns = [], isLoading: campaignsLoading } = useCampaigns({
@@ -82,7 +97,12 @@ export default function ClipsAndCampaignsPage() {
   const queryClient = useQueryClient()
 
   // 🔴 Realtime Subscriptions - Live updates for clips and campaigns
-  useRealtimeClips(true)
+  // Enable live metrics refresh every 30s for real-time dashboard
+  useRealtimeClips({
+    enabled: true,
+    refreshMetrics: true,
+    refreshInterval: 30000 // 30 seconds
+  })
   useRealtimeCampaigns(true)
 
   // Derived state for pending clips by campaign
@@ -487,6 +507,66 @@ export default function ClipsAndCampaignsPage() {
     const creatorUsername = user?.twitter?.username || user?.email?.address?.split('@')[0] || user?.google?.name || currentUserId.slice(0, 12)
     const creatorAvatar = user?.twitter?.profilePictureUrl || `https://api.dicebear.com/7.x/identicon/svg?seed=${currentUserId}`
 
+    // NEW: Use enhanced submission flow for project clips
+    if (data.projectId && data.projectName) {
+      try {
+        const { clip, isNewContributor } = await submitClipToProject({
+          embedUrl: data.embedUrl,
+          submittedBy: currentUserId,
+          submitterName: creatorUsername,
+          submitterAvatar: creatorAvatar,
+          projectId: data.projectId,
+          projectName: data.projectName,
+          projectLogo: data.projectLogo,
+          title: data.title
+        })
+
+        // Show success message
+        toast.success('Clip Submitted!', `Awaiting approval from ${data.projectName}`)
+
+        // Trigger notification for project owner
+        addNotification(
+          'submission_new',
+          'New Clip Submitted',
+          `${creatorUsername} submitted a clip to ${data.projectName}`,
+          {
+            userId: currentUserId,
+            username: creatorUsername,
+            avatar: creatorAvatar,
+            projectId: data.projectId,
+            projectName: data.projectName,
+            clipId: clip.$id,
+            actionUrl: `/profile?tab=pending-clips&projectId=${data.projectId}`
+          }
+        )
+
+        // Show contributor badge if new
+        if (isNewContributor) {
+          addNotification(
+            'achievement_unlocked',
+            'New Contributor!',
+            `You're now a contributor to ${data.projectName}`,
+            {
+              projectId: data.projectId,
+              projectName: data.projectName
+            }
+          )
+          toast.success('Contributor Badge Earned!', `Welcome to ${data.projectName}`)
+        }
+
+        // Reset modal and refresh clips
+        setSubmitClipOpen(false)
+        queryClient.invalidateQueries({ queryKey: ['clips'] })
+        setCurrentPage(1)
+        return
+      } catch (error: any) {
+        console.error('Failed to submit clip to project:', error)
+        toast.error('Submission Failed', error.message || 'Failed to submit clip')
+        return
+      }
+    }
+
+    // Regular clip submission (no project)
     submitMutation.mutate({
       embedUrl: data.embedUrl,
       submittedBy: currentUserId,
@@ -516,6 +596,27 @@ export default function ClipsAndCampaignsPage() {
           viewMode={viewMode}
           isMobile={isMobile}
         />
+
+        {/* Advanced Filters */}
+        <div className="mx-auto max-w-7xl px-3 md:px-4 pt-2">
+          <AdvancedFilters
+            platforms={filterPlatforms}
+            minEngagement={filterMinEngagement}
+            dateFrom={filterDateFrom}
+            dateTo={filterDateTo}
+            onPlatformsChange={setFilterPlatforms}
+            onMinEngagementChange={setFilterMinEngagement}
+            onDateFromChange={setFilterDateFrom}
+            onDateToChange={setFilterDateTo}
+            onClearFilters={() => {
+              setFilterPlatforms([])
+              setFilterMinEngagement(undefined)
+              setFilterDateFrom(undefined)
+              setFilterDateTo(undefined)
+            }}
+          />
+        </div>
+
         {/* View Toggle & Tabs */}
         <div className={cn(
           "mx-auto max-w-7xl px-3 md:px-4",

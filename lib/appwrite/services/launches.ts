@@ -259,6 +259,55 @@ export async function getUserAccessibleProjects(userId: string) {
 }
 
 /**
+ * Get total views and metrics across all approved clips for a project
+ */
+export async function getProjectClipMetrics(projectId: string): Promise<{
+  totalViews: number
+  totalLikes: number
+  totalComments: number
+  totalShares: number
+  averageEngagement: number
+  clipCount: number
+}> {
+  const { getClips } = await import('./clips')
+
+  const clips = await getClips({
+    projectId,
+    status: 'active',
+    limit: 1000 // Get all approved clips
+  })
+
+  // Filter for approved clips only
+  const approvedClips = clips.filter(c => c.approved)
+
+  if (approvedClips.length === 0) {
+    return {
+      totalViews: 0,
+      totalLikes: 0,
+      totalComments: 0,
+      totalShares: 0,
+      averageEngagement: 0,
+      clipCount: 0
+    }
+  }
+
+  const totalViews = approvedClips.reduce((sum, c) => sum + (c.views || 0), 0)
+  const totalLikes = approvedClips.reduce((sum, c) => sum + (c.likes || 0), 0)
+  const totalComments = approvedClips.reduce((sum, c) => sum + (c.comments || 0), 0)
+  const totalShares = approvedClips.reduce((sum, c) => sum + (c.shares || 0), 0)
+  const averageEngagement = approvedClips.reduce((sum, c) => sum + (c.engagement || 0), 0) / approvedClips.length
+
+  return {
+    totalViews,
+    totalLikes,
+    totalComments,
+    totalShares,
+    averageEngagement,
+    clipCount: approvedClips.length
+  }
+}
+
+/**
  * Create a new launch (matching actual Appwrite schema)
  */
 export async function createLaunchDocument(data: {

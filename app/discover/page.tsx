@@ -20,11 +20,21 @@ import { sendNetworkInvite } from '@/lib/appwrite/services/network'
 import { getDiscoverListings, getUserHoldings } from '@/lib/appwrite/services/discover'
 import { useCurveTrade } from '@/hooks/useCurveTrade'
 import { createLaunchDocument } from '@/lib/appwrite/services/launches'
+import { submitClipToProject } from '@/lib/appwrite/services/clips'
+import { useNotifications } from '@/lib/contexts/NotificationContext'
+import { toast } from 'sonner'
+import dynamic from 'next/dynamic'
+
+// Lazy-load SubmitClipModal to reduce initial bundle size
+const SubmitClipModal = dynamic(() => import('@/components/modals/SubmitClipModal').then(mod => ({ default: mod.SubmitClipModal })), {
+  ssr: false,
+})
 
 export default function DiscoverPage() {
   const { success, info, error: showError, warning } = useToast()
   const { authenticated, user } = usePrivy()
   const { buyKeys, sellKeys, isProcessing: isTrading } = useCurveTrade()
+  const { addNotification } = useNotifications()
 
   const [typeFilter, setTypeFilter] = useState<'all' | CurveType>('all')
   const [viewFilter, setViewFilter] = useState<'trending' | 'my-holdings' | 'my-curves' | 'following'>('trending')
@@ -36,6 +46,8 @@ export default function DiscoverPage() {
   const [buyModalListing, setBuyModalListing] = useState<AdvancedListingData | null>(null)
   const [detailsModalListing, setDetailsModalListing] = useState<AdvancedListingData | null>(null)
   const [showSubmitDrawer, setShowSubmitDrawer] = useState(false)
+  const [submitClipOpen, setSubmitClipOpen] = useState(false)
+  const [selectedClipListing, setSelectedClipListing] = useState<AdvancedListingData | null>(null)
 
   // Real data from Appwrite
   const [unifiedListings, setUnifiedListings] = useState<UnifiedCardData[]>([])
@@ -71,6 +83,80 @@ export default function DiscoverPage() {
     }
     loadListings()
   }, [typeFilter, statusFilter, sortBy, searchQuery, user?.id])
+
+  // Handle clip submission with project auto-tagging
+  const handleSubmitClip = async (data: {
+    embedUrl: string
+    title?: string
+    projectName?: string
+    projectId?: string
+    projectLogo?: string
+  }) => {
+    if (!authenticated || !user?.id) {
+      toast.error('Please connect your wallet first')
+      return
+    }
+
+    const currentUserId = user.id
+    const creatorUsername = user?.twitter?.username || user?.email?.address?.split('@')[0] || user?.google?.name || currentUserId.slice(0, 12)
+    const creatorAvatar = user?.twitter?.profilePictureUrl || `https://api.dicebear.com/7.x/identicon/svg?seed=${currentUserId}`
+
+    // Use enhanced submission flow for project clips
+    if (data.projectId && data.projectName) {
+      try {
+        const { clip, isNewContributor } = await submitClipToProject({
+          embedUrl: data.embedUrl,
+          submittedBy: currentUserId,
+          submitterName: creatorUsername,
+          submitterAvatar: creatorAvatar,
+          projectId: data.projectId,
+          projectName: data.projectName,
+          projectLogo: data.projectLogo,
+          title: data.title
+        })
+
+        // Show success message
+        toast.success(`Clip Submitted!`, { description: `Awaiting approval from ${data.projectName}` })
+
+        // Trigger notification for project owner
+        addNotification(
+          'submission_new',
+          'New Clip Submitted',
+          `${creatorUsername} submitted a clip to ${data.projectName}`,
+          {
+            userId: currentUserId,
+            username: creatorUsername,
+            avatar: creatorAvatar,
+            projectId: data.projectId,
+            projectName: data.projectName,
+            clipId: clip.$id,
+            actionUrl: `/profile?tab=pending-clips&projectId=${data.projectId}`
+          }
+        )
+
+        // Show contributor badge if new
+        if (isNewContributor) {
+          addNotification(
+            'achievement_unlocked',
+            'New Contributor!',
+            `You're now a contributor to ${data.projectName}`,
+            {
+              projectId: data.projectId,
+              projectName: data.projectName
+            }
+          )
+          toast.success('Contributor Badge Earned!', { description: `Welcome to ${data.projectName}` })
+        }
+
+        // Close modal
+        setSubmitClipOpen(false)
+        setSelectedClipListing(null)
+      } catch (error: any) {
+        console.error('Clip submission failed:', error)
+        toast.error('Submission Failed', { description: error.message || 'Failed to submit clip' })
+      }
+    }
+  }
 
   // Use advancedListings as base for filtering
   let filtered = advancedListings
@@ -478,7 +564,10 @@ export default function DiscoverPage() {
                       }
                     },
                     onBuyKeys: () => setBuyModalListing(listing),
-                    onClipClick: () => info('Create Clip', `Create a clip for ${listing.title}`),
+                    onClipClick: () => {
+                      setSelectedClipListing(listing)
+                      setSubmitClipOpen(true)
+                    },
                     onDetails: () => setDetailsModalListing(listing),
                     onNotificationToggle: () => {
                       listing.notificationEnabled = !listing.notificationEnabled
@@ -541,7 +630,8 @@ export default function DiscoverPage() {
                       }
                     }}
                     onClipClick={(listing) => {
-                      info('Create Clip', `Create a clip for ${listing.title}`)
+                      setSelectedClipListing(listing)
+                      setSubmitClipOpen(true)
                     }}
                     onRowClick={(listing) => {
                       setDetailsModalListing(listing)
@@ -814,6 +904,22 @@ export default function DiscoverPage() {
           }
         }}
       />
+
+      {/* Submit Clip Modal */}
+      {selectedClipListing && (
+        <SubmitClipModal
+          open={submitClipOpen}
+          onClose={() => {
+            setSubmitClipOpen(false)
+            setSelectedClipListing(null)
+          }}
+          onSubmit={handleSubmitClip}
+          preSelectedProjectId={selectedClipListing.id}
+          preSelectedProjectTitle={selectedClipListing.title}
+          preSelectedProjectLogo={selectedClipListing.logoUrl}
+          autoTag={true}
+        />
+      )}
       </div>
     </div>
   )
