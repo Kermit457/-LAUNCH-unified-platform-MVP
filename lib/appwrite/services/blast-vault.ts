@@ -376,8 +376,8 @@ export class BlastVaultService {
 }
 
 // Export helper functions for API routes
-export const getOrCreateVault = (userId: string, userWallet: string) =>
-  BlastVaultService.getOrCreateVault(userId, userWallet)
+export const getOrCreateVault = (userId: string, userWallet?: string) =>
+  BlastVaultService.getOrCreateVault(userId, userWallet || '')
 
 export const lockKeysForRoom = (params: {
   userId: string

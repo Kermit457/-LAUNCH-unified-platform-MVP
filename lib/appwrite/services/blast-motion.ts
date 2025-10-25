@@ -262,7 +262,7 @@ export class BlastMotionService {
 // Export helper functions for API routes
 export const getMotionScore = (userId: string) => BlastMotionService.getOrCreateScore(userId)
 export const getMotionEvents = (userId: string, limit?: number) => BlastMotionService.getRecentEvents(userId, limit)
-export const getLeaderboard = (limit?: number) => BlastMotionService.getLeaderboard(limit)
+export const getLeaderboard = (limit?: number, offset?: number) => BlastMotionService.getLeaderboard(limit)
 export const recordMotionEvent = (params: {
   type: string
   actorId: string
