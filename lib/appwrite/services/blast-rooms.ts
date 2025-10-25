@@ -365,3 +365,25 @@ export class BlastRoomsService {
     await databases.deleteDocument(DB_ID, ROOMS_COLLECTION, roomId)
   }
 }
+
+// Export helper functions for API routes
+export const createRoom = (input: RoomInput & {
+  creatorId: string
+  creatorName: string
+  creatorAvatar?: string
+  creatorWallet: string
+  walletType?: 'embedded' | 'external'
+  creatorMotionScore?: number
+}) => BlastRoomsService.createRoom(input, input.creatorId, input.creatorName, input.creatorAvatar, input.creatorMotionScore)
+
+export const getRooms = (params: {
+  filters?: RoomFilters
+  limit?: number
+  offset?: number
+  sortBy?: 'createdAt' | 'motionScore' | 'endTime'
+  sortOrder?: 'asc' | 'desc'
+}) => BlastRoomsService.getRooms(params)
+
+export const getRoomById = (roomId: string) => BlastRoomsService.getRoomById(roomId)
+export const updateRoom = (roomId: string, updates: Partial<BlastRoom>) => BlastRoomsService.updateRoom(roomId, updates)
+export const deleteRoom = (roomId: string) => BlastRoomsService.deleteRoom(roomId)
