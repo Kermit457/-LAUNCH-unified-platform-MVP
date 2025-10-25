@@ -6661,3 +6661,5 @@ styles/pvp-theme.css
 
 # Test pages (do not commit until approved)
 app/BLAST/test/
+
+.archive/
