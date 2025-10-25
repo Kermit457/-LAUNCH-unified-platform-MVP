@@ -14,7 +14,8 @@ export async function GET(req: NextRequest) {
       }, { status: 400 })
     }
 
-    const vault = await getOrCreateVault(userId)
+    const walletAddress = searchParams.get('wallet') || ''
+    const vault = await getOrCreateVault(userId, walletAddress)
 
     return NextResponse.json({
       success: true,

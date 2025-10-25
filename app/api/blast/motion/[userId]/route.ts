@@ -4,9 +4,10 @@ import { getMotionScore, getMotionEvents } from '@/lib/appwrite/services/blast-m
 // GET /api/blast/motion/[userId] - Get user's Motion Score with breakdown
 export async function GET(
   req: NextRequest,
-  { params }: { params: { userId: string } }
+  props: { params: Promise<{ userId: string }> }
 ) {
   try {
+    const params = await props.params
     const { searchParams } = new URL(req.url)
     const includeBreakdown = searchParams.get('breakdown') === 'true'
 
