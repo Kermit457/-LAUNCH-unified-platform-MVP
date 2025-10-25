@@ -74,8 +74,6 @@
     "sonner": "^2.0.7",
     "tailwind-merge": "^2.2.0",
     "twitter-api-v2": "^1.27.0",
-    "viem": "^2.37.13",
-    "wagmi": "^1.4.13",
     "workbox-webpack-plugin": "^7.3.0",
     "zustand": "^4.4.7"
   },
