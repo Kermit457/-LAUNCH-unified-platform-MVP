@@ -1,0 +1,59 @@
+# Dependencies
+node_modules
+
+# Build outputs
+.next
+out
+
+# Testing
+coverage
+.nyc_output
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+__tests__
+__mocks__
+
+# Development
+.git
+.github
+.vscode
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Documentation (not needed in production)
+*.md
+!README.md
+DOCS_INDEX.md
+BLAST_*.md
+CURATION_*.md
+DEPLOYMENT_*.md
+INTEGRATION_*.md
+SOLANA_*.md
+SPRINT.md
+
+# Local env files (already in .gitignore)
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Anchor/Solana program (not needed for frontend deployment)
+solana-program/target
+solana-program/node_modules
+
+# Scripts
+scripts/
