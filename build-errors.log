@@ -1,0 +1,1424 @@
+
+> streamwidgets@0.1.0 build
+> next build
+
+  ▲ Next.js 14.2.33
+  - Environments: .env.local, .env
+
+   Creating an optimized production build ...
+> [PWA] Compile server
+> [PWA] Compile server
+> [PWA] Compile client (static)
+> [PWA] Auto register service worker with: c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next-pwa\register.js
+> [PWA] Service worker: c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\public\sw.js
+> [PWA]   url: /sw.js
+> [PWA]   scope: /
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving '../../../typescript/lib/typescript' in c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build for build dependencies doesn't lead to expected result 'C:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\typescript\lib\typescript.js', but to 'c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\typescript\lib\typescript.js' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ../../../typescript/lib/typescript (expected C:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\typescript\lib\typescript.js)
+<w>  at file dependencies c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\load-jsconfig.js
+<w>  at file c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\load-jsconfig.js
+<w>  at file dependencies c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\webpack-config.js
+<w>  at file c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\webpack-config.js
+<w>  at file dependencies c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at file c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at resolve commonjs c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving '../../../typescript/lib/typescript' in c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build for build dependencies doesn't lead to expected result 'C:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\typescript\lib\typescript.js', but to 'c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\typescript\lib\typescript.js' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ../../../typescript/lib/typescript (expected C:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\typescript\lib\typescript.js)
+<w>  at file dependencies c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\load-jsconfig.js
+<w>  at file c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\load-jsconfig.js
+<w>  at file dependencies c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\webpack-config.js
+<w>  at file c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\webpack-config.js
+<w>  at file dependencies c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at file c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at file dependencies c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\compiled\loader-runner\LoaderRunner.js
+<w>  at file c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\compiled\loader-runner\LoaderRunner.js
+<w>  at file dependencies c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\compiled\webpack\bundle5.js
+<w>  at file c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\compiled\webpack\bundle5.js
+<w>  at file dependencies c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\compiled\webpack\webpack.js
+<w>  at file c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\compiled\webpack\webpack.js
+<w>  at file dependencies c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\compiled\webpack\webpack-lib.js
+<w>  at file c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\compiled\webpack\webpack-lib.js
+<w>  at file dependencies c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next-pwa\build-custom-worker.js
+<w>  at file c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next-pwa\build-custom-worker.js
+<w>  at file dependencies c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next-pwa\index.js
+<w>  at file c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next-pwa\index.js
+<w>  at file dependencies c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\next.config.js
+<w>  at file c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\next.config.js
+<w>  at resolve commonjs c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\next.config.js
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving '../../../typescript/lib/typescript' in c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build for build dependencies doesn't lead to expected result 'C:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\typescript\lib\typescript.js', but to 'c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\typescript\lib\typescript.js' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ../../../typescript/lib/typescript (expected C:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\typescript\lib\typescript.js)
+<w>  at file dependencies c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\load-jsconfig.js
+<w>  at file c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\load-jsconfig.js
+<w>  at file dependencies c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\webpack-config.js
+<w>  at file c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\webpack-config.js
+<w>  at file dependencies c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at file c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at resolve commonjs c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+ ⚠ Compiled with warnings
+
+./app/BLAST/ux-creative/page.tsx
+Attempted import error: 'Handshake' is not exported from '__barrel_optimize__?names=ArrowUpRight,Award,Briefcase,Check,ChevronRight,Clock,Copy,DollarSign,Eye,Flame,GraduationCap,Handshake,Lock,MessageCircle,Send,Share2,Shield,Sparkles,Star,Target,TrendingUp,Trophy,Unlock,Users,X,Zap!=!lucide-react' (imported as 'Handshake').
+
+Import trace for requested module:
+./app/BLAST/ux-creative/page.tsx
+
+/_next/static/chunks/vendors-33f5727bb0d2669f.js is 2.43 MB, and won't be precached. Configure maximumFileSizeToCacheInBytes to change this limit.
+
+asset size limit: The following asset(s) exceed the recommended size limit (500 KiB).
+This can impact web performance.
+Assets: 
+  static/chunks/reown-b97c1fcb157b9d81.js (1.16 MiB)
+  static/chunks/privy-38a249a50efd76e1.js (885 KiB)
+  static/chunks/vendors-33f5727bb0d2669f.js (2.31 MiB)
+
+entrypoint size limit: The following entrypoint(s) combined asset size exceeds the recommended limit (500 KiB). This can impact web performance.
+Entrypoints:
+  main (2.32 MiB)
+      static/chunks/webpack-fccf9f77b5f82106.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/main-5189402a0b58d4e8.js
+  main-app (2.32 MiB)
+      static/chunks/webpack-fccf9f77b5f82106.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/main-app-b58242d857122f02.js
+  app/_not-found/page (2.31 MiB)
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/_not-found/page-a8c11166314bf388.js
+  app/layout (4.86 MiB)
+      static/css/d35bb1d5f2b7e3e4.css
+      static/css/c0c9c97c89274f92.css
+      static/css/0fd4108dd527df65.css
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/layout-f0a303422da25c9f.js
+  app/campaign/[id]/page (4.48 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/campaign/[id]/page-96606c48a5c8c077.js
+  app/chat/page (4.64 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/chat/page-54c9d1c231b0574e.js
+  app/launch/[id]/page (4.61 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/1678-90b4642ad43cd43e.js
+      static/chunks/4477-cb74eeead64a678c.js
+      static/chunks/app/launch/[id]/page-44d2f8f6342029ee.js
+  app/discover/page (4.9 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/1678-90b4642ad43cd43e.js
+      static/chunks/5367-fb4e11bfc3c6b778.js
+      static/chunks/4645-a8a94240483840b7.js
+      static/chunks/5245-6b8bf7259f4e1bf8.js
+      static/chunks/2367-e34182e81e05f876.js
+      static/chunks/4477-cb74eeead64a678c.js
+      static/chunks/app/discover/page-db9e8cef01b90282.js
+  app/clip/page (4.52 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/5367-fb4e11bfc3c6b778.js
+      static/chunks/app/clip/page-4474c36a7a182b27.js
+  app/launch/page (2.64 MiB)
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/2367-e34182e81e05f876.js
+      static/chunks/app/launch/page-f26639e528d7a9b9.js
+  app/login/page (2.35 MiB)
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/login/page-cb391475ae1abbf9.js
+  app/network/page (4.76 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/1678-90b4642ad43cd43e.js
+      static/chunks/4645-a8a94240483840b7.js
+      static/chunks/app/network/page-426126f483cdd851.js
+  app/profile/page (4.59 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/5367-fb4e11bfc3c6b778.js
+      static/chunks/app/profile/page-c6bdf6cb0b95ea34.js
+  app/signup/page (2.35 MiB)
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/signup/page-0646621d8d36507c.js
+  app/profile/[handle]/page (2.34 MiB)
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/profile/[handle]/page-a5d5747728293e4a.js
+  app/BLAST/page (4.8 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/3934-5da81fa27f9c96b4.js
+      static/chunks/8017-75c697b29a36dd0c.js
+      static/chunks/app/BLAST/page-6f1c8c6553e3fdc6.js
+  app/BLAST/dealflow/page (2.51 MiB)
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/app/BLAST/dealflow/page-f12bb712ce562127.js
+  app/BLAST/settings/notifications/page (4.45 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/BLAST/settings/notifications/page-bd6e6284b3c37234.js
+  app/BLAST/dashboard/page (4.74 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/3934-5da81fa27f9c96b4.js
+      static/chunks/app/BLAST/dashboard/page-10ec464c6bd36253.js
+  app/BLAST/inbox/page (4.45 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/BLAST/inbox/page-bd70c75fb337466b.js
+  app/BLAST/leaderboard/page (2.68 MiB)
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/3934-5da81fa27f9c96b4.js
+      static/chunks/app/BLAST/leaderboard/page-1c3de721d01d7c2f.js
+  app/BLAST/test/page (2.5 MiB)
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/app/BLAST/test/page-6b4a38510e87d452.js
+  app/BLAST/room/[id]/page (4.77 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/3934-5da81fa27f9c96b4.js
+      static/chunks/8017-75c697b29a36dd0c.js
+      static/chunks/app/BLAST/room/[id]/page-656914117dca108d.js
+  app/BLAST/ux-creative/page (2.45 MiB)
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/BLAST/ux-creative/page-39e7445e0ef4cae0.js
+
+./app/BLAST/ux-creative/page.tsx
+Attempted import error: 'Handshake' is not exported from '__barrel_optimize__?names=ArrowUpRight,Award,Briefcase,Check,ChevronRight,Clock,Copy,DollarSign,Eye,Flame,GraduationCap,Handshake,Lock,MessageCircle,Send,Share2,Shield,Sparkles,Star,Target,TrendingUp,Trophy,Unlock,Users,X,Zap!=!lucide-react' (imported as 'Handshake').
+
+Import trace for requested module:
+./app/BLAST/ux-creative/page.tsx
+
+   Linting and checking validity of types ...
+Failed to compile.
+
+./app/api/blast/rooms/[id]/accept/[userId]/route.ts:21:53
+Type error: Expected 2 arguments, but got 3.
+
+[0m [90m 19 |[39m[0m
+[0m [90m 20 |[39m     [90m// Accept applicant[39m[0m
+[0m[31m[1m>[22m[39m[90m 21 |[39m     [36mawait[39m acceptApplicant(params[33m.[39mid[33m,[39m params[33m.[39muserId[33m,[39m reviewerId)[0m
+[0m [90m    |[39m                                                     [31m[1m^[22m[39m[0m
+[0m [90m 22 |[39m[0m
+[0m [90m 23 |[39m     [36mreturn[39m [33mNextResponse[39m[33m.[39mjson({[0m
+[0m [90m 24 |[39m       success[33m:[39m [36mtrue[39m[33m,[39m[0m
+Next.js build worker exited with code: 1 and signal: null
+
+> streamwidgets@0.1.0 build
+> next build
+
+  ▲ Next.js 14.2.33
+  - Environments: .env.local, .env
+
+   Creating an optimized production build ...
+> [PWA] Compile server
+> [PWA] Compile server
+> [PWA] Compile client (static)
+> [PWA] Auto register service worker with: c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next-pwa\register.js
+> [PWA] Service worker: c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\public\sw.js
+> [PWA]   url: /sw.js
+> [PWA]   scope: /
+ ⚠ Compiled with warnings
+
+./app/BLAST/ux-creative/page.tsx
+Attempted import error: 'Handshake' is not exported from '__barrel_optimize__?names=ArrowUpRight,Award,Briefcase,Check,ChevronRight,Clock,Copy,DollarSign,Eye,Flame,GraduationCap,Handshake,Lock,MessageCircle,Send,Share2,Shield,Sparkles,Star,Target,TrendingUp,Trophy,Unlock,Users,X,Zap!=!lucide-react' (imported as 'Handshake').
+
+Import trace for requested module:
+./app/BLAST/ux-creative/page.tsx
+
+/_next/static/chunks/vendors-33f5727bb0d2669f.js is 2.43 MB, and won't be precached. Configure maximumFileSizeToCacheInBytes to change this limit.
+
+asset size limit: The following asset(s) exceed the recommended size limit (500 KiB).
+This can impact web performance.
+Assets: 
+  static/chunks/reown-b97c1fcb157b9d81.js (1.16 MiB)
+  static/chunks/privy-38a249a50efd76e1.js (885 KiB)
+  static/chunks/vendors-33f5727bb0d2669f.js (2.31 MiB)
+
+entrypoint size limit: The following entrypoint(s) combined asset size exceeds the recommended limit (500 KiB). This can impact web performance.
+Entrypoints:
+  main (2.32 MiB)
+      static/chunks/webpack-0113f2a356d91656.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/main-5189402a0b58d4e8.js
+  main-app (2.32 MiB)
+      static/chunks/webpack-0113f2a356d91656.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/main-app-b58242d857122f02.js
+  app/_not-found/page (2.31 MiB)
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/_not-found/page-a8c11166314bf388.js
+  app/layout (4.86 MiB)
+      static/css/d35bb1d5f2b7e3e4.css
+      static/css/c0c9c97c89274f92.css
+      static/css/0fd4108dd527df65.css
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/layout-f0a303422da25c9f.js
+  app/campaign/[id]/page (4.48 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/campaign/[id]/page-96606c48a5c8c077.js
+  app/chat/page (4.64 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/chat/page-54c9d1c231b0574e.js
+  app/clip/page (4.52 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/5367-fb4e11bfc3c6b778.js
+      static/chunks/app/clip/page-4474c36a7a182b27.js
+  app/launch/page (2.64 MiB)
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/2367-e34182e81e05f876.js
+      static/chunks/app/launch/page-f26639e528d7a9b9.js
+  app/discover/page (4.9 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/1678-90b4642ad43cd43e.js
+      static/chunks/5367-fb4e11bfc3c6b778.js
+      static/chunks/4645-a8a94240483840b7.js
+      static/chunks/5245-6b8bf7259f4e1bf8.js
+      static/chunks/2367-e34182e81e05f876.js
+      static/chunks/4477-cb74eeead64a678c.js
+      static/chunks/app/discover/page-db9e8cef01b90282.js
+  app/login/page (2.35 MiB)
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/login/page-cb391475ae1abbf9.js
+  app/launch/[id]/page (4.61 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/1678-90b4642ad43cd43e.js
+      static/chunks/4477-cb74eeead64a678c.js
+      static/chunks/app/launch/[id]/page-44d2f8f6342029ee.js
+  app/network/page (4.76 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/1678-90b4642ad43cd43e.js
+      static/chunks/4645-a8a94240483840b7.js
+      static/chunks/app/network/page-426126f483cdd851.js
+  app/profile/[handle]/page (2.34 MiB)
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/profile/[handle]/page-a5d5747728293e4a.js
+  app/profile/page (4.59 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/5367-fb4e11bfc3c6b778.js
+      static/chunks/app/profile/page-c6bdf6cb0b95ea34.js
+  app/signup/page (2.35 MiB)
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/signup/page-0646621d8d36507c.js
+  app/BLAST/dealflow/page (2.51 MiB)
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/app/BLAST/dealflow/page-f12bb712ce562127.js
+  app/BLAST/dashboard/page (4.74 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/3934-5da81fa27f9c96b4.js
+      static/chunks/app/BLAST/dashboard/page-10ec464c6bd36253.js
+  app/BLAST/page (4.8 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/3934-5da81fa27f9c96b4.js
+      static/chunks/8017-75c697b29a36dd0c.js
+      static/chunks/app/BLAST/page-6f1c8c6553e3fdc6.js
+  app/BLAST/inbox/page (4.45 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/BLAST/inbox/page-bd70c75fb337466b.js
+  app/BLAST/room/[id]/page (4.77 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/3934-5da81fa27f9c96b4.js
+      static/chunks/8017-75c697b29a36dd0c.js
+      static/chunks/app/BLAST/room/[id]/page-656914117dca108d.js
+  app/BLAST/settings/notifications/page (4.45 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/BLAST/settings/notifications/page-bd6e6284b3c37234.js
+  app/BLAST/test/page (2.5 MiB)
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/app/BLAST/test/page-6b4a38510e87d452.js
+  app/BLAST/leaderboard/page (2.68 MiB)
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/3934-5da81fa27f9c96b4.js
+      static/chunks/app/BLAST/leaderboard/page-1c3de721d01d7c2f.js
+  app/BLAST/ux-creative/page (2.45 MiB)
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/BLAST/ux-creative/page-39e7445e0ef4cae0.js
+
+./app/BLAST/ux-creative/page.tsx
+Attempted import error: 'Handshake' is not exported from '__barrel_optimize__?names=ArrowUpRight,Award,Briefcase,Check,ChevronRight,Clock,Copy,DollarSign,Eye,Flame,GraduationCap,Handshake,Lock,MessageCircle,Send,Share2,Shield,Sparkles,Star,Target,TrendingUp,Trophy,Unlock,Users,X,Zap!=!lucide-react' (imported as 'Handshake').
+
+Import trace for requested module:
+./app/BLAST/ux-creative/page.tsx
+
+   Linting and checking validity of types ...
+Failed to compile.
+
+./app/api/blast/rooms/[id]/apply/route.ts:79:54
+Type error: Expected 1 arguments, but got 2.
+
+[0m [90m 77 |[39m[0m
+[0m [90m 78 |[39m     [90m// 3. Apply to room with adjusted score[39m[0m
+[0m[31m[1m>[22m[39m[90m 79 |[39m     [36mconst[39m application [33m=[39m [36mawait[39m applyToRoom(params[33m.[39mid[33m,[39m {[0m
+[0m [90m    |[39m                                                      [31m[1m^[22m[39m[0m
+[0m [90m 80 |[39m       [33m...[39mvalidatedData[33m,[39m[0m
+[0m [90m 81 |[39m       userMotionScore[33m:[39m adjustedMotionScore[33m,[39m[0m
+[0m [90m 82 |[39m     })[0m
+Next.js build worker exited with code: 1 and signal: null
+
+> streamwidgets@0.1.0 build
+> next build
+
+  ▲ Next.js 14.2.33
+  - Environments: .env.local, .env
+
+   Creating an optimized production build ...
+> [PWA] Compile server
+> [PWA] Compile server
+> [PWA] Compile client (static)
+> [PWA] Auto register service worker with: c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next-pwa\register.js
+> [PWA] Service worker: c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\public\sw.js
+> [PWA]   url: /sw.js
+> [PWA]   scope: /
+ ⚠ Compiled with warnings
+
+./app/BLAST/ux-creative/page.tsx
+Attempted import error: 'Handshake' is not exported from '__barrel_optimize__?names=ArrowUpRight,Award,Briefcase,Check,ChevronRight,Clock,Copy,DollarSign,Eye,Flame,GraduationCap,Handshake,Lock,MessageCircle,Send,Share2,Shield,Sparkles,Star,Target,TrendingUp,Trophy,Unlock,Users,X,Zap!=!lucide-react' (imported as 'Handshake').
+
+Import trace for requested module:
+./app/BLAST/ux-creative/page.tsx
+
+/_next/static/chunks/vendors-33f5727bb0d2669f.js is 2.43 MB, and won't be precached. Configure maximumFileSizeToCacheInBytes to change this limit.
+
+asset size limit: The following asset(s) exceed the recommended size limit (500 KiB).
+This can impact web performance.
+Assets: 
+  static/chunks/reown-b97c1fcb157b9d81.js (1.16 MiB)
+  static/chunks/privy-38a249a50efd76e1.js (885 KiB)
+  static/chunks/vendors-33f5727bb0d2669f.js (2.31 MiB)
+
+entrypoint size limit: The following entrypoint(s) combined asset size exceeds the recommended limit (500 KiB). This can impact web performance.
+Entrypoints:
+  main (2.32 MiB)
+      static/chunks/webpack-0113f2a356d91656.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/main-5189402a0b58d4e8.js
+  main-app (2.32 MiB)
+      static/chunks/webpack-0113f2a356d91656.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/main-app-b58242d857122f02.js
+  app/_not-found/page (2.31 MiB)
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/_not-found/page-a8c11166314bf388.js
+  app/layout (4.86 MiB)
+      static/css/d35bb1d5f2b7e3e4.css
+      static/css/c0c9c97c89274f92.css
+      static/css/0fd4108dd527df65.css
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/layout-f0a303422da25c9f.js
+  app/chat/page (4.64 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/chat/page-54c9d1c231b0574e.js
+  app/campaign/[id]/page (4.48 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/campaign/[id]/page-96606c48a5c8c077.js
+  app/clip/page (4.52 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/5367-fb4e11bfc3c6b778.js
+      static/chunks/app/clip/page-4474c36a7a182b27.js
+  app/discover/page (4.9 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/1678-90b4642ad43cd43e.js
+      static/chunks/5367-fb4e11bfc3c6b778.js
+      static/chunks/4645-a8a94240483840b7.js
+      static/chunks/5245-6b8bf7259f4e1bf8.js
+      static/chunks/2367-e34182e81e05f876.js
+      static/chunks/4477-cb74eeead64a678c.js
+      static/chunks/app/discover/page-db9e8cef01b90282.js
+  app/launch/[id]/page (4.61 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/1678-90b4642ad43cd43e.js
+      static/chunks/4477-cb74eeead64a678c.js
+      static/chunks/app/launch/[id]/page-44d2f8f6342029ee.js
+  app/launch/page (2.64 MiB)
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/2367-e34182e81e05f876.js
+      static/chunks/app/launch/page-f26639e528d7a9b9.js
+  app/login/page (2.35 MiB)
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/login/page-cb391475ae1abbf9.js
+  app/network/page (4.76 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/1678-90b4642ad43cd43e.js
+      static/chunks/4645-a8a94240483840b7.js
+      static/chunks/app/network/page-426126f483cdd851.js
+  app/profile/[handle]/page (2.34 MiB)
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/profile/[handle]/page-a5d5747728293e4a.js
+  app/profile/page (4.59 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/5367-fb4e11bfc3c6b778.js
+      static/chunks/app/profile/page-c6bdf6cb0b95ea34.js
+  app/signup/page (2.35 MiB)
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/signup/page-0646621d8d36507c.js
+  app/BLAST/dashboard/page (4.74 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/3934-5da81fa27f9c96b4.js
+      static/chunks/app/BLAST/dashboard/page-10ec464c6bd36253.js
+  app/BLAST/page (4.8 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/3934-5da81fa27f9c96b4.js
+      static/chunks/8017-75c697b29a36dd0c.js
+      static/chunks/app/BLAST/page-6f1c8c6553e3fdc6.js
+  app/BLAST/settings/notifications/page (4.45 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/BLAST/settings/notifications/page-bd6e6284b3c37234.js
+  app/BLAST/dealflow/page (2.51 MiB)
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/app/BLAST/dealflow/page-f12bb712ce562127.js
+  app/BLAST/leaderboard/page (2.68 MiB)
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/3934-5da81fa27f9c96b4.js
+      static/chunks/app/BLAST/leaderboard/page-1c3de721d01d7c2f.js
+  app/BLAST/room/[id]/page (4.77 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/3934-5da81fa27f9c96b4.js
+      static/chunks/8017-75c697b29a36dd0c.js
+      static/chunks/app/BLAST/room/[id]/page-656914117dca108d.js
+  app/BLAST/test/page (2.5 MiB)
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/app/BLAST/test/page-6b4a38510e87d452.js
+  app/BLAST/inbox/page (4.45 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/BLAST/inbox/page-bd70c75fb337466b.js
+  app/BLAST/ux-creative/page (2.45 MiB)
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/BLAST/ux-creative/page-39e7445e0ef4cae0.js
+
+./app/BLAST/ux-creative/page.tsx
+Attempted import error: 'Handshake' is not exported from '__barrel_optimize__?names=ArrowUpRight,Award,Briefcase,Check,ChevronRight,Clock,Copy,DollarSign,Eye,Flame,GraduationCap,Handshake,Lock,MessageCircle,Send,Share2,Shield,Sparkles,Star,Target,TrendingUp,Trophy,Unlock,Users,X,Zap!=!lucide-react' (imported as 'Handshake').
+
+Import trace for requested module:
+./app/BLAST/ux-creative/page.tsx
+
+   Linting and checking validity of types ...
+Failed to compile.
+
+./app/api/blast/rooms/[id]/apply/route.ts:79:43
+Type error: Argument of type '{ userMotionScore: number; userId: string; message: string; keysStaked: number; userName: string; userWallet: string; walletType: "embedded" | "external"; depositAmount: number; attachments: string[]; userAvatar?: string | undefined; roomId: string; }' is not assignable to parameter of type '{ roomId: string; userId: string; userName: string; userAvatar?: string | undefined; userMotionScore: number; message: string; keysStaked: number; lockId: string; attachments?: string[] | undefined; }'.
+  Property 'lockId' is missing in type '{ userMotionScore: number; userId: string; message: string; keysStaked: number; userName: string; userWallet: string; walletType: "embedded" | "external"; depositAmount: number; attachments: string[]; userAvatar?: string | undefined; roomId: string; }' but required in type '{ roomId: string; userId: string; userName: string; userAvatar?: string | undefined; userMotionScore: number; message: string; keysStaked: number; lockId: string; attachments?: string[] | undefined; }'.
+
+[0m [90m 77 |[39m[0m
+[0m [90m 78 |[39m     [90m// 3. Apply to room with adjusted score[39m[0m
+[0m[31m[1m>[22m[39m[90m 79 |[39m     [36mconst[39m application [33m=[39m [36mawait[39m applyToRoom({[0m
+[0m [90m    |[39m                                           [31m[1m^[22m[39m[0m
+[0m [90m 80 |[39m       roomId[33m:[39m params[33m.[39mid[33m,[39m[0m
+[0m [90m 81 |[39m       [33m...[39mvalidatedData[33m,[39m[0m
+[0m [90m 82 |[39m       userMotionScore[33m:[39m adjustedMotionScore[33m,[39m[0m
+Next.js build worker exited with code: 1 and signal: null
+
+> streamwidgets@0.1.0 build
+> next build
+
+  ▲ Next.js 14.2.33
+  - Environments: .env.local, .env
+
+   Creating an optimized production build ...
+> [PWA] Compile server
+> [PWA] Compile server
+> [PWA] Compile client (static)
+> [PWA] Auto register service worker with: c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next-pwa\register.js
+> [PWA] Service worker: c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\public\sw.js
+> [PWA]   url: /sw.js
+> [PWA]   scope: /
+ ⚠ Compiled with warnings
+
+./app/BLAST/ux-creative/page.tsx
+Attempted import error: 'Handshake' is not exported from '__barrel_optimize__?names=ArrowUpRight,Award,Briefcase,Check,ChevronRight,Clock,Copy,DollarSign,Eye,Flame,GraduationCap,Handshake,Lock,MessageCircle,Send,Share2,Shield,Sparkles,Star,Target,TrendingUp,Trophy,Unlock,Users,X,Zap!=!lucide-react' (imported as 'Handshake').
+
+Import trace for requested module:
+./app/BLAST/ux-creative/page.tsx
+
+/_next/static/chunks/vendors-33f5727bb0d2669f.js is 2.43 MB, and won't be precached. Configure maximumFileSizeToCacheInBytes to change this limit.
+
+asset size limit: The following asset(s) exceed the recommended size limit (500 KiB).
+This can impact web performance.
+Assets: 
+  static/chunks/reown-b97c1fcb157b9d81.js (1.16 MiB)
+  static/chunks/privy-38a249a50efd76e1.js (885 KiB)
+  static/chunks/vendors-33f5727bb0d2669f.js (2.31 MiB)
+
+entrypoint size limit: The following entrypoint(s) combined asset size exceeds the recommended limit (500 KiB). This can impact web performance.
+Entrypoints:
+  main (2.32 MiB)
+      static/chunks/webpack-0113f2a356d91656.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/main-5189402a0b58d4e8.js
+  main-app (2.32 MiB)
+      static/chunks/webpack-0113f2a356d91656.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/main-app-b58242d857122f02.js
+  app/_not-found/page (2.31 MiB)
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/_not-found/page-a8c11166314bf388.js
+  app/layout (4.86 MiB)
+      static/css/d35bb1d5f2b7e3e4.css
+      static/css/c0c9c97c89274f92.css
+      static/css/0fd4108dd527df65.css
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/layout-f0a303422da25c9f.js
+  app/chat/page (4.64 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/chat/page-54c9d1c231b0574e.js
+  app/campaign/[id]/page (4.48 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/campaign/[id]/page-96606c48a5c8c077.js
+  app/launch/[id]/page (4.61 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/1678-90b4642ad43cd43e.js
+      static/chunks/4477-cb74eeead64a678c.js
+      static/chunks/app/launch/[id]/page-44d2f8f6342029ee.js
+  app/clip/page (4.52 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/5367-fb4e11bfc3c6b778.js
+      static/chunks/app/clip/page-4474c36a7a182b27.js
+  app/login/page (2.35 MiB)
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/login/page-cb391475ae1abbf9.js
+  app/launch/page (2.64 MiB)
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/2367-e34182e81e05f876.js
+      static/chunks/app/launch/page-f26639e528d7a9b9.js
+  app/profile/[handle]/page (2.34 MiB)
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/profile/[handle]/page-a5d5747728293e4a.js
+  app/network/page (4.76 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/1678-90b4642ad43cd43e.js
+      static/chunks/4645-a8a94240483840b7.js
+      static/chunks/app/network/page-426126f483cdd851.js
+  app/profile/page (4.59 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/5367-fb4e11bfc3c6b778.js
+      static/chunks/app/profile/page-c6bdf6cb0b95ea34.js
+  app/signup/page (2.35 MiB)
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/signup/page-0646621d8d36507c.js
+  app/discover/page (4.9 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/1678-90b4642ad43cd43e.js
+      static/chunks/5367-fb4e11bfc3c6b778.js
+      static/chunks/4645-a8a94240483840b7.js
+      static/chunks/5245-6b8bf7259f4e1bf8.js
+      static/chunks/2367-e34182e81e05f876.js
+      static/chunks/4477-cb74eeead64a678c.js
+      static/chunks/app/discover/page-db9e8cef01b90282.js
+  app/BLAST/dashboard/page (4.74 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/3934-5da81fa27f9c96b4.js
+      static/chunks/app/BLAST/dashboard/page-10ec464c6bd36253.js
+  app/BLAST/inbox/page (4.45 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/BLAST/inbox/page-bd70c75fb337466b.js
+  app/BLAST/room/[id]/page (4.77 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/3934-5da81fa27f9c96b4.js
+      static/chunks/8017-75c697b29a36dd0c.js
+      static/chunks/app/BLAST/room/[id]/page-656914117dca108d.js
+  app/BLAST/dealflow/page (2.51 MiB)
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/app/BLAST/dealflow/page-f12bb712ce562127.js
+  app/BLAST/settings/notifications/page (4.45 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/BLAST/settings/notifications/page-bd6e6284b3c37234.js
+  app/BLAST/leaderboard/page (2.68 MiB)
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/3934-5da81fa27f9c96b4.js
+      static/chunks/app/BLAST/leaderboard/page-1c3de721d01d7c2f.js
+  app/BLAST/test/page (2.5 MiB)
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/app/BLAST/test/page-6b4a38510e87d452.js
+  app/BLAST/page (4.8 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/3934-5da81fa27f9c96b4.js
+      static/chunks/8017-75c697b29a36dd0c.js
+      static/chunks/app/BLAST/page-6f1c8c6553e3fdc6.js
+  app/BLAST/ux-creative/page (2.45 MiB)
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/BLAST/ux-creative/page-39e7445e0ef4cae0.js
+
+./app/BLAST/ux-creative/page.tsx
+Attempted import error: 'Handshake' is not exported from '__barrel_optimize__?names=ArrowUpRight,Award,Briefcase,Check,ChevronRight,Clock,Copy,DollarSign,Eye,Flame,GraduationCap,Handshake,Lock,MessageCircle,Send,Share2,Shield,Sparkles,Star,Target,TrendingUp,Trophy,Unlock,Users,X,Zap!=!lucide-react' (imported as 'Handshake').
+
+Import trace for requested module:
+./app/BLAST/ux-creative/page.tsx
+
+   Linting and checking validity of types ...
+Failed to compile.
+
+./app/api/blast/rooms/[id]/curate/route.ts:33:7
+Type error: Expected 1 arguments, but got 4.
+
+[0m [90m 31 |[39m     [36mawait[39m lockKeysForRoom([0m
+[0m [90m 32 |[39m       validatedData[33m.[39mcuratorId[33m,[39m[0m
+[0m[31m[1m>[22m[39m[90m 33 |[39m       params[33m.[39mid[33m,[39m[0m
+[0m [90m    |[39m       [31m[1m^[22m[39m[0m
+[0m [90m 34 |[39m       validatedData[33m.[39mkeysStaked[33m,[39m[0m
+[0m [90m 35 |[39m       [32m'curator_bond'[39m[0m
+[0m [90m 36 |[39m     )[0m
+Next.js build worker exited with code: 1 and signal: null
+
+> streamwidgets@0.1.0 build
+> next build
+
+  ▲ Next.js 14.2.33
+  - Environments: .env.local, .env
+
+   Creating an optimized production build ...
+> [PWA] Compile server
+> [PWA] Compile server
+> [PWA] Compile client (static)
+> [PWA] Auto register service worker with: c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next-pwa\register.js
+> [PWA] Service worker: c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\public\sw.js
+> [PWA]   url: /sw.js
+> [PWA]   scope: /
+ ⚠ Compiled with warnings
+
+./app/BLAST/ux-creative/page.tsx
+Attempted import error: 'Handshake' is not exported from '__barrel_optimize__?names=ArrowUpRight,Award,Briefcase,Check,ChevronRight,Clock,Copy,DollarSign,Eye,Flame,GraduationCap,Handshake,Lock,MessageCircle,Send,Share2,Shield,Sparkles,Star,Target,TrendingUp,Trophy,Unlock,Users,X,Zap!=!lucide-react' (imported as 'Handshake').
+
+Import trace for requested module:
+./app/BLAST/ux-creative/page.tsx
+
+/_next/static/chunks/vendors-33f5727bb0d2669f.js is 2.43 MB, and won't be precached. Configure maximumFileSizeToCacheInBytes to change this limit.
+
+asset size limit: The following asset(s) exceed the recommended size limit (500 KiB).
+This can impact web performance.
+Assets: 
+  static/chunks/reown-b97c1fcb157b9d81.js (1.16 MiB)
+  static/chunks/privy-38a249a50efd76e1.js (885 KiB)
+  static/chunks/vendors-33f5727bb0d2669f.js (2.31 MiB)
+
+entrypoint size limit: The following entrypoint(s) combined asset size exceeds the recommended limit (500 KiB). This can impact web performance.
+Entrypoints:
+  main (2.32 MiB)
+      static/chunks/webpack-0113f2a356d91656.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/main-5189402a0b58d4e8.js
+  main-app (2.32 MiB)
+      static/chunks/webpack-0113f2a356d91656.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/main-app-b58242d857122f02.js
+  app/_not-found/page (2.31 MiB)
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/_not-found/page-a8c11166314bf388.js
+  app/layout (4.86 MiB)
+      static/css/d35bb1d5f2b7e3e4.css
+      static/css/c0c9c97c89274f92.css
+      static/css/0fd4108dd527df65.css
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/layout-f0a303422da25c9f.js
+  app/chat/page (4.64 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/chat/page-54c9d1c231b0574e.js
+  app/campaign/[id]/page (4.48 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/campaign/[id]/page-96606c48a5c8c077.js
+  app/clip/page (4.52 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/5367-fb4e11bfc3c6b778.js
+      static/chunks/app/clip/page-4474c36a7a182b27.js
+  app/login/page (2.35 MiB)
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/login/page-cb391475ae1abbf9.js
+  app/discover/page (4.9 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/1678-90b4642ad43cd43e.js
+      static/chunks/5367-fb4e11bfc3c6b778.js
+      static/chunks/4645-a8a94240483840b7.js
+      static/chunks/5245-6b8bf7259f4e1bf8.js
+      static/chunks/2367-e34182e81e05f876.js
+      static/chunks/4477-cb74eeead64a678c.js
+      static/chunks/app/discover/page-db9e8cef01b90282.js
+  app/launch/page (2.64 MiB)
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/2367-e34182e81e05f876.js
+      static/chunks/app/launch/page-f26639e528d7a9b9.js
+  app/launch/[id]/page (4.61 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/1678-90b4642ad43cd43e.js
+      static/chunks/4477-cb74eeead64a678c.js
+      static/chunks/app/launch/[id]/page-44d2f8f6342029ee.js
+  app/network/page (4.76 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/1678-90b4642ad43cd43e.js
+      static/chunks/4645-a8a94240483840b7.js
+      static/chunks/app/network/page-426126f483cdd851.js
+  app/profile/[handle]/page (2.34 MiB)
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/profile/[handle]/page-a5d5747728293e4a.js
+  app/signup/page (2.35 MiB)
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/signup/page-0646621d8d36507c.js
+  app/profile/page (4.59 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/5367-fb4e11bfc3c6b778.js
+      static/chunks/app/profile/page-c6bdf6cb0b95ea34.js
+  app/BLAST/dashboard/page (4.74 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/3934-abac8853dcab60e8.js
+      static/chunks/app/BLAST/dashboard/page-10ec464c6bd36253.js
+  app/BLAST/page (4.8 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/3934-abac8853dcab60e8.js
+      static/chunks/8017-75c697b29a36dd0c.js
+      static/chunks/app/BLAST/page-6f1c8c6553e3fdc6.js
+  app/BLAST/dealflow/page (2.51 MiB)
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/app/BLAST/dealflow/page-f12bb712ce562127.js
+  app/BLAST/inbox/page (4.45 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/BLAST/inbox/page-bd70c75fb337466b.js
+  app/BLAST/leaderboard/page (2.68 MiB)
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/3934-abac8853dcab60e8.js
+      static/chunks/app/BLAST/leaderboard/page-1c3de721d01d7c2f.js
+  app/BLAST/room/[id]/page (4.77 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/3934-abac8853dcab60e8.js
+      static/chunks/8017-75c697b29a36dd0c.js
+      static/chunks/app/BLAST/room/[id]/page-656914117dca108d.js
+  app/BLAST/settings/notifications/page (4.45 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/BLAST/settings/notifications/page-bd6e6284b3c37234.js
+  app/BLAST/test/page (2.5 MiB)
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/app/BLAST/test/page-6b4a38510e87d452.js
+  app/BLAST/ux-creative/page (2.45 MiB)
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/BLAST/ux-creative/page-39e7445e0ef4cae0.js
+
+./app/BLAST/ux-creative/page.tsx
+Attempted import error: 'Handshake' is not exported from '__barrel_optimize__?names=ArrowUpRight,Award,Briefcase,Check,ChevronRight,Clock,Copy,DollarSign,Eye,Flame,GraduationCap,Handshake,Lock,MessageCircle,Send,Share2,Shield,Sparkles,Star,Target,TrendingUp,Trophy,Unlock,Users,X,Zap!=!lucide-react' (imported as 'Handshake').
+
+Import trace for requested module:
+./app/BLAST/ux-creative/page.tsx
+
+   Linting and checking validity of types ...
+Failed to compile.
+
+./app/api/blast/rooms/[id]/reject/[userId]/route.ts:21:53
+Type error: Expected 1-2 arguments, but got 3.
+
+[0m [90m 19 |[39m[0m
+[0m [90m 20 |[39m     [90m// Reject applicant[39m[0m
+[0m[31m[1m>[22m[39m[90m 21 |[39m     [36mawait[39m rejectApplicant(params[33m.[39mid[33m,[39m params[33m.[39muserId[33m,[39m reviewerId)[0m
+[0m [90m    |[39m                                                     [31m[1m^[22m[39m[0m
+[0m [90m 22 |[39m[0m
+[0m [90m 23 |[39m     [36mreturn[39m [33mNextResponse[39m[33m.[39mjson({[0m
+[0m [90m 24 |[39m       success[33m:[39m [36mtrue[39m[33m,[39m[0m
+Next.js build worker exited with code: 1 and signal: null
+
+> streamwidgets@0.1.0 build
+> next build
+
+  ▲ Next.js 14.2.33
+  - Environments: .env.local, .env
+
+   Creating an optimized production build ...
+> [PWA] Compile server
+> [PWA] Compile server
+> [PWA] Compile client (static)
+> [PWA] Auto register service worker with: c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\node_modules\next-pwa\register.js
+> [PWA] Service worker: c:\Users\mirko\OneDrive\Desktop\widgets-for-launch\public\sw.js
+> [PWA]   url: /sw.js
+> [PWA]   scope: /
+ ⚠ Compiled with warnings
+
+./app/BLAST/ux-creative/page.tsx
+Attempted import error: 'Handshake' is not exported from '__barrel_optimize__?names=ArrowUpRight,Award,Briefcase,Check,ChevronRight,Clock,Copy,DollarSign,Eye,Flame,GraduationCap,Handshake,Lock,MessageCircle,Send,Share2,Shield,Sparkles,Star,Target,TrendingUp,Trophy,Unlock,Users,X,Zap!=!lucide-react' (imported as 'Handshake').
+
+Import trace for requested module:
+./app/BLAST/ux-creative/page.tsx
+
+/_next/static/chunks/vendors-33f5727bb0d2669f.js is 2.43 MB, and won't be precached. Configure maximumFileSizeToCacheInBytes to change this limit.
+
+asset size limit: The following asset(s) exceed the recommended size limit (500 KiB).
+This can impact web performance.
+Assets: 
+  static/chunks/reown-b97c1fcb157b9d81.js (1.16 MiB)
+  static/chunks/privy-38a249a50efd76e1.js (885 KiB)
+  static/chunks/vendors-33f5727bb0d2669f.js (2.31 MiB)
+
+entrypoint size limit: The following entrypoint(s) combined asset size exceeds the recommended limit (500 KiB). This can impact web performance.
+Entrypoints:
+  main (2.32 MiB)
+      static/chunks/webpack-0113f2a356d91656.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/main-5189402a0b58d4e8.js
+  main-app (2.32 MiB)
+      static/chunks/webpack-0113f2a356d91656.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/main-app-b58242d857122f02.js
+  app/_not-found/page (2.31 MiB)
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/_not-found/page-a8c11166314bf388.js
+  app/layout (4.86 MiB)
+      static/css/d35bb1d5f2b7e3e4.css
+      static/css/c0c9c97c89274f92.css
+      static/css/0fd4108dd527df65.css
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/layout-f0a303422da25c9f.js
+  app/chat/page (4.64 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/chat/page-54c9d1c231b0574e.js
+  app/campaign/[id]/page (4.48 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/campaign/[id]/page-96606c48a5c8c077.js
+  app/clip/page (4.52 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/5367-fb4e11bfc3c6b778.js
+      static/chunks/app/clip/page-4474c36a7a182b27.js
+  app/launch/page (2.64 MiB)
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/2367-e34182e81e05f876.js
+      static/chunks/app/launch/page-f26639e528d7a9b9.js
+  app/launch/[id]/page (4.61 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/1678-90b4642ad43cd43e.js
+      static/chunks/4477-cb74eeead64a678c.js
+      static/chunks/app/launch/[id]/page-44d2f8f6342029ee.js
+  app/discover/page (4.9 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/1678-90b4642ad43cd43e.js
+      static/chunks/5367-fb4e11bfc3c6b778.js
+      static/chunks/4645-a8a94240483840b7.js
+      static/chunks/5245-6b8bf7259f4e1bf8.js
+      static/chunks/2367-e34182e81e05f876.js
+      static/chunks/4477-cb74eeead64a678c.js
+      static/chunks/app/discover/page-db9e8cef01b90282.js
+  app/login/page (2.35 MiB)
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/login/page-cb391475ae1abbf9.js
+  app/profile/[handle]/page (2.34 MiB)
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/profile/[handle]/page-a5d5747728293e4a.js
+  app/network/page (4.76 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/1678-90b4642ad43cd43e.js
+      static/chunks/4645-a8a94240483840b7.js
+      static/chunks/app/network/page-426126f483cdd851.js
+  app/profile/page (4.59 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/5367-fb4e11bfc3c6b778.js
+      static/chunks/app/profile/page-c6bdf6cb0b95ea34.js
+  app/signup/page (2.35 MiB)
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/signup/page-0646621d8d36507c.js
+  app/BLAST/dashboard/page (4.74 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/3934-abac8853dcab60e8.js
+      static/chunks/app/BLAST/dashboard/page-10ec464c6bd36253.js
+  app/BLAST/page (4.8 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/3934-abac8853dcab60e8.js
+      static/chunks/8017-75c697b29a36dd0c.js
+      static/chunks/app/BLAST/page-6f1c8c6553e3fdc6.js
+  app/BLAST/inbox/page (4.45 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/BLAST/inbox/page-bd70c75fb337466b.js
+  app/BLAST/leaderboard/page (2.68 MiB)
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/3934-abac8853dcab60e8.js
+      static/chunks/app/BLAST/leaderboard/page-1c3de721d01d7c2f.js
+  app/BLAST/dealflow/page (2.51 MiB)
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/app/BLAST/dealflow/page-f12bb712ce562127.js
+  app/BLAST/room/[id]/page (4.77 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/solana-3bea3ebc70fedbb8.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/3934-abac8853dcab60e8.js
+      static/chunks/8017-75c697b29a36dd0c.js
+      static/chunks/app/BLAST/room/[id]/page-656914117dca108d.js
+  app/BLAST/settings/notifications/page (4.45 MiB)
+      static/chunks/reown-b97c1fcb157b9d81.js
+      static/chunks/privy-38a249a50efd76e1.js
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/BLAST/settings/notifications/page-bd6e6284b3c37234.js
+  app/BLAST/test/page (2.5 MiB)
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/3377-6b99072fb47b7e1e.js
+      static/chunks/app/BLAST/test/page-6b4a38510e87d452.js
+  app/BLAST/ux-creative/page (2.45 MiB)
+      static/chunks/framer-0ad27daca9371190.js
+      static/chunks/icons-0c9cffefa3779e4f.js
+      static/chunks/vendors-33f5727bb0d2669f.js
+      static/chunks/app/BLAST/ux-creative/page-39e7445e0ef4cae0.js
+
+./app/BLAST/ux-creative/page.tsx
+Attempted import error: 'Handshake' is not exported from '__barrel_optimize__?names=ArrowUpRight,Award,Briefcase,Check,ChevronRight,Clock,Copy,DollarSign,Eye,Flame,GraduationCap,Handshake,Lock,MessageCircle,Send,Share2,Shield,Sparkles,Star,Target,TrendingUp,Trophy,Unlock,Users,X,Zap!=!lucide-react' (imported as 'Handshake').
+
+Import trace for requested module:
+./app/BLAST/ux-creative/page.tsx
+
+   Linting and checking validity of types ...
+Failed to compile.
+
+./app/api/blast/rooms/route.ts:75:35
+Type error: Argument of type '{ type: "deal" | "airdrop" | "job" | "collab" | "funding"; title: string; tags: string[]; description: string; totalSlots: number; duration: "24h" | "48h" | "72h"; creatorId: string; creatorName: string; ... 4 more ...; creatorAvatar?: string | undefined; }' is not assignable to parameter of type '({ type: "deal"; title: string; tags: string[]; description: string; totalSlots: number; minKeysToApply: number; entryDeposit: number; duration: "24h" | "48h" | "72h"; metadata?: { fundingStage?: string | undefined; ticketSize?: string | undefined; region?: string | undefined; investorType?: string[] | undefined; } ...'.
+  Type '{ type: "deal" | "airdrop" | "job" | "collab" | "funding"; title: string; tags: string[]; description: string; totalSlots: number; duration: "24h" | "48h" | "72h"; creatorId: string; creatorName: string; ... 4 more ...; creatorAvatar?: string | undefined; }' is not assignable to type '{ type: "funding"; title: string; metadata: { amount: string; stage: string; raised?: string | undefined; investors?: number | undefined; minKeysToView?: number | undefined; minKeysToIntro?: number | undefined; pitchDeck?: string | undefined; metrics?: { ...; } | undefined; }; ... 5 more ...; duration: "24h" | ... 1...'.
+    Type '{ type: "deal" | "airdrop" | "job" | "collab" | "funding"; title: string; tags: string[]; description: string; totalSlots: number; duration: "24h" | "48h" | "72h"; creatorId: string; creatorName: string; ... 4 more ...; creatorAvatar?: string | undefined; }' is missing the following properties from type '{ type: "funding"; title: string; metadata: { amount: string; stage: string; raised?: string | undefined; investors?: number | undefined; minKeysToView?: number | undefined; minKeysToIntro?: number | undefined; pitchDeck?: string | undefined; metrics?: { ...; } | undefined; }; ... 5 more ...; duration: "24h" | ... 1...': metadata, minKeysToApply, entryDeposit
+
+[0m [90m 73 |[39m[0m
+[0m [90m 74 |[39m     [90m// 3. Create room[39m[0m
+[0m[31m[1m>[22m[39m[90m 75 |[39m     [36mconst[39m room [33m=[39m [36mawait[39m createRoom(validatedData)[0m
+[0m [90m    |[39m                                   [31m[1m^[22m[39m[0m
+[0m [90m 76 |[39m[0m
+[0m [90m 77 |[39m     [90m// 4. Get rate limit headers for response[39m[0m
+[0m [90m 78 |[39m     [36mconst[39m rateLimitStatus [33m=[39m [36mawait[39m checkRateLimit(validatedData[33m.[39mcreatorId[33m,[39m [32m'createRoom'[39m)[0m
+Next.js build worker exited with code: 1 and signal: null

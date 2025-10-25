@@ -25,10 +25,10 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
   },
   eslint: {
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: false,
   },
   images: {
     remotePatterns: [
@@ -68,6 +68,8 @@ const nextConfig = {
       // Aggressive code splitting for performance
       config.optimization.splitChunks = {
         chunks: 'all',
+        maxInitialRequests: 25,
+        minSize: 20000,
         cacheGroups: {
           // Privy authentication library
           privy: {
@@ -90,11 +92,24 @@ const nextConfig = {
             priority: 15,
             reuseExistingChunk: true,
           },
-          // UI libraries
+          // UI libraries - split framer-motion separately (heavy)
+          framer: {
+            test: /[\\/]node_modules[\\/]framer-motion/,
+            name: 'framer',
+            priority: 12,
+            reuseExistingChunk: true,
+          },
           ui: {
-            test: /[\\/]node_modules[\\/](@radix-ui|framer-motion|recharts)/,
+            test: /[\\/]node_modules[\\/](@radix-ui|recharts)/,
             name: 'ui',
             priority: 10,
+            reuseExistingChunk: true,
+          },
+          // Lucide icons - separate chunk
+          icons: {
+            test: /[\\/]node_modules[\\/]lucide-react/,
+            name: 'icons',
+            priority: 11,
             reuseExistingChunk: true,
           },
           // Generic vendor chunks
@@ -106,15 +121,16 @@ const nextConfig = {
           },
         },
       };
+
+      // Performance budgets
+      config.performance = {
+        maxAssetSize: 512000,      // 512KB per asset (realistic for chunks)
+        maxEntrypointSize: 512000, // 512KB total entry
+        hints: process.env.NODE_ENV === 'production' ? 'warning' : false,
+      };
     }
 
     return config;
-  },
-  // Performance budgets - enforce PWA targets
-  performance: {
-    maxAssetSize: 250000,      // 250KB per asset
-    maxEntrypointSize: 400000, // 400KB total entry
-    hints: process.env.NODE_ENV === 'production' ? 'warning' : false,
   },
   // Optimize package imports
   experimental: {
