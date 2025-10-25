@@ -220,6 +220,38 @@ https://vercel.com/widgets-for-launch/deployments
 
 ---
 
-**Last Updated:** 2025-10-25 05:25 UTC
+**Last Updated:** 2025-10-25 05:37 UTC
 **Latest Deployment:** 42zw4exwn (Ready)
+**Production Seeded:** ✅ 5 users, 5 rooms, 10 applicants
+
+---
+
+## 🎉 Production Data
+
+**BLAST is now live with sample data!**
+
+### Users (Motion Scores)
+1. 🥇 **Eve Patel** - 920 Motion Score, 20 keys
+2. 🥈 **Alice Chen** - 850 Motion Score, 12 keys
+3. 🥉 **Bob Martinez** - 720 Motion Score, 8 keys
+4. **Carol Wang** - 650 Motion Score, 15 keys
+5. **Dave Johnson** - 580 Motion Score, 6 keys
+
+### Rooms
+1. **Seed Round for AI SaaS Platform** (Deal) - Alice Chen
+2. **Early Supporter Token Airdrop** (Airdrop) - Eve Patel
+3. **Senior Solana Developer** (Job) - Bob Martinez
+4. **NFT Collection Partnership** (Collab) - Carol Wang
+5. **Pre-seed for Climate Tech Startup** (Funding) - Dave Johnson
+
+### Stats
+- **Total Applicants:** 10
+- **Total Keys Locked:** 61
+- **Active Rooms:** 5
+- **Cron Job Status:** Processing (Motion decay: 5 users/run)
+
+**Visit:** https://widgets-for-launch.vercel.app/BLAST
+
+---
+
 **Next Action:** Investigate Motion Score 307 redirect and Vault 500 error
