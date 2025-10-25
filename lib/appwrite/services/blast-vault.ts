@@ -374,3 +374,39 @@ export class BlastVaultService {
     return response.documents
   }
 }
+
+// Export helper functions for API routes
+export const getOrCreateVault = (userId: string, userWallet: string) =>
+  BlastVaultService.getOrCreateVault(userId, userWallet)
+
+export const lockKeysForRoom = (params: {
+  userId: string
+  userWallet: string
+  roomId: string
+  keysAmount: number
+  metadata?: Record<string, any>
+}) => BlastVaultService.lockKeysForRoom(params)
+
+export const unlockKeys = (userId: string, lockId: string, reason?: string) =>
+  BlastVaultService.releaseKeys(lockId)
+
+export const processRefunds = (roomId: string) => {
+  // Process all refunds for a room by releasing all locks
+  return BlastVaultService.processRefund(roomId)
+}
+
+export const addPendingRefund = (params: {
+  userId: string
+  roomId: string
+  keysAmount: number
+  reason: string
+}) => BlastVaultService.addPendingRefund(params)
+
+export const getVaultStatus = (userId: string) =>
+  BlastVaultService.getVaultStatus(userId)
+
+export const getLocksForRoom = (roomId: string) =>
+  BlastVaultService.getLocksForRoom(roomId)
+
+export const getUserActiveLocks = (userId: string) =>
+  BlastVaultService.getUserActiveLocks(userId)
