@@ -254,4 +254,15 @@ https://vercel.com/widgets-for-launch/deployments
 
 ---
 
-**Next Action:** Investigate Motion Score 307 redirect and Vault 500 error
+## 🔧 Critical Fix Applied (Latest)
+
+### Vercel Rewrite Rule Breaking All Routes
+**Problem:** All BLAST pages redirected to `/discover`
+**Root Cause:** `vercel.json` had catch-all rewrite `"/(.*)" → "/"` which redirected to `/discover`
+**Fix:** Removed broken rewrite rule from vercel.json
+**Commit:** 36a55e3
+**Status:** Deployed, BLAST pages should now be accessible
+
+---
+
+**Next Action:** Verify BLAST pages are accessible after rewrite fix deploys

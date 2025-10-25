@@ -8,6 +8,7 @@ import { databases } from '../client'
 import { BLAST_DATABASE_ID, BLAST_COLLECTIONS } from '../blast-config'
 import { getKeyBalance } from '@/lib/solana/blast/getKeyBalance'
 import type { BlastVault, KeyLock, PendingRefund } from '@/lib/types/blast'
+import { sanitizeUserId } from '../blast-utils'
 
 const DB_ID = BLAST_DATABASE_ID
 const VAULT_COLLECTION = BLAST_COLLECTIONS.VAULT
@@ -21,18 +22,19 @@ export class BlastVaultService {
     userId: string,
     walletAddress: string
   ): Promise<BlastVault> {
+    const docId = sanitizeUserId(userId)
     try {
       return await databases.getDocument<BlastVault>(
         DB_ID,
         VAULT_COLLECTION,
-        userId
+        docId
       )
     } catch {
       // Vault doesn't exist, create it
       return await databases.createDocument<BlastVault>(
         DB_ID,
         VAULT_COLLECTION,
-        userId,
+        docId,
         {
           userId,
           walletAddress,

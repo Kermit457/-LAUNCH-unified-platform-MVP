@@ -49,8 +49,8 @@ export class BlastMatchingService {
   ): Promise<MatchScore[]> {
     try {
       // Get user's Motion Score
-      const userMotion = await BlastMotionService.getMotionScore(userId)
-      const userMotionScore = userMotion?.score || 0
+      const userMotion = await BlastMotionService.getOrCreateScore(userId)
+      const userMotionScore = userMotion?.currentScore || 0
 
       // Get user's application history
       const history = await databases.listDocuments(DB_ID, APPLICANTS_COLLECTION, [
@@ -259,8 +259,8 @@ export class BlastMatchingService {
 
       for (const applicant of applicants) {
         // Get applicant's Motion Score
-        const motionScore = await BlastMotionService.getMotionScore(applicant.userId)
-        const applicantMotion = motionScore?.score || 0
+        const motionScore = await BlastMotionService.getOrCreateScore(applicant.userId)
+        const applicantMotion = motionScore?.currentScore || 0
 
         const matchScore = this.calculateApplicantMatchScore(
           applicant,
@@ -357,7 +357,7 @@ export class BlastMatchingService {
   ): Promise<MatchScore | null> {
     try {
       const room = await BlastRoomsService.getRoomById(roomId)
-      const userMotion = await BlastMotionService.getMotionScore(userId)
+      const userMotion = await BlastMotionService.getOrCreateScore(userId)
 
       const history = await databases.listDocuments(DB_ID, APPLICANTS_COLLECTION, [
         Query.equal('userId', userId),
@@ -366,7 +366,7 @@ export class BlastMatchingService {
 
       const profile: UserProfile = {
         userId,
-        motionScore: userMotion?.score || 0,
+        motionScore: userMotion?.currentScore || 0,
         keyBalance,
         applicationHistory: history.documents.map(doc => ({
           roomType: doc.roomType || 'deal',

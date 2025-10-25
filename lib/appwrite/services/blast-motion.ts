@@ -8,6 +8,7 @@ import { databases } from '../client'
 import { BLAST_DATABASE_ID, BLAST_COLLECTIONS } from '../blast-config'
 import type { MotionScore, MotionEvent as MotionEventType } from '@/lib/types/blast'
 import { MOTION_WEIGHTS, MOTION_DECAY_TAU, type MotionEvent } from '@/lib/constants/blast'
+import { sanitizeUserId } from '../blast-utils'
 
 const DB_ID = BLAST_DATABASE_ID
 const MOTION_SCORES_COLLECTION = BLAST_COLLECTIONS.MOTION_SCORES
@@ -18,18 +19,19 @@ export class BlastMotionService {
    * Get or create Motion Score for user
    */
   static async getOrCreateScore(userId: string): Promise<MotionScore> {
+    const docId = sanitizeUserId(userId)
     try {
       return await databases.getDocument<MotionScore>(
         DB_ID,
         MOTION_SCORES_COLLECTION,
-        userId
+        docId
       )
     } catch {
       // Create new score
       return await databases.createDocument<MotionScore>(
         DB_ID,
         MOTION_SCORES_COLLECTION,
-        userId,
+        docId,
         {
           userId,
           currentScore: 0,
