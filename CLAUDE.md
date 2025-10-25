@@ -1,5 +1,18 @@
 # ICM Motion - Solana Launch Platform v4
 
+## ⚠️ CRITICAL - Read These First
+
+**Every session start / context refresh:**
+1. `.claude/CONTEXT_REFRESH_CHECKLIST.md` - What to read when starting
+2. `.claude/DESIGN_RULES.md` - **BTDEMO is the ONLY design standard**
+3. `.claude/AGENT_MANAGEMENT_RULES.md` - How to use agents properly
+4. `.claude/PERFORMANCE_IMPROVEMENT_NOTES.md` - Mistakes to avoid
+
+**Before any work:**
+- `DEPLOYMENT_STATUS.md` - What's live
+- `SPRINT.md` - Current priorities
+- `BTDEMO_DESIGN_SPECIFICATION.md` - Design system (if UI work)
+
 ## Stack
 Next.js 14 + Anchor + @solana/web3.js v4 + Privy + Appwrite
 
